@@ -1,0 +1,418 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		BE99B973161BAE720041B8EA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE99B972161BAE720041B8EA /* Foundation.framework */; };
+		BE99B976161BAE720041B8EA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BE99B975161BAE720041B8EA /* main.m */; };
+		BE99B97A161BAE720041B8EA /* WInterface.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = BE99B979161BAE720041B8EA /* WInterface.1 */; };
+		BE99B982161BAEBA0041B8EA /* Classes.m in Sources */ = {isa = PBXBuildFile; fileRef = BE99B981161BAEBA0041B8EA /* Classes.m */; };
+		BE99B985161BAFD30041B8EA /* WReader.m in Sources */ = {isa = PBXBuildFile; fileRef = BE99B984161BAFD30041B8EA /* WReader.m */; };
+		BEAA02991621F7280026192D /* WReaderTokenizer.m in Sources */ = {isa = PBXBuildFile; fileRef = BEAA02981621F7280026192D /* WReaderTokenizer.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		BE93AD88165E9D9D001BA629 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BE93AD83165E9D9C001BA629 /* WI_iosTests.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BE93AD4A165E9D9B001BA629;
+			remoteInfo = WI_iosTests;
+		};
+		BE93AD8A165E9D9D001BA629 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BE93AD83165E9D9C001BA629 /* WI_iosTests.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BE93AD6B165E9D9C001BA629;
+			remoteInfo = WI_iosTestsTests;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		BE99B96C161BAE720041B8EA /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+				BE99B97A161BAE720041B8EA /* WInterface.1 in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		BE0C5209161FB23C00B8C658 /* TokenizeC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TokenizeC.h; path = ../../BasicClasses/Parse/TokenizeC.h; sourceTree = "<group>"; };
+		BE19E8A216295CF10013C92B /* TestProp.wi */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = TestProp.wi; path = Test/TestProp.wi; sourceTree = SOURCE_ROOT; };
+		BE19E8A316295D960013C92B /* TestProp.wi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestProp.wi.m; path = Test/TestProp.wi.m; sourceTree = SOURCE_ROOT; };
+		BE3CEBE0164BA18500881540 /* wi.wi */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = wi.wi; sourceTree = SOURCE_ROOT; };
+		BE55E1D41635B85D004D1572 /* base.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = base.wi; path = Wis/base.wi; sourceTree = "<group>"; };
+		BE61F57A1627C7CB00614210 /* Test.wi */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Test.wi; path = Test/Test.wi; sourceTree = SOURCE_ROOT; };
+		BE61F57B1627D02300614210 /* Test.wi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Test.wi.m; path = Test/Test.wi.m; sourceTree = SOURCE_ROOT; };
+		BE622A12162CA95A00618E26 /* LinkBase.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = LinkBase.wi; path = Test/LinkBase.wi; sourceTree = SOURCE_ROOT; };
+		BE622A13162CA95A00618E26 /* LinkBase.wi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LinkBase.wi.m; path = Test/LinkBase.wi.m; sourceTree = SOURCE_ROOT; };
+		BE697F2E167ED42900880DC7 /* PropSS.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; name = PropSS.wi; path = Wis/PropSS.wi; sourceTree = "<group>"; };
+		BE6AA2391630C4FE00FF2D27 /* TagMemberProtocol.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = TagMemberProtocol.wi; path = Wis/TagMemberProtocol.wi; sourceTree = "<group>"; };
+		BE6AA23D1630C4FE00FF2D27 /* TagNS.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = TagNS.wi; path = Wis/TagNS.wi; sourceTree = "<group>"; };
+		BE93AD83165E9D9C001BA629 /* WI_iosTests.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = WI_iosTests.xcodeproj; path = WI_iosTests/WI_iosTests.xcodeproj; sourceTree = "<group>"; };
+		BE93AD8D165E9E3B001BA629 /* wi.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = wi.sh; sourceTree = SOURCE_ROOT; };
+		BE93AD8F165E9FB3001BA629 /* collectionArray.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = collectionArray.wi; path = Wis/collectionArray.wi; sourceTree = "<group>"; };
+		BE93AD90165E9FB3001BA629 /* collectionDictionary.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = collectionDictionary.wi; path = Wis/collectionDictionary.wi; sourceTree = "<group>"; };
+		BE93AD91165E9FB3001BA629 /* collectionSet.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = collectionSet.wi; path = Wis/collectionSet.wi; sourceTree = "<group>"; };
+		BE93AD94165EA628001BA629 /* model.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; name = model.wi; path = Wis/model.wi; sourceTree = "<group>"; };
+		BE93AD95165EA628001BA629 /* obfuscateULL.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; name = obfuscateULL.wi; path = Wis/obfuscateULL.wi; sourceTree = "<group>"; };
+		BE93AD96165EA628001BA629 /* OID.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; name = OID.wi; path = Wis/OID.wi; sourceTree = "<group>"; };
+		BE93AD97165EA628001BA629 /* types.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; name = types.wi; path = Wis/types.wi; sourceTree = "<group>"; };
+		BE93AD98165EA8F1001BA629 /* collections.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; name = collections.wi; path = Wis/collections.wi; sourceTree = "<group>"; };
+		BE99B96E161BAE720041B8EA /* WInterface */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = WInterface; sourceTree = BUILT_PRODUCTS_DIR; };
+		BE99B972161BAE720041B8EA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		BE99B975161BAE720041B8EA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		BE99B978161BAE720041B8EA /* WInterface-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WInterface-Prefix.pch"; sourceTree = "<group>"; };
+		BE99B979161BAE720041B8EA /* WInterface.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = WInterface.1; sourceTree = "<group>"; };
+		BE99B980161BAEBA0041B8EA /* Classes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Classes.h; sourceTree = "<group>"; };
+		BE99B981161BAEBA0041B8EA /* Classes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Classes.m; sourceTree = "<group>"; };
+		BE99B983161BAFD30041B8EA /* WReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WReader.h; sourceTree = "<group>"; };
+		BE99B984161BAFD30041B8EA /* WReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WReader.m; sourceTree = "<group>"; };
+		BEA020A41629505100CA480A /* Prop1A.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = Prop1A.wi; path = Wis/Prop1A.wi; sourceTree = "<group>"; };
+		BEA020A81629505100CA480A /* Prop1S.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = Prop1S.wi; path = Wis/Prop1S.wi; sourceTree = "<group>"; };
+		BEA020AC1629505100CA480A /* Prop11.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = Prop11.wi; path = Wis/Prop11.wi; sourceTree = "<group>"; };
+		BEA020B01629505100CA480A /* PropA1.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = PropA1.wi; path = Wis/PropA1.wi; sourceTree = "<group>"; };
+		BEA020B41629505100CA480A /* PropS1.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = PropS1.wi; path = Wis/PropS1.wi; sourceTree = "<group>"; };
+		BEA020B8162951B100CA480A /* PropBase.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = PropBase.wi; path = Wis/PropBase.wi; sourceTree = "<group>"; };
+		BEAA02971621F7280026192D /* WReaderTokenizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WReaderTokenizer.h; sourceTree = "<group>"; };
+		BEAA02981621F7280026192D /* WReaderTokenizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WReaderTokenizer.m; sourceTree = "<group>"; };
+		BEACB8501676A2F9000657A7 /* collectionAtomicAndTracker.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; name = collectionAtomicAndTracker.wi; path = Wis/collectionAtomicAndTracker.wi; sourceTree = "<group>"; };
+		BEACB8511676A2F9000657A7 /* collectionTester.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; name = collectionTester.wi; path = Wis/collectionTester.wi; sourceTree = "<group>"; };
+		BEACB8521676A38C000657A7 /* collectionNS.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; name = collectionNS.wi; path = Wis/collectionNS.wi; sourceTree = "<group>"; };
+		BEC3EDAE162B2999001BA99B /* ModelNS1.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = ModelNS1.wi; path = Wis/ModelNS1.wi; sourceTree = "<group>"; };
+		BEC3EDAF162B299A001BA99B /* ModelNSA.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = ModelNSA.wi; path = Wis/ModelNSA.wi; sourceTree = "<group>"; };
+		BEC3EDB0162B299A001BA99B /* ModelNSS.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = ModelNSS.wi; path = Wis/ModelNSS.wi; sourceTree = "<group>"; };
+		BED5D57B164A122800540B71 /* ModelT1.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = ModelT1.wi; path = Wis/ModelT1.wi; sourceTree = "<group>"; };
+		BED5D57E164A16F200540B71 /* ModelNSM.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = ModelNSM.wi; path = Wis/ModelNSM.wi; sourceTree = "<group>"; };
+		BED5D57F164A16F200540B71 /* Prop1D.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = Prop1D.wi; path = Wis/Prop1D.wi; sourceTree = "<group>"; };
+		BED5D580164A16F200540B71 /* PropD1.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = PropD1.wi; path = Wis/PropD1.wi; sourceTree = "<group>"; };
+		BEE4E70B162BB7530076948D /* LinkBase.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = LinkBase.wi; path = Wis/LinkBase.wi; sourceTree = "<group>"; };
+		BEF849B6164CB628001EA483 /* util.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = util.wi; path = Wis/util.wi; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		BE99B96B161BAE720041B8EA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BE99B973161BAE720041B8EA /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		BE0C5207161FB20800B8C658 /* Basic */ = {
+			isa = PBXGroup;
+			children = (
+				BE0C5209161FB23C00B8C658 /* TokenizeC.h */,
+			);
+			name = Basic;
+			sourceTree = "<group>";
+		};
+		BE796C761624A47E00E550C2 /* Test */ = {
+			isa = PBXGroup;
+			children = (
+				BE622A12162CA95A00618E26 /* LinkBase.wi */,
+				BE622A13162CA95A00618E26 /* LinkBase.wi.m */,
+				BE19E8A316295D960013C92B /* TestProp.wi.m */,
+				BE19E8A216295CF10013C92B /* TestProp.wi */,
+				BE61F57B1627D02300614210 /* Test.wi.m */,
+				BE61F57A1627C7CB00614210 /* Test.wi */,
+			);
+			name = Test;
+			sourceTree = "<group>";
+		};
+		BE93AD84165E9D9C001BA629 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BE93AD89165E9D9D001BA629 /* WI_iosTests.app */,
+				BE93AD8B165E9D9D001BA629 /* WI_iosTestsTests.octest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BE99B963161BAE710041B8EA = {
+			isa = PBXGroup;
+			children = (
+				BE99B974161BAE720041B8EA /* WInterface */,
+				BE99B971161BAE720041B8EA /* Frameworks */,
+				BE99B96F161BAE720041B8EA /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		BE99B96F161BAE720041B8EA /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BE99B96E161BAE720041B8EA /* WInterface */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BE99B971161BAE720041B8EA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BE99B972161BAE720041B8EA /* Foundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		BE99B974161BAE720041B8EA /* WInterface */ = {
+			isa = PBXGroup;
+			children = (
+				BE93AD8D165E9E3B001BA629 /* wi.sh */,
+				BE93AD83165E9D9C001BA629 /* WI_iosTests.xcodeproj */,
+				BE3CEBE0164BA18500881540 /* wi.wi */,
+				BEA020A31629503700CA480A /* Props */,
+				BE796C761624A47E00E550C2 /* Test */,
+				BE0C5207161FB20800B8C658 /* Basic */,
+				BE99B975161BAE720041B8EA /* main.m */,
+				BE99B979161BAE720041B8EA /* WInterface.1 */,
+				BE99B977161BAE720041B8EA /* Supporting Files */,
+				BE99B980161BAEBA0041B8EA /* Classes.h */,
+				BE99B981161BAEBA0041B8EA /* Classes.m */,
+				BE99B983161BAFD30041B8EA /* WReader.h */,
+				BE99B984161BAFD30041B8EA /* WReader.m */,
+				BEAA02971621F7280026192D /* WReaderTokenizer.h */,
+				BEAA02981621F7280026192D /* WReaderTokenizer.m */,
+			);
+			path = WInterface;
+			sourceTree = "<group>";
+		};
+		BE99B977161BAE720041B8EA /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				BE99B978161BAE720041B8EA /* WInterface-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		BEA020A31629503700CA480A /* Props */ = {
+			isa = PBXGroup;
+			children = (
+				BEACB8531676A4CC000657A7 /* Collection */,
+				BE93AD94165EA628001BA629 /* model.wi */,
+				BE93AD95165EA628001BA629 /* obfuscateULL.wi */,
+				BE93AD96165EA628001BA629 /* OID.wi */,
+				BE93AD98165EA8F1001BA629 /* collections.wi */,
+				BE93AD97165EA628001BA629 /* types.wi */,
+				BED5D57E164A16F200540B71 /* ModelNSM.wi */,
+				BE697F2E167ED42900880DC7 /* PropSS.wi */,
+				BED5D57F164A16F200540B71 /* Prop1D.wi */,
+				BED5D580164A16F200540B71 /* PropD1.wi */,
+				BED5D57B164A122800540B71 /* ModelT1.wi */,
+				BEC3EDAF162B299A001BA99B /* ModelNSA.wi */,
+				BEC3EDB0162B299A001BA99B /* ModelNSS.wi */,
+				BEA020B8162951B100CA480A /* PropBase.wi */,
+				BEA020A41629505100CA480A /* Prop1A.wi */,
+				BEA020A81629505100CA480A /* Prop1S.wi */,
+				BEA020AC1629505100CA480A /* Prop11.wi */,
+				BEA020B01629505100CA480A /* PropA1.wi */,
+				BEC3EDAE162B2999001BA99B /* ModelNS1.wi */,
+				BEA020B41629505100CA480A /* PropS1.wi */,
+				BE55E1D41635B85D004D1572 /* base.wi */,
+				BEF849B6164CB628001EA483 /* util.wi */,
+				BE6AA2391630C4FE00FF2D27 /* TagMemberProtocol.wi */,
+				BE6AA23D1630C4FE00FF2D27 /* TagNS.wi */,
+				BEE4E70B162BB7530076948D /* LinkBase.wi */,
+			);
+			name = Props;
+			sourceTree = "<group>";
+		};
+		BEACB8531676A4CC000657A7 /* Collection */ = {
+			isa = PBXGroup;
+			children = (
+				BEACB8521676A38C000657A7 /* collectionNS.wi */,
+				BEACB8501676A2F9000657A7 /* collectionAtomicAndTracker.wi */,
+				BEACB8511676A2F9000657A7 /* collectionTester.wi */,
+				BE93AD8F165E9FB3001BA629 /* collectionArray.wi */,
+				BE93AD90165E9FB3001BA629 /* collectionDictionary.wi */,
+				BE93AD91165E9FB3001BA629 /* collectionSet.wi */,
+			);
+			name = Collection;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		BE99B96D161BAE720041B8EA /* WInterface */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BE99B97D161BAE720041B8EA /* Build configuration list for PBXNativeTarget "WInterface" */;
+			buildPhases = (
+				BE99B96A161BAE720041B8EA /* Sources */,
+				BE99B96B161BAE720041B8EA /* Frameworks */,
+				BE99B96C161BAE720041B8EA /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = WInterface;
+			productName = WInterface;
+			productReference = BE99B96E161BAE720041B8EA /* WInterface */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BE99B965161BAE710041B8EA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0430;
+			};
+			buildConfigurationList = BE99B968161BAE710041B8EA /* Build configuration list for PBXProject "WInterface" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = BE99B963161BAE710041B8EA;
+			productRefGroup = BE99B96F161BAE720041B8EA /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = BE93AD84165E9D9C001BA629 /* Products */;
+					ProjectRef = BE93AD83165E9D9C001BA629 /* WI_iosTests.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				BE99B96D161BAE720041B8EA /* WInterface */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		BE93AD89165E9D9D001BA629 /* WI_iosTests.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = WI_iosTests.app;
+			remoteRef = BE93AD88165E9D9D001BA629 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		BE93AD8B165E9D9D001BA629 /* WI_iosTestsTests.octest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = WI_iosTestsTests.octest;
+			remoteRef = BE93AD8A165E9D9D001BA629 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BE99B96A161BAE720041B8EA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BE99B976161BAE720041B8EA /* main.m in Sources */,
+				BE99B982161BAEBA0041B8EA /* Classes.m in Sources */,
+				BE99B985161BAFD30041B8EA /* WReader.m in Sources */,
+				BEAA02991621F7280026192D /* WReaderTokenizer.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		BE99B97B161BAE720041B8EA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INSTALL_PATH = deploy;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		BE99B97C161BAE720041B8EA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INSTALL_PATH = deploy;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		BE99B97E161BAE720041B8EA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEPLOYMENT_LOCATION = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "WInterface/WInterface-Prefix.pch";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		BE99B97F161BAE720041B8EA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEPLOYMENT_LOCATION = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "WInterface/WInterface-Prefix.pch";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		BE99B968161BAE710041B8EA /* Build configuration list for PBXProject "WInterface" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BE99B97B161BAE720041B8EA /* Debug */,
+				BE99B97C161BAE720041B8EA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BE99B97D161BAE720041B8EA /* Build configuration list for PBXNativeTarget "WInterface" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BE99B97E161BAE720041B8EA /* Debug */,
+				BE99B97F161BAE720041B8EA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BE99B965161BAE710041B8EA /* Project object */;
+}

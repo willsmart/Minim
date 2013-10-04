@@ -1,0 +1,193 @@
+
+
+/*top:
+#define OID_marker (0xbad0fad0dad0cad0LL)
+*/
+
+
+
+
+ClassCount "-Object" "fn:object"
+    LL count,nextID (nodef)
+    +(ClassCount*)classCount {
+        return([[[ClassCount alloc] init] autorelease]);
+    }
+    -(init)init {
+        count=nextID=1;
+    }
+    NSString description={return([NSString stringWithFormat:@"x%qu",count]);}
+
+
+
+Singletons<Ticker> "-Object" "fn:object"
+    NSMutableArray typeCountHistory=[NSMutableArray array]
+    NSMutableDictionary typeCounts=[NSMutableDictionary dictionary]
+    ClassCount totalObjectCount=[[ClassCount alloc] init] (readonly,ivar=totalObjectCount)
+
+    -(init) {
+        for (int i=0;i<5;i++) [self.typeCountHistory addObject:[NSMutableDictionary dictionary]];
+    }
+
+    NSString description={@-999 
+
+        NSArray *keys=[self.typeCounts.allKeys sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+                    return([(NSString*)obj1 compare:obj2]);
+                }];
+
+        NSMutableString *ret=[NSMutableString stringWithFormat:@"\nx%qu Objects:\n",totalObjectCount.count];
+        for (NSString *name in keys) {
+            [ret appendFormat:@"    %@ x %qu << %u, %u, %u, %u, %u\n",name,((ClassCount*)[self.typeCounts objectForKey:name]).count,
+                ((NSNumber*)[(NSDictionary*)[self.typeCountHistory objectAtIndex:0] objectForKey:name]).intValue,
+                ((NSNumber*)[(NSDictionary*)[self.typeCountHistory objectAtIndex:1] objectForKey:name]).intValue,
+                ((NSNumber*)[(NSDictionary*)[self.typeCountHistory objectAtIndex:2] objectForKey:name]).intValue,
+                ((NSNumber*)[(NSDictionary*)[self.typeCountHistory objectAtIndex:3] objectForKey:name]).intValue,
+                ((NSNumber*)[(NSDictionary*)[self.typeCountHistory objectAtIndex:4] objectForKey:name]).intValue
+            ];
+        }
+        @999 return(ret);
+    }
+
+    -(void)tick {
+        prnt("%s\n",self.description.UTF8String);
+        NSMutableDictionary *d=[(NSMutableDictionary*)[self.typeCountHistory objectAtIndex:4] retain];
+        [self.typeCountHistory removeLastObject];
+        [d removeAllObjects];
+        for (kid key in self.typeCounts) {
+            [d setObject:[NSNumber numberWithInt:(int)((ClassCount*)[self.typeCounts objectForKey:key]).count] forKey:key];
+        }
+        [self.typeCountHistory insertObject:d atIndex:0];
+        [d release];
+    }
+    
+
+
+<Object>
+    bool isZombie (nodef,readonly)
+    -(void)dealloc {@998 
+        isZombie=YES;
+#ifdef LONGLIVEZOMBIES
+        if (YES) return;
+#endif
+    }
+
+    LL objectIDInClass,objectIDInTotal (nodef,readonly)
+
+    -(init) {@-500 
+        {
+            NSString *key=@"__Class__";
+            Singletons *s=[Singletons getDefault];
+            ClassCount *__c=[s.typeCounts objectForKey:key];
+            if (!__c) [s.typeCounts setObject:__c=[ClassCount classCount] forKey:key];
+            else {__c.nextID++;__c.count++;}
+            objectIDInClass=__c.nextID;
+            objectIDInTotal=++s.totalObjectCount.nextID;
+            s.totalObjectCount.count++;
+            //prnt(">>Alloc __Class__ x %qu: %p\n",__c.count,self);
+        }
+    }
+    -(void)dealloc {@500 
+        {
+            if (objectIDInTotal==0) {
+                ERR("!!!! error with object %p of type __Class__, the object was never inited",self);
+                return;
+            }
+            if (objectIDInTotal==-1) {
+                ERR("!!!! error with object %p of type __Class__, the object seems to be being dealloced again",self);
+                return;
+            }
+            NSString *key=@"__Class__";
+            Singletons *s=[Singletons getDefault];
+            s.totalObjectCount.count--;
+            ClassCount *__c=[s.typeCounts objectForKey:key];
+            if (!__c) {
+                ERR("!!!! error with counts of type __Class__, the object %p is being deallocated but the count of __Class__'s is zero",self);
+                return;
+            }
+            __c.count--;
+            objectIDInClass=objectIDInTotal=-1;
+            //printf("<<Dealloc __Class__ x %qu\n",__c.count);
+        }
+    }
+
+    bool debugRetain={@-999 bool ret=self.printRetain;@999 return(ret);}
+    bool printRetain={@-999 bool ret=NO;@999 return(ret);}
+    bool printDealloc={@-999 bool ret=NO;@999 return(ret);}
+
+    int ___rc=1,___arc=0
+
+    -(id)retain {@-999 
+        ___rc++;
+        if (self.printRetain) {
+            prnt("%d -> %d retain %s\n",___rc,___rc-___arc,[self.objectName cStringUsingEncoding:NSASCIIStringEncoding]);
+        }
+        @999 return([super retain]);
+    }
+    -(void)dealloc {@-999 
+        if (self.printRetain||self.printDealloc) {
+            prnt("%d -> %d dealloc %s\n",___rc,___rc-___arc,[self.objectName cStringUsingEncoding:NSASCIIStringEncoding]);
+        }
+    }
+    -(void)release {@-999 
+        ___rc--;
+        bool isAutorelease=NO;
+        if (self.debugRetain) {
+            if ([(NSString*)[[NSThread callStackSymbols] objectAtIndex:2] rangeOfString:@"AutoreleasePoolPage"].location!=NSNotFound) {
+                isAutorelease=YES;
+                ___arc--;
+            }
+        }
+            
+        if (self.printRetain) {
+            prnt("%d -> %d release %s %s\n",___rc,___rc-___arc,isAutorelease?"(autorelease)":"",[self.objectName cStringUsingEncoding:NSASCIIStringEncoding]);
+        }
+        @999 [super release];
+    }
+    -(id)autorelease {@-999 
+        ___arc++;
+        if (self.printRetain) {
+            prnt("%d -> %d autorelease %s\n",___rc,___rc-___arc,[self.objectName cStringUsingEncoding:NSASCIIStringEncoding]);
+        }
+        @999 return([super autorelease]);
+    }
+
+    NSString description={@-999 
+        NSMutableString *ret=self.objectName;
+        @999 return(ret);
+    }
+    NSMutableString objectName={@-999 
+        NSMutableString *ret=[NSMutableString stringWithFormat:@"[%qu:%p]__Class__#%qu",objectIDInTotal,self,objectIDInClass];
+        @999 return(ret);
+    }
+    constchar *cdescription={return([self.description cStringUsingEncoding:NSASCIIStringEncoding]);}
+    constchar *cobjectName={return([self.objectName cStringUsingEncoding:NSASCIIStringEncoding]);}
+
+
+ObjectPointer<ObjectEquateAndCopy> "-Object" "fn:object"
+    LL objectIDInTotal (nodef,readonly)
+    -(init[super init])initWithObjectID:(LL)aobjectIDInTotal {
+        objectIDInTotal=aobjectIDInTotal;
+    }
+    
+<ObjectEquate>
+    LL objectIDInTotal (readonly)
+    -(BOOL)isEqual:(id)obj {@-999 
+        bool ret=(obj==self)||
+                    (([obj conformsToProtocol:@protocol(ObjectEquate)]||
+                        [obj conformsToProtocol:@protocol(Object)])&&
+                    (((NSObject<ObjectEquate>*)obj).objectIDInTotal==objectIDInTotal));
+        @999 return(ret);
+    }
+    -(NSUInteger)hash {return((NSUInteger)obfuscateULL(objectIDInTotal));}
+
+<ObjectEquateAndCopy:NSCopying,ObjectEquate>
+    -(id)copyWithZone:(NSZone*)zone {
+        return([[ObjectPointer allocWithZone:zone] initWithObjectID:objectIDInTotal]);
+    }
+
+
+
+
+
+
+
+
