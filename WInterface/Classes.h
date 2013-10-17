@@ -233,31 +233,42 @@
     WType *type;
     int stars;
     bool addedToFns;
-    bool hasGetter;
+    NSRegularExpression *setterRE,*getterRE;
 }
-@property (retain,nonatomic) NSString *name,*qname,*defaultValue;
+@property (retain,nonatomic) NSString *name,*qname,*defaultValue,*setterArg;
 @property (retain,nonatomic) NSSet *attributes;
 @property (assign,nonatomic) WClass *clas;
 @property (assign,nonatomic) WType *type;
 @property (assign,nonatomic) NSMutableSet *type_protocols;
 @property int stars;
-@property (readonly) bool imaginary;
-@property bool hasGetter;
 @property (readonly) NSString *varName;
 @property int defLevel;
+
+
 
 - (void)add:(WReader*)r;
 
 + (WVar*)getExistingVarWithName:(NSString*)aname clas:(WClass*)aclas;
-+ (WVar*)getVarWithType:(WType*)atype stars:(int)astars name:(NSString*)aname qname:(NSString*)qname defVal:(NSString*)adefaultValue defValLevel:(int)adefLevel hasGetter:(bool)ahasGetter attributes:(NSSet*)aattributes clas:(WClass*)aclas;
++ (WVar*)getVarWithType:(WType*)atype stars:(int)astars name:(NSString*)aname qname:(NSString*)qname defVal:(NSString*)adefaultValue defValLevel:(int)adefLevel attributes:(NSSet*)aattributes clas:(WClass*)aclas;
 - (void)appendObjCToString_ivar:(NSMutableString*)s;
 - (void)appendObjCToString_iface:(NSMutableString*)s;
 - (void)appendObjCToString_impl:(NSMutableString*)s;
-- (void)addToFns:(WClass*)clas;
 - (void)addToFns;
 @property (readonly) NSString *objCType;
-@property (readonly) bool isRetained;
 
+
+@property (readonly) bool imaginary;
+@property (readonly) bool hasGetter;
+@property (readonly) bool hasSetter;
+@property (readonly) bool retains;
+@property (readonly) bool isType;
+@property (readonly) bool modelretains;
+@property (readonly) bool readonly;
+@property (readonly) bool atomic;
+@property (readonly) bool synthesized;
+@property (readonly) bool hasIVar,hasDefaultValue,justivar;
+@property (readonly) NSString *setterName,*getterName;
+@property (readonly) NSMutableString *setterBody,*getterBody;
 
 
 @end
