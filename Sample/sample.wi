@@ -14,7 +14,7 @@ sys NSObject
 
 // mt classes
 RSubClassMT:RClassMT "RSubClassMT" "attribute" "fn:mt"
-RClassMT<RProtocolMT> "RClassMT" "attribute" "fn:inherit"
+RClassMT<RProtocolMT> "RClassMT" "attribute" "fn:mt"
 <RSubProtocolMT:RProtocolMT> "RSubProtocolMT" "attribute"
 <RProtocolMT> "RProtocolMT" "attribute"
 
@@ -30,7 +30,7 @@ RSubClass2:RClass<RProtocol> "fn:inherit"
     -(void)fn {RSubClass2}
 RClass<RProtocol> "fn:inherit"
     int RClass,int
-    -(void)RSubClass {RClass}
+    -(void)RClass {RClass}
     -(void)fn {RClass}
 RClass2<RProtocol,RSubProtocol> "fn:inherit"
     int RClass2,int
@@ -108,7 +108,7 @@ SubFns:Fns "fn:fns"
 Class
 
 <Vars>
-    int aVariableOfTypeIntInClass__JustWIClass___declInProtocol
+    int aVariableOfTypeIntInClass__ClassName___declInProtocol
     int classParamCparam
 
 Vars "cparam=>Vars" "fn:vars"
@@ -136,7 +136,7 @@ Vars "cparam=>Vars" "fn:vars"
     int justivari_named (justivar=the_justivari_named,args)
     int ivari (ivar=the_ivari_named,args)
 
-    int aVariableOfTypeIntInClass__JustWIClass__
+    int aVariableOfTypeIntInClass__ClassName__
 
 VarsRetain:Vars "int=>Class" "fn:vars"
 VarsRetain2:Vars "int=>Class*" "fn:vars"

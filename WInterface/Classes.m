@@ -681,7 +681,7 @@ static WClasses *_default=nil;
         if (r.currentToken) r.pos++;
         ret=[s.copy autorelease];
     }
-    else if (([ret isEqualToString:@"ivar"]||[ret isEqualToString:@"class"]||[ret isEqualToString:@"getter"]||[ret isEqualToString:@"setter"])&&[self readc:r anyof:@"="]&&(w=[self readWord:r])) {
+    else if (([ret isEqualToString:@"ivar"]||[ret isEqualToString:@"justivar"]||[ret isEqualToString:@"class"]||[ret isEqualToString:@"getter"]||[ret isEqualToString:@"setter"])&&[self readc:r anyof:@"="]&&(w=[self readWord:r])) {
         ret=[ret stringByAppendingFormat:([self readc:r anyof:@":"]?@"=%@:":@"=%@"),w];
     }
         
@@ -875,8 +875,11 @@ static WClasses *_default=nil;
 - (NSArray*)readVar:(WReader*)r {
     int pos1=r.pos;
     do {
+//        [WClasses warning:[NSString stringWithFormat:@"rv"] withReader:r];
         WClass *c=[self enclosingClass:r];
         if (!c) return(nil);
+
+//        [WClasses warning:[NSString stringWithFormat:@"rv2"] withReader:r];
 
         [[WClasses getDefault] skipSpaces:r];
         WPotentialType *ptype;
@@ -886,6 +889,8 @@ static WClasses *_default=nil;
         NSMutableArray *names=[NSMutableArray array],*defaultValues=[NSMutableArray array],*defLevels=[NSMutableArray array],*getters=[NSMutableArray array],*setters=[NSMutableArray array],*setterVars=[NSMutableArray array],*tags=[NSMutableArray array],*qnames=[NSMutableArray array],*starss=[NSMutableArray array];
         NSMutableSet *attr=nil;
         
+//        [WClasses warning:[NSString stringWithFormat:@"var"] withReader:r];
+
         unichar ch;
         int stars=0;
         while ((ch=[self readOpc:r])=='*') stars++;
@@ -893,6 +898,7 @@ static WClasses *_default=nil;
             break;
         }
         if (!(aname=[self readWord:r])) break;
+//        [WClasses warning:[NSString stringWithFormat:@"%@",aname] withReader:r];
         int posq=r.pos;
         if (!([self readc:r anyof:@">"]&&[self readc:r anyof:@">"]&&(aqname=[self readWord:r]))) {
             r.pos=posq;
@@ -912,67 +918,46 @@ static WClasses *_default=nil;
         }
         else [tags addObject:[NSNull null]];
             
+        //[WClasses warning:[NSString stringWithFormat:@"posttags"] withReader:r];
+
         while (YES) {
             if (ch=='=') {
-                int defLevel=0;
-                if (r.currentToken.type=='c') {
-                    bool appendb;
-                    int numTokens;
-                    int n=[WFn tokenMergeNumber:r.tokenizer pos:r.pos append:&appendb retNumTokens:&numTokens];
-                    if (n!=iNSNotFound) {
-                        defLevel=n;
-                        r.pos+=numTokens;
-                    }
-                }
-                        
+                
 
-                NSString *o=[self readString:r],*getter=nil;
-                if (!o) o=[self readNumber:r];
-                if (!o) {
-                    int pos=r.pos;
-                    if (!(o=[self readVarDefaultValue:r])) {
-                        r.pos=pos;
-                        if ((o=[self readWord:r])) getter=[NSString stringWithFormat:@"{return(%@);}",o];
-                        else getter=[self readBlock:r];
+                NSString *def=nil,*getter=nil,*setter=nil,*setterVar=nil;
+                int defLevel=0;
+                bool changed=YES;
+                while (changed) {
+                    changed=NO;
+                    int pos2=r.pos;
+                    if (r.currentToken.type=='c') {
+                        bool appendb;
+                        int numTokens;
+                        int n=[WFn tokenMergeNumber:r.tokenizer pos:r.pos append:&appendb retNumTokens:&numTokens];
+                        if (n!=iNSNotFound) {
+                            r.pos+=numTokens;
+                            if ((!def)&&((def=[self readVarDefaultValue:r]))) {
+                                changed=YES;
+                                defLevel=n;
+                            }
+                        }
                     }
+                    if ((!def)&&((def=[self readVarDefaultValue:r]))) changed=YES;
+                    if ((!getter)&&((getter=[self readBlock:r]))) changed=YES;
+                    if ((!setter)&&[self readc:r anyof:@"-"]&&((setterVar=[self readWord:r]))&&((setter=[self readBlock:r]))) changed=YES;
+                    if (!changed) r.pos=pos2;
                 }
-                if (!(o||getter)) {
-                    [WClasses error:@"Unknown default value" withReader:r];
-                    [defLevels addObject:[NSNull null]];
-                    [defaultValues addObject:[NSNull null]];
-                    [getters addObject:[NSNull null]];
-                    r.pos=pos2;
-                }
-                else {
-                    if (getter) {
-                        [getters addObject:getter];
-                        [defaultValues addObject:[NSNull null]];
-                        [defLevels addObject:[NSNull null]];
-                    }
-                    else {
-                        [defaultValues addObject:o];
-                        [defLevels addObject:[NSNumber numberWithInt:defLevel]];
-                        [getters addObject:[NSNull null]];
-                    }
-                    pos2=r.pos;
-                    ch=[self readOpc:r];
-                }
+                [defLevels addObject:(def?[NSNumber numberWithInt:defLevel]:[NSNull null])];
+                [defaultValues addObject:(def?def:[NSNull null])];
+                [getters addObject:(getter?getter:[NSNull null])];
+                [setters addObject:(setter?setter:[NSNull null])];
+                [setterVars addObject:(setterVar?setterVar:[NSNull null])];
+                ch=[self readOpc:r];
             }
             else {
                 [defaultValues addObject:[NSNull null]];
                 [defLevels addObject:[NSNull null]];
                 [getters addObject:[NSNull null]];
-            }
-            NSString *var,*setter;
-            int pos3=r.pos;
-            if ((ch=='-')&&(var=[self readWord:r])&&(setter=[self readBlock:r])) {
-                [setters addObject:setter];
-                [setterVars addObject:var];
-                pos2=r.pos;
-                ch=[self readOpc:r];
-            }
-            else {
-                r.pos=pos3;
                 [setters addObject:[NSNull null]];
                 [setterVars addObject:[NSNull null]];
             }
@@ -999,6 +984,7 @@ static WClasses *_default=nil;
             pos2=r.pos;
             ch=[self readOpc:r];
         }
+        //[WClasses warning:[NSString stringWithFormat:@"%c",ch] withReader:r];
 
         if (ch=='(') {
             attr=[NSMutableSet set];
@@ -3456,17 +3442,18 @@ static WClasses *_default=nil;
 
 - (void)appendObjCToString_iface:(NSMutableString*)s {
     if (self.imaginary||self.justivar) return;
-    [s appendFormat:@"@property (%@%@%@%@%@%@%@%@) %@ %@;\n",
+    [s appendFormat:@"@property (%@%@%@%@%@%@%@%@",
         self.isType||(stars>1)?@"":(self.retains?@"retain,":@"assign,"),
         self.atomic?@"atomic,":@"nonatomic,",
         self.readonly&&!self.synthesized?@"readonly,":@"readwrite,",
         [attributes containsObject:@"strong"]?@"strong,":@"",
         [attributes containsObject:@"unsafe_unretained"]?@"unsafe_unretained,":@"",
         [attributes containsObject:@"IBOutlet"]?@"IBOutlet,":@"",
-        self.getterName&&![self.getterName isEqualToString:name]?[NSString stringWithFormat:@"getter=%@",self.getterName]:@"",
-        self.setterName&&![self.getterName isEqualToString:[NSString stringWithFormat:@"set%@",[WProp upperName:self.name]]]?[NSString stringWithFormat:@"setter=%@",self.setterName]:@"",
-        self.objCType,name
+        self.getterName&&![self.getterName isEqualToString:name]?[NSString stringWithFormat:@"getter=%@,",self.getterName]:@"",
+        self.setterName&&![self.setterName isEqualToString:[NSString stringWithFormat:@"set%@",[WProp upperName:self.name]]]?[NSString stringWithFormat:@"setter=%@,",self.setterName]:@""
     ];
+    if ([s hasSuffix:@","]) [s replaceCharactersInRange:NSMakeRange(s.length-1,1) withString:@""];
+    [s appendFormat:@") %@ %@;\n",self.objCType,name];
 }
 
 - (void)appendObjCToString_impl:(NSMutableString*)s {
