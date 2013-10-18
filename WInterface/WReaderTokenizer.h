@@ -21,9 +21,9 @@
 @interface WReaderToken : NSObject
 @property (assign,nonatomic) WReaderTokenizer *tokenizer;
 @property (retain,nonatomic) NSString *_str,*str;
-@property int bracketCount;
+@property int bracketCount,linei;
 @property char type;
-- (id)initWithTokenizer:(WReaderTokenizer*)atokenizer string:(NSString*)astr bracketCount:(int)bc type:(char)type;
+- (id)initWithTokenizer:(WReaderTokenizer*)atokenizer string:(NSString*)astr bracketCount:(int)bc linei:(int)linei type:(char)type;
 @end
 
 @interface WReaderTokenizer : NSObject

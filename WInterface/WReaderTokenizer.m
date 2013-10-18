@@ -16,12 +16,13 @@
     [super dealloc];
 }
 
-- (id)initWithTokenizer:(WReaderTokenizer*)atokenizer string:(NSString*)astr bracketCount:(int)bc type:(char)atype {
+- (id)initWithTokenizer:(WReaderTokenizer*)atokenizer string:(NSString*)astr bracketCount:(int)bc linei:(int)linei type:(char)atype {
     if (!(self=[super init])) return(nil);
     tokenizer=atokenizer;
     self.str=[astr.copy autorelease];
     self.type=atype;
     self.bracketCount=bc;
+    self.linei=linei;
     return(self);
 }
 
@@ -114,11 +115,11 @@
     }
     
 
-    int typeWas=0,bc=0,indent=0,_indent=0;
+    int typeWas=0,bc=0,linei=0,slinei=0,indent=0,_indent=0;
     [self.tokens removeAllObjects];
     NSMutableString *s=[NSMutableString string];
     for (ci=0;ci<str.length;ci++) {
-        if (cs[ci]=='\n') _indent=0;
+        if (cs[ci]=='\n') {_indent=0;linei++;}
         else if ((_indent>=0)&&(cs[ci]==' ')) _indent++;
         else if (_indent>=0) {indent=_indent;_indent=-1;}
         if ((!ci)||((typeWas!='o')&&(types[ci]==typeWas))) {
@@ -128,18 +129,19 @@
         else {
             if ([s isEqualToString:@"}"]) bc--;
             if ((typeWas=='c')&&[s hasPrefix:@"/*"]&&((s.length<4)||![s hasSuffix:@"*/"])) [s appendString:@"*/"];
-            [self.tokens addObject:[[[WReaderToken alloc] initWithTokenizer:self string:s bracketCount:bc+indent type:typeWas] autorelease]];
+            [self.tokens addObject:[[[WReaderToken alloc] initWithTokenizer:self string:s bracketCount:bc+indent linei:slinei type:typeWas] autorelease]];
             if ([s isEqualToString:@"{"]) bc++;
             [s setString:@""];
+            slinei=linei;
             [s appendFormat:@"%c",[str characterAtIndex:ci]];
             typeWas=types[ci];
         }
     }
     if (s.length) {
         if ([s isEqualToString:@"}"]) bc--;
-        [self.tokens addObject:[[[WReaderToken alloc] initWithTokenizer:self string:s bracketCount:bc type:typeWas] autorelease]];
+        [self.tokens addObject:[[[WReaderToken alloc] initWithTokenizer:self string:s bracketCount:bc linei:linei type:typeWas] autorelease]];
         if ((typeWas=='c')&&[s hasPrefix:@"//"]) {
-            [self.tokens addObject:[[[WReaderToken alloc] initWithTokenizer:self string:@"\n" bracketCount:bc type:'r'] autorelease]];
+            [self.tokens addObject:[[[WReaderToken alloc] initWithTokenizer:self string:@"\n" bracketCount:bc linei:linei type:'r'] autorelease]];
         }
     }
 }
@@ -147,7 +149,7 @@
 - (NSString*)tokenStr {
     NSMutableString *s=[NSMutableString string];
     for (WReaderToken *t in self.tokens) {
-        [s appendFormat:@"%c:%d:\"%@\"\n",t.type,t.bracketCount,t.str];
+        [s appendFormat:@"%c:%d:%d:\"%@\"\n",t.type,t.bracketCount,t.linei,t.str];
     }
     return(s);
 }

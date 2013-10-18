@@ -882,6 +882,9 @@ static WClasses *_default=nil;
 //        [WClasses warning:[NSString stringWithFormat:@"rv2"] withReader:r];
 
         [[WClasses getDefault] skipSpaces:r];
+        int bc=r.currentToken.bracketCount;
+        int linei=r.currentToken.linei;
+        
         WPotentialType *ptype;
         if (!(ptype=[self readPotentialType:r])) return(nil);
         NSString *aname,*aqname=nil;
@@ -942,16 +945,24 @@ static WClasses *_default=nil;
                             }
                         }
                     }
-                    if ((!def)&&((def=[self readVarDefaultValue:r]))) changed=YES;
-                    if ((!getter)&&((getter=[self readBlock:r]))) changed=YES;
-                    if ((!setter)&&[self readc:r anyof:@"-"]&&((setterVar=[self readWord:r]))&&((setter=[self readBlock:r]))) changed=YES;
-                    if (!changed) r.pos=pos2;
+                    if (!changed) {
+                        if ((!def)&&((def=[self readVarDefaultValue:r]))) changed=YES;
+                        else if ((!getter)&&((getter=[self readBlock:r]))) changed=YES;
+                        else if ((!setter)&&[self readc:r anyof:@"-"]&&((setterVar=[self readWord:r]))&&((setter=[self readBlock:r]))) changed=YES;
+                    }
+                    if (changed) {
+                        [self skipSpaces:r];
+                        //[WClasses warning:[NSString stringWithFormat:@"linei=%d:%d bc=%d:%d",linei,r.currentToken.linei,bc,r.currentToken.bracketCount] withReader:r];
+                        if ((!r.currentToken)||((r.currentToken.linei>linei)&&(r.currentToken.bracketCount<=bc))) break;
+                    }
+                    else r.pos=pos2;
                 }
                 [defLevels addObject:(def?[NSNumber numberWithInt:defLevel]:[NSNull null])];
                 [defaultValues addObject:(def?def:[NSNull null])];
                 [getters addObject:(getter?getter:[NSNull null])];
                 [setters addObject:(setter?setter:[NSNull null])];
                 [setterVars addObject:(setterVar?setterVar:[NSNull null])];
+                pos2=r.pos;
                 ch=[self readOpc:r];
             }
             else {
@@ -962,6 +973,7 @@ static WClasses *_default=nil;
                 [setterVars addObject:[NSNull null]];
             }
 
+                    //[WClasses warning:[NSString stringWithFormat:@"here"] withReader:r];
             if (ch!=',') break;
 
             stars=0;
@@ -982,6 +994,7 @@ static WClasses *_default=nil;
             [qnames addObject:aqname?aqname:[NSNull null]];
             [starss addObject:[NSNumber numberWithInt:stars]];
             pos2=r.pos;
+                    //[WClasses warning:[NSString stringWithFormat:@"here"] withReader:r];
             ch=[self readOpc:r];
         }
         //[WClasses warning:[NSString stringWithFormat:@"%c",ch] withReader:r];
@@ -2978,7 +2991,7 @@ static WClasses *_default=nil;
             for (int d=0;d<MIN(40,depth);d++) [s appendString:@"  "];
             if (t.type!='r') {
                 if (t.type=='z') t.str=s;
-                else [tkn.tokens insertObject:[[[WReaderToken alloc] initWithTokenizer:tkn string:s bracketCount:t.bracketCount type:'z'] autorelease] atIndex:i];
+                else [tkn.tokens insertObject:[[[WReaderToken alloc] initWithTokenizer:tkn string:s bracketCount:t.bracketCount linei:t.linei type:'z'] autorelease] atIndex:i];
                 wasnl=NO;
             }
         }
@@ -2988,7 +3001,7 @@ static WClasses *_default=nil;
             }
             else if ((level=[WFn tokenMergeNumber:tkn pos:i append:nil retNumTokens:&numTokens])!=NONUMBER) {
                 [tkn.tokens removeObjectsInRange:NSMakeRange(i-1,numTokens+1)];i--;
-                [tkn.tokens insertObject:[[[WReaderToken alloc] initWithTokenizer:tkn string:[NSString stringWithFormat:@"/*i%d*/",level] bracketCount:t.bracketCount type:'c'] autorelease] atIndex:i];
+                [tkn.tokens insertObject:[[[WReaderToken alloc] initWithTokenizer:tkn string:[NSString stringWithFormat:@"/*i%d*/",level] bracketCount:t.bracketCount linei:t.linei type:'c'] autorelease] atIndex:i];
             }
             else {
                 wasmk=NO;
@@ -2999,9 +3012,9 @@ static WClasses *_default=nil;
             [tkn.tokens removeObjectsInRange:NSMakeRange(i,numTokens)];
             NSMutableString *s=[NSMutableString string];
             for (int d=0;d<MIN(40,depth);d++) [s appendString:@"  "];
-            [tkn.tokens insertObject:[[[WReaderToken alloc] initWithTokenizer:tkn string:@"\n" bracketCount:t.bracketCount type:'r'] autorelease] atIndex:i++];
-            [tkn.tokens insertObject:[[[WReaderToken alloc] initWithTokenizer:tkn string:s bracketCount:t.bracketCount type:'z'] autorelease] atIndex:i++];
-            [tkn.tokens insertObject:[[[WReaderToken alloc] initWithTokenizer:tkn string:[NSString stringWithFormat:@"/*i%d*/",level] bracketCount:t.bracketCount type:'c'] autorelease] atIndex:i];
+            [tkn.tokens insertObject:[[[WReaderToken alloc] initWithTokenizer:tkn string:@"\n" bracketCount:t.bracketCount linei:t.linei type:'r'] autorelease] atIndex:i++];
+            [tkn.tokens insertObject:[[[WReaderToken alloc] initWithTokenizer:tkn string:s bracketCount:t.bracketCount linei:t.linei type:'z'] autorelease] atIndex:i++];
+            [tkn.tokens insertObject:[[[WReaderToken alloc] initWithTokenizer:tkn string:[NSString stringWithFormat:@"/*i%d*/",level] bracketCount:t.bracketCount linei:t.linei type:'c'] autorelease] atIndex:i];
             wasmk=YES;wasnl=NO;
         }
         else {
@@ -3095,7 +3108,8 @@ static WClasses *_default=nil;
 - (id)initWithType:(WType*)atype stars:(int)astars name:(NSString*)aname qname:(NSString*)aqname defVal:(NSString*)adefaultValue defValLevel:(int)adefLevel attributes:(NSSet*)aattributes clas:(WClass*)aclas {
     if (!(self=[super init])) return(nil);
     self.type=[[[WType alloc] initWithClass:atype.clas protocols:atype.protocols.allObjects addObject:NO] autorelease];
-    self.stars=astars;
+    self.stars=astars>0?astars:(atype.clas.isType?0:1);
+    [WClasses warning:[NSString stringWithFormat:@"%@ %d %d",aname,stars,astars] withReader:nil];
     self.name=aname;
     self.qname=aqname;
     self.setterArg=@"v";
@@ -3164,6 +3178,7 @@ static WClasses *_default=nil;
         switch (t.type) {
             case 'o':
             if ([t.str isEqualToString:@"."]) bad=1;
+            else if ([t.str isEqualToString:@"/*ivar*/"]) bad=1;
             else if ([t.str isEqualToString:@"-"]) bad=-1;
             else if ([t.str isEqualToString:@">"]&&(bad==-1)) bad=1;
             break;
@@ -3210,7 +3225,9 @@ static WClasses *_default=nil;
 -(bool)isType {return(self.type.clas.isType);}
 -(bool)modelretains {return([attributes containsObject:@"modelretain"]);}
 -(bool)readonly {return([attributes containsObject:@"readonly"]||(self.hasGetter&&!self.hasSetter));}
--(bool)hasGetter {return([clas.fns objectForKey:[self getterSig]]!=nil);}
+-(bool)hasGetter {
+    [WClasses warning:[NSString stringWithFormat:@"%@\n%@",[self getterSig],clas.fns.allKeys.description] withReader:nil];
+    return([clas.fns objectForKey:[self getterSig]]!=nil);}
 -(bool)hasSetter {return([clas.fns objectForKey:[self setterSig]]!=nil);}
 -(bool)atomic {return([attributes containsObject:@"atomic"]);}
 
@@ -3219,6 +3236,7 @@ static WClasses *_default=nil;
 }
 
 -(bool)hasIVar {
+    [WClasses warning:[NSString stringWithFormat:@"%@ %d %d",attributes.description,self.hasSetter,self.hasGetter] withReader:nil];
     if([attributes containsObject:@"ivar"]||[attributes containsObject:@"justivar"]||(!(self.hasGetter||self.hasSetter))) return(TRUE);
     if (attributes) {
         for (NSString *attribute in attributes) {
@@ -3227,9 +3245,11 @@ static WClasses *_default=nil;
         }
     }
     bool hasSetter,hasGetter;
-    [self replaceSettersAndGettersInBody:((WFn*)[clas.fns objectForKey:[self getterSig]]).body hasSetter:&hasSetter hasGetter:&hasGetter];
+    NSString *b=[self replaceSettersAndGettersInBody:((WFn*)[clas.fns objectForKey:[self getterSig]]).body hasSetter:&hasSetter hasGetter:&hasGetter];
+    [WClasses warning:[NSString stringWithFormat:@"%@\n=>\n%@\n%d %d\n",((WFn*)[clas.fns objectForKey:[self getterSig]]).body,b,hasSetter,hasGetter] withReader:nil];
     if (hasGetter||hasSetter) return(YES);
-    [self replaceSettersAndGettersInBody:((WFn*)[clas.fns objectForKey:[self setterSig]]).body hasSetter:&hasSetter hasGetter:&hasGetter];
+    b=[self replaceSettersAndGettersInBody:((WFn*)[clas.fns objectForKey:[self setterSig]]).body hasSetter:&hasSetter hasGetter:&hasGetter];
+    [WClasses warning:[NSString stringWithFormat:@"%@\n=>\n%@\n%d %d\n",((WFn*)[clas.fns objectForKey:[self getterSig]]).body,b,hasSetter,hasGetter] withReader:nil];
     if (hasGetter||hasSetter) return(YES);
     return(NO);
 }
@@ -3329,6 +3349,7 @@ static WClasses *_default=nil;
 }
 
 - (NSString*)objCType {
+    [WClasses warning:[NSString stringWithFormat:@"Stars %@ %d",name,stars] withReader:nil];
     return([type objCTypeWithStars:stars]);
 }
 
@@ -3346,10 +3367,12 @@ static WClasses *_default=nil;
 - (void)addToFns {
     if (addedToFns) return;
     addedToFns=YES;
+    bool hasDef=NO;
     
     if (defaultValue) {
+        hasDef=YES;
         if (self.hasDefaultValue) {
-            [WFn getFnWithSig:@"-(init)" body:[NSString stringWithFormat:@"@-500 %@=%@;\n",self.name,defaultValue] clas:clas];
+            [WFn getFnWithSig:@"-(init)" body:[NSString stringWithFormat:@"@-500 /*ivar*/%@=(%@);\n",self.name,(self.retains?[NSString stringWithFormat:@"[(id)(%@) retain]",defaultValue]:defaultValue)] clas:clas];
         }
     }
     else if (attributes) {
@@ -3427,11 +3450,12 @@ static WClasses *_default=nil;
             }                    
         }
         if (def.length) {
+            hasDef=YES;
             [WFn getFnWithSig:@"-(init)" body:[NSString stringWithFormat:@"@-500         %@=%@;\n",name,def] clas:clas];
         }
     }
-    if (!(defaultValue||self.imaginary||self.hasGetter)) {
-        [WClasses warning:[NSString stringWithFormat:@"Variable %@ in %@ %@ has no default value, no 'nodef' attribute, and has no getter function. This is less an error than unclean",self.name,clas.isProtocol?@"protocol":@"class",clas.name] withReader:nil];
+    if (self.hasIVar&&!(hasDef||self.imaginary)) {
+        [WClasses warning:[NSString stringWithFormat:@"Non-imaginary variable %@ in %@ %@ has an ivar, but no default value. This is less an strict error than unclean",self.name,clas.isProtocol?@"protocol":@"class",clas.name] withReader:nil];
     }
 
     if (self.retains) {

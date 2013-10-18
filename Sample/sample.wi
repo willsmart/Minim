@@ -21,51 +21,51 @@ RClassMT<RProtocolMT> "RClassMT" "attribute" "fn:mt"
 
 // inherit
 RSubClass:RClass "fn:inherit"
-    int RSubClass,int
+    int RSubClass=0,int=0
     -(void)RSubClass {RSubClass}
     -(void)fn {RSubClass}
 RSubClass2:RClass<RProtocol> "fn:inherit"
-    int RSubClass2,int
+    int RSubClass2=0,int=0
     -(void)RSubClass {RSubClass2}
     -(void)fn {RSubClass2}
 RClass<RProtocol> "fn:inherit"
-    int RClass,int
+    int RClass=0,int=0
     -(void)RClass {RClass}
     -(void)fn {RClass}
 RClass2<RProtocol,RSubProtocol> "fn:inherit"
-    int RClass2,int
+    int RClass2=0,int=0
     -(void)RClass2 {RClass2}
     -(void)fn {RClass2}
 RClassab<RProtocol,RProtocolb> "fn:inherit"
-    int RClassab,int
+    int RClassab=0,int=0
     -(void)RClassab {RClassab}
     -(void)fn {RClassab}
 RSubClassabnapnac:RClassabnapnac "fn:inherit"
-    int RSubClassabnapnac,int
+    int RSubClassabnapnac=0,int=0
     -(void)RSubClassabnapnac {RSubClassabnapnac}
     -(void)fn {RSubClassabnapnac}
 RClassabnapnac<RProtocol,RProtocolb,RProtocolnap> "nac" "fn:inherit"
-    int RClassabnapnac,int
+    int RClassabnapnac=0,int=0
     -(void)RClassabnapnac {RClassabnapnac}
     -(void)fn {RClassabnapnac}
 RClassabnap<RProtocol,RProtocolb,RProtocolnap> "fn:inherit"
-    int RClassabnap,int
+    int RClassabnap=0,int=0
     -(void)RClassabnap {RClassabnap}
     -(void)fn {RClassabnap}
 <RSubProtocol:RProtocol>
-    int RSubProtocol,int
+    int RSubProtocol=0,int=0
     -(void)RSubProtocol {RSubProtocol}
     -(void)fn {RSubProtocol}
 <RProtocol>
-    int RProtocol,int
+    int RProtocol=0,int=0
     -(void)RProtocol {RProtocol}
     -(void)fn {RProtocol}
 <RProtocolb>
-    int RProtocolb,int
+    int RProtocolb=0,int=0
     -(void)RProtocolb {RProtocolb}
     -(void)fn {RProtocolb}
 <RProtocolnap> "nap"
-    int RProtocolnap,int
+    int RProtocolnap=0,int=0
     -(void)RProtocolnap {RProtocolnap}
     -(void)fn {RProtocolnap}
 
@@ -74,7 +74,7 @@ RClassabnap<RProtocol,RProtocolb,RProtocolnap> "fn:inherit"
 
 // Category
 Sys "fn:fns"
-    int sys
+    int sys=0
     -(void)sysfn {@1 1}
 
 
@@ -107,47 +107,46 @@ SubFns:Fns "fn:fns"
 
 Class
 
-<Vars>
-    int aVariableOfTypeIntInClass__ClassName___declInProtocol
-    int classParamCparam
+<VarsBase>
+    int aVariableOfTypeNmInClass__ClassName___declInProtocol=0
+    int classParamCparam=0
 
-Vars "cparam=>Vars" "fn:vars"
+<Vars:VarsBase> "cparam=>Vars" "fn:vars"
     int zero=0,one=1,nil=nil (args)
     int readonlyi=def (readonly,args)
     int imaginaryi=def (imaginary,args)
     int atomici=def (atomic,args)
     int settergetteri=def (setter=setSG,getter=sg,args)
     int getteri_noivar={return(2);} (args)
-    int setteri=
+    int getteri=0{return(getteri);} (args)
+    int setteri=0
         -v{setteri=2;} (args)
     int setteri_noivar=
         -v{a.setteri_noivar} (args)
     int sgi_noivar=
         {return(2);}
         -v{a.sgi_noivar} (args)
-    int sgi=
+    int sgi=0
         {return(2);}
         -v{sgi=2;} (args)
-    int sgi2=
+    int sgi2=0
         {return(sgi);}
         -v{a.sgi2} (args)
-    int justivari (justivar,args)
-    int ivari (ivar,args)
-    int justivari_named (justivar=the_justivari_named,args)
-    int ivari (ivar=the_ivari_named,args)
+    int justivari=0 (justivar,args)
+    int ivari=0 (ivar,args)
+    int justivari_named=0 (justivar=the_justivari_named,args)
+    int ivari=0 (ivar=the_ivari_named,args)
 
-    int aVariableOfTypeIntInClass__ClassName__
+    int aVariableOfTypeNmInClass__ClassName__=0
 
-VarsRetain:Vars "int=>Class" "fn:vars"
-VarsRetain2:Vars "int=>Class*" "fn:vars"
-VarsClassPtr:Vars "int=>Class**" "fn:vars"
+VarsInt<Vars> "fn:VarsInt"
+VarsRetain<Vars> "int=>Class*" "nm=>Class" "fn:VarsRetain"
 
-VarsAssign:Vars "int=>Class" "args=>assign" "fn:vars"
-VarsAssign2:Vars "int=>Class*" "args=>assign" "fn:vars"
+VarsAssign<Vars> "int=>Class*" "nm=>Class" "args=>assign" "fn:VarsAssign"
 
-VarsAtomic:Vars "args=>atomic" "fn:vars"
-VarsRetainAtomic:Vars "int=>Class" "args=>atomic" "fn:vars"
-VarsAssignAtomic:Vars "int=>Class" "args=>assign,atomic" "fn:vars"
+VarsAtomic<Vars> "args=>atomic" "fn:VarsAtomic"
+VarsRetainAtomic<Vars> "int=>Class*" "nm=>Class" "args=>atomic" "fn:VarsRetainAtomic"
+VarsAssignAtomic<Vars> "int=>Class*" "nm=>Class" "args=>assign,atomic" "fn:VarsAssignAtomic"
 
 
 
