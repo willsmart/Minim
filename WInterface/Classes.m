@@ -1589,6 +1589,8 @@ static WClasses *_default=nil;
 
 
 -(void)makeImportSets {
+    if (madeImportSets) return;
+    madeImportSets=YES;
     WClass *p=[self.protocols objectForKey:@"perclassdefn"];
     if (p) {
         for (NSString *fnnm in p.fns) {
@@ -1625,7 +1627,7 @@ static WClasses *_default=nil;
         }
     }
     for (NSString *cnm in self.protocols) {
-        WClass *c=[self.classes objectForKey:cnm];
+        WClass *c=[self.protocols objectForKey:cnm];
         for (NSString *fnnm in c.fns) {
             WFn *fn=[c.fns objectForKey:fnnm];
             if ([fn.sigWithArgs hasPrefix:@"-"]) {
@@ -1654,6 +1656,7 @@ static WClasses *_default=nil;
     finishedParse=YES;
     [self addToFns];
 
+    [self makeImportSets];
     [self finalizeAllImports];
 
     NSString *ins_first=(impl?([cfn isEqualToString:@"inserts"]?self.ins_first_impl:@""):(iface?self.ins_first_iface:self.ins_first_decl));
@@ -1730,7 +1733,9 @@ static WClasses *_default=nil;
     for (WClass *c in ps) if (iface&&c.exists&&!c.isSys) [s appendFormat:@"@protocol %@;\n",c.name];
     for (WClass *c in cs) if (iface&&c.exists&&!(c.isType||c.isSys)) [s appendFormat:@"@class %@;\n",c.name];
     
-    for (WClass *c in cs) if (c.exists&&!(c.isType||c.isSys)) classCount++; else if (c.vars.count) typeCount++;
+    for (WClass *c in cs) if (c.exists) {
+        if (!(c.isType||c.isSys)) classCount++; else if (c.vars.count) typeCount++;
+    }
 
     [s appendString:SPACER];
     if (ins_after_decl.length) {
@@ -1876,16 +1881,26 @@ static WClasses *_default=nil;
 
 
 
-+(WType*)processClassType:(WType*)t class:(WClass*)clas protocols:(NSArray*)protocols {
++(WType*)processClassType:(WType*)t class:(WClass*)clas protocols:(NSArray*)protocols tostars:(int*)pstars {
     if (!t) return(nil);
+    if (pstars) *pstars=0;
     WPotentialType *pt=[[[WPotentialType alloc] initWithType:t] autorelease];
     //NSLog(@"Type from %@  (%@<%@>)",t.wiType,pt.clas,pt.protocols.description);
-    if (pt.clas) pt.clas=[WClasses processClassString:pt.clas class:clas protocols:protocols];
+    NSMutableSet *ps=[NSMutableSet set];
+    if (pt.clas) {
+        NSMutableString *s=[[WClasses processClassString:pt.clas class:clas protocols:protocols].mutableCopy autorelease];
+        while ([s hasSuffix:@"*"]) {
+            if (pstars) (*pstars)++;
+            [s deleteCharactersInRange:NSMakeRange(s.length-1,1)];
+        }
+        pt.clas=s;//!todo protcols
+    }
     if (pt.protocols) {
-        NSMutableSet *ps=[NSMutableSet set];
         for (NSString *s in pt.protocols) [ps addObject:[WClasses processClassString:s class:clas protocols:protocols]];
         pt.protocols=ps;
     }
+    else if (ps.count) pt.protocols=ps;
+    
     WType *nt=[[[WType alloc] initWithPotentialType:pt] autorelease];
     //NSLog(@"    >>> %@  (%@<%@>)",nt.wiType,pt.clas,pt.protocols.description);
     return(nt);
@@ -2047,7 +2062,7 @@ static WClasses *_default=nil;
 }
 
 -(bool)exists {
-    bool ret=(!([self.varPatterns containsObject:@"nac"]||[self.varPatterns containsObject:@"notaclass"]));
+    bool ret=(!([self.varPatterns containsObject:@"nac"]||[self.varPatterns containsObject:@"nap"]||[self.varPatterns containsObject:@"notaclass"]));
     return(ret);
 }
 
@@ -2149,7 +2164,10 @@ static WClasses *_default=nil;
         if (!fst) [protStr appendString:@">"];
     }
     if (isSys) [s appendFormat:@"@interface %@(winterface)\n",self.name];
-    else [s appendFormat:@"@interface %@ : %@%@ {\n",self.name,self.superType.clas?self.superType.clas.name:@"NSObject",protStr];
+    else {
+        WClass *sup;for (sup=self.superType.clas;sup&&!sup.exists;sup=sup.superType.clas);
+        [s appendFormat:@"@interface %@ : %@%@ {\n",self.name,sup?sup.name:@"NSObject",protStr];
+    }
     if (!isSys) {
         [self appendWithSelector:@selector(appendObjCToString_ivar:) string:s];
 /*    for (WProp *prop in props) {
@@ -2234,8 +2252,10 @@ static WClasses *_default=nil;
             if (attrs) for (NSString *s in v.attributes) {
                 [attrs addObject:[WClasses processClassString:s class:forClas protocols:stack]];
             }
-            [WVar getVarWithType:[WClasses processClassType:v.type class:forClas protocols:stack]
-                stars:v.stars
+        
+            int stars=0;
+            [WVar getVarWithType:[WClasses processClassType:v.type class:forClas protocols:stack tostars:&stars]
+                stars:v.stars+stars
                 name:[WClasses processClassString:v.name class:forClas protocols:stack]
                 qname:[WClasses processClassString:v.qname class:forClas protocols:stack]
                 defVal:[WClasses processClassString:v.defaultValue class:forClas protocols:stack]
@@ -3109,7 +3129,7 @@ static WClasses *_default=nil;
     if (!(self=[super init])) return(nil);
     self.type=[[[WType alloc] initWithClass:atype.clas protocols:atype.protocols.allObjects addObject:NO] autorelease];
     self.stars=astars>0?astars:(atype.clas.isType?0:1);
-    [WClasses warning:[NSString stringWithFormat:@"%@ %d %d",aname,stars,astars] withReader:nil];
+    //[WClasses warning:[NSString stringWithFormat:@"%@ %d %d",aname,stars,astars] withReader:nil];
     self.name=aname;
     self.qname=aqname;
     self.setterArg=@"v";
@@ -3143,17 +3163,45 @@ static WClasses *_default=nil;
 }
 
 
--(NSString*)getterName {
+-(void)cacheAttributes {
+    attributesCached=NO;
+    imaginary=self.imaginary;
+    retains=self.retains;
+    isType=self.isType;
+    modelretains=self.modelretains;
+    readonly=self.readonly;
+    atomic=self.atomic;
+    synthesized=self.synthesized;
+    objc_readonly=self.objc_readonly;
+    needsGetter=self.needsGetter;
+    needsSetter=self.needsSetter;
+    hasIVar=self.hasIVar;
+    hasDefaultValue=self.hasDefaultValue;
+    justivar=self.justivar;
+    hasGetter=self.hasGetter;
+    hasSetter=self.hasSetter;
+    setterName=self.setterName;
+    getterName=self.getterName;
+    getterSig=self.getterSig;
+    setterSig=self.setterSig;
+    setterBody=self.setterBody;
+    getterBody=self.getterBody;
+    varName=self.varName;
+    attributesCached=YES;
+}
+
+#define CACHEVARATTR(__name) if (attributesCached) return(__name);
+-(NSString*)getterName {CACHEVARATTR(getterName)
     if (attributes) for (NSString *s in attributes) if ([s hasPrefix:@"getter="]) return([s substringFromIndex:@"getter=".length]);
     return(name);
 }
--(NSString*)setterName {
+-(NSString*)setterName {CACHEVARATTR(setterName)
     if (attributes) for (NSString *s in attributes) if ([s hasPrefix:@"setter="]) return([s substringFromIndex:@"getter=".length]);
     return([NSString stringWithFormat:@"set%@",[WProp upperName:self.name]]);
 }
 
--(NSString*)getterSig {return([NSString stringWithFormat:@"-(%@)%@",self.objCType,self.getterName]);}
--(NSString*)setterSig {return([NSString stringWithFormat:@"-(void)%@:(%@)%@",self.setterName,self.objCType,self.setterArg]);}
+-(NSString*)getterSig {CACHEVARATTR(getterSig)return([NSString stringWithFormat:@"-(%@)%@",self.objCType,self.getterName]);}
+-(NSString*)setterSig {CACHEVARATTR(setterSig)return([NSString stringWithFormat:@"-(void)%@:(%@)%@",self.setterName,self.objCType,self.setterArg]);}
 
 -(NSString*)replaceSettersAndGettersInBody:(NSString*)body hasSetter:(bool*)phasSetter hasGetter:(bool*)phasGetter {
     if (phasSetter) *phasSetter=NO;
@@ -3161,8 +3209,13 @@ static WClasses *_default=nil;
     if (!body) return(nil);
     
     if (!setterRE) {
-        NSError *err;
-        setterRE=[NSRegularExpression regularExpressionWithPattern:[NSString stringWithFormat:@"(?<![\\w\\d_]|\\.\\s*|->\\s*)%@[^\\w\\d_]",[NSRegularExpression escapedPatternForString:self.name]] options:0 error:&err];
+        NSError *err=nil;
+//        setterRE=[NSRegularExpression regularExpressionWithPattern:[NSString stringWithFormat:@"(?<![\\w\\d_]|\\.\\s*|->\\s*)%@[^\\w\\d_]",[NSRegularExpression escapedPatternForString:self.name]] options:0 error:&err];
+        setterRE=[NSRegularExpression regularExpressionWithPattern:[NSString stringWithFormat:@"(?<![\\w\\d_\\.\\s]|->)\\s*%@(?:$|[^\\w\\d_])",[NSRegularExpression escapedPatternForString:self.name]] options:0 error:&err];
+        if (err) {
+            NSLog(@"WInterface internal error %@",err.description);
+            exit(1);
+        }
     }
 
     if (![setterRE firstMatchInString:body options:0 range:NSMakeRange(0, body.length)]) return(nil);
@@ -3220,23 +3273,32 @@ static WClasses *_default=nil;
     return(ret);
 }
 
--(bool)retains {return((!self.isType)&&(stars<=1)&&(![attributes containsObject:@"assign"])&&self.hasIVar);}
--(bool)imaginary {return([attributes containsObject:@"imaginary"]);}
--(bool)isType {return(self.type.clas.isType);}
--(bool)modelretains {return([attributes containsObject:@"modelretain"]);}
--(bool)readonly {return([attributes containsObject:@"readonly"]||(self.hasGetter&&!self.hasSetter));}
--(bool)hasGetter {
-    [WClasses warning:[NSString stringWithFormat:@"%@\n%@",[self getterSig],clas.fns.allKeys.description] withReader:nil];
-    return([clas.fns objectForKey:[self getterSig]]!=nil);}
--(bool)hasSetter {return([clas.fns objectForKey:[self setterSig]]!=nil);}
--(bool)atomic {return([attributes containsObject:@"atomic"]);}
+-(bool)retains {CACHEVARATTR(retains)return((!self.isType)&&(stars<=1)&&(![attributes containsObject:@"assign"])&&self.hasIVar);}
+-(bool)imaginary {CACHEVARATTR(imaginary)return([attributes containsObject:@"imaginary"]);}
+-(bool)isType {CACHEVARATTR(isType)return(self.type.clas.isType);}
+-(bool)modelretains {CACHEVARATTR(modelretains)return([attributes containsObject:@"modelretain"]);}
+-(bool)readonly {CACHEVARATTR(readonly)return([attributes containsObject:@"readonly"]||self.objc_readonly);}
+-(WFn*)hasGetter {CACHEVARATTR(hasGetter)
+    //[WClasses warning:[NSString stringWithFormat:@"%@\n%@",[self getterSig],clas.fns.allKeys.description] withReader:nil];
+    return([clas.fns objectForKey:[self getterSig]]);}
+-(WFn*)hasSetter {CACHEVARATTR(hasSetter)return([clas.fns objectForKey:[self setterSig]]);}
+-(bool)atomic {CACHEVARATTR(atomic)return([attributes containsObject:@"atomic"]);}
 
--(bool)synthesized {
+-(bool)synthesized {CACHEVARATTR(synthesized)
     return((!(self.imaginary||[attributes containsObject:@"justivar"]))&&(self.hasGetter||self.hasSetter||((!self.isType)&&(stars<=1))||[attributes containsObject:@"synthesize"]));
 }
+-(bool)objc_readonly {CACHEVARATTR(objc_readonly)
+    return((!self.hasIVar)&&self.hasGetter&&!self.hasSetter);
+}
+-(bool)needsGetter {CACHEVARATTR(needsGetter)
+    return(self.synthesized);
+}
+-(bool)needsSetter {CACHEVARATTR(needsSetter)
+    return(self.synthesized&&!self.objc_readonly);
+}
 
--(bool)hasIVar {
-    [WClasses warning:[NSString stringWithFormat:@"%@ %d %d",attributes.description,self.hasSetter,self.hasGetter] withReader:nil];
+-(bool)hasIVar {CACHEVARATTR(hasIVar)
+    //[WClasses warning:[NSString stringWithFormat:@"%@ %d %d",attributes.description,self.hasSetter,self.hasGetter] withReader:nil];
     if([attributes containsObject:@"ivar"]||[attributes containsObject:@"justivar"]||(!(self.hasGetter||self.hasSetter))) return(TRUE);
     if (attributes) {
         for (NSString *attribute in attributes) {
@@ -3244,17 +3306,17 @@ static WClasses *_default=nil;
             if ([attribute hasPrefix:@"justivar="]) return(YES);
         }
     }
-    bool hasSetter,hasGetter;
-    NSString *b=[self replaceSettersAndGettersInBody:((WFn*)[clas.fns objectForKey:[self getterSig]]).body hasSetter:&hasSetter hasGetter:&hasGetter];
-    [WClasses warning:[NSString stringWithFormat:@"%@\n=>\n%@\n%d %d\n",((WFn*)[clas.fns objectForKey:[self getterSig]]).body,b,hasSetter,hasGetter] withReader:nil];
-    if (hasGetter||hasSetter) return(YES);
-    b=[self replaceSettersAndGettersInBody:((WFn*)[clas.fns objectForKey:[self setterSig]]).body hasSetter:&hasSetter hasGetter:&hasGetter];
-    [WClasses warning:[NSString stringWithFormat:@"%@\n=>\n%@\n%d %d\n",((WFn*)[clas.fns objectForKey:[self getterSig]]).body,b,hasSetter,hasGetter] withReader:nil];
-    if (hasGetter||hasSetter) return(YES);
+    bool hasSetterv,hasGetterv;
+    NSString *b=[self replaceSettersAndGettersInBody:((WFn*)[clas.fns objectForKey:[self getterSig]]).body hasSetter:&hasSetterv hasGetter:&hasGetterv];
+    //[WClasses warning:[NSString stringWithFormat:@"%@\n=>\n%@\n%d %d\n",((WFn*)[clas.fns objectForKey:[self getterSig]]).body,b,hasSetterv,hasGetterv] withReader:nil];
+    if (hasGetterv||hasSetterv) return(YES);
+    b=[self replaceSettersAndGettersInBody:((WFn*)[clas.fns objectForKey:[self setterSig]]).body hasSetter:&hasSetterv hasGetter:&hasGetterv];
+    //[WClasses warning:[NSString stringWithFormat:@"%@\n=>\n%@\n%d %d\n",((WFn*)[clas.fns objectForKey:[self getterSig]]).body,b,hasSetterv,hasGetterv] withReader:nil];
+    if (hasGetterv||hasSetterv) return(YES);
     return(NO);
 }
 
--(bool)justivar {
+-(bool)justivar {CACHEVARATTR(justivar)
     if ([attributes containsObject:@"justivar"]) return(YES);
     if (attributes) {
         for (NSString *attribute in attributes) {
@@ -3265,9 +3327,9 @@ static WClasses *_default=nil;
 }
 
 
--(NSMutableString*)getterBody {
+-(NSMutableString*)getterBody {CACHEVARATTR(getterBody)
     if (!self.synthesized) return(nil);
-    NSMutableString *body=[((WFn*)[clas.fns objectForKey:[self getterSig]]).body.copy autorelease];
+    NSMutableString *body=[((WFn*)[clas.fns objectForKey:[self getterSig]]).body.mutableCopy autorelease];
     if (!body) {
         body=(self.hasIVar?
                 ((!self.atomic)||self.isType?
@@ -3281,9 +3343,9 @@ static WClasses *_default=nil;
     return(body);
 }
 
--(NSMutableString*)setterBody {
+-(NSMutableString*)setterBody {CACHEVARATTR(setterBody)
     if (!self.synthesized) return(nil);
-    NSMutableString *body=[((WFn*)[clas.fns objectForKey:[self setterSig]]).body.copy autorelease];
+    NSMutableString *body=[((WFn*)[clas.fns objectForKey:[self setterSig]]).body.mutableCopy autorelease];
     if (!body) {
         NSString *vv=self.varName;
         body=(self.hasIVar?
@@ -3315,8 +3377,8 @@ static WClasses *_default=nil;
 
 
 
--(NSString*)varName {
-    if (!self.hasIVar) return(nil);
+-(NSString*)varName {CACHEVARATTR(varName)
+    //if (!self.hasIVar) return(nil);
     if (attributes) {
         for (NSString *attribute in attributes) {
             if ([attribute hasPrefix:@"ivar="]) {
@@ -3349,8 +3411,10 @@ static WClasses *_default=nil;
 }
 
 - (NSString*)objCType {
-    [WClasses warning:[NSString stringWithFormat:@"Stars %@ %d",name,stars] withReader:nil];
     return([type objCTypeWithStars:stars]);
+}
+- (NSString*)lazyObjCType {
+    return([type objCTypeWithStars:((stars<=1)&&!self.isType?0:stars)]);
 }
 
 
@@ -3366,7 +3430,12 @@ static WClasses *_default=nil;
 
 - (void)addToFns {
     if (addedToFns) return;
+    
+    [self cacheAttributes];
+    
     addedToFns=YES;
+    if (self.imaginary) return;
+    
     bool hasDef=NO;
     
     if (defaultValue) {
@@ -3461,6 +3530,16 @@ static WClasses *_default=nil;
     if (self.retains) {
         [WFn getFnWithSig:@"-(void)dealloc" body:[NSString stringWithFormat:@"\n    [%@ release];%@=nil;",self.varName,self.varName] clas:clas];
     }
+    if (self.needsGetter) {
+        WFn *fn=self.hasGetter;
+        if (fn) fn.body=self.getterBody;
+        else [WFn getFnWithSig:self.getterSig body:self.getterBody clas:clas];
+    }
+    if (self.needsSetter) {
+        WFn *fn=self.hasSetter;
+        if (fn) fn.body=self.setterBody;
+        else [WFn getFnWithSig:self.setterSig body:self.setterBody clas:clas];
+    }
 }
 
 
@@ -3469,27 +3548,38 @@ static WClasses *_default=nil;
     [s appendFormat:@"@property (%@%@%@%@%@%@%@%@",
         self.isType||(stars>1)?@"":(self.retains?@"retain,":@"assign,"),
         self.atomic?@"atomic,":@"nonatomic,",
-        self.readonly&&!self.synthesized?@"readonly,":@"readwrite,",
+        self.objc_readonly?@"readonly,":@"readwrite,",
         [attributes containsObject:@"strong"]?@"strong,":@"",
         [attributes containsObject:@"unsafe_unretained"]?@"unsafe_unretained,":@"",
         [attributes containsObject:@"IBOutlet"]?@"IBOutlet,":@"",
         self.getterName&&![self.getterName isEqualToString:name]?[NSString stringWithFormat:@"getter=%@,",self.getterName]:@"",
-        self.setterName&&![self.setterName isEqualToString:[NSString stringWithFormat:@"set%@",[WProp upperName:self.name]]]?[NSString stringWithFormat:@"setter=%@,",self.setterName]:@""
+        self.setterName&&![self.setterName isEqualToString:[NSString stringWithFormat:@"set%@",[WProp upperName:self.name]]]?[NSString stringWithFormat:@"setter=%@:,",self.setterName]:@""
     ];
     if ([s hasSuffix:@","]) [s replaceCharactersInRange:NSMakeRange(s.length-1,1) withString:@""];
     [s appendFormat:@") %@ %@;\n",self.objCType,name];
 }
 
 - (void)appendObjCToString_impl:(NSMutableString*)s {
-    //if (self.imaginary) return;
-    //if (!(hasGetter||(attributes&&[attributes containsObject:@"noivar"]))) {
-    //    [s appendFormat:@"@synthesize %@=%@;\n",name,[self varName]];
-    //}
+    if (self.imaginary) return;
+    if (self.hasIVar&&!(self.justivar||self.synthesized)) {
+        [s appendFormat:@"@synthesize %@=%@;\n",name,[self varName]];
+    }
 }
 - (void)appendObjCToString_ivar:(NSMutableString *)s {
     if (self.imaginary) return;
     NSString *vv=self.varName;
-    if (vv) [s appendFormat:@"    %@ %@;\n",[self objCType],vv];
+    WClass *sup=self.clas.superType.clas;
+    bool supHasIVar=NO;
+    if (sup&&vv) {
+        for (NSString *k in sup.vars) {
+            WVar *v=[sup.vars objectForKey:k];
+            if (v.hasIVar&&![v.varName isEqualToString:vv]) {
+                supHasIVar=YES;
+                break;
+            }
+        }
+    }
+    if (vv&&!supHasIVar) [s appendFormat:@"    %@ %@;\n",[self objCType],vv];
 }
 @end
 

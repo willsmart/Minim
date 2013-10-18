@@ -41,6 +41,7 @@
     WClass *classContext;
     int classContextBracket;
     bool skipNewLines;
+    bool madeImportSets;
 }
 @property (readonly) NSSet *filenames;
 @property bool hasErrors,hasWarnings,finishedParse,skipNewLines;
@@ -77,7 +78,7 @@
 
 @property (readonly) NSString *html;
 
-+(WType*)processClassType:(WType*)t class:(WClass*)clas protocols:(NSArray*)protocols;
++(WType*)processClassType:(WType*)t class:(WClass*)clas protocols:(NSArray*)protocols tostars:(int*)tostars;
 +(NSString*)processClassString:(NSString*)s reader:(WReader*)r;
 +(NSString*)processClassString:(NSString*)s class:(WClass*)clas protocols:(NSArray*)protocols;
 -(NSMutableString*)importsDeclWithName:(NSString*)s nameUsed:(NSString**)pnameUsed;
@@ -234,6 +235,13 @@
     int stars;
     bool addedToFns;
     NSRegularExpression *setterRE,*getterRE;
+    
+    
+
+    bool attributesCached,imaginary,retains,isType,modelretains,readonly,atomic,synthesized,objc_readonly,needsGetter,needsSetter,hasIVar,hasDefaultValue,justivar;
+    WFn *hasGetter,*hasSetter;
+    NSString *setterName,*getterName,*getterSig,*setterSig,*varName;
+    NSMutableString *setterBody,*getterBody;
 }
 @property (retain,nonatomic) NSString *name,*qname,*defaultValue,*setterArg;
 @property (retain,nonatomic) NSSet *attributes;
@@ -254,20 +262,19 @@
 - (void)appendObjCToString_iface:(NSMutableString*)s;
 - (void)appendObjCToString_impl:(NSMutableString*)s;
 - (void)addToFns;
-@property (readonly) NSString *objCType;
+@property (readonly) NSString *objCType,*lazyObjCType;
 
 
 @property (readonly) bool imaginary;
-@property (readonly) bool hasGetter;
-@property (readonly) bool hasSetter;
+@property (readonly) WFn *hasGetter,*hasSetter;
 @property (readonly) bool retains;
 @property (readonly) bool isType;
 @property (readonly) bool modelretains;
 @property (readonly) bool readonly;
 @property (readonly) bool atomic;
-@property (readonly) bool synthesized;
+@property (readonly) bool synthesized,objc_readonly,needsGetter,needsSetter;
 @property (readonly) bool hasIVar,hasDefaultValue,justivar;
-@property (readonly) NSString *setterName,*getterName;
+@property (readonly) NSString *setterName,*getterName,*getterSig,*setterSig;
 @property (readonly) NSMutableString *setterBody,*getterBody;
 
 

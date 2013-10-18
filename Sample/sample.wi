@@ -1,12 +1,12 @@
 
 
-"include.wi"
-"include/include.wi"
-"include.h"
-"<sysinclude.h>"
+//"include.wi"
+//"include/include.wi"
+//"include.h"
+//"<sysinclude.h>"
 
 // decl
-sys Sys
+//sys Sys
 type Type
 type longptr "typedef:long*"
 type int
@@ -21,59 +21,61 @@ RClassMT<RProtocolMT> "RClassMT" "attribute" "fn:mt"
 
 // inherit
 RSubClass:RClass "fn:inherit"
-    int RSubClass=0,int=0
-    -(void)RSubClass {RSubClass}
+    int RSubClass=0,intg=0
+    -(void)RSubClassfn {RSubClass}
     -(void)fn {RSubClass}
 RSubClass2:RClass<RProtocol> "fn:inherit"
-    int RSubClass2=0,int=0
-    -(void)RSubClass {RSubClass2}
+    int RSubClass2=0,intg=0
+    -(void)RSubClass2fn {RSubClass2}
     -(void)fn {RSubClass2}
 RClass<RProtocol> "fn:inherit"
-    int RClass=0,int=0
-    -(void)RClass {RClass}
+    int RClass=0,intg=0
+    -(void)RClassfn {RClass}
     -(void)fn {RClass}
 RClass2<RProtocol,RSubProtocol> "fn:inherit"
-    int RClass2=0,int=0
-    -(void)RClass2 {RClass2}
+    int RClass2=0,intg=0
+    -(void)RClass2fn {RClass2}
     -(void)fn {RClass2}
 RClassab<RProtocol,RProtocolb> "fn:inherit"
-    int RClassab=0,int=0
-    -(void)RClassab {RClassab}
+    int RClassab=0,intg=0
+    -(void)RClassabfn {RClassab}
     -(void)fn {RClassab}
 RSubClassabnapnac:RClassabnapnac "fn:inherit"
-    int RSubClassabnapnac=0,int=0
-    -(void)RSubClassabnapnac {RSubClassabnapnac}
+    int RSubClassabnapnac=0,intg=0
+    -(void)RSubClassabnapnacfn {RSubClassabnapnac}
     -(void)fn {RSubClassabnapnac}
 RClassabnapnac<RProtocol,RProtocolb,RProtocolnap> "nac" "fn:inherit"
-    int RClassabnapnac=0,int=0
-    -(void)RClassabnapnac {RClassabnapnac}
+    int RClassabnapnac=0,intg=0
+    -(void)RClassabnapnacfn {RClassabnapnac}
     -(void)fn {RClassabnapnac}
 RClassabnap<RProtocol,RProtocolb,RProtocolnap> "fn:inherit"
-    int RClassabnap=0,int=0
-    -(void)RClassabnap {RClassabnap}
+    int RClassabnap=0,intg=0
+    -(void)RClassabnapfn {RClassabnap}
     -(void)fn {RClassabnap}
 <RSubProtocol:RProtocol>
-    int RSubProtocol=0,int=0
-    -(void)RSubProtocol {RSubProtocol}
+    int RSubProtocol=0,intg=0
+    -(void)RSubProtocolfn {RSubProtocol}
     -(void)fn {RSubProtocol}
 <RProtocol>
-    int RProtocol=0,int=0
-    -(void)RProtocol {RProtocol}
+    int RProtocol=0,intg=0
+    -(void)RProtocolfn {RProtocol}
     -(void)fn {RProtocol}
 <RProtocolb>
-    int RProtocolb=0,int=0
-    -(void)RProtocolb {RProtocolb}
+    int RProtocolb=0,intg=0
+    -(void)RProtocolbfn {RProtocolb}
     -(void)fn {RProtocolb}
 <RProtocolnap> "nap"
-    int RProtocolnap=0,int=0
-    -(void)RProtocolnap {RProtocolnap}
+    int RProtocolnap=0,intg=0
+    -(void)RProtocolnapfn {RProtocolnap}
     -(void)fn {RProtocolnap}
 
 
 
+<Globals> "nap"
+ -decl:{#define MSGSTART(__fn) printf("%s",__fn);}
 
 // Category
-Sys "fn:fns"
+NSObject "fn:fns"
     int sys=0
     -(void)sysfn {@1 1}
 
@@ -105,18 +107,19 @@ SubFns:Fns "fn:fns"
         @!1 1! @4 add4
     }
 
-Class
+Clas
+    +(Clas*)getDefault {return(nil);}
 
 <VarsBase>
     int aVariableOfTypeNmInClass__ClassName___declInProtocol=0
     int classParamCparam=0
 
-<Vars:VarsBase> "cparam=>Vars" "fn:vars"
-    int zero=0,one=1,nil=nil (args)
-    int readonlyi=def (readonly,args)
-    int imaginaryi=def (imaginary,args)
-    int atomici=def (atomic,args)
-    int settergetteri=def (setter=setSG,getter=sg,args)
+<Vars:VarsBase> "cparam=>Vars" "fn:vars" "nap"
+    int zero=0,one=1,nill=nil (args)
+    int readonlyi=123 (readonly,args)
+    int imaginaryi=123 (imaginary,args)
+    int atomici=123 (atomic,args)
+    int settergetteri=123 (setter=setSG,getter=sg,args)
     int getteri_noivar={return(2);} (args)
     int getteri=0{return(getteri);} (args)
     int setteri=0
@@ -140,13 +143,13 @@ Class
     int aVariableOfTypeNmInClass__ClassName__=0
 
 VarsInt<Vars> "fn:VarsInt"
-VarsRetain<Vars> "int=>Class*" "nm=>Class" "fn:VarsRetain"
+VarsRetain<Vars> "int=>Clas*" "nm=>Clas" "fn:VarsRetain" "123=>[Clas getDefault]"
 
-VarsAssign<Vars> "int=>Class*" "nm=>Class" "args=>assign" "fn:VarsAssign"
+VarsAssign<Vars> "int=>Clas*" "nm=>Clas" "args=>assign" "fn:VarsAssign" "123=>[Clas getDefault]"
 
-VarsAtomic<Vars> "args=>atomic" "fn:VarsAtomic"
-VarsRetainAtomic<Vars> "int=>Class*" "nm=>Class" "args=>atomic" "fn:VarsRetainAtomic"
-VarsAssignAtomic<Vars> "int=>Class*" "nm=>Class" "args=>assign,atomic" "fn:VarsAssignAtomic"
+VarsAtomic<Vars> "args=>atomic" "fn:VarsAtomic" "123=>[Clas getDefault]"
+VarsRetainAtomic<Vars> "int=>Clas*" "nm=>Clas" "args=>atomic" "fn:VarsRetainAtomic" "123=>[Clas getDefault]"
+VarsAssignAtomic<Vars> "int=>Clas*" "nm=>Clas" "args=>assign,atomic" "fn:VarsAssignAtomic" "123=>[Clas getDefault]"
 
 
 

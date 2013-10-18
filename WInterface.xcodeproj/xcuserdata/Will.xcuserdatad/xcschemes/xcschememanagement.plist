@@ -9,9 +9,19 @@
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
+		<key>WInterfaceSample.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>2</integer>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>BE4152E21811B03200E421D7</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>BE99B96D161BAE720041B8EA</key>
 		<dict>
 			<key>primary</key>
