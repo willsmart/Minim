@@ -240,7 +240,8 @@
 
     bool attributesCached,imaginary,retains,isType,modelretains,readonly,atomic,synthesized,objc_readonly,needsGetter,needsSetter,hasIVar,hasDefaultValue,justivar;
     WFn *hasGetter,*hasSetter;
-    NSString *setterName,*getterName,*getterSig,*setterSig,*varName;
+    NSString *setterName,*getterName,*getterSig,*setterSig,*varName,*localizedName;
+    WType *localizedType;
     NSMutableString *setterBody,*getterBody;
 }
 @property (retain,nonatomic) NSString *name,*qname,*defaultValue,*setterArg;
@@ -252,6 +253,8 @@
 @property (readonly) NSString *varName;
 @property int defLevel;
 
+@property (readonly) WType *localizedType;
+@property (readonly) NSString *localizedName;
 
 
 - (void)add:(WReader*)r;
