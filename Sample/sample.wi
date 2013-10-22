@@ -1,4 +1,9 @@
+// check for non autoreleased properties
+// (\[\s*\[\s*[\w\d_]+\s+alloc\s*]\s*init((?!autorelease\]).)*)(\(\w+)
 
+
+
+// NSString s=[[[NSString alloc] initWithFormat:[NSString stringWithFormat:@"hello%@",[NSString string]],@"blah"] autorelease] (readonly)
 
 //"include.wi"
 //"include/include.wi"
@@ -13,6 +18,7 @@ type int
 type short
 sys NSObject
 type ULL "typedef:unsigned long long"
+type kid "typedef:id<NSCopying>" "retains"
 
 // mt classes
 RSubClassMT:RClassMT "RSubClassMT" "attribute" "fn:mt"
@@ -72,11 +78,11 @@ RClassabnap<RProtocol,RProtocolb,RProtocolnap> "fn:inherit"
     -(void)fn {/*RProtocolnap*/}
 
 
-<Object> "nap"
+<Object>
     ULL __private_access_thread_mask=0 (justivar)
     __WIClass__ privateaccess={authorize_thread(__private_access_thread_mask);return(self);}
     
-<Globals> "nap"
+<Globals>
  -decl:{
     #define MSGSTART(__fn) printf("%s",__fn);
     #define ERR(...) printf(__VA_ARGS__)
@@ -85,17 +91,15 @@ RClassabnap<RProtocol,RProtocolb,RProtocolnap> "fn:inherit"
 //id objc_getProperty(id self, SEL _cmd, ptrdiff_t offset, BOOL atomic);
 //void objc_setProperty(id self, SEL _cmd, ptrdiff_t offset, id newValue, BOOL atomic,signed char shouldCopy);
 //void objc_copyStruct(void *dest, const void *src, ptrdiff_t size, BOOL atomic,BOOL hasStrong);
-bool authorized_thread(ULL&mask);
- }
-void authorize_thread(ULL&mask);
+  bool authorized_thread(ULL&mask);
+  void authorize_thread(ULL&mask);
  }
  -decl:impl:{
-bool authorized_thread(ULL&mask) {
-    return(YES);
-}
-bool authorize_thread(ULL&mask) {
-}
-
+  bool authorized_thread(ULL&mask) {
+     return(YES);
+  }
+  void authorize_thread(ULL&mask) {
+  }
  }
 
 // Category
@@ -163,6 +167,21 @@ Clas
     int pr_iv_nm_ivar=0{return(123);} (ivar,args)
     int rw_jiv_nm_justivar_named=0 (justivar=the_justivar_named,args)
     int pr_iv_nm_ivar_named=0{return(123);} (ivar=the_ivar_named,args)
+    -(void)testGetterSetter {
+        pr_iv_def_nm_publicreadonly=pr_iv_def_nm_publicreadonly;
+        rw_iv_def_nm_atomici=rw_iv_def_nm_atomici;
+        rw_iv_nm_settergetteri=rw_iv_nm_settergetteri;
+        pr_iv_nm_getteri=r_noiv_nm_getteri;
+        pr_iv_nm_getteri=pr_iv_nm_getteri;
+        pr_iv_nm_setter=pr_iv_nm_setter;
+        rw_iv_nm_setteri=rw_iv_nm_setteri;
+        rw_noiv_nm_setteri=rw_noiv_nm_setteri;
+        rw_iv_nm_settergetter=rw_iv_nm_settergetter;
+        rw_iv_nm_settergetter2=rw_iv_nm_settergetter2;
+        pr_iv_nm_ivar=pr_iv_nm_ivar;
+        pr_iv_nm_ivar_named=pr_iv_nm_ivar_named;
+    }
+
 
 VarsInt<Vars> "fn:VarsInt"
 VarsRetain<Vars> "int=>Clas*" "nm=>Clas" "fn:VarsRetain" "123=>[Clas getDefault]"

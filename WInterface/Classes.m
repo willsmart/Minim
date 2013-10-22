@@ -1042,21 +1042,21 @@ static WClasses *_default=nil;
             NSMutableSet *attr2=attr;
             int stars=((NSNumber*)[starss objectAtIndex:i]).intValue;
             if ([[getters objectAtIndex:i] isKindOfClass:[NSString class]]&&![[setters objectAtIndex:i] isKindOfClass:[NSString class]]) {
-                attr2=(attr2?[attr2.mutableCopy autorelease]:[NSMutableSet set]);
-                [attr2 addObject:@"readonly"];
+                //attr2=(attr2?[attr2.mutableCopy autorelease]:[NSMutableSet set]);
+                //[attr2 addObject:@"readonly"];
             }
             if (!i) {
                 type=[[[WType alloc] initWithPotentialType:ptype] autorelease];
             }
             WVar *v=[WVar getVarWithType:type stars:stars name:name qname:[[qnames objectAtIndex:i] isKindOfClass:[NSString class]]?[qnames objectAtIndex:i]:nil defVal:[[defaultValues objectAtIndex:i] isKindOfClass:[NSNull class]]?nil:[defaultValues objectAtIndex:i] defValLevel:[[defLevels objectAtIndex:i] isKindOfClass:[NSNull class]]?0:((NSNumber*)[defLevels objectAtIndex:i]).intValue attributes:attr2 clas:c];
             [rets addObject:v];
-            if ([attr containsObject:@"modelretain"]) {
-                [getters replaceObjectAtIndex:i withObject:[NSString stringWithFormat:@"return(%@);",v.varName]];
-                if (![attr2 containsObject:@"readonly"]) {
-                    [setters replaceObjectAtIndex:i withObject:[NSString stringWithFormat:@"[%@ modelrelease];\n%@=[v modelretain];",v.varName,v.varName]];
-                    [setterVars replaceObjectAtIndex:i withObject:@"v"];
-                }
-            }
+//            if ([attr containsObject:@"modelretain"]) {
+//                [getters replaceObjectAtIndex:i withObject:[NSString stringWithFormat:@"return(%@);",v.varName]];
+//                if (![attr2 containsObject:@"readonly"]) {
+//                    [setters replaceObjectAtIndex:i withObject:[NSString stringWithFormat:@"[%@ modelrelease];\n%@=[v modelretain];",v.varName,v.varName]];
+//                    [setterVars replaceObjectAtIndex:i withObject:@"v"];
+//                }
+//            }
             if ([[getters objectAtIndex:i] isKindOfClass:[NSString class]]) {
                 [WFn getFnWithSig:[NSString stringWithFormat:@"-(%@)%@",v.objCType,name] body:(NSString*)[getters objectAtIndex:i] clas:c];
             }
@@ -1708,7 +1708,7 @@ static WClasses *_default=nil;
     int classCount=0,typeCount=0;
     for (WClass *c in cs) {
     //            if ([c.name isEqualToString:@"CommitStage"]) printf("CS %s %s %s\n",c.name.UTF8String,c.vars.description.UTF8String,c.varPatterns.description.UTF8String);
-        if (c.isType&&(!c.vars.count)&&(c.varPatterns.count==1)) {
+        if (c.isType&&(!c.vars.count)&&(c.varPatterns.count>=1)) {
             for (NSString *p in c.varPatterns) {
                 if (iface) {
                     if ([p hasPrefix:@"typedef:"]) {
@@ -1725,6 +1725,7 @@ static WClasses *_default=nil;
                                 [s appendFormat:@"typedef %@ %@%@;\n",[t substringWithRange:[match rangeAtIndex:1]],c.name,[t substringWithRange:[match rangeAtIndex:2]]];
                             }
                         }
+                        break;
                     }
                 }
             }
@@ -1989,6 +1990,9 @@ static WClasses *_default=nil;
     hasDef=NO;
     self.superType=[[[WType alloc] initWithClass:superClass protocols:protocolList addObject:NO] autorelease];
     self.varPatterns=[avarPatterns.copy autorelease];
+    if ([name rangeOfString:@"__WIClass__"].location!=NSNotFound) {
+        self.varPatterns=[[[(self.varPatterns?self.varPatterns:[NSSet set]) setByAddingObject:@"nac"] setByAddingObject:@"multi"] setByAddingObject:@"undefined"];
+    }
     self.vars=[NSMutableDictionary dictionary];
     self.fns=[NSMutableDictionary dictionary];
     [[WClasses getDefault].classes setObject:self forKey:aname];
@@ -2004,6 +2008,9 @@ static WClasses *_default=nil;
     hasDef=NO;
     self.superType=[[[WType alloc] initWithClass:nil protocols:asuperList addObject:NO] autorelease];
     self.varPatterns=[avarPatterns.copy autorelease];
+    if ([name isEqualToString:@"Object"]||[name isEqualToString:@"Globals"]) {
+        self.varPatterns=[[[(self.varPatterns?self.varPatterns:[NSSet set]) setByAddingObject:@"nac"] setByAddingObject:@"multi"] setByAddingObject:@"undefined"];
+    }
     self.vars=[NSMutableDictionary dictionary];
     self.fns=[NSMutableDictionary dictionary];
     [[WClasses getDefault].protocols setObject:self forKey:aname];
@@ -2076,11 +2083,21 @@ static WClasses *_default=nil;
 }
 
 -(WType*)localizeType:(WType*)atype {
-    NSMutableArray *altypeps=(atype.protocols?[NSMutableArray array]:nil);
+    NSMutableSet *altypeps=(atype.protocols?[NSMutableSet set]:nil);
     for (WClass *p in atype.protocols) {
         [altypeps addObject:[WClass getProtocolWithName:[self localizeString:p.name]]];
     }
-    return([[[WType alloc] initWithClass:[WClass getClassWithName:[self localizeString:atype.clas.name]] protocols:altypeps addObject:NO] autorelease]);
+    NSString *altypec=[self localizeString:atype.clas.name];
+    if (![altypec isEqualToString:atype.clas.name]) {
+        WReader *r=[[[WReader alloc] init] autorelease];
+        r.fileString=altypec;
+        WPotentialType *t=[[WClasses getDefault] readPotentialType:r];
+        altypec=t.clas;
+        for (NSString *p in t.protocols) {
+            [altypeps addObject:[WClass getProtocolWithName:p]];
+        }
+    }
+    return([[[WType alloc] initWithClass:[WClass getClassWithName:altypec] protocols:altypeps.allObjects addObject:NO] autorelease]);
 }
 
 
@@ -2131,11 +2148,11 @@ static WClasses *_default=nil;
 - (void)getNames {
     self.fnNames=[self.fns.allKeys sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
         NSString *n1=(NSString*)obj1,*n2=(NSString*)obj2;
-        return([n1 compare:n2 options:NSCaseInsensitiveSearch]);
+        return([WFn compareName:n1 withName:n2]);
     }];
     self.varNames=[self.vars.allKeys sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
         NSString *n1=(NSString*)obj1,*n2=(NSString*)obj2;
-        return([n1 compare:n2 options:NSCaseInsensitiveSearch]);
+        return([WVar compareName:n1 withName:n2]);
     }];
 }
 
@@ -2295,7 +2312,7 @@ static WClasses *_default=nil;
 }
 - (void)addClassToFns {
     if (addedToFns) return;
-    if (!self.hasDef) [WClasses error:[NSString stringWithFormat:(isProtocol?@"Protocol %@ is used but never really defined, and is likely a typo":@"Class %@ is used but never really defined, and is likely a typo"),self.name] withReader:nil];
+    if (!([varPatterns containsObject:@"undefined"]||self.hasDef)) [WClasses error:[NSString stringWithFormat:(isProtocol?@"Protocol %@ is used but never really defined, and is likely a typo":@"Class %@ is used but never really defined, and is likely a typo"),self.name] withReader:nil];
     if (isType) return;
     addedToFns=YES;
     if (!(self.isProtocol||superType.clas.isType)) [WProp stadd:self];
@@ -2426,7 +2443,7 @@ static WClasses *_default=nil;
         for (NSString *n in varNames) {
             WVar *v=[vars objectForKey:n];
             if (v.type.clas.isSys||!v.retains) {
-                [ret appendFormat:@"<li>%@ %@",[WClasses htmlStringForString:v.type.wiType],v.varName];
+                [ret appendFormat:@"<li>%@ %@",[WClasses htmlStringForString:v.type.wiType],v.localizedVarName];
                 if (v.defaultValue) [ret appendFormat:@"=%@",[WClasses htmlStringForString:v.defaultValue]];
                 if (v.attributes) {
                     [ret appendFormat:@" ("];
@@ -2496,7 +2513,7 @@ static WClasses *_default=nil;
     for (NSString *n in varNames) {
         WVar *v=[vars objectForKey:n];
         if (!(v.type.clas.isSys||!v.retains)) {
-            [ret appendFormat:@"<li><b>%@</b> %@",[WClasses htmlStringForString:v.type.wiType],v.varName];
+            [ret appendFormat:@"<li><b>%@</b> %@",[WClasses htmlStringForString:v.type.wiType],v.localizedVarName];
             if (v.defaultValue) [ret appendFormat:@"=%@",[WClasses htmlStringForString:v.defaultValue]];
             if (v.attributes) {
                 [ret appendFormat:@" ("];
@@ -2531,6 +2548,30 @@ static WClasses *_default=nil;
     }
     [ret appendFormat:@"</ul></span>\n"];
     return(ret);
+}
+
+
+
+
+-(NSRegularExpression*)getterSetterRE {
+    if (!self.vars.count) {
+        [getterSetterRE release];
+        getterSetterRE=nil;
+    }
+    else if (!getterSetterRE) {
+        NSError *err=nil;
+        NSMutableString *s=[NSMutableString string];
+        for (NSString *k in self.vars) {
+            WVar *v=[self.vars objectForKey:k];
+            [s appendFormat:(s.length?@"|%@":@"%@"),[NSRegularExpression escapedPatternForString:v.localizedName]];
+        }
+        getterSetterRE=[[NSRegularExpression regularExpressionWithPattern:[NSString stringWithFormat:@"(?<![\\w\\d_\\.\\s]|->)\\s*(?:%@)(?:$|[^\\w\\d_])",s] options:0 error:&err] retain];
+        if (err) {
+            NSLog(@"WInterface internal error %@",err.description);
+            exit(1);
+        }
+    }
+    return(getterSetterRE);
 }
 
 @end
@@ -2814,6 +2855,7 @@ static WClasses *_default=nil;
 
 
 
+
 @end
 
 
@@ -2851,6 +2893,17 @@ static WClasses *_default=nil;
 }
 
 
++(NSComparisonResult)compareName:(NSString*)n1 withName:(NSString*)n2 {
+    NSRange r1=[n1 rangeOfString:@")"];
+    if (r1.location==NSNotFound) r1.location=0;
+    NSRange r2=[n2 rangeOfString:@")"];
+    if (r2.location==NSNotFound) r2.location=0;
+    NSComparisonResult res=[[n1 substringFromIndex:r1.location] compare:[n2 substringFromIndex:r2.location] options:NSCaseInsensitiveSearch];
+    if ((res==NSOrderedSame)&&(r1.location||r2.location)) {
+        res=[n1 compare:n2 options:NSCaseInsensitiveSearch];
+    }
+    return(res);
+}
     
 
 - (id)initWithSig:(NSString*)asig body:(NSString*)abody clas:(WClass*)aclas {
@@ -3078,6 +3131,7 @@ static WClasses *_default=nil;
     
     [[NSRegularExpression regularExpressionWithPattern:@"__WIDerived__>>>(.*?)<<<" options:0 error:&err] replaceMatchesInString:s options:0 range:NSMakeRange(0, s.length) withTemplate:(supIsWI?@"$1":@"")];
     [[NSRegularExpression regularExpressionWithPattern:@"__WIBase__>>>(.*?)<<<" options:0 error:&err] replaceMatchesInString:s options:0 range:NSMakeRange(0, s.length) withTemplate:(!supIsWI?@"$1":@"")];
+    s=[[self bodyByReplacingSettersAndGettersInBody:[WFn mergedBody:s with:@""]].mutableCopy autorelease];
     return([WFn balance:[WProp string:s replacePairs:
         @"__ClassName__",clas.name,
         @"__className__",[WProp lowerName:clas.name],
@@ -3101,6 +3155,93 @@ static WClasses *_default=nil;
     if (self.body) [s appendFormat:@"%@ {MSGSTART(\"%@:%@\")\n%@}\n",[self finalSigStr:self.sigWithArgs],clas.wType.wiType,[self finalSigStr:self.sigWithArgs],[self finalBodyStr:self.body withSig:self.sigWithArgs]];
     else [[WClasses getDefault].taskList addObject:[NSString stringWithFormat:@"Need to implement %@ :: %@",self.clas.name,self.sig]];
 }
+
+
+
+
+-(NSString*)bodyByReplacingSettersAndGettersInBody:(NSString*)abody {
+    if (!abody) return(nil);
+    
+    NSRegularExpression *gsre=clas.getterSetterRE;
+
+    if (![gsre firstMatchInString:abody options:0 range:NSMakeRange(0, abody.length)]) return(abody);
+
+    WReader *r=[[WReader alloc] init];
+    r.fileString=abody;
+
+    bool changed=NO;
+    
+    int bad=0,pos=-1;
+    for (WReaderToken *t in r.tokenizer.tokens) {
+        pos++;
+        switch (t.type) {
+            case 'o':
+            if ([t.str isEqualToString:@"."]) bad=1;
+            else if ([t.str hasSuffix:@"ivar*/"]) bad=1;
+            else if ([t.str isEqualToString:@"-"]) bad=-1;
+            else if ([t.str isEqualToString:@">"]&&(bad==-1)) bad=1;
+            break;
+            case 'z':case 'r':case 'c':case 'n':case 's':if (bad==-1) bad=0;
+            break;
+            case 'w':
+            if (bad<=0) {
+                bad=0;
+                WVar *v=nil;
+                for (NSString *k in clas.vars) {
+                    WVar *v2=[clas.vars objectForKey:k];
+                    if ([t.str isEqualToString:v2.localizedName]) {v=v2;break;}
+                }
+                if (v) {
+                    bool isSetter=NO,isGetter=YES,got=NO;
+                    for (int pos2=pos+1;(pos2<r.tokenizer.tokens.count)&&!got;pos2++) {
+                        WReaderToken *t2=[r.tokenizer.tokens objectAtIndex:pos2];
+                        switch (t2.type) {
+                            case 'o':isSetter=[t2.str isEqualToString:@"="];
+                            isGetter=(!isSetter)&&![t2.str isEqualToString:@"("];
+                            got=YES;
+                            break;
+                            case 'w':case 'n':case 's':break;
+                        }
+                    }
+                    bool isForSetterGetter=NO;
+                    if (isSetter||isGetter) {
+                        isForSetterGetter=([sig isEqualToString:v.localizedGetterSig]||[sig isEqualToString:v.localizedSetterSig]||[sig isEqualToString:v.getterSig]||[sig isEqualToString:v.setterSig]);
+                    }
+                    bool hasIVar=v.hasIVar;
+                    if (isSetter) {
+                        t.str=(isForSetterGetter?
+                            (hasIVar?
+                                [NSString stringWithFormat:@"/*setter ivar*/%@",v.localizedVarName]:
+                                [NSString stringWithFormat:@" This is a Winterface issue, this property should be marked as having an ivar called %@ ",v.localizedVarName]):
+                            (v.readonly?
+                                [NSString stringWithFormat:@"self.privateaccess.%@",v.localizedName]:
+                                [NSString stringWithFormat:@"self.%@",v.localizedName]));
+                        changed=YES;
+                    }
+                    if (isGetter) {
+                        t.str=(hasIVar?
+                            (isForSetterGetter?
+                                [NSString stringWithFormat:@"/*getter ivar*/%@",v.localizedVarName]:
+                                [NSString stringWithFormat:@"/*ivar*/%@",v.localizedVarName]):
+                            [NSString stringWithFormat:@"self.%@",v.localizedName]);
+                        changed=YES;
+                    }
+                }
+            }
+        }
+    }
+    NSString *ret=abody;
+    if (changed) {
+        ret=[r stringWithTokensInRange:NSMakeRange(0,r.tokenizer.tokens.count)];
+    }
+    [r release];
+    return(ret);
+}
+
+
+
+
+
 @end
 
 
@@ -3134,6 +3275,14 @@ static WClasses *_default=nil;
     [localizedType release];
     [super dealloc];
 }
+
+
+
++(NSComparisonResult)compareName:(NSString*)n1 withName:(NSString*)n2 {
+    NSComparisonResult res=[n1 compare:n2 options:NSCaseInsensitiveSearch];
+    return(res);
+}
+
 
 - (id)initWithType:(WType*)atype stars:(int)astars name:(NSString*)aname qname:(NSString*)aqname defVal:(NSString*)adefaultValue defValLevel:(int)adefLevel attributes:(NSSet*)aattributes clas:(WClass*)aclas {
     if (!(self=[super init])) return(nil);
@@ -3176,51 +3325,13 @@ static WClasses *_default=nil;
 }
 
 
--(void)cacheAttributes {
-    if (attributesCached) return;
-    imaginary=self.imaginary;
-    retains=self.retains;
-    isType=self.isType;
-    modelretains=self.modelretains;
-    readonly=self.readonly;
-    atomic=self.atomic;
-    synthesized=self.synthesized;
-    objc_readonly=self.objc_readonly;
-    needsGetter=self.needsGetter;
-    needsSetter=self.needsSetter;
-    hasIVar=self.hasIVar;
-    hasDefaultValue=self.hasDefaultValue;
-    justivar=self.justivar;
-    hasGetter=self.hasGetter;
-    hasSetter=self.hasSetter;
-    setterName=[self.setterName retain];
-    getterName=[self.getterName retain];
-    getterSig=[self.getterSig retain];
-    setterSig=[self.setterSig retain];
-    setterBody=[self.setterBody retain];
-    getterBody=[self.getterBody retain];
-    varName=[self.varName retain];
-    attributesCached=YES;
-}
 
-#define CACHEVARATTR(__name) if (attributesCached) return(__name);
 
--(NSString*)getterName {CACHEVARATTR(getterName)
-    if (attributes) for (NSString *s in attributes) if ([s hasPrefix:@"getter="]) return([s substringFromIndex:@"getter=".length]);
-    return(localizedName);
-}
--(NSString*)setterName {CACHEVARATTR(setterName)
-    if (attributes) for (NSString *s in attributes) if ([s hasPrefix:@"setter="]) return([s substringFromIndex:@"getter=".length]);
-    return([NSString stringWithFormat:@"set%@",[WProp upperName:self.localizedName]]);
-}
 
--(NSString*)getterSig {CACHEVARATTR(getterSig)return([NSString stringWithFormat:@"-(%@)%@",self.objCType,self.getterName]);}
--(NSString*)setterSig {CACHEVARATTR(setterSig)return([NSString stringWithFormat:@"-(void)%@:(%@)%@",self.setterName,self.objCType,self.setterArg]);}
-
--(NSString*)replaceSettersAndGettersInBody:(NSString*)body hasSetter:(bool*)phasSetter hasGetter:(bool*)phasGetter isForSetterGetter:(bool)isForSetterGetter {
+-(bool)hasSettersAndGettersInBody:(NSString*)body hasSetter:(bool*)phasSetter hasGetter:(bool*)phasGetter {
     if (phasSetter) *phasSetter=NO;
     if (phasGetter) *phasGetter=NO;
-    if (!body) return(nil);
+    if (!body) return(NO);
     
     if (!setterRE) {
         NSError *err=nil;
@@ -3232,20 +3343,20 @@ static WClasses *_default=nil;
         }
     }
 
-    if (![setterRE firstMatchInString:body options:0 range:NSMakeRange(0, body.length)]) return(body);
+    if (![setterRE firstMatchInString:body options:0 range:NSMakeRange(0, body.length)]) return(NO);
 
     WReader *r=[[WReader alloc] init];
     r.fileString=body;
 
-    bool changed=NO;
-    
+    bool ret=NO;
+
     int bad=0,pos=-1;
     for (WReaderToken *t in r.tokenizer.tokens) {
         pos++;
         switch (t.type) {
             case 'o':
             if ([t.str isEqualToString:@"."]) bad=1;
-            else if ([t.str isEqualToString:@"/*ivar*/"]) bad=1;
+            else if ([t.str hasSuffix:@"ivar*/"]) bad=1;
             else if ([t.str isEqualToString:@"-"]) bad=-1;
             else if ([t.str isEqualToString:@">"]&&(bad==-1)) bad=1;
             break;
@@ -3266,148 +3377,227 @@ static WClasses *_default=nil;
                     }
                 }
                 if (isSetter) {
-                    t.str=(isForSetterGetter?[NSString stringWithFormat:@"/*setter*/%@",self.varName]:[NSString stringWithFormat:@"self.privateaccess.%@",self.localizedName]);
-                    changed=YES;
+                    ret=YES;
                     if (phasSetter) *phasSetter=YES;
                 }
                 if (isGetter) {
-                    t.str=[NSString stringWithFormat:(isForSetterGetter?@"/*getter*/%@":@"/*get*/%@"),self.varName];
-                    t.str=self.varName;
-                    changed=YES;
+                    ret=YES;
                     if (phasGetter) *phasGetter=YES;
                 }
             }
         }
     }
-    NSString *ret=body;
-    if (changed) {
-        ret=[r stringWithTokensInRange:NSMakeRange(0,r.tokenizer.tokens.count)];
-    }
-    [r release];
     return(ret);
 }
 
--(bool)retains {CACHEVARATTR(retains)return((!self.isType)&&(stars<=1)&&(![attributes containsObject:@"assign"])&&self.hasIVar);}
--(bool)imaginary {CACHEVARATTR(imaginary)return([attributes containsObject:@"imaginary"]);}
--(bool)isType {CACHEVARATTR(isType)return(self.localizedType.clas.isType);}
--(bool)modelretains {CACHEVARATTR(modelretains)return([attributes containsObject:@"modelretain"]);}
--(bool)readonly {CACHEVARATTR(readonly)return([attributes containsObject:@"readonly"]||self.objc_readonly);}
--(WFn*)hasGetter {CACHEVARATTR(hasGetter)
-    //[WClasses warning:[NSString stringWithFormat:@"%@\n%@",[self getterSig],clas.fns.allKeys.description] withReader:nil];
-    return([clas.fns objectForKey:[self getterSig]]);}
--(WFn*)hasSetter {CACHEVARATTR(hasSetter)return([clas.fns objectForKey:[self setterSig]]);}
--(bool)atomic {CACHEVARATTR(atomic)return([attributes containsObject:@"atomic"]);}
 
--(bool)synthesized {CACHEVARATTR(synthesized)
-    return((!(self.imaginary||[attributes containsObject:@"justivar"]))&&(self.clas.isSys||self.hasGetter||self.hasSetter||((!self.isType)&&(stars<=1))||[attributes containsObject:@"synthesize"]));
-}
--(bool)objc_readonly {CACHEVARATTR(objc_readonly)
-    return((!self.hasIVar)&&self.hasGetter&&!self.hasSetter);
-}
--(bool)needsGetter {CACHEVARATTR(needsGetter)
-    return(self.synthesized);
-}
--(bool)needsSetter {CACHEVARATTR(needsSetter)
-    return(self.synthesized&&!self.objc_readonly);
+
+-(bool)retainable {
+    return([localizedType.clas.varPatterns containsObject:@"retains"]||((!self.isType)&&(stars<=1)));
 }
 
--(bool)hasIVar {CACHEVARATTR(hasIVar)
+
+
+-(void)cacheAttributes {
+    if (attributesCached) return;
+    [self imaginary];
+    [self retains];
+    [self isType];
+    [self modelretains];
+    [self readonly];
+    [self atomic];
+    [self synthesized];
+    [self objc_readonly];
+    [self needsGetter];
+    [self needsSetter];
+    [self hasIVar];
+    [self hasDefaultValue];
+    [self justivar];
+    [self hasGetter];
+    [self hasSetter];
+    [self setterName];
+    [self getterName];
+    [self getterSig];
+    [self setterSig];
+    [self localizedSetterName];
+    [self localizedGetterName];
+    [self localizedGetterSig];
+    [self localizedSetterSig];
+    [self localizedSetterBody];
+    [self localizedGetterBody];
+    [self localizedVarName];
+    attributesCached=YES;
+}
+
+#define CACHEVARATTRFN(I,__name,...) -(I)__name {if (attributesCached) return(__name);\
+    I ret;memset(&ret,0,sizeof(ret)); \
+    {__VA_ARGS__} \
+    return(__name=ret); \
+}
+#define CACHEVARATTRFN_retain(I,__name,...) -(I)__name {if (attributesCached) return(__name);\
+    [__name release];__name=nil; \
+    I ret=nil; \
+    {__VA_ARGS__} \
+    return([(__name=ret) retain]); \
+}
+CACHEVARATTRFN_retain(NSString*,getterName,
+    if (attributes) for (NSString *s in attributes) if ([s hasPrefix:@"getter="]) ret=[s substringFromIndex:@"getter=".length];
+    if (!ret) ret=name;
+)
+CACHEVARATTRFN_retain(NSString*,setterName,
+    if (attributes) for (NSString *s in attributes) if ([s hasPrefix:@"setter="]) ret=[s substringFromIndex:@"setter=".length];
+    if (!ret) ret=[NSString stringWithFormat:@"set%@",[WProp upperName:self.name]];
+)
+CACHEVARATTRFN_retain(NSString*,localizedGetterName,
+    if (attributes) for (NSString *s in attributes) if ([s hasPrefix:@"getter="]) ret=[clas localizeString:[s substringFromIndex:@"getter=".length]];
+    if (!ret) ret=localizedName;
+)
+CACHEVARATTRFN_retain(NSString*,localizedSetterName,
+    if (attributes) for (NSString *s in attributes) if ([s hasPrefix:@"setter="]) ret=[clas localizeString:[s substringFromIndex:@"setter=".length]];
+    if (!ret) ret=[NSString stringWithFormat:@"set%@",[WProp upperName:self.localizedName]];
+)
+
+CACHEVARATTRFN_retain(NSString*,getterSig,
+    ret=[NSString stringWithFormat:@"-(%@)%@",self.objCType,self.getterName];
+)
+CACHEVARATTRFN_retain(NSString*,localizedGetterSig,
+    ret=[NSString stringWithFormat:@"-(%@)%@",self.localizedObjCType,self.localizedGetterName];
+)
+CACHEVARATTRFN_retain(NSString*,setterSig,
+    ret=[NSString stringWithFormat:@"-(void)%@:(%@)%@",self.setterName,self.objCType,self.setterArg];
+)
+CACHEVARATTRFN_retain(NSString*,localizedSetterSig,
+    ret=[NSString stringWithFormat:@"-(void)%@:(%@)%@",self.localizedSetterName,self.localizedObjCType,self.setterArg];
+)
+
+CACHEVARATTRFN(bool,retains,
+    ret=self.retainable&&(![attributes containsObject:@"assign"])&&self.hasIVar;
+)
+CACHEVARATTRFN(bool,imaginary,
+    ret=[attributes containsObject:@"imaginary"];
+)
+CACHEVARATTRFN(bool,isType,
+    ret=self.localizedType.clas.isType;
+)
+CACHEVARATTRFN(bool,modelretains,
+    ret=[attributes containsObject:@"modelretain"];
+)
+CACHEVARATTRFN(bool,readonly,
+    ret=[attributes containsObject:@"publicreadonly"]||self.objc_readonly;
+)
+CACHEVARATTRFN_retain(WFn*,hasGetter,
+    ret=[[clas.fns objectForKey:[self getterSig]] retain];
+)
+CACHEVARATTRFN_retain(WFn*,hasSetter,
+    ret=[[clas.fns objectForKey:[self setterSig]] retain];
+)
+CACHEVARATTRFN(bool,atomic,
+    ret=[attributes containsObject:@"atomic"];
+)
+
+CACHEVARATTRFN(bool,synthesized,
+    ret=(!(self.imaginary||[attributes containsObject:@"justivar"]))&&(self.clas.isSys||self.hasGetter||self.hasSetter||self.retainable||[attributes containsObject:@"synthesize"]);
+)
+
+CACHEVARATTRFN(bool,objc_readonly,
+    ret=[attributes containsObject:@"readonly"]||((!self.hasIVar)&&self.hasGetter&&!self.hasSetter);
+)
+CACHEVARATTRFN(bool,needsGetter,
+    ret=self.synthesized;
+)
+CACHEVARATTRFN(bool,needsSetter,
+    ret=self.synthesized&&!self.objc_readonly;
+)
+
+CACHEVARATTRFN(bool,hasIVar,
+    do {
     //[WClasses warning:[NSString stringWithFormat:@"%@ %d %d",attributes.description,self.hasSetter,self.hasGetter] withReader:nil];
-    if([attributes containsObject:@"ivar"]||[attributes containsObject:@"justivar"]||(!(self.hasGetter||self.hasSetter))) return(TRUE);
+    if([attributes containsObject:@"ivar"]||[attributes containsObject:@"justivar"]||(!(self.hasGetter||self.hasSetter))) {ret=YES;break;}
     if (attributes) {
         for (NSString *attribute in attributes) {
-            if ([attribute hasPrefix:@"ivar="]) return(YES);
-            if ([attribute hasPrefix:@"justivar="]) return(YES);
+            if ([attribute hasPrefix:@"ivar="]) {ret=YES;break;}
+            if ([attribute hasPrefix:@"justivar="]) {ret=YES;break;}
         }
+        if (ret) break;
     }
-    bool hasSetterv,hasGetterv;
-    NSString *b=[self replaceSettersAndGettersInBody:((WFn*)[clas.fns objectForKey:[self getterSig]]).body hasSetter:&hasSetterv hasGetter:&hasGetterv isForSetterGetter:YES];
-    //[WClasses warning:[NSString stringWithFormat:@"%@\n=>\n%@\n%d %d\n",((WFn*)[clas.fns objectForKey:[self getterSig]]).body,b,hasSetterv,hasGetterv] withReader:nil];
-    if (hasGetterv||hasSetterv) return(YES);
-    b=[self replaceSettersAndGettersInBody:((WFn*)[clas.fns objectForKey:[self setterSig]]).body hasSetter:&hasSetterv hasGetter:&hasGetterv isForSetterGetter:YES];
-    //[WClasses warning:[NSString stringWithFormat:@"%@\n=>\n%@\n%d %d\n",((WFn*)[clas.fns objectForKey:[self getterSig]]).body,b,hasSetterv,hasGetterv] withReader:nil];
-    if (hasGetterv||hasSetterv) return(YES);
-    return(NO);
-}
+    if ([self hasSettersAndGettersInBody:((WFn*)[clas.fns objectForKey:[self getterSig]]).body hasSetter:nil hasGetter:nil]||[self hasSettersAndGettersInBody:((WFn*)[clas.fns objectForKey:[self setterSig]]).body hasSetter:nil hasGetter:nil]) {ret=YES;break;}
+    } while (NO);
+)
 
--(bool)justivar {CACHEVARATTR(justivar)
-    if ([attributes containsObject:@"justivar"]) return(YES);
-    if (attributes) {
+CACHEVARATTRFN(bool,justivar,
+    if ([attributes containsObject:@"justivar"]) ret=YES;
+    else if (attributes) {
         for (NSString *attribute in attributes) {
-            if ([attribute hasPrefix:@"justivar="]) return(YES);
+            if ([attribute hasPrefix:@"justivar="]) ret=YES;
         }
     }
-    return(NO);
-}
+)
 
 
--(NSMutableString*)getterBody {CACHEVARATTR(getterBody)
-    if (!self.synthesized) return(nil);
-    NSMutableString *body=[((WFn*)[clas.fns objectForKey:[self getterSig]]).body.mutableCopy autorelease];
-    if (!body) {
-        body=(self.hasIVar?
-                ((!self.atomic)||self.isType?
+CACHEVARATTRFN_retain(NSMutableString*,localizedGetterBody,
+    if (self.synthesized) {
+        NSMutableString *body=[((WFn*)[clas.fns objectForKey:[self getterSig]]).body.mutableCopy autorelease];
+        if (!body) {
+            body=(self.hasIVar?
+                    ((!self.atomic)||self.isType?
+                        [NSMutableString stringWithFormat:
+                            @"@-999 %@ ret=%@;@999 return(ret);",self.localizedObjCType,self.localizedVarName]:
+                        [NSMutableString stringWithFormat:
+                            @"@-999 %@ ret=%@;@999 return(ret);",self.localizedObjCType,self.localizedVarName]):// todo make actually atomic
                     [NSMutableString stringWithFormat:
-                        @"@-999 %@ ret=%@;@999 return(ret);",self.objCType,self.varName]:
-                    [NSMutableString stringWithFormat:
-                        @"@-999 %@ ret=%@;@999 return(ret);",self.objCType,self.varName]):// todo make actually atomic
-                [NSMutableString stringWithFormat:
-                    @"@-999 %@ ret;memset(&ret,0,sizeof(ret));@999 return(ret);",self.objCType]);
+                        @"@-999 %@ ret;memset(&ret,0,sizeof(ret));@999 return(ret);",self.localizedObjCType]);
+        }
+        ret=[[WFn mergedBody:body with:@""].mutableCopy autorelease];
     }
-    else body=[[self replaceSettersAndGettersInBody:body hasSetter:nil hasGetter:nil isForSetterGetter:YES].mutableCopy autorelease];
-    return([[WFn mergedBody:body with:@""].mutableCopy autorelease]);
-}
+)
 
--(NSMutableString*)setterBody {CACHEVARATTR(setterBody)
-    if (!self.synthesized) return(nil);
-    NSMutableString *body=[((WFn*)[clas.fns objectForKey:[self setterSig]]).body.mutableCopy autorelease];
-    if (!body) {
-        NSString *vv=self.varName;
-        body=(self.hasIVar?
-                (self.retains?
-                    (!self.atomic?
-                        [NSMutableString stringWithFormat:
-                            @"@-905 if(!memcmp(&%@,&%@,sizeof(%@)))return;@-900 {[%@ release];%@=[%@ retain];}",vv,self.setterArg,self.setterArg,vv,vv,self.setterArg]:
-                        [NSMutableString stringWithFormat:
-                            @"@-905 @synchronized(self) {@-904 if(%@==%@)return;@-900 {[%@ release];%@=[%@ retain];}@-895}",vv,self.setterArg,vv,vv,self.setterArg]):
-                    (!self.atomic?
-                        [NSMutableString stringWithFormat:
-                            @"@-905 if(!memcmp(&%@,&%@,sizeof(%@)))return;@-900 memcpy(&%@,&%@,sizeof(%@));",vv,self.setterArg,vv,vv,self.setterArg,vv]:
-                        [NSMutableString stringWithFormat:
-                            @"@-905 @synchronized(self) {@-904 if(!memcmp(&%@,&%@,sizeof(%@)))return;memcpy(&%@,&%@,sizeof(%@));@-895}",vv,self.setterArg,vv,vv,self.setterArg,vv])):
-                [NSMutableString stringWithFormat:@""]);
+CACHEVARATTRFN_retain(NSMutableString*,localizedSetterBody,
+    if (self.synthesized) {
+        NSMutableString *body=[((WFn*)[clas.fns objectForKey:[self setterSig]]).body.mutableCopy autorelease];
+        if (!body) {
+            NSString *vv=self.localizedVarName;
+            body=(self.hasIVar?
+                    (self.retains?
+                        (!self.atomic?
+                            [NSMutableString stringWithFormat:
+                                @"@-905 if(!memcmp(&%@,&%@,sizeof(%@)))return;@-900 {[%@ release];%@=[%@ retain];}",vv,self.setterArg,self.setterArg,vv,vv,self.setterArg]:
+                            [NSMutableString stringWithFormat:
+                                @"@-905 @synchronized(self) {@-904 if(%@==%@)return;@-900 {[%@ release];%@=[%@ retain];}@-895}",vv,self.setterArg,vv,vv,self.setterArg]):
+                        (!self.atomic?
+                            [NSMutableString stringWithFormat:
+                                @"@-905 if(!memcmp(&%@,&%@,sizeof(%@)))return;@-900 memcpy(&%@,&%@,sizeof(%@));",vv,self.setterArg,vv,vv,self.setterArg,vv]:
+                            [NSMutableString stringWithFormat:
+                                @"@-905 @synchronized(self) {@-904 if(!memcmp(&%@,&%@,sizeof(%@)))return;memcpy(&%@,&%@,sizeof(%@));@-895}",vv,self.setterArg,vv,vv,self.setterArg,vv])):
+                    [NSMutableString stringWithFormat:@""]);
+        }
+        
+        if (self.readonly) {
+            [body appendFormat:@"@-1999 if (!authorized_thread(__private_access_thread_mask)) ERR(\"Attempt to set public-readonly property in unauthorized thread (please try something like self.privateaccess.%@=\\\"blah\\\" to set the property)\");\n",self.localizedName];
+        }
+        
+        if (self.hasIVar&&self.retainable&&![attributes containsObject:@"notrack"]) {
+            [body appendFormat:@"@-850 REMOVEOWNER(%@,self);ADDOWNER(%@,self);",self.localizedVarName,self.setterArg];
+        }
+        ret=[[WFn mergedBody:body with:@""].mutableCopy autorelease];
     }
-    else body=[[self replaceSettersAndGettersInBody:body hasSetter:nil hasGetter:nil isForSetterGetter:YES].mutableCopy autorelease];
-    
-    if (self.readonly) {
-        [body appendFormat:@"@-1999 if (!authorized_thread(__private_access_thread_mask)) ERR(\"Attempt to set public-readonly property in unauthorized thread (please try something like self.privateaccess.%@=\\\"blah\\\" to set the property)\");\n",self.localizedName];
-    }
-    
-    if (self.hasIVar&&self.isType&&(stars<=1)&&![attributes containsObject:@"notrack"]) {
-        [body appendFormat:@"@-850 REMOVEOWNER(%@,self);ADDOWNER(%@,self);",self.varName,self.setterArg];
-    }
-    return([[WFn mergedBody:body with:@""].mutableCopy autorelease]);
-}
+)
 
-
-
-
-
--(NSString*)varName {CACHEVARATTR(varName)
-    //if (!self.hasIVar) return(nil);
+CACHEVARATTRFN_retain(NSString*,localizedVarName,
     if (attributes) {
         for (NSString *attribute in attributes) {
             if ([attribute hasPrefix:@"ivar="]) {
-                return([attribute substringFromIndex:@"ivar=".length]);
+                ret=[attribute substringFromIndex:@"ivar=".length];
             }
             if ([attribute hasPrefix:@"justivar="]) {
-                return([attribute substringFromIndex:@"justivar=".length]);
+                ret=[attribute substringFromIndex:@"justivar=".length];
             }
         }
     }
-    if (self.isType||(stars>1)) return(localizedName);
-    else return([NSString stringWithFormat:@"v_%@",localizedName]);
-}
+    if (!ret) {
+        if (!self.retainable) ret=localizedName;
+        else ret=[NSString stringWithFormat:@"v_%@",localizedName];
+    }
+)
 
 -(char)varType {
     return(localizedType.clas?([localizedType.clas.name isEqualToString:@"NSArray"]||[localizedType.clas.name isEqualToString:@"NSMutableArray"]||[localizedType.clas.superType.clas.name isEqualToString:@"NSArray"]||[localizedType.clas.superType.clas.name isEqualToString:@"NSMutableArray"]?'A':([localizedType.clas.name isEqualToString:@"NSSet"]||[localizedType.clas.name isEqualToString:@"NSMutableSet"]||[localizedType.clas.superType.clas.name isEqualToString:@"NSSet"]||[localizedType.clas.superType.clas.name isEqualToString:@"NSMutableSet"]?'S':([localizedType.clas.name isEqualToString:@"NSDictionary"]||[localizedType.clas.name isEqualToString:@"NSMutableDictionary"]||[localizedType.clas.superType.clas.name isEqualToString:@"NSDictionary"]||[localizedType.clas.superType.clas.name isEqualToString:@"NSMutableDictionary"]?'M':'1'))):'1');
@@ -3427,9 +3617,15 @@ static WClasses *_default=nil;
 }
 
 - (NSString*)objCType {
-    return([localizedType objCTypeWithStars:stars]);
+    return([type objCTypeWithStars:stars]);
 }
 - (NSString*)lazyObjCType {
+    return([type objCTypeWithStars:((stars<=1)&&!self.isType?0:stars)]);
+}
+- (NSString*)localizedObjCType {
+    return([localizedType objCTypeWithStars:stars]);
+}
+- (NSString*)lazyLocalizedObjCType {
     return([localizedType objCTypeWithStars:((stars<=1)&&!self.isType?0:stars)]);
 }
 
@@ -3457,7 +3653,7 @@ static WClasses *_default=nil;
     if (defaultValue) {
         hasDef=YES;
         if (self.hasDefaultValue) {
-            [WFn getFnWithSig:@"-(init)" body:[NSString stringWithFormat:@"@-500 /*ivar*/%@=(%@);\n",self.varName,(self.retains?[NSString stringWithFormat:@"[(id)(%@) retain]",defaultValue]:defaultValue)] clas:clas];
+            [WFn getFnWithSig:@"-(init)" body:[NSString stringWithFormat:@"@-500 /*ivar*/%@=(%@);\n",self.localizedVarName,(self.retains?[NSString stringWithFormat:@"[(id)(%@) retain]",defaultValue]:defaultValue)] clas:clas];
         }
     }
     else if (attributes) {
@@ -3502,10 +3698,10 @@ static WClasses *_default=nil;
                         className=[s substringFromIndex:@"class=".length];break;
                     }
                     if (className) {
-                        [def appendFormat:@"[NSDictionary dictionaryWithObjectsAndKeys:@\"%@\",@\"name\",@\"%@\",@\"type\",@\"%@\",@\"class\",nil]",v.localizedName,[v objCType],className];
+                        [def appendFormat:@"[NSDictionary dictionaryWithObjectsAndKeys:@\"%@\",@\"name\",@\"%@\",@\"type\",@\"%@\",@\"class\",nil]",v.localizedName,[v localizedObjCType],className];
                     }
                     else {
-                        [def appendFormat:@"[NSDictionary dictionaryWithObjectsAndKeys:@\"%@\",@\"name\",@\"%@\",@\"type\",nil]",v.localizedName,[v objCType]];
+                        [def appendFormat:@"[NSDictionary dictionaryWithObjectsAndKeys:@\"%@\",@\"name\",@\"%@\",@\"type\",nil]",v.localizedName,[v localizedObjCType]];
                     }
                     fst=NO;
                 }
@@ -3523,10 +3719,10 @@ static WClasses *_default=nil;
                         className=[s substringFromIndex:@"class=".length];break;
                     }
                     if (className) {
-                        [def appendFormat:@"[NSDictionary dictionaryWithObjectsAndKeys:@\"%@\",@\"name\",@\"%@\",@\"type\",@\"%@\",@\"class\",nil]",v.localizedName,[v objCType],className];
+                        [def appendFormat:@"[NSDictionary dictionaryWithObjectsAndKeys:@\"%@\",@\"name\",@\"%@\",@\"type\",@\"%@\",@\"class\",nil]",v.localizedName,[v localizedObjCType],className];
                     }
                     else {
-                        [def appendFormat:@"[NSDictionary dictionaryWithObjectsAndKeys:@\"%@\",@\"name\",@\"%@\",@\"type\",nil]",v.localizedName,[v objCType]];
+                        [def appendFormat:@"[NSDictionary dictionaryWithObjectsAndKeys:@\"%@\",@\"name\",@\"%@\",@\"type\",nil]",v.localizedName,[v localizedObjCType]];
                     }
                     fst=NO;
                 }
@@ -3540,39 +3736,40 @@ static WClasses *_default=nil;
         }
     }
     if (self.hasIVar&&!(hasDef||self.imaginary)) {
-        [WClasses warning:[NSString stringWithFormat:@"Non-imaginary variable %@ in %@ %@ has an ivar, but no default value. This is less an strict error than unclean",self.localizedName,clas.isProtocol?@"protocol":@"class",clas.name] withReader:nil];
+        [WClasses warning:[NSString stringWithFormat:@"Non-imaginary variable %@ in %@ %@ has an ivar, but no default value. This is less a strict error than unclean",self.localizedName,clas.isProtocol?@"protocol":@"class",clas.name] withReader:nil];
     }
 
     if (self.retains) {
-        [WFn getFnWithSig:@"-(void)dealloc" body:[NSString stringWithFormat:@"\n    [%@ release];%@=nil;",self.varName,self.varName] clas:clas];
+        [WFn getFnWithSig:@"-(void)dealloc" body:[NSString stringWithFormat:@"\n    [%@ release];%@=nil;",self.localizedVarName,self.localizedVarName] clas:clas];
     }
     if (self.needsGetter) {
         WFn *fn=self.hasGetter;
-        if (fn) fn.body=self.getterBody;
-        else [WFn getFnWithSig:self.getterSig body:self.getterBody clas:clas];
+        if (fn) fn.body=self.localizedGetterBody;
+        else [WFn getFnWithSig:self.getterSig body:self.localizedGetterBody clas:clas];
     }
     if (self.needsSetter) {
         WFn *fn=self.hasSetter;
-        if (fn) fn.body=self.setterBody;
-        else [WFn getFnWithSig:self.setterSig body:self.setterBody clas:clas];
+        if (fn) fn.body=self.localizedSetterBody;
+        else [WFn getFnWithSig:self.setterSig body:self.localizedSetterBody clas:clas];
     }
 }
 
 
 - (void)appendObjCToString_iface:(NSMutableString*)s {
     if (self.imaginary||self.justivar) return;
-    [s appendFormat:@"@property (%@%@%@%@%@%@%@%@",
-        self.isType||(stars>1)?@"":(self.retains?@"retain,":@"assign,"),
+    [s appendFormat:@"@property (%@%@%@%@%@%@%@",
+        !self.retainable?@"":(self.retains?@"retain,":@"assign,"),
         self.atomic?@"atomic,":@"nonatomic,",
         self.objc_readonly?@"readonly,":(self.readonly?@"readwrite/*(public readonly)*/,":@"readwrite,"),
         [attributes containsObject:@"strong"]?@"strong,":@"",
         [attributes containsObject:@"unsafe_unretained"]?@"unsafe_unretained,":@"",
-        [attributes containsObject:@"IBOutlet"]?@"IBOutlet,":@"",
-        self.getterName&&![self.getterName isEqualToString:localizedName]?[NSString stringWithFormat:@"getter=%@,",self.getterName]:@"",
-        self.setterName&&![self.setterName isEqualToString:[NSString stringWithFormat:@"set%@",[WProp upperName:self.localizedName]]]?[NSString stringWithFormat:@"setter=%@:,",self.setterName]:@""
+        self.localizedGetterName&&![self.localizedGetterName isEqualToString:localizedName]?[NSString stringWithFormat:@"getter=%@,",self.localizedGetterName]:@"",
+        self.localizedSetterName&&![self.localizedSetterName isEqualToString:[NSString stringWithFormat:@"set%@",[WProp upperName:self.localizedName]]]?[NSString stringWithFormat:@"setter=%@:,",self.localizedSetterName]:@""
     ];
     if ([s hasSuffix:@","]) [s replaceCharactersInRange:NSMakeRange(s.length-1,1) withString:@""];
-    [s appendFormat:@") %@ %@;\n",self.objCType,localizedName];
+    [s appendFormat:@") %@%@ %@;\n",
+        [attributes containsObject:@"IBOutlet"]?@"IBOutlet ":@"",
+        self.localizedObjCType,localizedName];
 }
 
 - (void)appendObjCToString_impl:(NSMutableString*)s {
@@ -3581,25 +3778,25 @@ static WClasses *_default=nil;
     //    [s appendFormat:@"@dynamic %@=%@;\n",localizedName,[self varName]];
     //}
     if (self.hasIVar&&!(self.clas.isSys||self.justivar||self.synthesized)) {
-        [s appendFormat:@"@synthesize %@=%@;\n",localizedName,[self varName]];
+        [s appendFormat:@"@synthesize %@=%@;\n",localizedName,[self localizedVarName]];
     }
 }
 - (void)appendObjCToString_ivar:(NSMutableString *)s {
     if (self.imaginary) return;
     if (!self.hasIVar) return;
-    NSString *vv=self.varName;
+    NSString *vv=self.localizedVarName;
     WClass *sup=self.clas.superType.clas;
     bool supHasIVar=NO;
     if (sup&&vv) {
         for (NSString *k in sup.vars) {
             WVar *v=[sup.vars objectForKey:k];
-            if (v.hasIVar&&![v.varName isEqualToString:vv]) {
+            if (v.hasIVar&&![v.localizedVarName isEqualToString:vv]) {
                 supHasIVar=YES;
                 break;
             }
         }
     }
-    if (vv&&!supHasIVar) [s appendFormat:@"    %@ %@;\n",[self objCType],vv];
+    if (vv&&!supHasIVar) [s appendFormat:@"    %@ %@;\n",[self localizedObjCType],vv];
 }
 @end
 

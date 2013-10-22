@@ -129,6 +129,7 @@
     NSArray *fnNames,*varNames;
     bool addedToFns,isProtocol;
     int _depth;
+    NSRegularExpression *getterSetterRE;
 }
 @property (readonly) NSString *filename;
 @property (readonly) int depth;
@@ -161,6 +162,7 @@
 -(NSString*)localizeString:(NSString*)s;
 
 @property (readonly) WType *wType;
+@property (readonly) NSRegularExpression *getterSetterRE;
 
 
 @property (readonly) NSString *infoStr,*tag;
@@ -191,6 +193,8 @@
 +(NSString*)trimmedReplaceString:(NSString*)s;
 - (NSString*)finalSigStr:(NSString*)asig;
 - (NSString*)finalBodyStr:(NSString*)abody withSig:(NSString*)asig;
++(NSComparisonResult)compareName:(NSString*)n1 withName:(NSString*)n2;
+-(NSString*)bodyByReplacingSettersAndGettersInBody:(NSString*)body;
 @end
 
 
@@ -240,17 +244,20 @@
 
     bool attributesCached,imaginary,retains,isType,modelretains,readonly,atomic,synthesized,objc_readonly,needsGetter,needsSetter,hasIVar,hasDefaultValue,justivar;
     WFn *hasGetter,*hasSetter;
-    NSString *setterName,*getterName,*getterSig,*setterSig,*varName,*localizedName;
+    NSString *setterName,*getterName,*getterSig,*setterSig,*localizedSetterName,*localizedGetterName,*localizedGetterSig,*localizedSetterSig,*localizedVarName,*localizedName;
     WType *localizedType;
-    NSMutableString *setterBody,*getterBody;
+    NSMutableString *localizedSetterBody,*localizedGetterBody;
 }
+
+-(bool)hasSettersAndGettersInBody:(NSString*)body hasSetter:(bool*)phasSetter hasGetter:(bool*)phasGetter;
+
 @property (retain,nonatomic) NSString *name,*qname,*defaultValue,*setterArg;
 @property (retain,nonatomic) NSSet *attributes;
 @property (assign,nonatomic) WClass *clas;
 @property (assign,nonatomic) WType *type;
 @property (assign,nonatomic) NSMutableSet *type_protocols;
 @property int stars;
-@property (readonly) NSString *varName;
+@property (readonly) NSString *localizedVarName;
 @property int defLevel;
 
 @property (readonly) WType *localizedType;
@@ -265,7 +272,9 @@
 - (void)appendObjCToString_iface:(NSMutableString*)s;
 - (void)appendObjCToString_impl:(NSMutableString*)s;
 - (void)addToFns;
-@property (readonly) NSString *objCType,*lazyObjCType;
+@property (readonly) NSString *objCType,*lazyObjCType,*localizedObjCType,*lazyLocalizedObjCType;
+
++(NSComparisonResult)compareName:(NSString*)n1 withName:(NSString*)n2;
 
 
 @property (readonly) bool imaginary;
@@ -277,9 +286,10 @@
 @property (readonly) bool atomic;
 @property (readonly) bool synthesized,objc_readonly,needsGetter,needsSetter;
 @property (readonly) bool hasIVar,hasDefaultValue,justivar;
-@property (readonly) NSString *setterName,*getterName,*getterSig,*setterSig;
-@property (readonly) NSMutableString *setterBody,*getterBody;
+@property (readonly) NSString *setterName,*getterName,*getterSig,*setterSig,*localizedSetterName,*localizedGetterName,*localizedGetterSig,*localizedSetterSig;
+@property (readonly) NSMutableString *localizedSetterBody,*localizedGetterBody;
 
+@property (readonly) bool retainable;
 
 @end
 
