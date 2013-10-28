@@ -14,6 +14,145 @@
 #define iNSNotFound ((int)NSNotFound)
 #define SPACER @"\n\n\n\n\n\n\n\n\n"
 
+
+
+
+@implementation InFiles
+-(void)dealloc {
+    [inFilesLocations release];
+    [inFilesMessages release];
+}
+
+@synthesize inFilesLocations,inFilesMessages;
+
+-(id)init {
+    if (!(self=[super init])) return(nil);
+    inFilesLocations=[[NSMutableDictionary alloc] init];
+    inFilesMessages=[[NSMutableArray alloc] init];
+    [InFiles_allInFiles addObject:self];
+    return(self);
+}
+
+
+-(void)addInFilename:(NSString*)fn line:(int)line column:(int)column {
+    if (!fn) return;
+    NSMutableSet *s=[inFilesLocations objectForKey:fn];
+    if (!s) [inFilesLocations setObject:s=[NSMutableSet set] forKey:fn];
+    [s addObject:[NSValue valueWithRange:NSMakeRange(line,column)]];
+}
+
+-(void)addInFilesMessageUsingFormat:(NSString*)format,... {
+      va_list args;va_start(args,format);
+      NSString *s=[[[NSString alloc] initWithFormat:format arguments:args] autorelease];
+      if (![inFilesMessages containsObject:s]) [inFilesMessages addObject:s];
+}
+
+static NSMutableArray *InFiles_allInFiles=nil;
+
++(NSArray*)allInFiles {
+    if (!InFiles_allInFiles) InFiles_allInFiles=[[NSMutableArray alloc] init];
+    return(InFiles_allInFiles);
+}
++(NSDictionary*)unionFiles:(NSArray*)inFiles {
+    NSMutableDictionary *locations=[[NSMutableDictionary alloc] init];
+    for (InFiles *v in inFiles) {
+        for (NSSet *s in v.inFilesLocations) {
+            NSMutableSet *ss=[locations objectForKey:fn];
+            if (!ss) [locations setObject:ss=[NSMutableSet set] forKey:fn];
+            [ss unionSet:s];
+        }
+    }
+    NSMutableDictionary *locations2=[[NSMutableDictionary alloc] init];
+    for (NSString *fn in locations) {
+        NSSet *s=[locations objectForKey:fn];
+        NSMutableArray *a=[s.allObjects sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+                NSRange r1=((NSValue*)obj1).rangeValue;
+                NSRange r2=((NSValue*)obj2).rangeValue;
+                return((r1.location<r2.location)||((r1.location==r2.location)&&(r1.length<r2.length))?NSOrderedAscending:
+                ((r1.location>r2.location)||((r1.location==r2.location)&&(r1.length>r2.length))?NSOrderedDescending:NSOrderedSame));
+            }
+        ];
+        [locations2 setObject:a forKey:fn];
+    }
+    NSDictionary *d=[locations.copy autorelease];
+    [locations release];
+    [locations2 release];
+    return(d);
+}
+
++(void)markFiles:(NSArray*)inFiles {
+    NSDictionary *locations=[InFiles unionFiles:inFiles];
+    for (NSString *fn in locations) {
+        FILE *fil=fopen(fn,"r+b");
+        if (!fil) {
+            printf("!!!Failed to find file \"%s\" to insert messages\n",fn);
+            continue;
+        }
+        NSMutableArray *lns=[[NSMutableArray alloc] init];
+        [lns addObject:[NSNumber numberWithInt:0]];
+        char buf[10000];
+        int offs=0;
+        while (YES) {
+            int N=fread(buf, 1, 10000, fil);
+            for (int offs2=0;offs2<N;offs++,offs2++) {
+                if (buf[offs2]=='\n') [lns addObject:[NSNumber numberWithInt:offs+1]];
+            }
+            if (feof(fil)||!N) break;
+        }
+        int sz=ftell(fil);
+        
+        NSArray *a=[locations objectForKey:fn];
+        for (int i=a.count-1;i>=0;i--) {
+            NSRange r=((NSValue*)[a objectAtIndex:i]).rangeValue;
+            int ln=r.location;
+            int col=r.length;
+            if (i>=lns.count) offs=sz;
+            else offs=[lns objectAtIndex:i];
+            NSString *msg;
+            NSData *d=[msg dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
+            [InFiles insertData:d intoFile:fil at:offs];
+        }
+        
+        fclose(fil);        
+    }
+        
+}
+
+
++(void)markFiles {
+    [InFiles markFiles:[InFiles allInFiles]];
+}
+
+
++(void)insertData:(NSData*)d intoFile:(FILE*)fil at:(int)offs {
+    fseek(fil, 0, SEEK_END);
+    int sz=ftell(fil),i;
+    char buf[10000];
+    for (i=sz-10000;i>=offs;i-=10000) {
+        fseek(fil, i, SEEK_SET);
+        fread(buf,1,10000,fil);
+        fseek(fil, i+d.length, SEEK_SET);
+        fwrite(buf,1,10000,fil);
+    }
+    if (i<offs) {
+        int len=10000+i-offs;
+        fseek(fil, offs, SEEK_SET);
+        fread(buf,1,len,fil);
+        fseek(fil, offs+d.length, SEEK_SET);
+        fwrite(buf,1,len,fil);
+    }
+    fseek(fil, offs, SEEK_SET);
+    fwrite(d.bytes,1,d.length,fil);
+}
+    
+
+
+
+@end
+
+
+
+
 @implementation WClasses
 @synthesize classes,protocols,skipNewLines;
 @synthesize classContext,classContextBracket,propertyContexts,propertyContextBrackets,props,propFiles,taskList,readFNStack,includes,taskFn;

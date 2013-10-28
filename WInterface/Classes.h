@@ -34,6 +34,26 @@
 @class WType;
 @class WPotentialType;
 
+
+@interface InFiles {
+    NSMutableDictionary *inFilesLocations;
+    NSMutableArray *inFilesMessages;
+}
+
+@property (readonly) NSMutableDictionary *inFilesLocations;
+@property (readonly) NSMutableArray *inFilesMessages;
+
+-(void)addInFilename:(NSString*)fn line:(int)line column:(int)column;
+-(void)addInFilesMessageUsingFormat:(NSString*)format,...;
++(NSArray*)allInFiles;
++(void)markFiles:(NSArray*)inFiles;
++(void)markFiles;
++(NSDictionary*)unionFiles:(NSArray*)inFiles;
++(void)insertData:(NSData*)d intoFile:(FILE*)fil at:(int)offs;
+
+
+@end
+
 @interface WClasses : NSObject<WReaderTokenDelegate> {
     NSMutableDictionary *classes,*protocols;
     NSMutableArray *propertyContexts,*props,*taskList;
