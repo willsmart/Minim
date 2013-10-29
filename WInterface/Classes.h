@@ -54,7 +54,7 @@
 
 @end
 
-@interface WClasses : NSObject<WReaderTokenDelegate> {
+@interface WClasses : InFiles<WReaderTokenDelegate> {
     NSMutableDictionary *classes,*protocols;
     NSMutableArray *propertyContexts,*props,*taskList;
     NSMutableIndexSet *propertyContextBrackets;
@@ -85,9 +85,9 @@
 - (void)read:(WReader*)r;
 - (void)clear;
 
-+ (void)error:(NSString*)err withReader:(WReader*)r;
-+ (void)warning:(NSString*)err withReader:(WReader*)r;
-+ (void)note:(NSString *)n withReader:(WReader *)r;
++ (void)error:(NSString *)err withReader:(WReader *)r context:(InFiles*)ctxt;
++ (void)warning:(NSString *)err withReader:(WReader *)r context:(InFiles*)ctxt;
++ (void)note:(NSString *)n withReader:(WReader *)r context:(InFiles*)ctxt;
 
 @property (retain,nonatomic) NSMutableDictionary *propFiles;
 
@@ -142,7 +142,7 @@
 @end
 
 
-@interface WClass : NSObject {
+@interface WClass : InFiles {
     NSString *name;
     WType *superType;
     NSMutableDictionary *fns,*vars;
@@ -198,7 +198,7 @@
 @class WReaderToken;
 
 
-@interface WFn : NSObject {
+@interface WFn : InFiles {
     NSString *sig,*sigWithArgs,*body;
     WClass *clas;
 }
@@ -218,7 +218,7 @@
 @end
 
 
-@interface WProp : NSObject {
+@interface WProp : InFiles {
     NSString *myname,*hisname,*myqname,*hisqname,*type,*origType;
     char myType,hisType;
     bool addedToFns,ownerIsMe;
@@ -251,7 +251,7 @@
 
 
 
-@interface WVar : NSObject {
+@interface WVar : InFiles {
     NSString *name,*qname,*defaultValue;
     NSSet *attributes;
     WClass *clas;

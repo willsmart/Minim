@@ -1207,6 +1207,7 @@ static WClasses *_default=nil;
                 type=[[[WType alloc] initWithPotentialType:ptype] autorelease];
             }
             WVar *v=[WVar getVarWithType:type stars:stars name:name qname:[[qnames objectAtIndex:i] isKindOfClass:[NSString class]]?[qnames objectAtIndex:i]:nil defVal:[[defaultValues objectAtIndex:i] isKindOfClass:[NSNull class]]?nil:[defaultValues objectAtIndex:i] defValLevel:[[defLevels objectAtIndex:i] isKindOfClass:[NSNull class]]?0:((NSNumber*)[defLevels objectAtIndex:i]).intValue attributes:attr2 clas:c];
+            [v addInFilename:r.fileName line:linei column:0];
             [rets addObject:v];
 //            if ([attr containsObject:@"modelretain"]) {
 //                [getters replaceObjectAtIndex:i withObject:[NSString stringWithFormat:@"return(%@);",v.varName]];
@@ -1216,10 +1217,13 @@ static WClasses *_default=nil;
 //                }
 //            }
             if ([[getters objectAtIndex:i] isKindOfClass:[NSString class]]) {
-                [WFn getFnWithSig:[NSString stringWithFormat:@"-(%@)%@",v.objCType,name] body:(NSString*)[getters objectAtIndex:i] clas:c];
+                WFn *fn=[WFn getFnWithSig:[NSString stringWithFormat:@"-(%@)%@",v.objCType,name] body:(NSString*)[getters objectAtIndex:i] clas:c];
+                [fn addInFilename:r.fileName line:linei column:0];
             }
             if ([[setters objectAtIndex:i] isKindOfClass:[NSString class]]) {
-                [WFn getFnWithSig:[NSString stringWithFormat:@"-(void)set%@:(%@)%@",[WProp upperName:name],v.objCType,[setterVars objectAtIndex:i]] body:(NSString*)[setters objectAtIndex:i] clas:c];
+                WFn *fn=[WFn getFnWithSig:[NSString stringWithFormat:@"-(void)set%@:(%@)%@",[WProp upperName:name],v.objCType,[setterVars objectAtIndex:i]] body:(NSString*)[setters objectAtIndex:i] clas:c];
+                [fn addInFilename:r.fileName line:linei column:0];
+
             }
             i++;
         }
@@ -1236,6 +1240,7 @@ static WClasses *_default=nil;
     WClass *c=[self enclosingClass:r];
     if (!c) return(nil);
 
+    int linei=r.currentToken.linei;
     int pos=r.pos;
     
     unichar ch;
@@ -1259,12 +1264,16 @@ static WClasses *_default=nil;
     body=[self readBlock:r];
     //printf("Fn : %s\n",[[r stringWithTokensInRange:NSMakeRange(pos, r.pos-pos)] cStringUsingEncoding:NSASCIIStringEncoding]);
     [self skipSpacesAndSemicolons:r];
-    return([WFn getFnWithSig:sig body:body clas:c]);
+    WFn *fn=[WFn getFnWithSig:sig body:body clas:c];
+    [fn addInFilename:r.fileName line:linei column:0];
+    return(fn);
 }
 
 - (WProp*)readProp:(WReader*)r {
     [self skipSpaces:r];
     int bc=r.currentToken.bracketCount;
+    int linei=r.currentToken.linei;
+    
     WProp *p=[self enclosingProp:r];
     WClass *c=(p?p.hisclas:[self enclosingClass:r]);
     NSString *name,*tag=nil,*qname=nil,*hisName,*hisTag=nil,*hisqname=nil,*type,*s;
@@ -1319,6 +1328,9 @@ static WClasses *_default=nil;
     if (!([self readc:r anyof:@":"]&&(hisTag=[self readWord:r]))) r.pos=post;
     WProp *ret=[WProp getPropWithMyClass:c myName:name myQName:qname type:type origType:origType hisClass:hisClass hisName:hisName hisQName:hisqname];
     if (!ret) return(nil);
+
+    [ret addInFilename:r.fileName line:linei column:0];
+
     [ret add:r];
     //printf("Prop : %s\n",[[r stringWithTokensInRange:NSMakeRange(pos, r.pos-pos)] cStringUsingEncoding:NSASCIIStringEncoding]);
     [self skipSpacesAndSemicolons:r];
@@ -1347,6 +1359,8 @@ static WClasses *_default=nil;
     if (self.classContext) return(nil);
     [self skipSpaces:r];
     int bc=r.currentToken.bracketCount;
+    int linei=r.currentToken.linei;
+    
     NSString *name;
     NSMutableSet *varPatterns=nil;
     bool isSys=NO,isType=NO,isWIOnly=NO;
@@ -1385,6 +1399,8 @@ static WClasses *_default=nil;
     }
     
     WClass *c=[WClass getClassWithName:name superClass:superClass protocolList:protocolList varPatterns:varPatterns];
+    [c addInFilename:r.fileName line:linei column:0];
+
     if (c==nil) return(nil);
     if (isSys) c.isSys=isSys;
     if (isWIOnly) c.isWIOnly=isWIOnly;
@@ -1426,6 +1442,8 @@ static WClasses *_default=nil;
     if (self.classContext) return(nil);
     [self skipSpaces:r];
     int bc=r.currentToken.bracketCount;
+    int linei=r.currentToken.linei;
+    
     NSString *name;
     NSMutableSet *varPatterns=nil;
     NSMutableArray *superNames=nil;
@@ -1484,6 +1502,7 @@ static WClasses *_default=nil;
     
     WClass *c=[WClass getProtocolWithName:name superList:superNames varPatterns:varPatterns];
     if (issys) c.isSys=YES;
+    [c addInFilename:r.fileName line:linei column:0];
     
     if (!finishedParse) c.hasDef=YES;
     
@@ -2015,26 +2034,64 @@ static WClasses *_default=nil;
 
 
 
-+ (void)error:(NSString *)err withReader:(WReader *)r {
-     [WClasses _note:[NSString stringWithFormat:@"Fix error : %@",err] withReader:r];
-    [WClasses getDefault].hasErrors=YES;
-}
-+ (void)warning:(NSString *)err withReader:(WReader *)r {
-     [WClasses _note:[NSString stringWithFormat:@"Fix warning: %@",err] withReader:r];
-    [WClasses getDefault].hasWarnings=YES;
-}
-+ (void)note:(NSString *)n withReader:(WReader *)r {
-     [WClasses _note:[NSString stringWithFormat:@"Note : %@",n] withReader:r];
-}
-+ (void)_note:(NSString *)n withReader:(WReader *)r {
++ (void)_note:(NSString *)n withReader:(WReader *)r context:(InFiles*)ctxt aggregatePattern:(NSString*)agg {
      WClasses *cs=[WClasses getDefault];
      if (r&&((!cs.taskFn)||![cs.taskFn isEqualToString:r.fileName])) {
         [[WClasses getDefault].taskList addObject:@""];
         [[WClasses getDefault].taskList addObject:[NSString stringWithFormat:@"[%@]",cs.taskFn=r.fileName]];
     }
-    if (r) [[WClasses getDefault].taskList addObject:[NSString stringWithFormat:@"   %@  at  %@",[n stringByReplacingOccurrencesOfString:@"\n" withString:@"   "],[r.localString stringByReplacingOccurrencesOfString:@"\n" withString:@"   "]]];
-    else [[WClasses getDefault].taskList addObject:[NSString stringWithFormat:@"   %@",[n stringByReplacingOccurrencesOfString:@"\n" withString:@"   "]]];
-    //printf("\n\n%s at\n    %s\n\n\n",[n cStringUsingEncoding:NSASCIIStringEncoding],[r.localString cStringUsingEncoding:NSASCIIStringEncoding]);
+    
+    n=(r?
+        [NSString stringWithFormat:@"   %@  at  %@",[n stringByReplacingOccurrencesOfString:@"\n" withString:@"   "],[r.localString stringByReplacingOccurrencesOfString:@"\n" withString:@"   "]]:
+       [NSString stringWithFormat:@"   %@",[n stringByReplacingOccurrencesOfString:@"\n" withString:@"   "]]);
+
+    if (ctxt) {
+        NSError *err=nil;
+        NSString *agg2=[[NSRegularExpression escapedPatternForString:agg] stringByReplacingOccurrencesOfString:@"##" withString:@"(\\d++)"];
+        NSRegularExpression *re=[NSRegularExpression regularExpressionWithPattern:agg2 options:0 error:&err];
+        if (re) {
+            NSUInteger match=NSNotFound;
+            NSUInteger i=0,c=0;
+            for (NSString *s in [WClasses getDefault].taskList) {
+                NSTextCheckingResult *matches=[re firstMatchInString:s options:0 range:NSMakeRange(0, s.length)];
+                if (matches) {
+                    match=i;
+                    c=[s substringWithRange:[matches rangeAtIndex:1]];
+                    break;
+                }
+                else i++;
+            }
+            NSString *m=[agg stringByReplacingOccurrencesOfString:@"##" withString:[NSString stringWithFormat:@"%ld",c+1]];
+            
+            if (i==NSNotFound) {
+                [[WClasses getDefault].taskList addObject:m];
+            }
+            else {
+                [[WClasses getDefault].taskList replaceObjectAtIndex:i withObject:m];
+            }
+            [ctxt addInFilesMessageUsingFormat:@"%@",n];
+        }
+        else {
+            NSLog(@"Bad regex: %@",agg2);
+            [[WClasses getDefault].taskList addObject:n];
+        }
+    }
+    else {
+        [[WClasses getDefault].taskList addObject:n];
+    }
+}
+
+
++ (void)error:(NSString *)err withReader:(WReader *)r context:(InFiles*)ctxt {
+     [WClasses _note:[NSString stringWithFormat:@"(errerr) Fix error: %@",err] withReader:r context:ctxt aggregatePattern:@"Fix ## embedded errors (look for \"errerr\" in the code)"];
+    [WClasses getDefault].hasErrors=YES;
+}
++ (void)warning:(NSString *)err withReader:(WReader *)r context:(InFiles*)ctxt {
+     [WClasses _note:[NSString stringWithFormat:@"(warnwarn) Address warning: %@",err] withReader:r context:ctxt aggregatePattern:@"Address ## embedded warnings (look for \"warnwarn\" in the code)"];
+    [WClasses getDefault].hasWarnings=YES;
+}
++ (void)note:(NSString *)n withReader:(WReader *)r context:(InFiles*)ctxt {
+     [WClasses _note:[NSString stringWithFormat:@"(notenote) Note: %@",n] withReader:r context:ctxt aggregatePattern:@"Embedded ## notes (look for \"notenote\" in the code)"];
 }
 
 
