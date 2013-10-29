@@ -21,6 +21,7 @@
 -(void)dealloc {
     [inFilesLocations release];
     [inFilesMessages release];
+    [super dealloc];
 }
 
 @synthesize inFilesLocations,inFilesMessages;
@@ -56,7 +57,8 @@ static NSMutableArray *InFiles_allInFiles=nil;
 +(NSDictionary*)unionFiles:(NSArray*)inFiles {
     NSMutableDictionary *locations=[[NSMutableDictionary alloc] init];
     for (InFiles *v in inFiles) {
-        for (NSSet *s in v.inFilesLocations) {
+        for (NSString *fn in v.inFilesLocations) {
+            NSSet *s=[v.inFilesLocations objectForKey:fn];
             NSMutableSet *ss=[locations objectForKey:fn];
             if (!ss) [locations setObject:ss=[NSMutableSet set] forKey:fn];
             [ss unionSet:s];
@@ -65,7 +67,7 @@ static NSMutableArray *InFiles_allInFiles=nil;
     NSMutableDictionary *locations2=[[NSMutableDictionary alloc] init];
     for (NSString *fn in locations) {
         NSSet *s=[locations objectForKey:fn];
-        NSMutableArray *a=[s.allObjects sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+        NSArray *a=[s.allObjects sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
                 NSRange r1=((NSValue*)obj1).rangeValue;
                 NSRange r2=((NSValue*)obj2).rangeValue;
                 return((r1.location<r2.location)||((r1.location==r2.location)&&(r1.length<r2.length))?NSOrderedAscending:
@@ -83,9 +85,9 @@ static NSMutableArray *InFiles_allInFiles=nil;
 +(void)markFiles:(NSArray*)inFiles {
     NSDictionary *locations=[InFiles unionFiles:inFiles];
     for (NSString *fn in locations) {
-        FILE *fil=fopen(fn,"r+b");
+        FILE *fil=fopen(fn.UTF8String,"r+b");
         if (!fil) {
-            printf("!!!Failed to find file \"%s\" to insert messages\n",fn);
+            printf("!!!Failed to find file \"%s\" to insert messages\n",fn.UTF8String);
             continue;
         }
         NSMutableArray *lns=[[NSMutableArray alloc] init];
@@ -93,27 +95,37 @@ static NSMutableArray *InFiles_allInFiles=nil;
         char buf[10000];
         int offs=0;
         while (YES) {
-            int N=fread(buf, 1, 10000, fil);
+            int N=(int)fread(buf, 1, 10000, fil);
             for (int offs2=0;offs2<N;offs++,offs2++) {
                 if (buf[offs2]=='\n') [lns addObject:[NSNumber numberWithInt:offs+1]];
             }
             if (feof(fil)||!N) break;
         }
-        int sz=ftell(fil);
+        int sz=(int)ftell(fil);
         
         NSArray *a=[locations objectForKey:fn];
-        for (int i=a.count-1;i>=0;i--) {
+        for (int i=(int)a.count-1;i>=0;i--) {
             NSRange r=((NSValue*)[a objectAtIndex:i]).rangeValue;
-            int ln=r.location;
-            int col=r.length;
+            int ln=(int)r.location;
+            int col=(int)r.length;
+            NSArray *fs=[InFiles subsetOfInFiles:inFiles inFile:fn atLine:ln column:col];
+            NSMutableString *msg=[[NSMutableString alloc] initWithFormat:@"/* "];
+            for (InFiles *v in fs) {
+                bool fst=YES;
+                for (NSString *msg2 in v.inFilesMessages) {
+                    [msg appendFormat:(fst?@"-- %@":@"\n  -- %@"),msg2];
+                    fst=NO;
+                }
+            }
+            [msg appendString:@" */\n"];
             if (i>=lns.count) offs=sz;
             else offs=[lns objectAtIndex:i];
-            NSString *msg;
             NSData *d=[msg dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
             [InFiles insertData:d intoFile:fil at:offs];
+            [msg release];
         }
         
-        fclose(fil);        
+        fclose(fil);
     }
         
 }
@@ -123,10 +135,17 @@ static NSMutableArray *InFiles_allInFiles=nil;
     [InFiles markFiles:[InFiles allInFiles]];
 }
 
++(NSArray*)subsetOfInFiles:(NSArray*)inFiles inFile:(NSString*)fn atLine:(int)ln column:(int)col {
+    NSMutableArray *ret=[NSMutableArray array];
+    for (InFiles *v in inFiles) {
+        if ([(NSSet*)[v.inFilesLocations objectForKey:fn] containsObject:[NSValue valueWithRange:NSMakeRange(ln,col)]]) [ret addObject:v];
+    }
+    return(ret);
+}
 
 +(void)insertData:(NSData*)d intoFile:(FILE*)fil at:(int)offs {
     fseek(fil, 0, SEEK_END);
-    int sz=ftell(fil),i;
+    int sz=(int)ftell(fil),i;
     char buf[10000];
     for (i=sz-10000;i>=offs;i-=10000) {
         fseek(fil, i, SEEK_SET);

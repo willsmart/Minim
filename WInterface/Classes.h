@@ -35,7 +35,7 @@
 @class WPotentialType;
 
 
-@interface InFiles {
+@interface InFiles : NSObject {
     NSMutableDictionary *inFilesLocations;
     NSMutableArray *inFilesMessages;
 }
