@@ -30,7 +30,7 @@
     if (!(self=[super init])) return(nil);
     inFilesLocations=[[NSMutableDictionary alloc] init];
     inFilesMessages=[[NSMutableArray alloc] init];
-    [InFiles_allInFiles addObject:self];
+    [(NSMutableArray*)[InFiles allInFiles] addObject:self];
     return(self);
 }
 
@@ -48,6 +48,25 @@
       if (![inFilesMessages containsObject:s]) [inFilesMessages addObject:s];
 }
 
+static NSMutableDictionary *InFiles_staticInFilesMessages=nil;
+
++(NSMutableDictionary*)staticInFilesMessages {
+    if (!InFiles_staticInFilesMessages) InFiles_staticInFilesMessages=[[NSMutableDictionary alloc] init];
+    return(InFiles_staticInFilesMessages);
+}
+
++(void)addInFilename:(NSString*)fn line:(int)line column:(int)column format:(NSString*)format,... {
+    va_list args;va_start(args,format);
+    NSString *s=[[[NSString alloc] initWithFormat:format arguments:args] autorelease];
+    if (!fn) return;
+    NSMutableDictionary *m=[[InFiles staticInFilesMessages] objectForKey:fn];
+    if (!m) [[InFiles staticInFilesMessages] setObject:m=[NSMutableDictionary dictionary] forKey:fn];
+    NSValue *v=[NSValue valueWithRange:NSMakeRange(line,column)];
+    NSMutableArray *a=[m objectForKey:v];
+    if (!a) [m setObject:a=[NSMutableArray array] forKey:v];
+    [a addObject:s];
+}
+
 static NSMutableArray *InFiles_allInFiles=nil;
 
 +(NSArray*)allInFiles {
@@ -57,29 +76,54 @@ static NSMutableArray *InFiles_allInFiles=nil;
 +(NSDictionary*)unionFiles:(NSArray*)inFiles {
     NSMutableDictionary *locations=[[NSMutableDictionary alloc] init];
     for (InFiles *v in inFiles) {
+        if (!v.inFilesMessages.count) continue;
         for (NSString *fn in v.inFilesLocations) {
             NSSet *s=[v.inFilesLocations objectForKey:fn];
-            NSMutableSet *ss=[locations objectForKey:fn];
-            if (!ss) [locations setObject:ss=[NSMutableSet set] forKey:fn];
-            [ss unionSet:s];
+            NSMutableDictionary *d=[locations objectForKey:fn];
+            if (!d) [locations setObject:d=[NSMutableDictionary dictionary] forKey:fn];
+            for (NSValue *vv in s) {
+                NSMutableArray *a=[d objectForKey:vv];
+                if (!a) [d setObject:a=[NSMutableArray array] forKey:vv];
+                [a addObjectsFromArray:v.inFilesMessages];
+            }
         }
     }
-    NSMutableDictionary *locations2=[[NSMutableDictionary alloc] init];
-    for (NSString *fn in locations) {
-        NSSet *s=[locations objectForKey:fn];
-        NSArray *a=[s.allObjects sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-                NSRange r1=((NSValue*)obj1).rangeValue;
-                NSRange r2=((NSValue*)obj2).rangeValue;
-                return((r1.location<r2.location)||((r1.location==r2.location)&&(r1.length<r2.length))?NSOrderedAscending:
-                ((r1.location>r2.location)||((r1.location==r2.location)&&(r1.length>r2.length))?NSOrderedDescending:NSOrderedSame));
-            }
-        ];
-        [locations2 setObject:a forKey:fn];
+    for (NSString *fn in [InFiles staticInFilesMessages]) {
+        NSDictionary *msgd=[[InFiles staticInFilesMessages] objectForKey:fn];
+        NSMutableDictionary *d=[locations objectForKey:fn];
+        if (!d) [locations setObject:d=[NSMutableDictionary dictionary] forKey:fn];
+        for (NSValue *vv in msgd) {
+            NSArray *msgs=[msgd objectForKey:vv];
+            if (!msgs.count) continue;
+            NSMutableArray *a=[d objectForKey:vv];
+            if (!a) [d setObject:a=[NSMutableArray array] forKey:vv];
+            [a addObjectsFromArray:msgs];
+        }
     }
+    
     NSDictionary *d=[locations.copy autorelease];
     [locations release];
-    [locations2 release];
     return(d);
+}
+
++(void)clearMarksFromFiles:(NSArray*)fns {
+    NSError *err=nil;
+    NSRegularExpression *re=[NSRegularExpression regularExpressionWithPattern:@"/\\*\\*\\!.*?\\!\\*\\*/\\s*\n" options:0 error:&err];
+    if (err||!re) {
+        NSLog(@"Bad re : /\\*\\*\\!.*?\\!\\*\\*/\\s*");
+        return;
+    }
+    for (NSString *fn in fns) {
+        NSMutableString *s=[((NSString*)[NSString stringWithContentsOfFile:fn encoding:NSASCIIStringEncoding error:&err]).mutableCopy autorelease];
+        if (s&&!err) {
+            [re replaceMatchesInString:s options:0 range:NSMakeRange(0,s.length) withTemplate:@""];
+            [s writeToFile:fn atomically:YES encoding:NSASCIIStringEncoding error:&err];
+            if (err) {
+                NSLog(@"Could not write %@ to clear marks",fn);
+            }
+        }
+        else NSLog(@"Could not open %@ to clear marks",fn);
+    }
 }
 
 +(void)markFiles:(NSArray*)inFiles {
@@ -103,23 +147,31 @@ static NSMutableArray *InFiles_allInFiles=nil;
         }
         int sz=(int)ftell(fil);
         
-        NSArray *a=[locations objectForKey:fn];
+        NSDictionary *msgd=[locations objectForKey:fn];
+        NSArray *a=[msgd.allKeys sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+                NSRange r1=((NSValue*)obj1).rangeValue;
+                NSRange r2=((NSValue*)obj2).rangeValue;
+                return((r1.location<r2.location)||((r1.location==r2.location)&&(r1.length<r2.length))?NSOrderedAscending:
+                ((r1.location>r2.location)||((r1.location==r2.location)&&(r1.length>r2.length))?NSOrderedDescending:NSOrderedSame));
+            }
+        ];
+
         for (int i=(int)a.count-1;i>=0;i--) {
             NSRange r=((NSValue*)[a objectAtIndex:i]).rangeValue;
+            NSArray *msgs=[msgd objectForKey:[a objectAtIndex:i]];
+            if (!msgs.count) continue;
+            
             int ln=(int)r.location;
-            int col=(int)r.length;
-            NSArray *fs=[InFiles subsetOfInFiles:inFiles inFile:fn atLine:ln column:col];
-            NSMutableString *msg=[[NSMutableString alloc] initWithFormat:@"/* "];
-            for (InFiles *v in fs) {
-                bool fst=YES;
-                for (NSString *msg2 in v.inFilesMessages) {
-                    [msg appendFormat:(fst?@"-- %@":@"\n  -- %@"),msg2];
-                    fst=NO;
-                }
+            //int col=(int)r.length;
+            NSMutableString *msg=[[NSMutableString alloc] initWithFormat:@"/**!"];
+            bool fst=YES;
+            for (NSString *msg2 in msgs) {
+                [msg appendFormat:(fst?@" -- %@":@"\n     -- %@"),[[[msg2 stringByReplacingOccurrencesOfString:@"/*" withString:@" / *"] stringByReplacingOccurrencesOfString:@"*/" withString:@"* / "] stringByReplacingOccurrencesOfString:@"//" withString:@" / /"]];
+                fst=NO;
             }
-            [msg appendString:@" */\n"];
-            if (i>=lns.count) offs=sz;
-            else offs=[lns objectAtIndex:i];
+            [msg appendString:@" !**/\n"];
+            if (ln>=lns.count) offs=sz;
+            else offs=((NSNumber*)[lns objectAtIndex:ln]).intValue;
             NSData *d=[msg dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
             [InFiles insertData:d intoFile:fil at:offs];
             [msg release];
@@ -270,7 +322,9 @@ static WClasses *_default=nil;
         NSMutableDictionary *d=[NSMutableDictionary dictionary];
         for (NSString *s in a) {
             WReader *r=[[[WReader alloc] init] autorelease];
-            r.fileName=[NSString stringWithFormat:@"/Users/Will/Documents/WInterface/WInterface/Wis/Prop%@.wi",s];
+            NSString *fn=[NSString stringWithFormat:@"/Users/Will/Documents/WInterface/WInterface/Wis/Prop%@.wi",s];
+            [InFiles clearMarksFromFiles:@[fn]];
+            r.fileName=fn;
             [d setObject:r.fileString forKey:s];
         }
         a=[NSArray arrayWithObjects:@"T1",
@@ -281,13 +335,17 @@ static WClasses *_default=nil;
                 NSArray *ss=[s componentsSeparatedByString:@","];
                 NSMutableString *agg=[NSMutableString string];
                 for (NSString *s2 in ss) {
-                    r.fileName=[NSString stringWithFormat:@"/Users/Will/Documents/WInterface/WInterface/Wis/Model%@.wi",s2];
+                    NSString *fn=[NSString stringWithFormat:@"/Users/Will/Documents/WInterface/WInterface/Wis/Model%@.wi",s2];
+                    [InFiles clearMarksFromFiles:@[fn]];
+                    r.fileName=fn;
                     [agg appendFormat:@"%@\n",r.fileString];
                 }
                 [d setObject:agg forKey:[ss objectAtIndex:0]];
             }
             else {
-                r.fileName=[NSString stringWithFormat:@"/Users/Will/Documents/WInterface/WInterface/Wis/Model%@.wi",s];
+                NSString *fn=[NSString stringWithFormat:@"/Users/Will/Documents/WInterface/WInterface/Wis/Model%@.wi",s];
+                [InFiles clearMarksFromFiles:@[fn]];
+                r.fileName=fn;
                 [d setObject:r.fileString forKey:s];
             }
         }
@@ -879,6 +937,8 @@ static WClasses *_default=nil;
     unichar ch=[self readOpcOnOneLine:r];
     WClass *clas=nil;
     
+    WReaderToken *t0=r.currentToken;
+    
     if (pclas) {
         NSString *name;
         if (ch=='<') {
@@ -920,7 +980,7 @@ static WClasses *_default=nil;
             WReaderToken *t=[self skipSpaces:r];
             if (!t) {
                 r.pos=pos;
-                [WClasses error:@"Expected end of protocol list" withReader:r];
+                [WClasses error:@"Expected end of protocol list" withToken:t0 context:nil];
                 return(NO);
             }
             r.pos++;
@@ -931,7 +991,7 @@ static WClasses *_default=nil;
                 if (c) [protocolList addObject:c];
             }
             else if (![t.str isEqualToString:@","]) {
-                [WClasses error:@"Expected a protocol word" withReader:r];
+                [WClasses error:@"Expected a protocol word" withToken:t0 context:nil];
             }
         }
     }
@@ -950,6 +1010,8 @@ static WClasses *_default=nil;
     unichar ch=[self readOpcOnOneLine:r];
     NSString *clas=nil;
     
+    WReaderToken *t0=r.currentToken;
+
     if (pclas) {
         NSString *name;
         if (ch=='<') {
@@ -991,7 +1053,7 @@ static WClasses *_default=nil;
             WReaderToken *t=[self skipSpaces:r];
             if (!t) {
                 r.pos=pos;
-                [WClasses error:@"Expected end of protocol list" withReader:r];
+                [WClasses error:@"Expected end of protocol list" withToken:t0 context:nil];
                 return(NO);
             }
             r.pos++;
@@ -1001,7 +1063,7 @@ static WClasses *_default=nil;
                 [protocolList addObject:t.str];
             }
             else if (![t.str isEqualToString:@","]) {
-                [WClasses error:@"Expected a protocol word" withReader:r];
+                [WClasses error:@"Expected a protocol word" withToken:t0 context:nil];
             }
         }
     }
@@ -1032,6 +1094,8 @@ static WClasses *_default=nil;
 
 - (NSArray*)readVar:(WReader*)r {
     int pos1=r.pos;
+    WReaderToken *t0=r.currentToken;
+
     do {
 //        [WClasses warning:[NSString stringWithFormat:@"rv"] withReader:r];
         WClass *c=[self enclosingClass:r];
@@ -1137,11 +1201,11 @@ static WClasses *_default=nil;
             stars=0;
             while ((ch=[self readOpc:r])=='*') stars++;
             if (ch) {
-                [WClasses error:@"Expected * (2)" withReader:r];
+                [WClasses error:@"Expected * (2)" withToken:t0 context:nil];
                 break;
             }
             if (!(aname=[self readWord:r])) {           
-                [WClasses error:@"expected name" withReader:r];
+                [WClasses error:@"expected name" withToken:t0 context:nil];
                 break;
             }
             int posq=r.pos;
@@ -1166,7 +1230,7 @@ static WClasses *_default=nil;
                 if ([self readc:r anyof:@")"]) break;
             }
             if (!s) {
-                [WClasses error:@"Bad attribute array" withReader:r];
+                [WClasses error:@"Bad attribute array" withToken:t0 context:nil];
                 r.pos=pos2;
                 [attr removeAllObjects];
             }
@@ -1344,7 +1408,7 @@ static WClasses *_default=nil;
               [self readFn:r]||
               [self readProp:r]
               )) {
-            [WClasses error:@"Expected var, fn, or prop" withReader:r];
+            [WClasses error:@"Expected var, fn, or prop" withToken:r.currentToken context:ret];
             break;
         }
     }
@@ -1422,7 +1486,7 @@ static WClasses *_default=nil;
               [self readFn:r]||
               [self readProp:r]
               )) {
-            [WClasses error:@"Expected var, fn, or prop in class" withReader:r];
+            [WClasses error:@"Expected var, fn, or prop in class" withToken:r.currentToken context:c];
             break;
         }
         hasChild=YES;
@@ -1443,6 +1507,7 @@ static WClasses *_default=nil;
     [self skipSpaces:r];
     int bc=r.currentToken.bracketCount;
     int linei=r.currentToken.linei;
+    WReaderToken *t0=r.currentToken;
     
     NSString *name;
     NSMutableSet *varPatterns=nil;
@@ -1468,7 +1533,7 @@ static WClasses *_default=nil;
             WReaderToken *t=[self skipSpaces:r];
             if (!t) {
                 r.pos=pos;
-                [WClasses error:@"Expected end of protocol super list" withReader:r];
+                [WClasses error:@"Expected end of protocol super list" withToken:t0 context:nil];
                 return(NO);
             }
             r.pos++;
@@ -1479,12 +1544,12 @@ static WClasses *_default=nil;
                 if (c) [superNames addObject:c];
             }
             else if (![t.str isEqualToString:@","]) {
-                [WClasses error:@"Expected a super protocol word" withReader:r];
+                [WClasses error:@"Expected a super protocol word" withToken:t0 context:nil];
             }
         }
     }
     else if (ch!='>') {
-        [WClasses error:@"Expected > to end protocol name" withReader:r];
+        [WClasses error:@"Expected > to end protocol name" withToken:t0 context:nil];
         r.pos=pos2;
         return(nil);
     }
@@ -1520,7 +1585,7 @@ static WClasses *_default=nil;
               [self readFn:r]||
               [self readProp:r]
               )) {
-            [WClasses error:@"Expected var, fn, or prop in protocol" withReader:r];
+            [WClasses error:@"Expected var, fn, or prop in protocol" withToken:r.currentToken context:c];
             break;
         }
         hasChild=YES;
@@ -1544,6 +1609,7 @@ static WClasses *_default=nil;
 - (bool)readInclude:(WReader*)r {
     if (self.classContext) return(NO);
     int pos=r.pos;
+    WReaderToken *t0=r.currentToken;
     NSString *w,*name=[self readString:r];
     if (name) {
         name=[name substringWithRange:NSMakeRange(1, name.length-2)];
@@ -1562,13 +1628,14 @@ static WClasses *_default=nil;
             NSString *s=name;
             printf("Include: %s\n",s.UTF8String);
             if ([self.readFNStack containsObject:s]) {
-                [WClasses error:@"File already included" withReader:r];
+                [WClasses error:@"File already included" withToken:t0 context:nil];
             }
             else {
                 WReader *r2=[[[WReader alloc] init] autorelease];
                 r2.tokenizer.tokenDelegate=[WClasses getDefault];
+                [InFiles clearMarksFromFiles:@[s]];
                 r2.fileName=s;
-                if (r2.fileString.length==0) [WClasses error:@"File is empty or doesn't exist" withReader:r];
+                if (r2.fileString.length==0) [WClasses error:@"File is empty or doesn't exist" withToken:t0 context:nil];
                 else {
                     NSFileManager *fm=[NSFileManager defaultManager];
                     NSString *wasDir=fm.currentDirectoryPath;
@@ -1595,7 +1662,7 @@ static WClasses *_default=nil;
         while ((t=r.currentToken)&&![t.str isEqualToString:@">"]) [s appendString:t.str];
         if (!t) {
             r.pos=pos2;
-            [WClasses error:@"Expected end of include" withReader:r];
+            [WClasses error:@"Expected end of include" withToken:r.currentToken context:nil];
             return(NO);
         }
         [s appendString:@">"];
@@ -1734,7 +1801,6 @@ static WClasses *_default=nil;
 }
 
 - (void)readKeepingContext:(WReader *)r {
-
     int posWas=0;
     for (r.pos=0;r.pos<r.tokenizer.tokens.count;) {
         posWas=[self readComments:r fromIndex:posWas toBeforeIndex:r.pos];
@@ -2034,18 +2100,22 @@ static WClasses *_default=nil;
 
 
 
-+ (void)_note:(NSString *)n withReader:(WReader *)r context:(InFiles*)ctxt aggregatePattern:(NSString*)agg {
++ (void)_note:(NSString *)n withToken:(WReaderToken *)t context:(InFiles*)ctxt aggregatePattern:(NSString*)agg {
      WClasses *cs=[WClasses getDefault];
-     if (r&&((!cs.taskFn)||![cs.taskFn isEqualToString:r.fileName])) {
+     NSString *fn=t.tokenizer.reader.fileName;
+     if (fn&&((!cs.taskFn)||![cs.taskFn isEqualToString:fn])) {
         [[WClasses getDefault].taskList addObject:@""];
-        [[WClasses getDefault].taskList addObject:[NSString stringWithFormat:@"[%@]",cs.taskFn=r.fileName]];
+        [[WClasses getDefault].taskList addObject:[NSString stringWithFormat:@"[%@]",cs.taskFn=fn]];
     }
     
-    n=(r?
-        [NSString stringWithFormat:@"   %@  at  %@",[n stringByReplacingOccurrencesOfString:@"\n" withString:@"   "],[r.localString stringByReplacingOccurrencesOfString:@"\n" withString:@"   "]]:
-       [NSString stringWithFormat:@"   %@",[n stringByReplacingOccurrencesOfString:@"\n" withString:@"   "]]);
+    
+    
+    //n=(r?
+    //    [NSString stringWithFormat:@"   %@  at  %@",[n stringByReplacingOccurrencesOfString:@"\n" withString:@"   "],[r.localString stringByReplacingOccurrencesOfString:@"\n" withString:@"   "]]:
+    //   [NSString stringWithFormat:@"   %@",[n stringByReplacingOccurrencesOfString:@"\n" withString:@"   "]]);
+    n=[NSString stringWithFormat:@"   %@",[n stringByReplacingOccurrencesOfString:@"\n" withString:@"   "]];
 
-    if (ctxt) {
+    if (ctxt||fn) {
         NSError *err=nil;
         NSString *agg2=[[NSRegularExpression escapedPatternForString:agg] stringByReplacingOccurrencesOfString:@"##" withString:@"(\\d++)"];
         NSRegularExpression *re=[NSRegularExpression regularExpressionWithPattern:agg2 options:0 error:&err];
@@ -2056,20 +2126,25 @@ static WClasses *_default=nil;
                 NSTextCheckingResult *matches=[re firstMatchInString:s options:0 range:NSMakeRange(0, s.length)];
                 if (matches) {
                     match=i;
-                    c=[s substringWithRange:[matches rangeAtIndex:1]];
+                    c=[s substringWithRange:[matches rangeAtIndex:1]].intValue;
                     break;
                 }
                 else i++;
             }
             NSString *m=[agg stringByReplacingOccurrencesOfString:@"##" withString:[NSString stringWithFormat:@"%ld",c+1]];
             
-            if (i==NSNotFound) {
+            if (match==NSNotFound) {
                 [[WClasses getDefault].taskList addObject:m];
             }
             else {
-                [[WClasses getDefault].taskList replaceObjectAtIndex:i withObject:m];
+                [[WClasses getDefault].taskList replaceObjectAtIndex:match withObject:m];
             }
-            [ctxt addInFilesMessageUsingFormat:@"%@",n];
+            if (fn) {
+                [InFiles addInFilename:fn line:t.linei column:0 format:@"%@",n];
+            }
+            else if (ctxt) {
+                [ctxt addInFilesMessageUsingFormat:@"%@",n];
+            }
         }
         else {
             NSLog(@"Bad regex: %@",agg2);
@@ -2082,16 +2157,16 @@ static WClasses *_default=nil;
 }
 
 
-+ (void)error:(NSString *)err withReader:(WReader *)r context:(InFiles*)ctxt {
-     [WClasses _note:[NSString stringWithFormat:@"(errerr) Fix error: %@",err] withReader:r context:ctxt aggregatePattern:@"Fix ## embedded errors (look for \"errerr\" in the code)"];
++ (void)error:(NSString *)err withToken:(WReaderToken *)t context:(InFiles*)ctxt {
+     [WClasses _note:[NSString stringWithFormat:@"(errerr) Fix error: %@",err] withToken:t context:ctxt aggregatePattern:@"Fix ## embedded errors (look for \"errerr\" in the code)"];
     [WClasses getDefault].hasErrors=YES;
 }
-+ (void)warning:(NSString *)err withReader:(WReader *)r context:(InFiles*)ctxt {
-     [WClasses _note:[NSString stringWithFormat:@"(warnwarn) Address warning: %@",err] withReader:r context:ctxt aggregatePattern:@"Address ## embedded warnings (look for \"warnwarn\" in the code)"];
++ (void)warning:(NSString *)err withToken:(WReaderToken *)t context:(InFiles*)ctxt {
+     [WClasses _note:[NSString stringWithFormat:@"(warnwarn) Address warning: %@",err] withToken:t context:ctxt aggregatePattern:@"Address ## embedded warnings (look for \"warnwarn\" in the code)"];
     [WClasses getDefault].hasWarnings=YES;
 }
-+ (void)note:(NSString *)n withReader:(WReader *)r context:(InFiles*)ctxt {
-     [WClasses _note:[NSString stringWithFormat:@"(notenote) Note: %@",n] withReader:r context:ctxt aggregatePattern:@"Embedded ## notes (look for \"notenote\" in the code)"];
++ (void)note:(NSString *)n withToken:(WReaderToken *)t context:(InFiles*)ctxt {
+     [WClasses _note:[NSString stringWithFormat:@"(notenote) Note: %@",n] withToken:t context:ctxt aggregatePattern:@"Embedded ## notes (look for \"notenote\" in the code)"];
 }
 
 
@@ -2339,7 +2414,7 @@ static WClasses *_default=nil;
         if ([stack containsObject:self]) {
             NSMutableString *s=[NSMutableString string];
             for (WClass *c in stack) [s appendFormat:@"%@ ",c.name];
-            [WClasses error:[NSString stringWithFormat:@"Circular super structure involving : %@",s] withReader:nil];
+            [WClasses error:[NSString stringWithFormat:@"Circular super structure involving : %@",s] withToken:nil context:nil];
             _depth=0;
         }
         else {
@@ -2527,7 +2602,7 @@ static WClasses *_default=nil;
 }
 - (void)addClassToFns {
     if (addedToFns) return;
-    if (!([varPatterns containsObject:@"undefined"]||self.hasDef)) [WClasses error:[NSString stringWithFormat:(isProtocol?@"Protocol %@ is used but never really defined, and is likely a typo":@"Class %@ is used but never really defined, and is likely a typo"),self.name] withReader:nil];
+    if (!([varPatterns containsObject:@"undefined"]||self.hasDef)) [WClasses error:[NSString stringWithFormat:(isProtocol?@"Protocol %@ is used but never really defined, and is likely a typo":@"Class %@ is used but never really defined, and is likely a typo"),self.name] withToken:nil context:self];
     if (isType) return;
     addedToFns=YES;
     if (!(self.isProtocol||superType.clas.isType)) [WProp stadd:self];
@@ -3020,7 +3095,7 @@ static WClasses *_default=nil;
 - (void)add:(WReader*)r {
     if (!((myclas||(self.myclas=[[WClasses getDefault] classForName:self.myname]))&&
           (hisclas||(self.hisclas=[[WClasses getDefault] classForName:self.hisname])))) {
-        [WClasses error:@"Unknown class for property" withReader:r];
+        [WClasses error:@"Unknown class for property" withToken:nil context:self];
     }
     else {
 //        if ([hisname isEqualToString:@"base"]) {
@@ -3876,7 +3951,7 @@ CACHEVARATTRFN_retain(NSString*,localizedVarName,
         if (!def.length) for (NSString *s in attributes) {
             if ([s hasPrefix:@"-"]||[s hasPrefix:@"+"]) {
                 WFn *fn=[clas.fns objectForKey:s];
-                if (!fn) [WClasses error:[NSString stringWithFormat:@"Expected function with signature %@ for var %@",s,localizedName] withReader:nil];
+                if (!fn) [WClasses error:[NSString stringWithFormat:@"Expected function with signature %@ for var %@",s,localizedName] withToken:nil context:self];
                 else {
                     [def appendFormat:@"[NSDictionary dictionaryWithObjectsAndKeys:@\"%@\",@\"signature\",@\"%@\",@\"body\",nil]",s,[WVar escapeCString:[WFn balance:fn.body]]];
                 }
@@ -3951,7 +4026,7 @@ CACHEVARATTRFN_retain(NSString*,localizedVarName,
         }
     }
     if (self.hasIVar&&!(hasDef||self.imaginary)) {
-        [WClasses warning:[NSString stringWithFormat:@"Non-imaginary variable %@ in %@ %@ has an ivar, but no default value. This is less a strict error than unclean",self.localizedName,clas.isProtocol?@"protocol":@"class",clas.name] withReader:nil];
+        [WClasses warning:[NSString stringWithFormat:@"Non-imaginary variable %@ in %@ %@ has an ivar, but no default value. This is less a strict error than unclean",self.localizedName,clas.isProtocol?@"protocol":@"class",clas.name] withToken:nil context:self];
     }
 
     if (self.retains) {

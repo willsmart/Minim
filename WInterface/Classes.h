@@ -43,6 +43,8 @@
 @property (readonly) NSMutableDictionary *inFilesLocations;
 @property (readonly) NSMutableArray *inFilesMessages;
 
++(NSMutableDictionary*)staticInFilesMessages;
++(void)addInFilename:(NSString*)fn line:(int)line column:(int)column format:(NSString*)format,...;
 -(void)addInFilename:(NSString*)fn line:(int)line column:(int)column;
 -(void)addInFilesMessageUsingFormat:(NSString*)format,...;
 +(NSArray*)allInFiles;
@@ -50,6 +52,7 @@
 +(void)markFiles;
 +(NSDictionary*)unionFiles:(NSArray*)inFiles;
 +(void)insertData:(NSData*)d intoFile:(FILE*)fil at:(int)offs;
++(void)clearMarksFromFiles:(NSArray*)inFiles;
 
 
 @end
@@ -85,9 +88,9 @@
 - (void)read:(WReader*)r;
 - (void)clear;
 
-+ (void)error:(NSString *)err withReader:(WReader *)r context:(InFiles*)ctxt;
-+ (void)warning:(NSString *)err withReader:(WReader *)r context:(InFiles*)ctxt;
-+ (void)note:(NSString *)n withReader:(WReader *)r context:(InFiles*)ctxt;
++ (void)error:(NSString *)err withToken:(WReaderToken *)t context:(InFiles*)ctxt;
++ (void)warning:(NSString *)err withToken:(WReaderToken *)t context:(InFiles*)ctxt;
++ (void)note:(NSString *)n withToken:(WReaderToken *)t context:(InFiles*)ctxt;
 
 @property (retain,nonatomic) NSMutableDictionary *propFiles;
 

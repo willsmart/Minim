@@ -45,6 +45,7 @@ int main(int argc, const char * argv[])
                     [cs clear];
                     WReader *r=[[[WReader alloc] init] autorelease];
                     r.tokenizer.tokenDelegate=cs;
+                    [InFiles clearMarksFromFiles:@[fn]];
                     r.fileName=fn;
                     [cs read:r];
                     [cs addToFns];
@@ -101,6 +102,7 @@ int main(int argc, const char * argv[])
                 }
             }
         }
+        [InFiles markFiles];
         printf("\nDone!\n");
         
     }
