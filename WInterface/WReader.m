@@ -14,10 +14,10 @@
 
 @implementation WReader
 
-@synthesize _fileName,_fileString,lines,pos,tokenizer,replaces;
+@synthesize _fileName,_fileString,_filePath,lines,pos,tokenizer,replaces;
 
 - (void)dealloc {
-    self._fileName=self._fileString=nil;
+    self._fileName=self._fileString=self._filePath=nil;
     self.lines=nil;
     self.replaces=nil;
     self.tokenizer=nil;
@@ -27,6 +27,7 @@
 - (id)init {
     if (!(self=[super init])) return(nil);
     self._fileName=self._fileString=@"";
+    self._filePath=nil;
     self.lines=[NSArray array];
     self.replaces=[NSMutableDictionary dictionary];
     self.tokenizer=[[[WReaderTokenizer alloc] initWithReader:self] autorelease];
@@ -54,12 +55,19 @@
     
 - (NSString*)fileString {return(self._fileString);}
 - (NSString*)fileName {return(self._fileName);}
+- (NSString*)filePath {return(self._filePath);}
 
 - (void)setFileName:(NSString *)fileName {
     NSError *err=nil;
     self._fileName=fileName;
+    NSFileManager *fm=[NSFileManager defaultManager];
+    self._filePath=[fm.currentDirectoryPath stringByAppendingPathComponent:fileName];
+
     NSString *s=[NSString stringWithContentsOfFile:fileName encoding:NSUTF8StringEncoding error:&err];
+    
     self.fileString=s;
+    if (!s) self._filePath=nil;
+    
 //    [self.tokenizer.tokenStr writeToFile:[fileName stringByAppendingFormat:@".deb.txt"] atomically:YES encoding:NSASCIIStringEncoding error:&err];
 }
 

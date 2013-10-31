@@ -37,6 +37,9 @@
 
 -(void)addInFilename:(NSString*)fn line:(int)line column:(int)column {
     if (!fn) return;
+    if ([fn isEqualToString:@""]) {
+        fn=@"";
+    }
     NSMutableSet *s=[inFilesLocations objectForKey:fn];
     if (!s) [inFilesLocations setObject:s=[NSMutableSet set] forKey:fn];
     [s addObject:[NSValue valueWithRange:NSMakeRange(line,column)]];
@@ -73,21 +76,12 @@ static NSMutableArray *InFiles_allInFiles=nil;
     if (!InFiles_allInFiles) InFiles_allInFiles=[[NSMutableArray alloc] init];
     return(InFiles_allInFiles);
 }
++(NSString*)excessMsg {
+    return(@"This file stores excess wi errors, warnings, and notes");
+}
 +(NSDictionary*)unionFiles:(NSArray*)inFiles {
     NSMutableDictionary *locations=[[NSMutableDictionary alloc] init];
-    for (InFiles *v in inFiles) {
-        if (!v.inFilesMessages.count) continue;
-        for (NSString *fn in v.inFilesLocations) {
-            NSSet *s=[v.inFilesLocations objectForKey:fn];
-            NSMutableDictionary *d=[locations objectForKey:fn];
-            if (!d) [locations setObject:d=[NSMutableDictionary dictionary] forKey:fn];
-            for (NSValue *vv in s) {
-                NSMutableArray *a=[d objectForKey:vv];
-                if (!a) [d setObject:a=[NSMutableArray array] forKey:vv];
-                [a addObjectsFromArray:v.inFilesMessages];
-            }
-        }
-    }
+    NSMutableSet *excessfns=[NSMutableSet set];
     for (NSString *fn in [InFiles staticInFilesMessages]) {
         NSDictionary *msgd=[[InFiles staticInFilesMessages] objectForKey:fn];
         NSMutableDictionary *d=[locations objectForKey:fn];
@@ -97,10 +91,55 @@ static NSMutableArray *InFiles_allInFiles=nil;
             if (!msgs.count) continue;
             NSMutableArray *a=[d objectForKey:vv];
             if (!a) [d setObject:a=[NSMutableArray array] forKey:vv];
-            [a addObjectsFromArray:msgs];
+            for (NSString *msg in msgs) {
+                if (![a containsObject:msg]) {
+                    [a addObject:msg];
+                }
+                if ([msg isEqualToString:[InFiles excessMsg]]) {
+                    [excessfns addObject:fn];
+                }
+            }
+        }
+    }
+    NSMutableArray *excessMsgs=[NSMutableArray array];
+    for (InFiles *v in inFiles) {
+        if (!v.inFilesMessages.count) continue;
+        for (NSString *fn in v.inFilesLocations) {
+            NSSet *s=[v.inFilesLocations objectForKey:fn];
+            NSMutableDictionary *d=[locations objectForKey:fn];
+            if (!d) [locations setObject:d=[NSMutableDictionary dictionary] forKey:fn];
+            for (NSValue *vv in s) {
+                NSMutableArray *a=[d objectForKey:vv];
+                if (!a) [d setObject:a=[NSMutableArray array] forKey:vv];
+                for (NSString *msg in v.inFilesMessages) {
+                    if (![a containsObject:msg]) {
+                        [a addObject:msg];
+                    }
+                }
+            }
+        }
+        if (!v.inFilesLocations.count) {
+            for (NSString *msg in v.inFilesMessages) {
+                if (![excessMsgs containsObject:msg]) {
+                    [excessMsgs addObject:msg];
+                }
+            }
         }
     }
     
+    for (NSString *fn in excessfns) {
+        NSMutableDictionary *d=[locations objectForKey:fn];
+        if (!d) [locations setObject:d=[NSMutableDictionary dictionary] forKey:fn];
+        NSValue *vv=[NSValue valueWithRange:NSMakeRange(0,0)];
+        NSMutableArray *a=[d objectForKey:vv];
+        if (!a) [d setObject:a=[NSMutableArray array] forKey:vv];
+        for (NSString *msg in excessMsgs) {
+            if (![a containsObject:msg]) {
+                [a addObject:msg];
+            }
+        }
+    }
+            
     NSDictionary *d=[locations.copy autorelease];
     [locations release];
     return(d);
@@ -108,7 +147,7 @@ static NSMutableArray *InFiles_allInFiles=nil;
 
 +(void)clearMarksFromFiles:(NSArray*)fns {
     NSError *err=nil;
-    NSRegularExpression *re=[NSRegularExpression regularExpressionWithPattern:@"/\\*\\*\\!.*?\\!\\*\\*/\\s*\n" options:0 error:&err];
+    NSRegularExpression *re=[NSRegularExpression regularExpressionWithPattern:@"/\\*\\*\\!.*?\\!\\*\\*/\\s*\n" options:NSRegularExpressionDotMatchesLineSeparators error:&err];
     if (err||!re) {
         NSLog(@"Bad re : /\\*\\*\\!.*?\\!\\*\\*/\\s*");
         return;
@@ -906,7 +945,9 @@ static WClasses *_default=nil;
 
 - (NSString*)readVarDefaultValue:(WReader*)r {
     int pos=r.pos;
+    [self readc:r anyof:@"="];
     NSString *ret=nil;
+    //[WClasses note:[NSString stringWithFormat:@"def : %@",r.localString] withToken:r.currentToken context:nil];
     if ((ret=[self readWord:r])||(ret=[self readString:r])||(ret=[self readNumber:r])) return(ret);
     if ([self readc:r anyof:@"@"]) {
         if ((ret=[self readString:r])) return([@"@" stringByAppendingString:ret]);
@@ -927,8 +968,8 @@ static WClasses *_default=nil;
             t=r.nextToken;
         }
         if (!d) return(ret);
-        r.pos=pos;
     }
+    r.pos=pos;
     return(nil);
 }
 
@@ -1153,6 +1194,7 @@ static WClasses *_default=nil;
                 int defLevel=0;
                 bool changed=YES;
                 while (changed) {
+                    //[WClasses note:r.localString withToken:t0 context:nil];
                     changed=NO;
                     int pos2=r.pos;
                     if (r.currentToken.type=='c') {
@@ -1173,9 +1215,10 @@ static WClasses *_default=nil;
                         else if ((!setter)&&[self readc:r anyof:@"-"]&&((setterVar=[self readWord:r]))&&((setter=[self readBlock:r]))) changed=YES;
                     }
                     if (changed) {
+                        int lni=r.currentToken.linei;
                         [self skipSpaces:r];
                         //[WClasses warning:[NSString stringWithFormat:@"linei=%d:%d bc=%d:%d",linei,r.currentToken.linei,bc,r.currentToken.bracketCount] withReader:r];
-                        if ((!r.currentToken)||((r.currentToken.linei>linei)&&(r.currentToken.bracketCount<=bc))) break;
+                        if ((!r.currentToken)||((r.currentToken.linei>lni)&&(r.currentToken.bracketCount<=bc))) break;
                     }
                     else r.pos=pos2;
                 }
@@ -1194,6 +1237,8 @@ static WClasses *_default=nil;
                 [setters addObject:[NSNull null]];
                 [setterVars addObject:[NSNull null]];
             }
+
+                    //[WClasses note:r.localString withToken:t0 context:nil];
 
                     //[WClasses warning:[NSString stringWithFormat:@"here"] withReader:r];
             if (ch!=',') break;
@@ -1271,7 +1316,7 @@ static WClasses *_default=nil;
                 type=[[[WType alloc] initWithPotentialType:ptype] autorelease];
             }
             WVar *v=[WVar getVarWithType:type stars:stars name:name qname:[[qnames objectAtIndex:i] isKindOfClass:[NSString class]]?[qnames objectAtIndex:i]:nil defVal:[[defaultValues objectAtIndex:i] isKindOfClass:[NSNull class]]?nil:[defaultValues objectAtIndex:i] defValLevel:[[defLevels objectAtIndex:i] isKindOfClass:[NSNull class]]?0:((NSNumber*)[defLevels objectAtIndex:i]).intValue attributes:attr2 clas:c];
-            [v addInFilename:r.fileName line:linei column:0];
+            [v addInFilename:r.filePath line:linei column:0];
             [rets addObject:v];
 //            if ([attr containsObject:@"modelretain"]) {
 //                [getters replaceObjectAtIndex:i withObject:[NSString stringWithFormat:@"return(%@);",v.varName]];
@@ -1282,11 +1327,11 @@ static WClasses *_default=nil;
 //            }
             if ([[getters objectAtIndex:i] isKindOfClass:[NSString class]]) {
                 WFn *fn=[WFn getFnWithSig:[NSString stringWithFormat:@"-(%@)%@",v.objCType,name] body:(NSString*)[getters objectAtIndex:i] clas:c];
-                [fn addInFilename:r.fileName line:linei column:0];
+                [fn addInFilename:r.filePath line:linei column:0];
             }
             if ([[setters objectAtIndex:i] isKindOfClass:[NSString class]]) {
                 WFn *fn=[WFn getFnWithSig:[NSString stringWithFormat:@"-(void)set%@:(%@)%@",[WProp upperName:name],v.objCType,[setterVars objectAtIndex:i]] body:(NSString*)[setters objectAtIndex:i] clas:c];
-                [fn addInFilename:r.fileName line:linei column:0];
+                [fn addInFilename:r.filePath line:linei column:0];
 
             }
             i++;
@@ -1329,7 +1374,7 @@ static WClasses *_default=nil;
     //printf("Fn : %s\n",[[r stringWithTokensInRange:NSMakeRange(pos, r.pos-pos)] cStringUsingEncoding:NSASCIIStringEncoding]);
     [self skipSpacesAndSemicolons:r];
     WFn *fn=[WFn getFnWithSig:sig body:body clas:c];
-    [fn addInFilename:r.fileName line:linei column:0];
+    [fn addInFilename:r.filePath line:linei column:0];
     return(fn);
 }
 
@@ -1393,7 +1438,7 @@ static WClasses *_default=nil;
     WProp *ret=[WProp getPropWithMyClass:c myName:name myQName:qname type:type origType:origType hisClass:hisClass hisName:hisName hisQName:hisqname];
     if (!ret) return(nil);
 
-    [ret addInFilename:r.fileName line:linei column:0];
+    [ret addInFilename:r.filePath line:linei column:0];
 
     [ret add:r];
     //printf("Prop : %s\n",[[r stringWithTokensInRange:NSMakeRange(pos, r.pos-pos)] cStringUsingEncoding:NSASCIIStringEncoding]);
@@ -1463,7 +1508,7 @@ static WClasses *_default=nil;
     }
     
     WClass *c=[WClass getClassWithName:name superClass:superClass protocolList:protocolList varPatterns:varPatterns];
-    [c addInFilename:r.fileName line:linei column:0];
+    [c addInFilename:r.filePath line:linei column:0];
 
     if (c==nil) return(nil);
     if (isSys) c.isSys=isSys;
@@ -1567,7 +1612,7 @@ static WClasses *_default=nil;
     
     WClass *c=[WClass getProtocolWithName:name superList:superNames varPatterns:varPatterns];
     if (issys) c.isSys=YES;
-    [c addInFilename:r.fileName line:linei column:0];
+    [c addInFilename:r.filePath line:linei column:0];
     
     if (!finishedParse) c.hasDef=YES;
     
@@ -1641,6 +1686,7 @@ static WClasses *_default=nil;
                     NSString *wasDir=fm.currentDirectoryPath;
                     [[self class] changeToFileDir:s];
                     [self.readFNStack addObject:s];
+                    if ([s hasSuffix:@"wierrors.wi"]) [InFiles addInFilename:r2.filePath line:0 column:0 format:@"%@",[InFiles excessMsg]];
                     [self read:r2];
                     [self.readFNStack removeObject:s];
                     [fm changeCurrentDirectoryPath:wasDir];
@@ -2102,7 +2148,7 @@ static WClasses *_default=nil;
 
 + (void)_note:(NSString *)n withToken:(WReaderToken *)t context:(InFiles*)ctxt aggregatePattern:(NSString*)agg {
      WClasses *cs=[WClasses getDefault];
-     NSString *fn=t.tokenizer.reader.fileName;
+     NSString *fn=t.tokenizer.reader.filePath;
      if (fn&&((!cs.taskFn)||![cs.taskFn isEqualToString:fn])) {
         [[WClasses getDefault].taskList addObject:@""];
         [[WClasses getDefault].taskList addObject:[NSString stringWithFormat:@"[%@]",cs.taskFn=fn]];
@@ -2158,11 +2204,11 @@ static WClasses *_default=nil;
 
 
 + (void)error:(NSString *)err withToken:(WReaderToken *)t context:(InFiles*)ctxt {
-     [WClasses _note:[NSString stringWithFormat:@"(errerr) Fix error: %@",err] withToken:t context:ctxt aggregatePattern:@"Fix ## embedded errors (look for \"errerr\" in the code)"];
+     [WClasses _note:[NSString stringWithFormat:@"(wi!errerr) Fix error: %@",err] withToken:t context:ctxt aggregatePattern:@"Fix ## embedded errors (look for \"errerr\" in the code)"];
     [WClasses getDefault].hasErrors=YES;
 }
 + (void)warning:(NSString *)err withToken:(WReaderToken *)t context:(InFiles*)ctxt {
-     [WClasses _note:[NSString stringWithFormat:@"(warnwarn) Address warning: %@",err] withToken:t context:ctxt aggregatePattern:@"Address ## embedded warnings (look for \"warnwarn\" in the code)"];
+     [WClasses _note:[NSString stringWithFormat:@"(wi!warnwarn) Address warning: %@",err] withToken:t context:ctxt aggregatePattern:@"Address ## embedded warnings (look for \"warnwarn\" in the code)"];
     [WClasses getDefault].hasWarnings=YES;
 }
 + (void)note:(NSString *)n withToken:(WReaderToken *)t context:(InFiles*)ctxt {
@@ -2569,22 +2615,32 @@ static WClasses *_default=nil;
             }
         
             int stars=0;
-            [WVar getVarWithType:[WClasses processClassType:v.type class:forClas protocols:stack tostars:&stars]
+            WVar *v2=[WVar getVarWithType:[WClasses processClassType:v.type class:forClas protocols:stack tostars:&stars]
                 stars:v.stars+stars
                 name:[WClasses processClassString:v.name class:forClas protocols:stack]
                 qname:[WClasses processClassString:v.qname class:forClas protocols:stack]
                 defVal:[WClasses processClassString:v.defaultValue class:forClas protocols:stack]
                 defValLevel:v.defLevel attributes:attrs clas:forClas];
+            for (NSString *fn in v.inFilesLocations) {
+                for (NSValue *vv in (NSSet*)[v.inFilesLocations objectForKey:fn]) {
+                    [v2 addInFilename:fn line:(int)vv.rangeValue.location column:(int)vv.rangeValue.length];
+                }
+            }
 //        }
     }
     for (WFn *fn in self.fns.allValues) {
 //        WFn *prvFn;
 //        if (!((prvFn=[WFn getExistingFnWithSig:fn.sig clas:forClas])&&prvFn.body)) {
             //WFn *newfn=
-            [WFn getFnWithSig:
+            WFn *fn2=[WFn getFnWithSig:
                 [WClasses processClassString:fn.sig class:forClas protocols:stack]
                 body:[WClasses processClassString:fn.body class:forClas protocols:stack]
                 clas:forClas];
+        for (NSString *fname in fn.inFilesLocations) {
+            for (NSValue *vv in (NSSet*)[fn.inFilesLocations objectForKey:fname]) {
+                [fn2 addInFilename:fname line:(int)vv.rangeValue.location column:(int)vv.rangeValue.length];
+            }
+        }
 //            newfn.imaginary=fn.imaginary;
 //        }
     }
@@ -2602,7 +2658,9 @@ static WClasses *_default=nil;
 }
 - (void)addClassToFns {
     if (addedToFns) return;
-    if (!([varPatterns containsObject:@"undefined"]||self.hasDef)) [WClasses error:[NSString stringWithFormat:(isProtocol?@"Protocol %@ is used but never really defined, and is likely a typo":@"Class %@ is used but never really defined, and is likely a typo"),self.name] withToken:nil context:self];
+    if (!([varPatterns containsObject:@"undefined"]||self.hasDef)) {
+        [WClasses error:[NSString stringWithFormat:(isProtocol?@"Protocol %@ is used but never really defined, and is likely a typo":@"Class %@ is used but never really defined, and is likely a typo"),self.name] withToken:nil context:self];
+    }
     if (isType) return;
     addedToFns=YES;
     if (!(self.isProtocol||superType.clas.isType)) [WProp stadd:self];
@@ -3735,7 +3793,7 @@ CACHEVARATTRFN_retain(NSString*,getterName,
     if (!ret) ret=name;
 )
 CACHEVARATTRFN_retain(NSString*,setterName,
-    if (attributes) for (NSString *s in attributes) if ([s hasPrefix:@"setter="]) ret=[s substringFromIndex:@"setter=".length];
+    if (attributes) for (NSString *s in attributes) if ([s hasPrefix:@"setter="]) ret=[s substringWithRange:NSMakeRange(@"setter=".length,s.length-@"setter=".length-([s hasSuffix:@":"]?1:0))];
     if (!ret) ret=[NSString stringWithFormat:@"set%@",[WProp upperName:self.name]];
 )
 CACHEVARATTRFN_retain(NSString*,localizedGetterName,
@@ -3743,7 +3801,7 @@ CACHEVARATTRFN_retain(NSString*,localizedGetterName,
     if (!ret) ret=localizedName;
 )
 CACHEVARATTRFN_retain(NSString*,localizedSetterName,
-    if (attributes) for (NSString *s in attributes) if ([s hasPrefix:@"setter="]) ret=[clas localizeString:[s substringFromIndex:@"setter=".length]];
+    if (attributes) for (NSString *s in attributes) if ([s hasPrefix:@"setter="]) ret=[clas localizeString:[s substringWithRange:NSMakeRange(@"setter=".length,s.length-@"setter=".length-([s hasSuffix:@":"]?1:0))]];
     if (!ret) ret=[NSString stringWithFormat:@"set%@",[WProp upperName:self.localizedName]];
 )
 
@@ -3943,7 +4001,60 @@ CACHEVARATTRFN_retain(NSString*,localizedVarName,
     if (defaultValue) {
         hasDef=YES;
         if (self.hasDefaultValue) {
-            [WFn getFnWithSig:@"-(init)" body:[NSString stringWithFormat:@"@-500 /*ivar*/%@=(%@);\n",self.localizedVarName,(self.retains?[NSString stringWithFormat:@"[(id)(%@) retain]",defaultValue]:defaultValue)] clas:clas];
+            if (self.retainable&&self.hasIVar&&!self.imaginary) {
+                WReader *r=[[WReader alloc] init];
+                r.fileString=defaultValue;
+                NSMutableArray *bs=[NSMutableArray array];
+                bool malformed=NO;
+                int rc=0;
+                bool wasrelease=NO,wasretain=NO;
+                bool wascopy=NO;
+                for (WReaderToken *t in r.tokenizer.tokens) {
+                    if ((t.type=='z')||(t.type=='c')||(t.type=='r')) continue;
+                    if ([t.str isEqualToString:@"["]) [bs addObject:@"[]"];
+                    else if ([t.str isEqualToString:@"{"]) [bs addObject:@"{}"];
+                    else if ([t.str isEqualToString:@"("]) [bs addObject:@"()"];
+                    else if ([t.str isEqualToString:@"]"]) {
+                        if ((!bs.count)||![(NSString*)[bs lastObject] isEqualToString:@"[]"]) {malformed=YES;break;}
+                        if (wascopy||wasretain) rc++;
+                        else if (wasrelease) rc--;
+                        [bs removeLastObject];
+                    }
+                    else if ([t.str isEqualToString:@"}"]) {
+                        if ((!bs.count)||![(NSString*)[bs lastObject] isEqualToString:@"{}"]) {malformed=YES;break;}
+                        [bs removeLastObject];
+                    }
+                    else if ([t.str isEqualToString:@")"]) {
+                        if ((!bs.count)||![(NSString*)[bs lastObject] isEqualToString:@"()"]) {malformed=YES;break;}
+                        [bs removeLastObject];
+                    }
+                    else if ([t.str isEqualToString:@"."]) {
+                        if (wascopy) rc++;
+                    }
+                    wasretain=([t.str isEqualToString:@"retain"]||[t.str isEqualToString:@"alloc"]);
+                    wasrelease=([t.str isEqualToString:@"release"]||[t.str isEqualToString:@"autorelease"]);
+                    wascopy=([t.str isEqualToString:@"copy"]||[t.str isEqualToString:@"mutableCopy"]);
+                }
+                if (malformed) {
+                    [WClasses error:@"Suspected malformed default value (brackets are weird)" withToken:nil context:self];
+                }
+                else if (rc<0) {
+                    [WClasses error:@"Suspected negative reference count in default value" withToken:nil context:self];
+                }
+                else if (rc<0) {
+                    while(rc>1) {
+                        rc--;
+                        defaultValue=[NSString stringWithFormat:@"[%@ release]",defaultValue];
+                    }
+                    while(rc>0) {
+                        rc--;
+                        defaultValue=[NSString stringWithFormat:@"[%@ autorelease]",defaultValue];
+                    }
+                    [WClasses note:[NSString stringWithFormat:@"Suspected positive reference count in default value. The value has been changed to %@",defaultValue] withToken:nil context:self];
+                }
+                [r release];
+            }
+            [WFn getFnWithSig:@"-(init)" body:[NSString stringWithFormat:@"@-500 /*ivar*/%@=(%@);%@\n",self.localizedVarName,(self.retains?[NSString stringWithFormat:@"[(id)(%@) retain]",defaultValue]:defaultValue),(self.hasIVar&&self.retainable&&![attributes containsObject:@"notrack"]?[NSString stringWithFormat:@"  ADDOWNER(%@,self);",self.localizedVarName]:@"")] clas:clas];
         }
     }
     else if (attributes) {
@@ -4026,7 +4137,7 @@ CACHEVARATTRFN_retain(NSString*,localizedVarName,
         }
     }
     if (self.hasIVar&&!(hasDef||self.imaginary)) {
-        [WClasses warning:[NSString stringWithFormat:@"Non-imaginary variable %@ in %@ %@ has an ivar, but no default value. This is less a strict error than unclean",self.localizedName,clas.isProtocol?@"protocol":@"class",clas.name] withToken:nil context:self];
+        [WClasses warning:[NSString stringWithFormat:@"Non-imaginary variable %@ has an ivar, but no default value. This is less a strict error than unclean",self.localizedName] withToken:nil context:self];
     }
 
     if (self.retains) {
@@ -4041,6 +4152,9 @@ CACHEVARATTRFN_retain(NSString*,localizedVarName,
         WFn *fn=self.hasSetter;
         if (fn) fn.body=self.localizedSetterBody;
         else [WFn getFnWithSig:self.setterSig body:self.localizedSetterBody clas:clas];
+    }
+    if (self.objc_readonly&&self.retainable&&self.hasIVar) {
+        [WClasses note:[NSString stringWithFormat:@"Please think about making property \"%@\" publicreadonly",self.localizedName] withToken:nil context:self];
     }
 }
 

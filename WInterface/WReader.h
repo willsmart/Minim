@@ -12,14 +12,16 @@
 @class WReaderTokenizer;
 
 @interface WReader : NSObject {
-    NSString *_fileString,*_fileName;
+    NSString *_fileString,*_fileName,*_filePath;
     NSArray *lines;
     int pos;
 }
 
 @property int pos;
 
-@property (retain,nonatomic) NSString *fileString,*fileName,*_fileString,*_fileName;
+@property (retain,nonatomic) NSString *fileString,*fileName,*_fileString,*_fileName,*_filePath;
+@property (retain,nonatomic,readonly) NSString *filePath;
+
 @property (retain,nonatomic) NSArray *lines;
 @property (retain,nonatomic) NSMutableDictionary *replaces;
 

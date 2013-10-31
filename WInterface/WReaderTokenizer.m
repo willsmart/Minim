@@ -7,6 +7,7 @@
 //
 
 #import "WReaderTokenizer.h"
+#import "WReader.h"
 
 
 @implementation WReaderToken : NSObject
@@ -69,14 +70,23 @@
         "S ss ss ss ss ss ss ss ss ss ss ss ss ss ss",
         "q qs qs qs qs qs qs qs qs qs Qs zs qs qs qs",
         "Q qs qs qs qs qs qs qs qs qs qs qs qs qs qs",
-        "c zz rr ww nn .o +o -o b< l< zo qs ss ww zo",
-        "C bc bc bc bc bc bc bc bc Cc bc bc bc bc bc",
+        "c zz rr ww nn .o +o -o C< l< zo qs ss ww zo",
+        "C bc bc bc bc bc bc bc bc Gc bc bc bc bc bc",
+        "G bc bc bc bc bc bc bc gc bc bc bc bc bc bc",
+        "g bc bc bc bc Ac bc bc Bc bc bc bc bc bc bc",
         "b bc bc bc bc bc bc bc Bc bc bc bc bc bc bc",
         "B bc bc bc bc bc bc bc Bc zc bc bc bc bc bc",
+        "A bc bc bc bc ac bc bc Bc bc bc bc bc bc bc",
+        "a bc bc bc bc Dc bc bc Bc bc bc bc bc bc bc",
+        "D Dc Dc Dc Dc dc Dc Dc Dc Dc Dc Dc Dc Dc Dc",
+        "d Dc Dc Dc Dc Ec Dc Dc Dc Dc Dc Dc Dc Dc Dc",
+        "E Dc Dc Dc Dc ec Dc Dc Dc Dc Dc Dc Dc Dc Dc",
+        "e Dc Dc Dc Dc ec Dc Dc Fc Dc Dc Dc Dc Dc Dc",
+        "F Dc Dc Dc Dc Dc Dc Dc Dc zc Dc Dc Dc Dc Dc",
         "l lc rr lc lc lc lc lc lc lc lc lc lc lc lc"
     };
     int cols=14;
-    int rows=17;
+    int rows=26;
 
     int colForC[256];
     for (int _c=0;_c<256;_c++) {
@@ -101,6 +111,7 @@
     NSMutableData *d=[NSMutableData dataWithLength:str.length];
     char *types=[d mutableBytes];
     
+    //printf("%s\n",self.reader.fileName.UTF8String);
     int ci=0;
     while (ci<csd.length) {
         int col=colForC[cs[ci]];
@@ -108,7 +119,7 @@
         if (row<0) {NSLog(@"Unknown state %c",state);break;}
         types[ci]=mat[row+1][3+3*col];
         state=mat[row+1][2+3*col];
-       // printf("%c%c%c:%d:%d:%d ",cs[ci],types[ci],state,ci,col,row);
+        //printf("%c%c%c:%d:%d:%d ",cs[ci],types[ci],state,ci,col,row);
         if (types[ci]=='<') ci--;
         else if (types[ci]!='.') ci++;
         
@@ -119,7 +130,7 @@
     [self.tokens removeAllObjects];
     NSMutableString *s=[NSMutableString string];
     for (ci=0;ci<str.length;ci++) {
-        if (cs[ci]=='\n') {_indent=0;linei++;}
+        if (cs[ci]=='\n') _indent=0;
         else if ((_indent>=0)&&(cs[ci]==' ')) _indent++;
         else if (_indent>=0) {indent=_indent;_indent=-1;}
         if ((!ci)||((typeWas!='o')&&(types[ci]==typeWas))) {
@@ -136,6 +147,7 @@
             [s appendFormat:@"%c",[str characterAtIndex:ci]];
             typeWas=types[ci];
         }
+        if (cs[ci]=='\n') linei++;
     }
     if (s.length) {
         if ([s isEqualToString:@"}"]) bc--;

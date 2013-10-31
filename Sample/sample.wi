@@ -1,3 +1,7 @@
+"wierrors.wi"
+
+/*...
+
 // check for non autoreleased properties
 // (\[\s*\[\s*[\w\d_]+\s+alloc\s*]\s*init[^\[\(\{\]\)\}]*([\[\(\{][^\[\(\{\]\)\}]*+([\[\(\{][^\[\(\{\]\)\}]*+([\[\(\{][^\[\(\{\]\)\}]*+([\[\(\{][^\[\(\{\]\)\}]*+[\]\)\}][^\[\(\{\]\)\}]*+)*+[\]\)\}][^\[\(\{\]\)\}]*+)*+[\]\)\}][^\[\(\{\]\)\}]*+)*+[\]\)\}][^\[\(\{\]\)\}]*+)*+((?!autorelease\]).)*)(\(
 
@@ -12,12 +16,10 @@
 //"l\\\"ll\\"llr"rrrr"lrlrrl
 // NSString s=[[[NSString alloc] initWithFormat:(NSString*)[NSString stringWithFormat:@"hello%@",[NSString string]],@"blah",NSMakeRange(c,1,2,3)] autor elease] (readonly)
 A
-/**! --    (warnwarn) Address warning: Non-imaginary variable a in class A has an ivar, but no default value. This is less a strict error than unclean !**/
  int a
-
-/**! --    (errerr) Fix error: File is empty or doesn't exist !**/
+ A b=[A alloc]
+ 
 "include.wi"
-/**! --    (errerr) Fix error: File is empty or doesn't exist !**/
 "include.wi"
 //"include/include.wi"
 //"include.h"
@@ -201,11 +203,24 @@ VarsRetain<Vars> "int=>Clas*" "nm=>Clas" "fn:VarsRetain" "123=>[Clas getDefault]
 
 VarsAssign<Vars> "int=>Clas*" "nm=>Clas" "args=>assign" "fn:VarsAssign" "123=>[Clas getDefault]"
 
-VarsAtomic<Vars> "int=>Clas*" "nm=Clas" "args=>atomic" "fn:VarsAtomic" "123=>[Clas getDefault]"
+VarsAtomic<Vars> "int=>Clas*" "nm=>Clas" "args=>atomic" "fn:VarsAtomic" "123=>[Clas getDefault]"
 VarsRetainAtomic<Vars> "int=>Clas*" "nm=>Clas" "args=>atomic" "fn:VarsRetainAtomic" "123=>[Clas getDefault]"
 VarsAssignAtomic<Vars> "int=>Clas*" "nm=>Clas" "args=>assign,atomic" "fn:VarsAssignAtomic" "123=>[Clas getDefault]"
 
+...*/
 
+A
+/**! --    (wi!warnwarn) Address warning: Non-imaginary variable c has an ivar, but no default value. This is less a strict error than unclean !**/
+ V c
+
+A
+/**! --    (notenote) Note: Please think about making property "urlMetaEnableds" publicreadonly !**/
+    A urlMetaEnableds={
+        if (!urlMetaEnableds) {
+            urlMetaEnableds=[[URLMetaEnableds alloc] init];
+        }
+        return(urlMetaEnableds);
+    }=nil (ivar=urlMetaEnableds,dealloc,readonly)
 
 
 
