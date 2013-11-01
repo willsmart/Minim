@@ -6,7 +6,7 @@
 
 
 WIMyClass
-    ULL hisqname_commitFrame (nodef)
+    ULL hisqname_commitFrame=nil
     -(void)_commitHisqnameProperties {@-500 
         if ((hisqname_commitFrame==commitFrame)||(self.commitStage!=stage_commitProperties)) return;
         hisqname_commitFrame=commitFrame;
@@ -22,7 +22,7 @@ WIMyClass
                 return(hisqnames.version);
             }
             else return(previousHisqnamesVersion);
-        } (ivar=previousHisqnamesVersion)
+        }=nil (ivar=previousHisqnamesVersion)
 
 
         
@@ -30,7 +30,7 @@ WIMyClass
         {
             [self _commitHisqnameProperties];
             return(previousHisqnames);
-        } (dealloc,ivar=previousHisqnames)
+        }=nil (dealloc,ivar=previousHisqnames)
         
     AtomiclyMutableDictionary hisqnames=
         {
@@ -39,7 +39,7 @@ WIMyClass
         }
         -v{
             [self.hisnames setDictionary:v];
-        } (dealloc,ivar=hisqnames)
+        }=nil (dealloc,ivar=hisqnames)
 
     -(void)_commitHisqnameProperties {
         [previousHisqnames release];
@@ -95,14 +95,14 @@ WIMyClass
         {
             [self hisqnamesThatWereRemoved];
             return(hisqnamesThatChanged);
-        } (dealloc,ivar=hisqnamesThatChanged)
+        }=nil (dealloc,ivar=hisqnamesThatChanged)
         
         
     NSSet hisqnamesThatWereAdded=
         {
             [self hisqnamesThatWereRemoved];
             return(hisqnamesThatWereAdded);
-        } (dealloc,ivar=hisqnamesThatWereAdded)
+        }=nil (dealloc,ivar=hisqnamesThatWereAdded)
         
     NSSet hisqnamesThatWereRemoved=
         {
@@ -114,7 +114,7 @@ WIMyClass
                 }
             }
             return(hisqnamesThatWereRemoved);
-        } (dealloc,ivar=hisqnamesThatWereRemoved)
+        }=nil (dealloc,ivar=hisqnamesThatWereRemoved)
     
     -(void)cleanupCommit {
         [hisqnamesThatWereAdded release];
@@ -195,14 +195,14 @@ JustMyClassOverride<+Commitable>
 
     -(init)init{}
 
-    NSDictionary previousHisqnames (nodef,dealloc,readonly,ivar=previousHisqnames)
+    NSDictionary previousHisqnames=nil (dealloc,readonly,ivar=previousHisqnames)
 
-    NSArray previousHisqnames (nodef,dealloc,readonly,ivar=previousHisqnames)
+    NSArray previousHisqnames=nil (dealloc,readonly,ivar=previousHisqnames)
     AtomiclyMutableDictionary hisqnames=
         {
             [self.baseWithHisqnames _commitHisqnameProperties];
             return(hisqnames?hisqnames:self.baseWithHisqnames.hisqnames);
-        } (dealloc,ivar=hisqnames)
+        }=nil (dealloc,ivar=hisqnames)
     -(void)overrideWithDictionary:(NSDictionary*)v {
         if (!hisqnames) {
             hisqnames=[[AtomiclyMutableDictionary alloc] init];
@@ -236,14 +236,14 @@ JustMyClassOverride<+Commitable>
         {
             [self hisqnamesThatWereRemoved];
             return(hisqnamesThatChanged);
-        } (dealloc,ivar=hisqnamesThatChanged)
+        }=nil (dealloc,ivar=hisqnamesThatChanged)
         
         
     NSSet hisqnamesThatWereAdded=
         {
             [self hisqnamesThatWereRemoved];
             return(hisqnamesThatWereAdded);
-        } (dealloc,ivar=hisqnamesThatWereAdded)
+        }=nil (dealloc,ivar=hisqnamesThatWereAdded)
         
     NSSet hisqnamesThatWereRemoved=
         {
@@ -255,7 +255,7 @@ JustMyClassOverride<+Commitable>
                 }
             }
             return(hisqnamesThatWereRemoved);
-        } (dealloc,ivar=hisqnamesThatWereRemoved)
+        }=nil (dealloc,ivar=hisqnamesThatWereRemoved)
     
     -(void)cleanupCommit {
         [hisqnamesThatWereAdded release];

@@ -1,4 +1,5 @@
 "wierrors.wi"
+"../../wiLibrary/wiui.wi"
 
 /*...
 
@@ -209,20 +210,35 @@ VarsAssignAtomic<Vars> "int=>Clas*" "nm=>Clas" "args=>assign,atomic" "fn:VarsAss
 
 ...*/
 
-A
-/**! --    (wi!warnwarn) Address warning: Non-imaginary variable c has an ivar, but no default value. This is less a strict error than unclean !**/
- V c
+B
 
 A
-/**! --    (notenote) Note: Please think about making property "urlMetaEnableds" publicreadonly !**/
-    A urlMetaEnableds={
-        if (!urlMetaEnableds) {
-            urlMetaEnableds=[[URLMetaEnableds alloc] init];
-        }
-        return(urlMetaEnableds);
-    }=nil (ivar=urlMetaEnableds,dealloc,readonly)
+    a -- B b
+    as2 >s- B bs2
+    as3 >s~ B bs3
+    as5 >~s- B bs5
+    as6 ~s< B bs6
+    as7 -s< B bs7
+    as8 -s<~ B bs8
 
+    aa2 >a- B ba2
+    aa3 >a~ B ba3
+    aa5 >~a- B ba5
+    aa6 ~a< B ba6
+    aa7 -a< B ba7
+    aa8 -a<~ B ba8
 
+    am2 >a- B bm2
+    am3 >a~ B bm3
+    am5 >~a- B bm5
+    am6 ~a< B bm6
+    am7 -a< B bm7
+    am8 -a<~ B bm8
+
+    aq >> Aq -- B bq >> Bq
+    asq >> Asq -s< B bsq >> Bsq
+    aaq >> Aaq -a< B baq >> Baq
+    amq >> Amq -m< B bmq >> Bmq
 
 
 

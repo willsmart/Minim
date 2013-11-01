@@ -36,9 +36,8 @@
 
 
 -(void)addInFilename:(NSString*)fn line:(int)line column:(int)column {
-    if (!fn) return;
-    if ([fn isEqualToString:@""]) {
-        fn=@"";
+    if (!fn) {
+        return;
     }
     NSMutableSet *s=[inFilesLocations objectForKey:fn];
     if (!s) [inFilesLocations setObject:s=[NSMutableSet set] forKey:fn];
@@ -826,7 +825,7 @@ static WClasses *_default=nil;
             }            
         }break;
         case '>':{
-            switch ([self readWordc:r]) {
+            switch ([self readOpOrWordc:r]) {
                 case '~':{
                     switch ([self readWordc:r]) {
                         case 'a':case 'A':{
@@ -1404,6 +1403,7 @@ static WClasses *_default=nil;
         r.pos=pos;
         return(nil);
     }
+    
     NSMutableString *origType=[NSMutableString string];
     for (int p=tposWas;p<r.pos;p++) [origType appendString:((WReaderToken*)[r.tokenizer.tokens objectAtIndex:p]).str];
 

@@ -3,18 +3,18 @@
 
 
 WIMyClass
-    NSHisClass previousNSHisqname (nodef,readonly,ivar=previousNSHisqname)
-    BaseHisClass previousHisqname (nodef,readonly,ivar=previousHisqname)
+    NSHisClass previousNSHisqname=nil (readonly,ivar=previousNSHisqname)
+    BaseHisClass previousHisqname=nil (readonly,ivar=previousHisqname)
     NSHisClass nshisqname=
         {return(nshisqname);}
         -v{
             self.hisname=[BaseHisClass:v:BaseHisClass];
-        } (dealloc,ivar=nshisqname)
+        }=nil (dealloc,ivar=nshisqname)
     BaseHisClass hisqname=
         {return(hisqname);}
         -v{
             self.hisname=v;
-        } (ivar=hisqname)
+        }=nil (ivar=hisqname)
     -(void)slylySetHisqname:(BaseHisClass)v {
         hisqname=v;
     }
@@ -96,15 +96,15 @@ JustMyClassOverride<Commitable>
 
     bool useMyHisqname=NO
 
-    BaseHisClass previousHisqname (nodef,dealloc,readonly,ivar=previousHisqname)
+    BaseHisClass previousHisqname=nil (dealloc,readonly,ivar=previousHisqname)
     BaseHisClass hisqname=
         {return(useMyHisqname?hisqname:self.baseWithHisqname.hisqname);}
-        -v{hisqname=v;hisqname=[NSHisClass:v:NSHisClass];useMyHisqname=YES;[self markDirty];} (dealloc,ivar=hisqname)
+        -v{hisqname=v;hisqname=[NSHisClass:v:NSHisClass];useMyHisqname=YES;[self markDirty];}=nil (dealloc,ivar=hisqname)
 
-    NSHisClass previousNSHisqname (nodef,dealloc,readonly,ivar=previousNSHisqname)
+    NSHisClass previousNSHisqname=nil (dealloc,readonly,ivar=previousNSHisqname)
     NSHisClass nshisqname=
         {return(useMyHisqname?nshisqname:self.baseWithHisqname.nshisqname);}
-        -v{nshisqname=[v retain];hisqname=[BaseHisClass:v:BaseHisClass];useMyHisqname=YES;[self markDirty];} (dealloc,ivar=nshisqname)
+        -v{nshisqname=[v retain];hisqname=[BaseHisClass:v:BaseHisClass];useMyHisqname=YES;[self markDirty];}=nil (dealloc,ivar=nshisqname)
 
     -(int)commitProperties:(int)substageIndex {
         [previousNSHisqname release];
