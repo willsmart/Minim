@@ -101,7 +101,7 @@ RClassabnap<RProtocol,RProtocolb,RProtocolnap> "fn:inherit"
     __WIClass__ privateaccess={authorize_thread(__private_access_thread_mask);return(self);}
     
 <Globals>
- -decl:{
+ +decl:{
     #define MSGSTART(__fn) printf("%s",__fn);
     #define ERR(...) printf(__VA_ARGS__)
     #define ADDOWNER(owned,owner)
@@ -112,7 +112,7 @@ RClassabnap<RProtocol,RProtocolb,RProtocolnap> "fn:inherit"
   bool authorized_thread(ULL&mask);
   void authorize_thread(ULL&mask);
  }
- -decl:impl:{
+ +decl:impl:{
   bool authorized_thread(ULL&mask) {
      return(YES);
   }

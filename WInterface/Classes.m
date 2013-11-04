@@ -1939,9 +1939,9 @@ static WClasses *_default=nil;
         WClass *c=[self.classes objectForKey:cnm];
         for (NSString *fnnm in c.fns) {
             WFn *fn=[c.fns objectForKey:fnnm];
-            if ([fn.sigWithArgs hasPrefix:@"+"]) {
+            if ([fn.sigWithArgs hasPrefix:@"-"]) {
                 NSString *nameUsed=nil;
-                NSMutableSet *ss=([fn.sigWithArgs isEqualToString:@"+"]?ins_set_after_decl_decl:[self importsSetWithName:[fn.sigWithArgs substringFromIndex:1] nameUsed:&nameUsed]);
+                NSMutableSet *ss=([fn.sigWithArgs isEqualToString:@"-"]?ins_set_after_decl_decl:[self importsSetWithName:[fn.sigWithArgs substringFromIndex:1] nameUsed:&nameUsed]);
                 if (ss) {
                     [ss addObject:[c localizeString:fn.body]];
                 }
@@ -1952,9 +1952,9 @@ static WClasses *_default=nil;
         WClass *c=[self.protocols objectForKey:cnm];
         for (NSString *fnnm in c.fns) {
             WFn *fn=[c.fns objectForKey:fnnm];
-            if ([fn.sigWithArgs hasPrefix:@"-"]) {
+            if ([fn.sigWithArgs hasPrefix:@"+"]) {
                 NSString *nameUsed=nil;
-                NSMutableSet *ss=([fn.sigWithArgs isEqualToString:@"-"]?ins_set_after_decl_decl:[self importsSetWithName:[fn.sigWithArgs substringFromIndex:1] nameUsed:&nameUsed]);
+                NSMutableSet *ss=([fn.sigWithArgs isEqualToString:@"+"]?ins_set_after_decl_decl:[self importsSetWithName:[fn.sigWithArgs substringFromIndex:1] nameUsed:&nameUsed]);
                 if (ss) {
                     [ss addObject:[c localizeString:fn.body]];
                 }
@@ -3562,6 +3562,8 @@ static WClasses *_default=nil;
 -(NSString*)bodyByReplacingSettersAndGettersInBody:(NSString*)abody {
     if (!abody) return(nil);
     
+    if (![self.sig hasPrefix:@"-"]) return(abody);
+    
     NSRegularExpression *gsre=clas.getterSetterRE;
 
     if (![gsre firstMatchInString:abody options:0 range:NSMakeRange(0, abody.length)]) return(abody);
@@ -3579,6 +3581,8 @@ static WClasses *_default=nil;
             if ([t.str isEqualToString:@"."]) bad=1;
             else if ([t.str isEqualToString:@"-"]) bad=-1;
             else if ([t.str isEqualToString:@">"]&&(bad==-1)) bad=1;
+            else if ([t.str isEqualToString:@"@"]) bad=-2;
+            else if ((bad==-3)&&[t.str isEqualToString:@"("]) bad=-4;
             else bad=0;
             break;
             case 'n':
@@ -3588,10 +3592,16 @@ static WClasses *_default=nil;
             if ([t.str hasSuffix:@"ivar*/"]) {
                 bad=1;
             }
-            else if (bad==-1) bad=0;
+            else if ((bad==-1)||(bad==-2)) bad=0;
             break;
             case 'w':
-            if (bad<=0) {
+            if (bad==-2) {
+                bad=-3;
+            }
+            else if (bad==-4) {
+                bad=1;
+            }
+            else if (bad<=0) {
                 bad=1;
                 WVar *v=nil;
                 for (NSString *k in clas.vars) {
@@ -3620,9 +3630,14 @@ static WClasses *_default=nil;
                             (hasIVar?
                                 [NSString stringWithFormat:@"/*setter ivar*/%@",v.localizedVarName]:
                                 [NSString stringWithFormat:@" This is a Winterface issue, this property should be marked as having an ivar called %@ ",v.localizedVarName]):
-                            (v.readonly?
-                                [NSString stringWithFormat:@"self.privateaccess.%@",v.localizedName]:
-                                [NSString stringWithFormat:@"self.%@",v.localizedName]));
+                            (v.objc_readonly?
+                                [NSString stringWithFormat:@"/*readonly ivar*/%@",v.localizedVarName]:
+                                (v.readonly?
+                                    [NSString stringWithFormat:@"self.privateaccess.%@",v.localizedName]:
+                                    [NSString stringWithFormat:@"self.%@",v.localizedName]
+                                )
+                            )
+                        );
                         changed=YES;
                     }
                     if (isGetter) {
@@ -4196,7 +4211,7 @@ CACHEVARATTRFN_retain(NSString*,localizedVarName,
         }
         if (def.length) {
             hasDef=YES;
-            [WFn getFnWithSig:@"-(init)" body:[NSString stringWithFormat:@"@-500         %@=%@;\n",localizedName,def] clas:clas];
+            [WFn getFnWithSig:@"-(init)" body:[NSString stringWithFormat:@"@-500         /*ivar*/%@=[%@ retain];\n",localizedVarName,def] clas:clas];
         }
     }
     if (self.hasIVar&&!(hasDef||self.imaginary)) {
