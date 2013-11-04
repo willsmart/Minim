@@ -4,8 +4,8 @@
 
 
 WIMyClass
-    NSSet previousKeysInHisqname (dealloc,nodef,readonly,ivar=previousKeysInHisqname)
-    NSSet keysInHisqname (dealloc,nodef,readonly,ivar=keysInHisqname)
+    NSSet previousKeysInHisqname=nil (dealloc,readonly,ivar=previousKeysInHisqname)
+    NSSet keysInHisqname=nil (dealloc,readonly,ivar=keysInHisqname)
     NSUInteger keyInHisqname={return(self.keysInHisqname.anyObject);}
 
     -(int)commitProperties:(int)substageIndex {/*-3*/
@@ -49,9 +49,9 @@ WIMyClass
 JustMyClassOverride
     -(init)init{}
 
-    NSSet previousKeysInHisqname (dealloc,nodef,readonly,ivar=previousKeysInHisqname)
+    NSSet previousKeysInHisqname=nil (dealloc,readonly,ivar=previousKeysInHisqname)
     NSSet keysInHisqname=
-        {return(useMyHisqname&&keysInHisqname?keysInHisqname:self.baseWithHisqname.keysInHisqname);} (dealloc,ivar=keysInHisqname)
+        {return(useMyHisqname&&keysInHisqname?keysInHisqname:self.baseWithHisqname.keysInHisqname);}=nil (dealloc,ivar=keysInHisqname)
     NSUInteger keyInHisqname={return(self.keysInHisqname.anyObject);}
 
     -(void)setHisqname:(NSHisClass)v {/*-1000*/ERR("__Class__ Please set keys");}

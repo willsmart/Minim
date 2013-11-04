@@ -1,6 +1,6 @@
 
 WIMyClass
-    Endpoint1 *hisname_endpoint=[[Endpoint1 alloc] initWithOwner:self retains:iretain acceptableSel:@selector(isAcceptableHisname:) otherEndObjectToEndpoint:@selector(hisnameToEndpoint:)] (dealloc,readonly,nonatomic)
+    Endpoint1 *hisname_endpoint=[[Endpoint1 alloc] initWithOwner:self retains:iretain acceptableSel:@selector(isAcceptableHisname:) otherEndObjectToEndpoint:@selector(hisnameToEndpoint:)] (dealloc,publicreadonly,nonatomic)
     WIHisClass hisname=
         {return((NSHisClass)v_hisname_endpoint.value);}
         -v{[v_hisname_endpoint setValue:v];} (noivar)

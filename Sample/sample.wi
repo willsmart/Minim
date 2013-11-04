@@ -235,10 +235,10 @@ A
     am7 -a< B bm7
     am8 -a<~ B bm8
 
-    aq >> Aq -- B bq >> Bq
-    asq >> Asq -s< B bsq >> Bsq
-    aaq >> Aaq -a< B baq >> Baq
-    amq >> Amq -m< B bmq >> Bmq
+    aw >> Aq -- B bw >> Bq
+    asw >> Asq -s< B bsw >> Bsq
+    aaw >> Aaq -a< B baw >> Baq
+    amw >> Amq -m< B bmw >> Bmq
 
 
 

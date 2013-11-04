@@ -21,13 +21,15 @@
 -(void)dealloc {
     [inFilesLocations release];
     [inFilesMessages release];
+    [useLocationsFrom release];
     [super dealloc];
 }
 
-@synthesize inFilesLocations,inFilesMessages;
+@synthesize inFilesLocations,inFilesMessages,useLocationsFrom;
 
 -(id)init {
     if (!(self=[super init])) return(nil);
+    self.useLocationsFrom=[WClasses getDefault].logContext;
     inFilesLocations=[[NSMutableDictionary alloc] init];
     inFilesMessages=[[NSMutableArray alloc] init];
     [(NSMutableArray*)[InFiles allInFiles] addObject:self];
@@ -262,9 +264,25 @@ static NSMutableArray *InFiles_allInFiles=nil;
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @implementation WClasses
 @synthesize classes,protocols,skipNewLines;
-@synthesize classContext,classContextBracket,propertyContexts,propertyContextBrackets,props,propFiles,taskList,readFNStack,includes,taskFn;
+@synthesize classContext,logContext,classContextBracket,propertyContexts,propertyContextBrackets,props,propFiles,taskList,readFNStack,includes,taskFn;
 @synthesize ins_first_decl,ins_after_decl_decl,ins_after_structs_decl,ins_after_protocols_decl,ins_after_ifaces_decl,ins_last_decl,incls,ins_after_imports_decl;
 @synthesize ins_first_iface,ins_after_decl_iface,ins_after_structs_iface,ins_after_protocols_iface,ins_after_ifaces_iface,ins_last_iface,ins_after_imports_iface;
 @synthesize ins_first_impl,ins_after_decl_impl,ins_after_structs_impl,ins_after_protocols_impl,ins_after_ifaces_impl,ins_last_impl,ins_after_imports_impl,hasErrors,hasWarnings,finishedParse;
@@ -275,6 +293,7 @@ static NSMutableArray *InFiles_allInFiles=nil;
 - (void)dealloc {
     self.classes=self.protocols=nil;
     self.classContext=nil;
+    self.logContext=nil;
     self.propertyContexts=nil;
     self.propertyContextBrackets=nil;
     self.props=nil;
@@ -937,6 +956,9 @@ static WClasses *_default=nil;
     }
     else if (([ret isEqualToString:@"ivar"]||[ret isEqualToString:@"justivar"]||[ret isEqualToString:@"class"]||[ret isEqualToString:@"getter"]||[ret isEqualToString:@"setter"])&&[self readc:r anyof:@"="]&&(w=[self readWord:r])) {
         ret=[ret stringByAppendingFormat:([self readc:r anyof:@":"]?@"=%@:":@"=%@"),w];
+    }
+    else if ([ret isEqualToString:@"readonly"]&&[self readc:r anyof:@"!"]) {
+        ret=[ret stringByAppendingString:@"!"];
     }
         
     return(ret);
@@ -1687,7 +1709,7 @@ static WClasses *_default=nil;
                     [[self class] changeToFileDir:s];
                     [self.readFNStack addObject:s];
                     if ([s hasSuffix:@"wierrors.wi"]) [InFiles addInFilename:r2.filePath line:0 column:0 format:@"%@",[InFiles excessMsg]];
-                    [self read:r2];
+                    [self read:r2 logContext:nil];
                     [self.readFNStack removeObject:s];
                     [fm changeCurrentDirectoryPath:wasDir];
                 }
@@ -1856,6 +1878,9 @@ static WClasses *_default=nil;
 }
 
 - (void)read:(WReader *)r {
+    [self read:r logContext:nil];
+}
+- (void)read:(WReader *)r logContext:(InFiles*)alogContext {
     WClass *cwas=[[self.classContext retain] autorelease];
     NSMutableArray *pwas=[[self.propertyContexts retain] autorelease];
     NSMutableIndexSet *piwas=[[self.propertyContextBrackets retain] autorelease];
@@ -1866,8 +1891,16 @@ static WClasses *_default=nil;
     self.propertyContexts=[NSMutableArray array];
     self.propertyContextBrackets=[NSMutableIndexSet indexSet];
     
+    InFiles *logContextWas=[self.logContext retain];
+    if (alogContext) {
+        while (alogContext.useLocationsFrom) alogContext=alogContext.useLocationsFrom;
+        self.logContext=alogContext;
+    }
+    
     [self readKeepingContext:r];
     
+    self.logContext=[logContextWas autorelease];
+
     self.classContext=cwas;
     self.propertyContexts=pwas;
     self.propertyContextBrackets=piwas;
@@ -2147,6 +2180,9 @@ static WClasses *_default=nil;
 
 
 + (void)_note:(NSString *)n withToken:(WReaderToken *)t context:(InFiles*)ctxt aggregatePattern:(NSString*)agg {
+
+    while (ctxt.useLocationsFrom) ctxt=ctxt.useLocationsFrom;
+    
      WClasses *cs=[WClasses getDefault];
      NSString *fn=t.tokenizer.reader.filePath;
      if (fn&&((!cs.taskFn)||![cs.taskFn isEqualToString:fn])) {
@@ -2161,6 +2197,8 @@ static WClasses *_default=nil;
     //   [NSString stringWithFormat:@"   %@",[n stringByReplacingOccurrencesOfString:@"\n" withString:@"   "]]);
     n=[NSString stringWithFormat:@"   %@",[n stringByReplacingOccurrencesOfString:@"\n" withString:@"   "]];
 
+
+    
     if (ctxt||fn) {
         NSError *err=nil;
         NSString *agg2=[[NSRegularExpression escapedPatternForString:agg] stringByReplacingOccurrencesOfString:@"##" withString:@"(\\d++)"];
@@ -2621,6 +2659,7 @@ static WClasses *_default=nil;
                 qname:[WClasses processClassString:v.qname class:forClas protocols:stack]
                 defVal:[WClasses processClassString:v.defaultValue class:forClas protocols:stack]
                 defValLevel:v.defLevel attributes:attrs clas:forClas];
+            v2.useLocationsFrom=v.useLocationsFrom;
             for (NSString *fn in v.inFilesLocations) {
                 for (NSValue *vv in (NSSet*)[v.inFilesLocations objectForKey:fn]) {
                     [v2 addInFilename:fn line:(int)vv.rangeValue.location column:(int)vv.rangeValue.length];
@@ -2636,6 +2675,7 @@ static WClasses *_default=nil;
                 [WClasses processClassString:fn.sig class:forClas protocols:stack]
                 body:[WClasses processClassString:fn.body class:forClas protocols:stack]
                 clas:forClas];
+        fn2.useLocationsFrom=fn.useLocationsFrom;
         for (NSString *fname in fn.inFilesLocations) {
             for (NSValue *vv in (NSSet*)[fn.inFilesLocations objectForKey:fname]) {
                 [fn2 addInFilename:fname line:(int)vv.rangeValue.location column:(int)vv.rangeValue.length];
@@ -3163,19 +3203,19 @@ static WClasses *_default=nil;
         r2.tokenizer.tokenDelegate=[WClasses getDefault];
         r2.fileString=[WProp string:[[WClasses getDefault].propFiles objectForKey:[NSString stringWithFormat:@"%c%c",self.myType,self.hisType]] withMyType:self.myWType myName:self.myname iamOwner:self.ownerIsMe myQName:self.myqname hisType:self.hisWType hisName:self.hisname heIsOwner:self.ownerIsHim hisQName:self.hisqname qprop:[NSString stringWithFormat:@"myname %@ WIHisClass hisname",self.type] noPlurals:NO];
         r2._fileName=[NSString stringWithFormat:@"%@:(%@ :: %@)",r.fileName,[self.myclas.wType wiType],self.hisname];
-        [[WClasses getDefault] read:r2];
+        [[WClasses getDefault] read:r2 logContext:self];
         r2=[[[WReader alloc] init] autorelease];
         r2.tokenizer.tokenDelegate=[WClasses getDefault];
         r2.fileString=[WProp string:[[WClasses getDefault].propFiles objectForKey:[NSString stringWithFormat:@"%c%c",self.hisType,self.myType]] withMyType:self.hisWType myName:self.hisname iamOwner:self.ownerIsHim myQName:self.hisqname hisType:self.myWType hisName:self.myname heIsOwner:self.ownerIsMe hisQName:self.myqname qprop:@"" noPlurals:NO];
         r2._fileName=[NSString stringWithFormat:@"%@:(%@ :: %@)",r.fileName,[self.hisclas.wType wiType],self.myname];
 //        [WClasses note:r2.fileString withReader:r];
-        [[WClasses getDefault] read:r2];
+        [[WClasses getDefault] read:r2 logContext:self];
         if (hisqname) {
             r2=[[[WReader alloc] init] autorelease];
             r2.tokenizer.tokenDelegate=[WClasses getDefault];
             r2.fileString=[WProp string:[[WClasses getDefault].propFiles objectForKey:[NSString stringWithFormat:(hisclas.isType?@"T%c":@"NS%c"),self.hisType]] withMyType:self.myWType myName:self.myname iamOwner:self.ownerIsMe myQName:self.myqname hisType:self.hisWType hisName:self.hisname heIsOwner:self.ownerIsHim hisQName:self.hisqname qprop:@"" noPlurals:NO];
             r2._fileName=[NSString stringWithFormat:@"%@:(%@ >> %@)",r.fileName,[self.myclas.wType wiType],self.hisqname];
-            [[WClasses getDefault] read:r2];
+            [[WClasses getDefault] read:r2 logContext:self];
         }
         if (myqname) {
             r2=[[[WReader alloc] init] autorelease];
@@ -3185,7 +3225,7 @@ static WClasses *_default=nil;
                 [NSString stringWithFormat:(myclas.isType?@"T%c":@"NS%c"),self.myType]));
             r2.fileString=[WProp string:[[WClasses getDefault].propFiles objectForKey:key] withMyType:self.hisWType myName:self.hisname iamOwner:self.ownerIsHim myQName:self.hisqname hisType:self.myWType hisName:self.myname heIsOwner:self.ownerIsMe hisQName:self.myqname qprop:@"" noPlurals:NO];
             r2._fileName=[NSString stringWithFormat:@"%@:(%@ >> %@)",r.fileName,[self.hisclas.wType wiType],self.myqname];
-            [[WClasses getDefault] read:r2];
+            [[WClasses getDefault] read:r2 logContext:self];
         }
     }
 }
@@ -3198,7 +3238,7 @@ static WClasses *_default=nil;
 
     r2.fileString=[WProp string:[[WClasses getDefault].propFiles objectForKey:@"Base"] withMyClass:clas];
     r2._fileName=[NSString stringWithFormat:@"%@:PropBase",[clas.wType wiType]];
-    [[WClasses getDefault] read:r2];
+    [[WClasses getDefault] read:r2 logContext:nil];
 }
 
 
@@ -3848,7 +3888,7 @@ CACHEVARATTRFN(bool,synthesized,
 )
 
 CACHEVARATTRFN(bool,objc_readonly,
-    ret=[attributes containsObject:@"readonly"]||((!self.hasIVar)&&self.hasGetter&&!self.hasSetter);
+    ret=[attributes containsObject:@"readonly"]||[attributes containsObject:@"readonly!"]||((!self.hasIVar)&&self.hasGetter&&!self.hasSetter);
 )
 CACHEVARATTRFN(bool,needsGetter,
     ret=self.synthesized;
@@ -3960,7 +4000,7 @@ CACHEVARATTRFN_retain(NSString*,localizedVarName,
         r2.fileString=[WProp string:[[WClasses getDefault].propFiles objectForKey:[NSString stringWithFormat:(self.localizedType.clas.isType?@"T%c":@"NS%c"),[self varType]]] withMyType:self.clas.wType myName:@"self" iamOwner:NO myQName:@"" hisType:self.localizedType hisName:self.localizedName heIsOwner:YES hisQName:self.qname qprop:@"" noPlurals:YES];
         r2._fileName=[NSString stringWithFormat:@"%@:(%@ >> %@)",r.fileName,[self.clas.wType wiType],self.qname];
         
-        [[WClasses getDefault] read:r2];
+        [[WClasses getDefault] read:r2 logContext:self];
     }
 }
 
@@ -4153,7 +4193,7 @@ CACHEVARATTRFN_retain(NSString*,localizedVarName,
         if (fn) fn.body=self.localizedSetterBody;
         else [WFn getFnWithSig:self.setterSig body:self.localizedSetterBody clas:clas];
     }
-    if (self.objc_readonly&&self.retainable&&self.hasIVar) {
+    if (self.objc_readonly&&self.retainable&&self.hasIVar&&!(self.localizedType.clas.isSys||self.localizedType.clas.isType||[attributes containsObject:@"readonly!"])) {
         [WClasses note:[NSString stringWithFormat:@"Please think about making property \"%@\" publicreadonly",self.localizedName] withToken:nil context:self];
     }
 }

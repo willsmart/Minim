@@ -4,7 +4,7 @@
 
 
 WIMyClass
-    WIHisClass previousHisqname=nil (dealloc,readonly,ivar=previousHisqname)
+    WIHisClass previousHisqname=nil (dealloc,publicreadonly,ivar=previousHisqname)
     WIHisClass hisqname=
         {return(hisqname);}
         -v{
@@ -70,7 +70,7 @@ JustMyClassOverride<+Commitable>
 
     -(init)init{}
 
-    WIHisClass previousHisqname=nil (dealloc,readonly,ivar=previousHisqname)
+    WIHisClass previousHisqname=nil (dealloc,publicreadonly,ivar=previousHisqname)
     WIHisClass hisqname=
         {return(useMyHisqname&&hisqname?hisqname:self.baseWithHisqname.hisqname);}
         -v{hisqname=[v retain];useMyHisqname=YES;[self markDirty];}=nil (dealloc,ivar=hisqname)

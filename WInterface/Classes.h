@@ -38,10 +38,12 @@
 @interface InFiles : NSObject {
     NSMutableDictionary *inFilesLocations;
     NSMutableArray *inFilesMessages;
+    InFiles *useLocationsFrom;
 }
 
 @property (readonly) NSMutableDictionary *inFilesLocations;
 @property (readonly) NSMutableArray *inFilesMessages;
+@property (retain,nonatomic) InFiles *useLocationsFrom;
 
 +(NSMutableDictionary*)staticInFilesMessages;
 +(void)addInFilename:(NSString*)fn line:(int)line column:(int)column format:(NSString*)format,...;
@@ -57,11 +59,12 @@
 
 @end
 
-@interface WClasses : InFiles<WReaderTokenDelegate> {
+@interface WClasses : NSObject<WReaderTokenDelegate> {
     NSMutableDictionary *classes,*protocols;
     NSMutableArray *propertyContexts,*props,*taskList;
     NSMutableIndexSet *propertyContextBrackets;
     WClass *classContext;
+    InFiles *logContext;
     int classContextBracket;
     bool skipNewLines;
     bool madeImportSets;
@@ -72,6 +75,7 @@
 @property (retain,nonatomic) NSMutableArray *propertyContexts,*props;
 @property (retain,nonatomic) NSMutableIndexSet *propertyContextBrackets;
 @property (retain,nonatomic) WClass *classContext;
+@property (retain,nonatomic) InFiles *logContext;
 @property int classContextBracket;
 @property (retain,nonatomic) NSMutableArray *taskList;
 @property (retain,nonatomic) NSMutableSet *readFNStack;

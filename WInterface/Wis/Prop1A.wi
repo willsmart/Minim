@@ -1,6 +1,6 @@
 
 WIMyClass
-    EndpointA *hisnames=[[EndpointA alloc] initWithOwner:self retains:iretain acceptableSel:@selector(isAcceptableHisname:) otherEndObjectToEndpoint:@selector(hisnameToEndpoint:)] (readonly,nonatomic,dealloc)
+    EndpointA *hisnames=[[EndpointA alloc] initWithOwner:self retains:iretain acceptableSel:@selector(isAcceptableHisname:) otherEndObjectToEndpoint:@selector(hisnameToEndpoint:)] (publicreadonly,nonatomic,dealloc)
 
     -(void)die {[v_hisnames removeAllObjects];}
 
