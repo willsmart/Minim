@@ -2382,9 +2382,9 @@ static WClasses *_default=nil;
     hasDef=NO;
     self.superType=[[[WType alloc] initWithClass:nil protocols:asuperList addObject:NO] autorelease];
     self.varPatterns=[avarPatterns.copy autorelease];
-    if ([name isEqualToString:@"Object"]||[name isEqualToString:@"Globals"]) {
-        self.varPatterns=[[[(self.varPatterns?self.varPatterns:[NSSet set]) setByAddingObject:@"nac"] setByAddingObject:@"multi"] setByAddingObject:@"undefined"];
-    }
+    //if ([name isEqualToString:@"Object"]||[name isEqualToString:@"Globals"]) {
+    //    self.varPatterns=[[[(self.varPatterns?self.varPatterns:[NSSet set]) setByAddingObject:@"nac"] setByAddingObject:@"multi"] setByAddingObject:@"undefined"];
+    //}
     self.vars=[NSMutableDictionary dictionary];
     self.fns=[NSMutableDictionary dictionary];
     [[WClasses getDefault].protocols setObject:self forKey:aname];
@@ -2551,10 +2551,21 @@ static WClasses *_default=nil;
     [self getNames];
     //NSArray *props=[WClasses getDefault].props;
     NSMutableString *protStr=[NSMutableString string];
+    NSArray *names=nil;
+    
     if (self.superType.protocols.count) {
-        NSArray *names=[[self addSuperProtocolNamesTo:nil].allObjects sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+        names=[[self addSuperProtocolNamesTo:nil].allObjects sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
                 return([(NSString*)obj1 compare:obj2]);
             }];
+        if ((![self.varPatterns containsObject:@"-Object"])&&![names containsObject:@"Object"]) {
+            names=[names arrayByAddingObject:@"Object"];
+        }
+    }
+    else if ((![self.varPatterns containsObject:@"-Object"])&&![names containsObject:@"Object"]) {
+        names=[NSArray arrayWithObject:@"Object"];
+    }
+
+    if (names.count) {
         bool fst=YES;
         for (NSString *n in names) {
             [protStr appendFormat:@"%@%@",fst?@"<":@", ",n];
@@ -2562,6 +2573,7 @@ static WClasses *_default=nil;
         }
         if (!fst) [protStr appendString:@">"];
     }
+    
     if (isSys) [s appendFormat:@"@interface %@(winterface)\n",self.name];
     else {
         WClass *sup;for (sup=self.superType.clas;sup&&!sup.exists;sup=sup.superType.clas);
@@ -3565,15 +3577,22 @@ static WClasses *_default=nil;
         switch (t.type) {
             case 'o':
             if ([t.str isEqualToString:@"."]) bad=1;
-            else if ([t.str hasSuffix:@"ivar*/"]) bad=1;
             else if ([t.str isEqualToString:@"-"]) bad=-1;
             else if ([t.str isEqualToString:@">"]&&(bad==-1)) bad=1;
+            else bad=0;
             break;
-            case 'z':case 'r':case 'c':case 'n':case 's':if (bad==-1) bad=0;
+            case 'n':
+                bad=1;
+                break;
+            case 'z':case 'r':case 'c':case 's':
+            if ([t.str hasSuffix:@"ivar*/"]) {
+                bad=1;
+            }
+            else if (bad==-1) bad=0;
             break;
             case 'w':
             if (bad<=0) {
-                bad=0;
+                bad=1;
                 WVar *v=nil;
                 for (NSString *k in clas.vars) {
                     WVar *v2=[clas.vars objectForKey:k];
@@ -3921,6 +3940,10 @@ CACHEVARATTRFN(bool,justivar,
     }
 )
 
+-(bool)tracked {
+    return(self.hasIVar&&(!(self.localizedType.clas.isType||self.localizedType.clas.isSys))&&self.retainable&&![attributes containsObject:@"notrack"]);
+}
+
 
 CACHEVARATTRFN_retain(NSMutableString*,localizedGetterBody,
     if (self.synthesized) {
@@ -3963,7 +3986,7 @@ CACHEVARATTRFN_retain(NSMutableString*,localizedSetterBody,
             [body appendFormat:@"@-1999 if (!authorized_thread(__private_access_thread_mask)) ERR(\"Attempt to set public-readonly property in unauthorized thread (please try something like self.privateaccess.%@=\\\"blah\\\" to set the property)\");\n",self.localizedName];
         }
         
-        if (self.hasIVar&&self.retainable&&![attributes containsObject:@"notrack"]) {
+        if (self.tracked) {
             [body appendFormat:@"@-850 REMOVEOWNER(%@,self);ADDOWNER(%@,self);",self.localizedVarName,self.setterArg];
         }
         ret=[[WFn mergedBody:body with:@""].mutableCopy autorelease];
@@ -4094,7 +4117,7 @@ CACHEVARATTRFN_retain(NSString*,localizedVarName,
                 }
                 [r release];
             }
-            [WFn getFnWithSig:@"-(init)" body:[NSString stringWithFormat:@"@-500 /*ivar*/%@=(%@);%@\n",self.localizedVarName,(self.retains?[NSString stringWithFormat:@"[(id)(%@) retain]",defaultValue]:defaultValue),(self.hasIVar&&self.retainable&&![attributes containsObject:@"notrack"]?[NSString stringWithFormat:@"  ADDOWNER(%@,self);",self.localizedVarName]:@"")] clas:clas];
+            [WFn getFnWithSig:@"-(init)" body:[NSString stringWithFormat:@"@-500 /*ivar*/%@=(%@);%@\n",self.localizedVarName,(self.retains?[NSString stringWithFormat:@"[(id)(%@) retain]",defaultValue]:defaultValue),(self.tracked?[NSString stringWithFormat:@"  ADDOWNER(%@,self);",self.localizedVarName]:@"")] clas:clas];
         }
     }
     else if (attributes) {
@@ -4181,7 +4204,7 @@ CACHEVARATTRFN_retain(NSString*,localizedVarName,
     }
 
     if (self.retains) {
-        [WFn getFnWithSig:@"-(void)dealloc" body:[NSString stringWithFormat:@"\n    [%@ release];%@=nil;",self.localizedVarName,self.localizedVarName] clas:clas];
+        [WFn getFnWithSig:@"-(void)dealloc" body:(self.tracked?[NSString stringWithFormat:@"\n    REMOVEOWNER(%@,self);[%@ release];%@=nil;",self.localizedVarName,self.localizedVarName,self.localizedVarName]:[NSString stringWithFormat:@"\n    [%@ release];%@=nil;",self.localizedVarName,self.localizedVarName]) clas:clas];
     }
     if (self.needsGetter) {
         WFn *fn=self.hasGetter;

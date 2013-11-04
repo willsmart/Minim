@@ -304,6 +304,7 @@
 +(NSComparisonResult)compareName:(NSString*)n1 withName:(NSString*)n2;
 
 
+@property (readonly) bool tracked;
 @property (readonly) bool imaginary;
 @property (readonly) WFn *hasGetter,*hasSetter;
 @property (readonly) bool retains;
