@@ -954,7 +954,7 @@ static WClasses *_default=nil;
         if (r.currentToken) r.pos++;
         ret=[s.copy autorelease];
     }
-    else if (([ret isEqualToString:@"ivar"]||[ret isEqualToString:@"justivar"]||[ret isEqualToString:@"class"]||[ret isEqualToString:@"getter"]||[ret isEqualToString:@"setter"])&&[self readc:r anyof:@"="]&&(w=[self readWord:r])) {
+    else if (([ret isEqualToString:@"privateivar"]||[ret isEqualToString:@"ivar"]||[ret isEqualToString:@"justivar"]||[ret isEqualToString:@"class"]||[ret isEqualToString:@"getter"]||[ret isEqualToString:@"setter"])&&[self readc:r anyof:@"="]&&(w=[self readWord:r])) {
         ret=[ret stringByAppendingFormat:([self readc:r anyof:@":"]?@"=%@:":@"=%@"),w];
     }
     else if ([ret isEqualToString:@"readonly"]&&[self readc:r anyof:@"!"]) {
@@ -3609,14 +3609,17 @@ static WClasses *_default=nil;
                     if ([t.str isEqualToString:v2.localizedName]) {v=v2;break;}
                 }
                 if (v) {
-                    bool isSetter=NO,isGetter=YES,got=NO;
+                    bool isSetter=NO,isGetter=YES,got=NO;int setterEqPos=0;
                     for (int pos2=pos+1;(pos2<r.tokenizer.tokens.count)&&!got;pos2++) {
                         WReaderToken *t2=[r.tokenizer.tokens objectAtIndex:pos2];
                         switch (t2.type) {
-                            case 'o':isSetter=[t2.str isEqualToString:@"="];
-                            isGetter=(!isSetter)&&![t2.str isEqualToString:@"("];
-                            got=YES;
-                            break;
+                            case 'o':
+                                if ((isSetter=[t2.str isEqualToString:@"="])) {
+                                    setterEqPos=pos2;
+                                }
+                                isGetter=(!isSetter)&&![t2.str isEqualToString:@"("];
+                                got=YES;
+                                break;
                             case 'w':case 'n':case 's':break;
                         }
                     }
@@ -3633,13 +3636,47 @@ static WClasses *_default=nil;
                             (v.objc_readonly?
                                 [NSString stringWithFormat:@"/*readonly ivar*/%@",v.localizedVarName]:
                                 (v.readonly?
-                                    [NSString stringWithFormat:@"self.privateaccess.%@",v.localizedName]:
+                                    [NSString stringWithFormat:@"privateaccess(self.%@",v.localizedName]:
                                     [NSString stringWithFormat:@"self.%@",v.localizedName]
                                 )
                             )
                         );
                         changed=YES;
+                        if ((!isForSetterGetter)&&(!v.objc_readonly)&&v.readonly) {
+                            NSMutableArray *bs=[NSMutableArray array];
+                            bool malformed=NO;
+                            bool found=NO;
+                            for (int pos2=setterEqPos+1;(pos2<r.tokenizer.tokens.count);pos2++) {
+                                WReaderToken *t=[r.tokenizer.tokens objectAtIndex:pos2];
+                                if ((t.type=='z')||(t.type=='c')||(t.type=='r')) continue;
+                                if ([t.str isEqualToString:@"["]) [bs addObject:@"[]"];
+                                else if ([t.str isEqualToString:@"{"]) [bs addObject:@"{}"];
+                                else if ([t.str isEqualToString:@"("]) [bs addObject:@"()"];
+                                else if ([t.str isEqualToString:@"]"]) {
+                                    if ((!bs.count)||![(NSString*)[bs lastObject] isEqualToString:@"[]"]) {malformed=YES;break;}
+                                    [bs removeLastObject];
+                                }
+                                else if ([t.str isEqualToString:@"}"]) {
+                                    if ((!bs.count)||![(NSString*)[bs lastObject] isEqualToString:@"{}"]) {malformed=YES;break;}
+                                    [bs removeLastObject];
+                                }
+                                else if ([t.str isEqualToString:@")"]) {
+                                    if ((!bs.count)||![(NSString*)[bs lastObject] isEqualToString:@"()"]) {malformed=YES;break;}
+                                    [bs removeLastObject];
+                                }
+                                if ([t.str isEqualToString:@";"]&&!bs.count) {
+                                    t.str=[@")" stringByAppendingString:t.str];
+                                    found=YES;
+                                    break;
+                                }
+                            }
+                            if (!found) {
+                                [WClasses error:[NSString stringWithFormat:@"Could not detect end of publicreadonly setter value, please surround it yourself with something like privateaccess(self.%@=...)",v.localizedName] withToken:nil context:self];
+                            }
+                        }
                     }
+                            
+                    
                     if (isGetter) {
                         t.str=(hasIVar?
                             (isForSetterGetter?
@@ -3833,6 +3870,8 @@ static WClasses *_default=nil;
     [self needsGetter];
     [self needsSetter];
     [self hasIVar];
+    [self superHasIVar];
+    [self privateIVar];
     [self hasDefaultValue];
     [self justivar];
     [self hasGetter];
@@ -3848,6 +3887,36 @@ static WClasses *_default=nil;
     [self localizedSetterBody];
     [self localizedGetterBody];
     [self localizedVarName];
+    
+    if ([attributes containsObject:@"explain"]) {
+        [WClasses note:((NSDictionary*)[NSDictionary dictionaryWithObjectsAndKeys:
+            [NSNumber numberWithBool:imaginary],@"imaginary",
+            [NSNumber numberWithBool:retains],@"retains",
+            [NSNumber numberWithBool:isType],@"isType",
+            [NSNumber numberWithBool:modelretains],@"modelRetains",
+            [NSNumber numberWithBool:readonly],@"readonly",
+            [NSNumber numberWithBool:atomic],@"atomic",
+            [NSNumber numberWithBool:synthesized],@"synthesized",
+            [NSNumber numberWithBool:objc_readonly],@"objc_readonly",
+            [NSNumber numberWithBool:needsGetter],@"needsGetter",
+            [NSNumber numberWithBool:needsSetter],@"needsSetter",
+            [NSNumber numberWithBool:hasIVar],@"hasIVar",
+            [NSNumber numberWithBool:hasDefaultValue],@"hasDefaultValue",
+            [NSNumber numberWithBool:justivar],@"justivar",
+            [NSNumber numberWithBool:hasGetter],@"hasGetter",
+            [NSNumber numberWithBool:hasSetter],@"hasSetter",
+            setterName,@"setterName",
+            getterName,@"getterName",
+            setterSig,@"setterSig",
+            getterSig,@"getterSig",
+            localizedSetterName,@"localizedSetterName",
+            localizedGetterName,@"localizedGetterName",
+            localizedSetterSig,@"localizedSetterSig",
+            localizedGetterSig,@"localizedGetterSig",
+            localizedVarName,@"localizedVarName",
+            [NSNumber numberWithBool:self.tracked],@"tracked",
+        nil]).description withToken:nil context:self];
+    }
     attributesCached=YES;
 }
 
@@ -3893,7 +3962,7 @@ CACHEVARATTRFN_retain(NSString*,localizedSetterSig,
 )
 
 CACHEVARATTRFN(bool,retains,
-    ret=self.retainable&&(![attributes containsObject:@"assign"])&&self.hasIVar;
+    ret=self.retainable&&(![attributes containsObject:@"assign"])&&(self.hasIVar||self.superHasIVar);
 )
 CACHEVARATTRFN(bool,imaginary,
     ret=[attributes containsObject:@"imaginary"];
@@ -3922,7 +3991,7 @@ CACHEVARATTRFN(bool,synthesized,
 )
 
 CACHEVARATTRFN(bool,objc_readonly,
-    ret=[attributes containsObject:@"readonly"]||[attributes containsObject:@"readonly!"]||((!self.hasIVar)&&self.hasGetter&&!self.hasSetter);
+    ret=[attributes containsObject:@"readonly"]||[attributes containsObject:@"readonly!"]||((!(self.hasIVar||self.superHasIVar))&&self.hasGetter&&!self.hasSetter);
 )
 CACHEVARATTRFN(bool,needsGetter,
     ret=self.synthesized;
@@ -3933,17 +4002,58 @@ CACHEVARATTRFN(bool,needsSetter,
 
 CACHEVARATTRFN(bool,hasIVar,
     do {
-    //[WClasses warning:[NSString stringWithFormat:@"%@ %d %d",attributes.description,self.hasSetter,self.hasGetter] withReader:nil];
-    if([attributes containsObject:@"ivar"]||[attributes containsObject:@"justivar"]||(!(self.hasGetter||self.hasSetter))) {ret=YES;break;}
-    if (attributes) {
-        for (NSString *attribute in attributes) {
-            if ([attribute hasPrefix:@"ivar="]) {ret=YES;break;}
-            if ([attribute hasPrefix:@"justivar="]) {ret=YES;break;}
+        NSString *vv=self.localizedVarName;
+        if (vv) {
+            bool pvt=NO;
+            for (WClass *sup=self.clas.superType.clas;sup;sup=sup.superType.clas) {
+                for (NSString *k in sup.vars) {
+                    WVar *v=[sup.vars objectForKey:k];
+                    if (v.hasIVar&&[v.localizedVarName isEqualToString:vv]) {
+                        ret=YES;
+                        pvt=pvt||v.privateIVar;
+                    }
+                }
+            }
+            if (pvt) {
+                ret=NO;
+                break;
+            }
+            else if (ret) break;
         }
-        if (ret) break;
-    }
-    if ([self hasSettersAndGettersInBody:((WFn*)[clas.fns objectForKey:[self getterSig]]).body hasSetter:nil hasGetter:nil]||[self hasSettersAndGettersInBody:((WFn*)[clas.fns objectForKey:[self setterSig]]).body hasSetter:nil hasGetter:nil]) {ret=YES;break;}
+ //       if (self.superHasIVar) break;
+    //[WClasses warning:[NSString stringWithFormat:@"%@ %d %d",attributes.description,self.hasSetter,self.hasGetter] withReader:nil];
+        if([attributes containsObject:@"privateivar"]||[attributes containsObject:@"ivar"]||[attributes containsObject:@"justivar"]||(!(self.hasGetter||self.hasSetter))) {ret=YES;break;}
+        if (attributes) {
+            for (NSString *attribute in attributes) {
+                if ([attribute hasPrefix:@"privateivar="]) {ret=YES;break;}
+                if ([attribute hasPrefix:@"ivar="]) {ret=YES;break;}
+                if ([attribute hasPrefix:@"justivar="]) {ret=YES;break;}
+            }
+            if (ret) break;
+        }
+        if ([self hasSettersAndGettersInBody:((WFn*)[clas.fns objectForKey:[self getterSig]]).body hasSetter:nil hasGetter:nil]||[self hasSettersAndGettersInBody:((WFn*)[clas.fns objectForKey:[self setterSig]]).body hasSetter:nil hasGetter:nil]) {ret=YES;break;}
     } while (NO);
+)
+
+
+CACHEVARATTRFN(bool,superHasIVar,
+    NSString *vv=self.localizedVarName;
+    if (vv) {
+        for (WClass *sup=self.clas.superType.clas;sup;sup=sup.superType.clas) {
+            for (NSString *k in sup.vars) {
+                WVar *v=[sup.vars objectForKey:k];
+                if (v.hasIVar&&[v.localizedVarName isEqualToString:vv]) {
+                    ret=YES;
+                }
+            }
+            if (ret) break;
+        }
+    }
+)
+
+CACHEVARATTRFN(bool,privateIVar,
+    ret=[attributes containsObject:@"privateivar"];
+    if (!ret) for (NSString *s in attributes) if ([s hasPrefix:@"privateivar="]) {ret=YES;break;}
 )
 
 CACHEVARATTRFN(bool,justivar,
@@ -3998,7 +4108,7 @@ CACHEVARATTRFN_retain(NSMutableString*,localizedSetterBody,
         }
         
         if (self.readonly) {
-            [body appendFormat:@"@-1999 if (!authorized_thread(__private_access_thread_mask)) ERR(\"Attempt to set public-readonly property in unauthorized thread (please try something like self.privateaccess.%@=\\\"blah\\\" to set the property)\");\n",self.localizedName];
+            [body appendFormat:@"@-1999 if (!authorized_thread(__private_access_thread_mask)) ERR(\"Attempt to set public-readonly property in unauthorized thread (please try something like privateaccess(%@=\\\"blah\\\") to set the property)\");\n",self.localizedName];
         }
         
         if (self.tracked) {
@@ -4011,6 +4121,9 @@ CACHEVARATTRFN_retain(NSMutableString*,localizedSetterBody,
 CACHEVARATTRFN_retain(NSString*,localizedVarName,
     if (attributes) {
         for (NSString *attribute in attributes) {
+            if ([attribute hasPrefix:@"privateivar="]) {
+                ret=[attribute substringFromIndex:@"privateivar=".length];
+            }
             if ([attribute hasPrefix:@"ivar="]) {
                 ret=[attribute substringFromIndex:@"ivar=".length];
             }
@@ -4078,8 +4191,8 @@ CACHEVARATTRFN_retain(NSString*,localizedVarName,
     
     if (defaultValue) {
         hasDef=YES;
-        if (self.hasDefaultValue) {
-            if (self.retainable&&self.hasIVar&&!self.imaginary) {
+        if (self.hasDefaultValue&&self.hasIVar&&!self.imaginary) {
+            if (self.retainable) {
                 WReader *r=[[WReader alloc] init];
                 r.fileString=defaultValue;
                 NSMutableArray *bs=[NSMutableArray array];
@@ -4218,7 +4331,7 @@ CACHEVARATTRFN_retain(NSString*,localizedVarName,
         [WClasses warning:[NSString stringWithFormat:@"Non-imaginary variable %@ has an ivar, but no default value. This is less a strict error than unclean",self.localizedName] withToken:nil context:self];
     }
 
-    if (self.retains) {
+    if (self.retains&&self.hasIVar) {
         [WFn getFnWithSig:@"-(void)dealloc" body:(self.tracked?[NSString stringWithFormat:@"\n    REMOVEOWNER(%@,self);[%@ release];%@=nil;",self.localizedVarName,self.localizedVarName,self.localizedVarName]:[NSString stringWithFormat:@"\n    [%@ release];%@=nil;",self.localizedVarName,self.localizedVarName]) clas:clas];
     }
     if (self.needsGetter) {
@@ -4265,20 +4378,9 @@ CACHEVARATTRFN_retain(NSString*,localizedVarName,
 }
 - (void)appendObjCToString_ivar:(NSMutableString *)s {
     if (self.imaginary) return;
+    if (self.superHasIVar) return;
     if (!self.hasIVar) return;
-    NSString *vv=self.localizedVarName;
-    WClass *sup=self.clas.superType.clas;
-    bool supHasIVar=NO;
-    if (sup&&vv) {
-        for (NSString *k in sup.vars) {
-            WVar *v=[sup.vars objectForKey:k];
-            if (v.hasIVar&&![v.localizedVarName isEqualToString:vv]) {
-                supHasIVar=YES;
-                break;
-            }
-        }
-    }
-    if (vv&&!supHasIVar) [s appendFormat:@"    %@ %@;\n",[self localizedObjCType],vv];
+    [s appendFormat:@"    %@%@ %@;%@\n",(self.privateIVar?@"@private ":@""),self.localizedObjCType,self.localizedVarName,(self.privateIVar?@" @protected":@"")];
 }
 @end
 

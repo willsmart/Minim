@@ -269,7 +269,7 @@
     
     
 
-    bool attributesCached,imaginary,retains,isType,modelretains,readonly,atomic,synthesized,objc_readonly,needsGetter,needsSetter,hasIVar,hasDefaultValue,justivar;
+    bool attributesCached,imaginary,retains,isType,modelretains,readonly,atomic,synthesized,objc_readonly,needsGetter,needsSetter,hasIVar,superHasIVar,privateIVar,hasDefaultValue,justivar;
     WFn *hasGetter,*hasSetter;
     NSString *setterName,*getterName,*getterSig,*setterSig,*localizedSetterName,*localizedGetterName,*localizedGetterSig,*localizedSetterSig,*localizedVarName,*localizedName;
     WType *localizedType;
@@ -313,7 +313,7 @@
 @property (readonly) bool readonly;
 @property (readonly) bool atomic;
 @property (readonly) bool synthesized,objc_readonly,needsGetter,needsSetter;
-@property (readonly) bool hasIVar,hasDefaultValue,justivar;
+@property (readonly) bool hasIVar,superHasIVar,privateIVar,hasDefaultValue,justivar;
 @property (readonly) NSString *setterName,*getterName,*getterSig,*setterSig,*localizedSetterName,*localizedGetterName,*localizedGetterSig,*localizedSetterSig;
 @property (readonly) NSMutableString *localizedSetterBody,*localizedGetterBody;
 

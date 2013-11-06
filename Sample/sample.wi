@@ -1,7 +1,15 @@
 "wierrors.wi"
-"../../wiLibrary/wiui.wi"
+//"../../wiLibrary/wiui.wi"
 
-/ *...
+<Globals>
+ +decl:{
+    #define MSGSTART(__fn) printf("%s",__fn);
+    #define ERR(...) printf(__VA_ARGS__)
+    #define ADDOWNER(...)
+    #define REMOVEOWNER(...)
+ }
+
+/*...
 
 // check for non autoreleased properties
 // (\[\s*\[\s*[\w\d_]+\s+alloc\s*]\s*init[^\[\(\{\]\)\}]*([\[\(\{][^\[\(\{\]\)\}]*+([\[\(\{][^\[\(\{\]\)\}]*+([\[\(\{][^\[\(\{\]\)\}]*+([\[\(\{][^\[\(\{\]\)\}]*+[\]\)\}][^\[\(\{\]\)\}]*+)*+[\]\)\}][^\[\(\{\]\)\}]*+)*+[\]\)\}][^\[\(\{\]\)\}]*+)*+[\]\)\}][^\[\(\{\]\)\}]*+)*+((?!autorelease\]).)*)(\(
@@ -17,11 +25,9 @@
 //"l\\\"ll\\"llr"rrrr"lrlrrl
 // NSString s=[[[NSString alloc] initWithFormat:(NSString*)[NSString stringWithFormat:@"hello%@",[NSString string]],@"blah",NSMakeRange(c,1,2,3)] autor elease] (readonly)
 A
-/**! --    (wi!warnwarn) Address warning: Non-imaginary variable a has an ivar, but no default value. This is less a strict error than unclean !**/
  int a
  A b=[A alloc]
  
-/**! --    (wi!errerr) Fix error: File is empty or doesn't exist !**/
 "include.wi"
 "include.wi"
 //"include/include.wi"
@@ -96,29 +102,7 @@ RClassabnap<RProtocol,RProtocolb,RProtocolnap> "fn:inherit"
     -(void)fn {/*RProtocolnap*/}
 
 
-<Object>
-    ULL __private_access_thread_mask=0 (justivar)
-    __WIClass__ privateaccess={authorize_thread(__private_access_thread_mask);return(self);}
-    
-<Globals>
- +decl:{
-    #define MSGSTART(__fn) printf("%s",__fn);
-    #define ERR(...) printf(__VA_ARGS__)
-    #define ADDOWNER(owned,owner)
-    #define REMOVEOWNER(owned,owner)
-//id objc_getProperty(id self, SEL _cmd, ptrdiff_t offset, BOOL atomic);
-//void objc_setProperty(id self, SEL _cmd, ptrdiff_t offset, id newValue, BOOL atomic,signed char shouldCopy);
-//void objc_copyStruct(void *dest, const void *src, ptrdiff_t size, BOOL atomic,BOOL hasStrong);
-  bool authorized_thread(ULL&mask);
-  void authorize_thread(ULL&mask);
- }
- +decl:impl:{
-  bool authorized_thread(ULL&mask) {
-     return(YES);
-  }
-  void authorize_thread(ULL&mask) {
-  }
- }
+
 
 // Category
 NSObject "fn:fns"
@@ -161,14 +145,12 @@ Clas
 
 <Vars:VarsBase> "fn:vars" "nap" "multi"
     short rw_iv_nodef_short_zero=0,rw_na_iv_def1_short_one=1,rw_na_iv_nodef_short_nill=nil (args)
-/**! --    (notenote) Note: Please think about making property "pr_iv_def_Clas_publicreadonly" publicreadonly !**/
     int pr_iv_def_nm_publicreadonly=123 (readonly,args)
     int rw_iv_def_nm_imaginaryi=123 (imaginary,args)
     int rw_iv_def_nm_atomici=123 (atomic,args)
     int rw_iv_nm_settergetteri=123 (setter=setSG,getter=sg,args)
     int r_noiv_nm_getteri={return(123);} (args)
     int pr_iv_nm_getteri=0{return(pr_iv_nm_getteri);} (args)
-/**! --    (notenote) Note: Please think about making property "pr_iv_Clas_setter" publicreadonly !**/
     int pr_iv_nm_setter=0-v{pr_iv_nm_setter=123;} (readonly,args)
     int rw_iv_nm_setteri=0
         -v{rw_iv_nm_setteri=123;} (args)
@@ -212,7 +194,6 @@ VarsAtomic<Vars> "int=>Clas*" "nm=>Clas" "args=>atomic" "fn:VarsAtomic" "123=>[C
 VarsRetainAtomic<Vars> "int=>Clas*" "nm=>Clas" "args=>atomic" "fn:VarsRetainAtomic" "123=>[Clas getDefault]"
 VarsAssignAtomic<Vars> "int=>Clas*" "nm=>Clas" "args=>assign,atomic" "fn:VarsAssignAtomic" "123=>[Clas getDefault]"
 
-...* /
 
 B
 
@@ -245,4 +226,45 @@ A
     amw >> Amq -m< B bmw >> Bmq
 
 
+A
+    A a=nil (publicreadonly)
+    -(void)fn {
+        a=[hi hi];
+        a="hi";
+        a=@"hi";
+        a=1;
+    }
 
+...*/
+
+type ULL "typedef:unsigned long long"
+<Object> "multi"
+    ULL __private_access_thread_mask=0 (justivar,privateivar)
+
+<C>
+    A c=nil
+    A pc=nil (privateivar)
+    -(void)fn {/*C*/
+        c=nil;
+        pc=nil;
+        /*ivar*/v_c=nil;
+        /*ivar*/v_pc=nil;
+    }
+A
+    A a=nil,b=nil
+    A pa=nil,pb=nil (privateivar)
+    -(void)fn {
+        a=b=nil;
+        pa=pb=nil;
+        /*ivar*/v_a=/*ivar*/v_b=nil;
+        /*ivar*/v_pa=/*ivar*/v_pb=nil;
+    }
+B:A<C>
+    A a=nil
+    A pa=nil (privateivar)
+    -(void)fn {
+        a=self.b=c=nil;
+        pa=self.pb=pc=nil;
+        /*ivar*/v_a=/*ivar*/v_b=/*ivar*/v_c=nil;
+        /*ivar*/v_pa=/*ivar*/v_pb=/*ivar*/v_pc=nil;
+    }
