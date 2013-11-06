@@ -1,5 +1,9 @@
 "wierrors.wi"
 //"../../wiLibrary/wiui.wi"
+"<pthread.h>"
+
+sys NSObject
+type ULL "typedef:unsigned long long"
 
 <Globals>
  +decl:{
@@ -8,6 +12,88 @@
     #define ADDOWNER(...)
     #define REMOVEOWNER(...)
  }
+
+
+<ThreadKey> "multi" "nac"
+    -decl:{
+        extern pthread_key_t ThreadKey_key_keyName;
+        extern valueType getThreadValueNamedKeyName();
+        extern valueType setThreadValueNamedKeyName(valueType v);
+    }
+    -decl:impl:{
+        pthread_key_t ThreadKey_key_keyName=nil;
+        valueType getThreadValueNamedKeyName() {
+            if (!ThreadKey_key_keyName)  pthread_key_create(&ThreadKey_key_keyName,nil);
+            return((valueType)(ULL)pthread_getspecific(ThreadKey_key_keyName));
+        }
+        valueType setThreadValueNamedKeyName(valueType v) {
+            if (!ThreadKey_key_keyName)  pthread_key_create(&ThreadKey_key_keyName,nil);
+            valueType ret=(valueType)(ULL)pthread_getspecific(ThreadKey_key_keyName);
+            pthread_setspecific(ThreadKey_key_keyName,(const void*)(ULL)v);
+            return(ret);
+        }
+    }
+
+
+/*each:impl:
+#ifdef _PrivateAccessMask_
+#undef _PrivateAccessMask_
+#endif
+#define _PrivateAccessMask_ __private_access_thread_mask_in___ClassName__
+*/
+
+ThreadIDKey<ThreadKey> "keyName=>id" "valueType=>int" "nac"
+    -decl:{
+        extern int g_prevThreadId;
+        int getThreadId();
+        ULL getThreadMask();
+
+        bool authorized_thread(ULL&mask);
+        bool authorize_thread(ULL&mask);
+        void deauthorize_thread(ULL&mask);
+        #define privateaccess(...) do {bool __needdeauth=authorize_thread(_PrivateAccessMask_);{__VA_ARGS__;}if (__needdeauth) deauthorize_thread(_PrivateAccessMask_);} while (false)
+    }
+    -decl:impl:{
+        int g_prevThreadId=0;
+        ULL getThreadMask() {
+            int ret=getThreadValueNamedId();
+            if (!ret) setThreadValueNamedId(ret=++g_prevThreadId);
+            return(1LL<<(ret-1));
+        }
+        int getThreadId() {
+            int ret=getThreadValueNamedId();
+            if (!ret) setThreadValueNamedId(ret=++g_prevThreadId);
+            return(ret);
+        }
+
+        bool authorized_thread(ULL&mask) {
+            ULL tmask=getThreadMask();
+            if (!tmask) ERR("Too many threads for this implementation of publicreadonly properties (64)");
+            else {
+                if (mask&tmask) {
+//                    mask&=~tmask;
+                    return(YES);
+                }
+            }
+            return(NO);
+        }
+        bool authorize_thread(ULL&mask) {
+            if (mask&getThreadMask()) return(NO);
+            else {
+                mask|=getThreadMask();
+                return(YES);
+            }
+        }
+        void deauthorize_thread(ULL&mask) {
+            mask&=~getThreadMask();
+        }
+    }
+
+<ClassObject>
+    ULL __private_access_thread_mask_in___ClassName__=0 (justivar,privateivar)
+
+
+
 
 /*...
 
@@ -237,9 +323,6 @@ A
 
 ...*/
 
-type ULL "typedef:unsigned long long"
-<Object> "multi"
-    ULL __private_access_thread_mask=0 (justivar,privateivar)
 
 <C>
     A c=nil
@@ -267,4 +350,5 @@ B:A<C>
         pa=self.pb=pc=nil;
         /*ivar*/v_a=/*ivar*/v_b=/*ivar*/v_c=nil;
         /*ivar*/v_pa=/*ivar*/v_pb=/*ivar*/v_pc=nil;
+        privateaccess(a=nil);
     }

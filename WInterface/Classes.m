@@ -289,6 +289,7 @@ static NSMutableArray *InFiles_allInFiles=nil;
 @synthesize ins_set_first_decl,ins_set_after_decl_decl,ins_set_after_structs_decl,ins_set_after_protocols_decl,ins_set_after_ifaces_decl,ins_set_last_decl,ins_set_after_imports_decl;
 @synthesize ins_set_first_iface,ins_set_after_decl_iface,ins_set_after_structs_iface,ins_set_after_protocols_iface,ins_set_after_ifaces_iface,ins_set_last_iface,ins_set_after_imports_iface;
 @synthesize ins_set_first_impl,ins_set_after_decl_impl,ins_set_after_structs_impl,ins_set_after_protocols_impl,ins_set_after_ifaces_impl,ins_set_last_impl,ins_set_after_imports_impl;
+@synthesize ins_each_impl,ins_set_each_impl;
 
 - (void)dealloc {
     self.classes=self.protocols=nil;
@@ -309,6 +310,8 @@ static NSMutableArray *InFiles_allInFiles=nil;
     self.ins_set_first_decl=self.ins_set_after_decl_decl=self.ins_set_after_structs_decl=self.ins_set_after_protocols_decl=self.ins_set_after_ifaces_decl=self.ins_set_last_decl=self.ins_set_after_imports_decl=nil;
     self.ins_set_first_iface=self.ins_set_after_decl_iface=self.ins_set_after_structs_iface=self.ins_set_after_protocols_iface=self.ins_set_after_ifaces_iface=self.ins_set_last_iface=self.ins_set_after_imports_iface=nil;
     self.ins_set_first_impl=self.ins_set_after_decl_impl=self.ins_set_after_structs_impl=self.ins_set_after_protocols_impl=self.ins_set_after_ifaces_impl=self.ins_set_last_impl=self.ins_set_after_imports_impl=nil;
+    self.ins_set_each_impl=nil;
+    self.ins_each_impl=nil;
     [super dealloc];
 }
 
@@ -346,6 +349,7 @@ static NSMutableArray *InFiles_allInFiles=nil;
     self.ins_after_protocols_impl=[NSMutableString string];
     self.ins_after_ifaces_impl=[NSMutableString string];
     self.ins_last_impl=[NSMutableString string];
+    self.ins_each_impl=[NSMutableString string];
     self.ins_set_first_decl=[NSMutableSet set];
     self.ins_set_after_imports_decl=[NSMutableSet set];
     self.ins_set_after_decl_decl=[NSMutableSet set];
@@ -367,6 +371,7 @@ static NSMutableArray *InFiles_allInFiles=nil;
     self.ins_set_after_protocols_impl=[NSMutableSet set];
     self.ins_set_after_ifaces_impl=[NSMutableSet set];
     self.ins_set_last_impl=[NSMutableSet set];
+    self.ins_set_each_impl=[NSMutableSet set];
     self.incls=[NSMutableArray array];
     return(self);
 }
@@ -1774,6 +1779,9 @@ static WClasses *_default=nil;
     else if ([s hasPrefix:*n=@"protocols:"]) return(ins_after_protocols_iface);
     else if ([s hasPrefix:*n=@"interfaces:"]) return(ins_after_ifaces_iface);
     else if ([s hasPrefix:*n=@"bottom:"]) return(ins_last_iface);
+
+    else if ([s hasPrefix:*n=@"each:impl:"]) return(ins_each_impl);
+
     else {*n=@"";return(nil);}
 }
 
@@ -1811,6 +1819,9 @@ static WClasses *_default=nil;
     else if ([s hasPrefix:*n=@"protocols:"]) return(ins_set_after_protocols_iface);
     else if ([s hasPrefix:*n=@"interfaces:"]) return(ins_set_after_ifaces_iface);
     else if ([s hasPrefix:*n=@"bottom:"]) return(ins_set_last_iface);
+
+    else if ([s hasPrefix:*n=@"each:impl:"]) return(ins_set_each_impl);
+
     else {*n=@"";return(nil);}
 }
 
@@ -1846,6 +1857,7 @@ static WClasses *_default=nil;
     [self finalizeImportsString:ins_after_protocols_impl withSet:ins_set_after_protocols_impl];
     [self finalizeImportsString:ins_after_ifaces_impl withSet:ins_set_after_ifaces_impl];
     [self finalizeImportsString:ins_last_impl withSet:ins_set_last_impl];
+    [self finalizeImportsString:ins_each_impl withSet:ins_set_each_impl];
 }
 
 
@@ -1970,6 +1982,9 @@ static WClasses *_default=nil;
 
 
 - (void)addToFns {
+    [WClass getProtocolWithName:@"Object"].hasDef=YES;
+    [WClass getProtocolWithName:@"DerivedObject"].hasDef=YES;
+    [WClass getProtocolWithName:@"ClassObject"].hasDef=YES;
     for (WClass *clas in self.classes.allValues) [clas addClassToFns];
     for (WClass *clas in self.protocols.allValues) [clas addProtocolToFns];
 }
@@ -1988,6 +2003,7 @@ static WClasses *_default=nil;
     NSString *ins_after_protocols=(impl?([cfn isEqualToString:@"inserts"]?self.ins_after_protocols_impl:@""):(iface?self.ins_after_protocols_iface:self.ins_after_protocols_decl));
     NSString *ins_after_ifaces=(impl?([cfn isEqualToString:@"inserts"]?self.ins_after_ifaces_impl:@""):(iface?self.ins_after_ifaces_iface:self.ins_after_ifaces_decl));
     NSString *ins_last=(impl?([cfn isEqualToString:@"inserts"]?self.ins_last_impl:@""):(iface?self.ins_last_iface:self.ins_last_decl));
+    NSString *ins_each_class=(impl?self.ins_each_impl:@"");
 
     NSMutableString *s=[NSMutableString stringWithString:ins_first];
     
@@ -2134,6 +2150,7 @@ static WClasses *_default=nil;
                     [s appendFormat:@"%@// !!!: Implementations: %C\n%@%@",SPACER,fl2,SPACER,SPACER];
                     fl=fl2;
                 }
+                [s appendString:[c localizeString:ins_each_class]];
                 [c appendObjCToString_impl:s];
                 [s appendString:SPACER];
             }
@@ -2551,18 +2568,25 @@ static WClasses *_default=nil;
     [self getNames];
     //NSArray *props=[WClasses getDefault].props;
     NSMutableString *protStr=[NSMutableString string];
-    NSArray *names=nil;
+    NSArray *names=[NSMutableArray array];
     
     if (self.superType.protocols.count) {
         names=[[self addSuperProtocolNamesTo:nil].allObjects sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
                 return([(NSString*)obj1 compare:obj2]);
             }];
+    }
+    if ((!superType.clas)||superType.clas.isType||superType.clas.isSys) {
         if ((![self.varPatterns containsObject:@"-Object"])&&![names containsObject:@"Object"]) {
             names=[names arrayByAddingObject:@"Object"];
         }
     }
-    else if ((![self.varPatterns containsObject:@"-Object"])&&![names containsObject:@"Object"]) {
-        names=[NSArray arrayWithObject:@"Object"];
+    else {
+        if ((![self.varPatterns containsObject:@"-Object"])&&![names containsObject:@"DerivedObject"]) {
+            names=[names arrayByAddingObject:@"DerivedObject"];
+        }
+    }
+    if ((![self.varPatterns containsObject:@"-Object"])&&![names containsObject:@"ClassObject"]) {
+        names=[names arrayByAddingObject:@"ClassObject"];
     }
 
     if (names.count) {
@@ -2602,6 +2626,10 @@ static WClasses *_default=nil;
 - (void)appendObjCToString_impl:(NSMutableString*)s {
     [self getNames];
     //NSArray *props=[WClasses getDefault].props;
+    [s appendFormat:@"#define _ClassName_ %@\n",[self localizeString:@"__ClassName__"]];
+    [s appendFormat:@"#define _WIClass_ %@__\n",[self localizeString:@"__WIClass__"]];
+    [s appendFormat:@"#define _className_ %@\n",[self localizeString:@"__className__"]];
+    [s appendFormat:@"#define _Class_ %@__\n",[self localizeString:@"__Class__"]];
     [s appendFormat:(isSys?@"@implementation %@(winterface)\n\n":@"@implementation %@\n\n"),self.name];
     [self appendWithSelector:@selector(appendObjCToString_impl:) string:s];
 /*    for (WProp *prop in props) {
@@ -2610,6 +2638,10 @@ static WClasses *_default=nil;
      }
      */
     [s appendFormat:@"\n@end\n"];
+    [s appendFormat:@"#undef _ClassName_\n"];
+    [s appendFormat:@"#undef _WIClass_\n"];
+    [s appendFormat:@"#undef _className_\n"];
+    [s appendFormat:@"#undef _Class_\n"];
 }
 
 - (NSMutableSet*)addSuperProtocolNamesTo:(NSMutableSet*)to {
@@ -4108,7 +4140,7 @@ CACHEVARATTRFN_retain(NSMutableString*,localizedSetterBody,
         }
         
         if (self.readonly) {
-            [body appendFormat:@"@-1999 if (!authorized_thread(__private_access_thread_mask)) ERR(\"Attempt to set public-readonly property in unauthorized thread (please try something like privateaccess(%@=\\\"blah\\\") to set the property)\");\n",self.localizedName];
+            [body appendFormat:@"@-1999 if (!authorized_thread(__private_access_thread_mask_in___ClassName__)) ERR(\"Attempt to set public-readonly property in unauthorized thread (please try something like privateaccess(%@=\\\"blah\\\") to set the property)\");\n",self.localizedName];
         }
         
         if (self.tracked) {

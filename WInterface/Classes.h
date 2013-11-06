@@ -84,9 +84,11 @@
 @property (retain,nonatomic) NSMutableString *ins_first_decl,*ins_after_imports_decl,*ins_after_decl_decl,*ins_after_structs_decl,*ins_after_protocols_decl,*ins_after_ifaces_decl,*ins_last_decl;
 @property (retain,nonatomic) NSMutableString *ins_first_iface,*ins_after_imports_iface,*ins_after_decl_iface,*ins_after_structs_iface,*ins_after_protocols_iface,*ins_after_ifaces_iface,*ins_last_iface;
 @property (retain,nonatomic) NSMutableString *ins_first_impl,*ins_after_imports_impl,*ins_after_decl_impl,*ins_after_structs_impl,*ins_after_protocols_impl,*ins_after_ifaces_impl,*ins_last_impl;
+@property (retain,nonatomic) NSMutableString *ins_each_impl;
 @property (retain,nonatomic) NSMutableSet *ins_set_first_decl,*ins_set_after_imports_decl,*ins_set_after_decl_decl,*ins_set_after_structs_decl,*ins_set_after_protocols_decl,*ins_set_after_ifaces_decl,*ins_set_last_decl;
 @property (retain,nonatomic) NSMutableSet *ins_set_first_iface,*ins_set_after_imports_iface,*ins_set_after_decl_iface,*ins_set_after_structs_iface,*ins_set_after_protocols_iface,*ins_set_after_ifaces_iface,*ins_set_last_iface;
 @property (retain,nonatomic) NSMutableSet *ins_set_first_impl,*ins_set_after_imports_impl,*ins_set_after_decl_impl,*ins_set_after_structs_impl,*ins_set_after_protocols_impl,*ins_set_after_ifaces_impl,*ins_set_last_impl;
+@property (retain,nonatomic) NSMutableSet *ins_set_each_impl;
 @property (retain,nonatomic) NSMutableArray *incls;
 
 - (void)read:(WReader*)r;
