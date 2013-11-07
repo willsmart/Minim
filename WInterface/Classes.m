@@ -3602,40 +3602,80 @@ static WClasses *_default=nil;
 
     WReader *r=[[WReader alloc] init];
     r.fileString=abody;
+    [r.tokenizer addSelectorTokens];
 
     bool changed=NO;
     
+    NSMutableString *ps=[NSMutableString string];
+    NSString *bs=@"";
+    
+    bool issel=NO;
     int bad=0,pos=-1;
+    bool maybearg=NO;
+    
+    //for (WReaderToken *t in r.tokenizer.tokens) printf("%c:notes:\"%s\":str:\"%s\" --",t.type, t.notes.UTF8String,t.str.UTF8String);printf("\n");
     for (WReaderToken *t in r.tokenizer.tokens) {
         pos++;
+        bool maybearg2=NO;
+                //NSLog(@"%c %d \"%@\" \"%@\" \"%@\"",t.type,maybearg,t.str,ps,bs);
         switch (t.type) {
+            case '[':issel=YES;break;
+            case '(':{
+                bs=t.notes;
+                WReaderToken *t2=[r.tokenizer.tokens objectAtIndex:pos+1];
+                switch ([t2.str characterAtIndex:0]) {
+                    case '(':case '{':case '[':[ps appendString:(issel?@"[":@"x")];break;
+                    case ')':case '}':case ']':maybearg2=YES;[ps deleteCharactersInRange:NSMakeRange(ps.length-1, 1)];break;
+                }
+                issel=NO;
+                //NSLog(@"%@ \"%@\"",ps,bs);
+            }
+            break;
             case 'o':
+            switch ([t.str characterAtIndex:0]) {
+                case ')':case '}':case ']':maybearg2=maybearg;break;
+            }
             if ([t.str isEqualToString:@"."]) bad=1;
             else if ([t.str isEqualToString:@"-"]) bad=-1;
             else if ([t.str isEqualToString:@">"]&&(bad==-1)) bad=1;
             else if ([t.str isEqualToString:@"@"]) bad=-2;
             else if ((bad==-3)&&[t.str isEqualToString:@"("]) bad=-4;
-            else if ([t.str isEqualToString:@")"]||[t.str isEqualToString:@"]"]) bad=1;
+            //else if ([t.str isEqualToString:@")"]||[t.str isEqualToString:@"]"]) bad=1;
             else bad=0;
             break;
             case 'n':case 's':
+                maybearg2=YES;
                 bad=1;
                 break;
             case 'z':case 'r':case 'c':
+            maybearg2=maybearg;
             if ([t.str hasSuffix:@"ivar*/"]) {
                 bad=1;
             }
             else if ((bad==-1)||(bad==-2)) bad=0;
             break;
             case 'w':
+            maybearg2=YES;
             if (bad==-2) {
                 bad=-3;
             }
             else if (bad==-4) {
                 bad=1;
             }
-            else if (bad<=0) {
+            else if (bad<=0) do {
                 bad=1;
+                if (ps.length&&([ps characterAtIndex:ps.length-1]=='[')&&maybearg) {
+                    bool isArg=NO;
+                    for (int pos2=pos+1;pos2<r.tokenizer.tokens.count;pos2++) {
+                        WReaderToken *ta=[r.tokenizer.tokens objectAtIndex:pos2];
+                        if ((ta.type=='c')||(ta.type=='r')||(ta.type=='z')||(ta.type=='(')||(ta.type=='[')) break;
+                        if ((ta.type=='o')&&([ta.str isEqualToString:@":"]||[ta.str isEqualToString:@"]"])) {
+                            isArg=YES;break;
+                        }
+                    }
+                    if (isArg) {maybearg2=NO;break;}
+                }
+                        
                 WVar *v=nil;
                 for (NSString *k in clas.vars) {
                     WVar *v2=[clas.vars objectForKey:k];
@@ -3667,7 +3707,7 @@ static WClasses *_default=nil;
                                 [NSString stringWithFormat:@"/*setter*/self->%@",v.localizedVarName]:
                                 [NSString stringWithFormat:@" This is a Winterface issue, this property should be marked as having an ivar called %@ ",v.localizedVarName]):
                             (v.objc_readonly?
-                                [NSString stringWithFormat:@"/*readonly*/self->%@",v.localizedVarName]:
+                                [NSString stringWithFormat:@"/*readonly*/%@",v.localizedVarName]:
                                 (v.readonly?
                                     [NSString stringWithFormat:@"/*set*/privateaccess(self.%@",v.localizedName]:
                                     [NSString stringWithFormat:@"/*set*/self.%@",v.localizedName]
@@ -3719,8 +3759,10 @@ static WClasses *_default=nil;
                         changed=YES;
                     }
                 }
-            }
+            } while (NO);
+            break;
         }
+        maybearg=maybearg2;
     }
     NSString *ret=abody;
     if (changed) {

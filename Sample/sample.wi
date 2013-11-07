@@ -355,7 +355,19 @@ B:A<C>
 
 
 A
+    -decl:{
+        #define E(...) __VA_ARGS__
+    }
     A a=nil
-    -(void) {
-        [(self) a:[A alloc] a:1 a:@"hi" a:"hi" a:1/*blah*/ a:nil a:nil];
+    -(id)a:(id)a1 {
+        return(nil);
+    }
+    -(id)a:(id)a1 a:(id)a2 a:(id)a3 a:(id)a4 a:(id)a5 h:(id)a6 a:(id)a7 {
+        [a a:a a:(id)a a:@"hi" a:a a:(id)1 h:a a:(id)[a a]];
+        [a a:a a:nil /*hi*/a/*hi*/:/*hi*/a a:(a)?a:a a:E(a) h:a?(a):a a:a.a];
+        [(id)a a:a];
+        [(id)a a];
+        [[a a] a:a];
+        [E(a) a:a];
+        return(nil);
     }

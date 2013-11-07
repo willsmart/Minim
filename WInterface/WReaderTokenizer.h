@@ -20,13 +20,16 @@
 
 @interface WReaderToken : NSObject
 @property (assign,nonatomic) WReaderTokenizer *tokenizer;
-@property (retain,nonatomic) NSString *_str,*str;
+@property (retain,nonatomic) NSString *_str,*str,*_notes,*notes;
 @property int bracketCount,linei;
 @property char type;
 - (id)initWithTokenizer:(WReaderTokenizer*)atokenizer string:(NSString*)astr bracketCount:(int)bc linei:(int)linei type:(char)type;
+- (id)initWithTokenizer:(WReaderTokenizer*)atokenizer string:(NSString*)astr bracketCount:(int)bc linei:(int)linei type:(char)type notes:(NSString*)anotes;
 @end
 
-@interface WReaderTokenizer : NSObject
+@interface WReaderTokenizer : NSObject {
+    bool addedBracketTokens,addedSelectorTokens;
+}
 
 @property (assign,nonatomic) WReader *reader;
 @property (retain,nonatomic) NSObject<WReaderTokenDelegate> *tokenDelegate;
@@ -36,5 +39,7 @@
 @property (readonly) NSString *tokenStr;
 
 - (id)initWithReader:(WReader*)areader;
+-(bool)addBracketTokens;
+-(bool)addSelectorTokens;
 
 @end

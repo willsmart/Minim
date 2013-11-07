@@ -11,16 +11,22 @@
 
 
 @implementation WReaderToken : NSObject
-@synthesize type,bracketCount,tokenizer,_str;
+@synthesize type,bracketCount,tokenizer,_str,_notes;
 - (void)dealloc {
     self.str=nil;
+    self.notes=nil;
     [super dealloc];
 }
 
 - (id)initWithTokenizer:(WReaderTokenizer*)atokenizer string:(NSString*)astr bracketCount:(int)bc linei:(int)linei type:(char)atype {
+    return([self initWithTokenizer:atokenizer string:astr bracketCount:bc linei:linei type:atype notes:nil]);
+}
+
+- (id)initWithTokenizer:(WReaderTokenizer*)atokenizer string:(NSString*)astr bracketCount:(int)bc linei:(int)linei type:(char)atype notes:(NSString*)anotes {
     if (!(self=[super init])) return(nil);
     tokenizer=atokenizer;
     self.str=[astr.copy autorelease];
+    self.notes=[anotes.copy autorelease];
     self.type=atype;
     self.bracketCount=bc;
     self.linei=linei;
@@ -31,8 +37,10 @@
     if (self.tokenizer.tokenDelegate) return([self.tokenizer.tokenDelegate processedStringForString:self._str inToken:self]);
     else return(self._str);
 }
+-(NSString*)notes {return(self._notes);}
 
 - (void)setStr:(NSString *)v {self._str=v;}
+- (void)setNotes:(NSString *)v {self._notes=v;}
 
 @end
 
@@ -166,5 +174,125 @@
     return(s);
 }
 
+
+-(bool)addBracketTokens {
+    if (addedBracketTokens) return(YES);
+    addedBracketTokens=YES;
+    
+    NSMutableString *bs=[NSMutableString string];
+    bool malformed=NO;
+    NSMutableArray *newTokens=[NSMutableArray array];
+    
+    bool changed=NO;
+    for (WReaderToken *t in tokens) {
+        if ((t.type=='z')||(t.type=='c')||(t.type=='r')) {
+            [newTokens addObject:t];
+            continue;
+        }
+        if (!malformed) do {
+            if ([t.str isEqualToString:@"["]) [bs appendString:@"["];
+            else if ([t.str isEqualToString:@"{"]) [bs appendString:@"{"];
+            else if ([t.str isEqualToString:@"("]) [bs appendString:@"("];
+            else if ([t.str isEqualToString:@"]"]) {
+                if ((!bs.length)||([bs characterAtIndex:bs.length-1]!='[')) malformed=YES;
+                else [bs deleteCharactersInRange:NSMakeRange(bs.length-1,1)];
+            }
+            else if ([t.str isEqualToString:@"}"]) {
+                if ((!bs.length)||([bs characterAtIndex:bs.length-1]!='{')) malformed=YES;
+                else [bs deleteCharactersInRange:NSMakeRange(bs.length-1,1)];
+            }
+            else if ([t.str isEqualToString:@")"]) {
+                if ((!bs.length)||([bs characterAtIndex:bs.length-1]!='(')) malformed=YES;
+                else [bs deleteCharactersInRange:NSMakeRange(bs.length-1,1)];
+            }
+            else break;
+            if (!malformed) {
+                changed=YES;
+                [newTokens addObject:[[[WReaderToken alloc] initWithTokenizer:self string:@"" bracketCount:t.bracketCount linei:t.linei type:'(' notes:bs] autorelease]];
+            }
+        } while(NO);
+        [newTokens addObject:t];
+    }
+    if (changed) [tokens setArray:newTokens];
+    return(!malformed);
+}
+
+
+-(bool)addSelectorTokens {
+    if (addedSelectorTokens) return(NO);
+    addedSelectorTokens=YES;
+    [self addBracketTokens];
+    
+    NSString *bs=@"";
+    NSMutableArray *newTokens=[NSMutableArray array];
+    
+    bool changed=NO;
+    
+    NSMutableArray *bsts=[NSMutableArray array];
+    
+    NSError *err=nil;
+    NSRegularExpression *re=[NSRegularExpression regularExpressionWithPattern:
+        @"^\\(*(\\(|\\[|w\\(?)((\\.|->)w)*w(:|$)"
+        options:0 error:&err];
+
+    if (err) NSLog(@"%@",err.description);
+    
+    for (int pos=0;pos<tokens.count;pos++) {
+        WReaderToken *t=[tokens objectAtIndex:pos];
+        
+        char newc=0;
+        NSMutableString *bs0=[bsts.lastObject isKindOfClass:[NSString class]]?bsts.lastObject:nil;
+        
+        switch (t.type) {
+            case '(':
+                bs=t.notes;
+                WReaderToken *t2=[tokens objectAtIndex:pos+1];
+                switch ([t2.str characterAtIndex:0]) {
+                    case '[':[bsts addObject:[NSMutableString string]];newc='[';break;
+                    case '{':case '(':[bsts addObject:[NSNull null]];newc='(';break;
+                    case ']':
+                        if ([bsts.lastObject isKindOfClass:[NSString class]]) {
+                            NSString *p=bsts.lastObject;
+                            //NSLog(@"%@ vs %@",p,re);
+                            if ([re firstMatchInString:p options:0 range:NSMakeRange(0, p.length)]) {
+                                NSUInteger ind;
+                                for (ind=newTokens.count-1;;ind--) {
+                                    WReaderToken *ts=[newTokens objectAtIndex:ind];
+                                    if ((ts.type=='(')&&[ts.notes isEqualToString:[bs stringByAppendingString:@"["]]) {
+                                        WReaderToken *ts2=[newTokens objectAtIndex:ind+1];
+                                        if ([ts2.str isEqualToString:@"["]) {
+                                            break;
+                                        }
+                                    }
+                                }
+                                //NSLog(@"y %ld",(long)ind);
+                                changed=YES;
+                                [newTokens insertObject:[[[WReaderToken alloc] initWithTokenizer:self string:@"" bracketCount:t.bracketCount linei:t.linei type:'[' notes:@""] autorelease] atIndex:ind];
+                            }
+                        }
+                    case ')':case '}':// note pass through
+                        [bsts removeLastObject];
+                        break;
+                }
+                break;
+            case 'w':newc='w';break;
+            case 'o':
+                switch ([t.str characterAtIndex:0]) {
+                    case '.':newc='.';break;
+                    case '-':newc='-';break;
+                    case '>':newc='>';break;
+                    case ':':newc=':';break;
+                }
+                break;
+            case 'n':case 's':newc='n';break;
+        }
+        if (newc&&bs0) {
+            [bs0 appendFormat:@"%c",newc];
+        }
+        [newTokens addObject:t];
+    }
+    if (changed) [tokens setArray:newTokens];
+    return(changed);
+}
 
 @end
