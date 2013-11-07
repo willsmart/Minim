@@ -321,7 +321,6 @@ A
         a=1;
     }
 
-...*/
 
 
 <C>
@@ -351,4 +350,12 @@ B:A<C>
         /*ivar*/v_a=/*ivar*/v_b=/*ivar*/v_c=nil;
         /*ivar*/v_pa=/*ivar*/v_pb=/*ivar*/v_pc=nil;
         privateaccess(a=nil);
+    }
+...*/
+
+
+A
+    A a=nil
+    -(void) {
+        [(self) a:[A alloc] a:1 a:@"hi" a:"hi" a:1/*blah*/ a:nil a:nil];
     }

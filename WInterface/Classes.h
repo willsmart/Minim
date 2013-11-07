@@ -26,6 +26,7 @@
  
 */
 
+//#import <RegexKit/RegexKit.h>
 #import <Foundation/Foundation.h>
 @class WReader;
 @class WClass;

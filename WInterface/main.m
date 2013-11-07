@@ -78,6 +78,8 @@ int main(int argc, const char * argv[])
                         s=[NSMutableString string];
                         NSString *errs2=[cs appendObjCToString:s iface:NO impl:YES classFilename:fn headerFilename:hfn];
                         if (!errs) errs=errs2;
+                        else errs=[errs stringByAppendingString:errs2];
+                        
                         err=nil;
                         [fm changeCurrentDirectoryPath:baseDir];
                         NSString *ofn=[([fn isEqualToString:@"default"]?r.fileName:fn) stringByAppendingString:@".mm"];

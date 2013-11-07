@@ -2172,7 +2172,7 @@ static WClasses *_default=nil;
         [_s appendString:@"//Tasks:\n"];
         for (NSString *task in self.taskList) {
             [_s appendFormat:@"//    %@\n",task];
-            [ret appendFormat:@"%@\n",task];
+            if ([task hasPrefix:@"(notenote)"]) [ret appendFormat:@"%@\n",task];
         }
         [_s appendString:@"\n\n"];
     }
@@ -3615,12 +3615,13 @@ static WClasses *_default=nil;
             else if ([t.str isEqualToString:@">"]&&(bad==-1)) bad=1;
             else if ([t.str isEqualToString:@"@"]) bad=-2;
             else if ((bad==-3)&&[t.str isEqualToString:@"("]) bad=-4;
+            else if ([t.str isEqualToString:@")"]||[t.str isEqualToString:@"]"]) bad=1;
             else bad=0;
             break;
-            case 'n':
+            case 'n':case 's':
                 bad=1;
                 break;
-            case 'z':case 'r':case 'c':case 's':
+            case 'z':case 'r':case 'c':
             if ([t.str hasSuffix:@"ivar*/"]) {
                 bad=1;
             }
@@ -3663,13 +3664,13 @@ static WClasses *_default=nil;
                     if (isSetter) {
                         t.str=(isForSetterGetter?
                             (hasIVar?
-                                [NSString stringWithFormat:@"/*setter ivar*/%@",v.localizedVarName]:
+                                [NSString stringWithFormat:@"/*setter*/self->%@",v.localizedVarName]:
                                 [NSString stringWithFormat:@" This is a Winterface issue, this property should be marked as having an ivar called %@ ",v.localizedVarName]):
                             (v.objc_readonly?
-                                [NSString stringWithFormat:@"/*readonly ivar*/%@",v.localizedVarName]:
+                                [NSString stringWithFormat:@"/*readonly*/self->%@",v.localizedVarName]:
                                 (v.readonly?
-                                    [NSString stringWithFormat:@"privateaccess(self.%@",v.localizedName]:
-                                    [NSString stringWithFormat:@"self.%@",v.localizedName]
+                                    [NSString stringWithFormat:@"/*set*/privateaccess(self.%@",v.localizedName]:
+                                    [NSString stringWithFormat:@"/*set*/self.%@",v.localizedName]
                                 )
                             )
                         );
@@ -3712,9 +3713,9 @@ static WClasses *_default=nil;
                     if (isGetter) {
                         t.str=(hasIVar?
                             (isForSetterGetter?
-                                [NSString stringWithFormat:@"/*getter ivar*/%@",v.localizedVarName]:
-                                [NSString stringWithFormat:@"/*ivar*/%@",v.localizedVarName]):
-                            [NSString stringWithFormat:@"self.%@",v.localizedName]);
+                                [NSString stringWithFormat:@"/*getter*/self->%@",v.localizedVarName]:
+                                [NSString stringWithFormat:@"/*get*/self->%@",v.localizedVarName]):
+                            [NSString stringWithFormat:@"/*get*/self.%@",v.localizedName]);
                         changed=YES;
                     }
                 }
