@@ -4,6 +4,13 @@
 
 sys NSObject
 type ULL "typedef:unsigned long long"
+type id "retains"
+<Retains>
+    -(id)retain;
+    -(void)release;
+    -(id)autorelease;
+
+type kid "typedef:id<NSCopying,Retains>" "retains"
 
 <Globals>
  +decl:{
@@ -351,10 +358,15 @@ B:A<C>
         /*ivar*/v_pa=/*ivar*/v_pb=/*ivar*/v_pc=nil;
         privateaccess(a=nil);
     }
-...*/
+..*/
 
+<A>
+    A footer={@-999
+        id ret=(footer?footer:[ViewUtilities loadViewOfClass:self.footerClass withTag:footerTag fromNibWithName:self.nibName]);
+        @999 return(ret);
+    }=nil (ivar=footer,dealloc,readonly!)
 
-A
+A<A>
     -decl:{
         #define E(...) __VA_ARGS__
     }
@@ -364,10 +376,27 @@ A
     }
     -(id)a:(id)a1 a:(id)a2 a:(id)a3 a:(id)a4 a:(id)a5 h:(id)a6 a:(id)a7 {
         [a a:a a:(id)a a:@"hi" a:a a:(id)1 h:a a:(id)[a a]];
-        [a a:a a:nil /*hi*/a/*hi*/:/*hi*/a a:(a)?a:a a:E(a) h:a?(a):a a:a.a];
+        [a a:nil a:a a:nil /*hi*/a/*hi*/:/*hi*/a a:(a)?a:a h:a?(a):a a:a.a];
         [(id)a a:a];
         [(id)a a];
         [[a a] a:a];
         [E(a) a:a];
+        int a=a;
         return(nil);
     }
+
+...*/
+type int
+A "-Object"
+    A a={return(nil);}=nil (ivar)
+    int j=nil (readonly)
+    -(void)fn {
+        j=0;
+        int i=1;
+        int k;
+    }
+    -(void)a:(int)aa {}
+
+    
+
+
