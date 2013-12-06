@@ -1,0 +1,845 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		BE4152E41811B03200E421D7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE99B972161BAE720041B8EA /* Foundation.framework */; };
+		BE4152E71811B03200E421D7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BE4152E61811B03200E421D7 /* main.m */; };
+		BE4152EB1811B03200E421D7 /* WInterfaceSample.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = BE4152EA1811B03200E421D7 /* WInterfaceSample.1 */; };
+		BE4152FC1811B04200E421D7 /* sample.wi.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE730AD61810A4FB005582C5 /* sample.wi.mm */; };
+		BE99B973161BAE720041B8EA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE99B972161BAE720041B8EA /* Foundation.framework */; };
+		BE99B976161BAE720041B8EA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BE99B975161BAE720041B8EA /* main.m */; };
+		BE99B97A161BAE720041B8EA /* WInterface.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = BE99B979161BAE720041B8EA /* WInterface.1 */; };
+		BE99B982161BAEBA0041B8EA /* Classes.m in Sources */ = {isa = PBXBuildFile; fileRef = BE99B981161BAEBA0041B8EA /* Classes.m */; };
+		BE99B985161BAFD30041B8EA /* WReader.m in Sources */ = {isa = PBXBuildFile; fileRef = BE99B984161BAFD30041B8EA /* WReader.m */; };
+		BEAA02991621F7280026192D /* WReaderTokenizer.m in Sources */ = {isa = PBXBuildFile; fileRef = BEAA02981621F7280026192D /* WReaderTokenizer.m */; };
+		BEC8A51B18296AA50090BBAD /* inserts.mm in Sources */ = {isa = PBXBuildFile; fileRef = BEC8A51A18296AA50090BBAD /* inserts.mm */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		BE93AD88165E9D9D001BA629 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BE93AD83165E9D9C001BA629 /* WI_iosTests.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BE93AD4A165E9D9B001BA629;
+			remoteInfo = WI_iosTests;
+		};
+		BE93AD8A165E9D9D001BA629 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BE93AD83165E9D9C001BA629 /* WI_iosTests.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BE93AD6B165E9D9C001BA629;
+			remoteInfo = WI_iosTestsTests;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		BE4152E11811B03200E421D7 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = usr/share/man/man1;
+			dstSubfolderSpec = 10;
+			files = (
+				BE4152EB1811B03200E421D7 /* WInterfaceSample.1 in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		BE99B96C161BAE720041B8EA /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = usr/share/man/man1;
+			dstSubfolderSpec = 10;
+			files = (
+				BE99B97A161BAE720041B8EA /* WInterface.1 in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		BE0C5209161FB23C00B8C658 /* TokenizeC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TokenizeC.h; path = ../../BasicClasses/Parse/TokenizeC.h; sourceTree = "<group>"; };
+		BE19E8A216295CF10013C92B /* TestProp.wi */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = TestProp.wi; path = Test/TestProp.wi; sourceTree = SOURCE_ROOT; };
+		BE19E8A316295D960013C92B /* TestProp.wi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestProp.wi.m; path = Test/TestProp.wi.m; sourceTree = SOURCE_ROOT; };
+		BE3A169018231A3700B5752A /* wierrors.wi */ = {isa = PBXFileReference; lastKnownFileType = text; name = wierrors.wi; path = Sample/wierrors.wi; sourceTree = "<group>"; };
+		BE3CEBE0164BA18500881540 /* wi.wi */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = wi.wi; sourceTree = SOURCE_ROOT; };
+		BE4152E31811B03200E421D7 /* WInterfaceSample */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = WInterfaceSample; sourceTree = BUILT_PRODUCTS_DIR; };
+		BE4152E61811B03200E421D7 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		BE4152E91811B03200E421D7 /* WInterfaceSample-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WInterfaceSample-Prefix.pch"; sourceTree = "<group>"; };
+		BE4152EA1811B03200E421D7 /* WInterfaceSample.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = WInterfaceSample.1; sourceTree = "<group>"; };
+		BE61F57A1627C7CB00614210 /* Test.wi */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Test.wi; path = Test/Test.wi; sourceTree = SOURCE_ROOT; };
+		BE61F57B1627D02300614210 /* Test.wi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Test.wi.m; path = Test/Test.wi.m; sourceTree = SOURCE_ROOT; };
+		BE622A12162CA95A00618E26 /* LinkBase.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = LinkBase.wi; path = Test/LinkBase.wi; sourceTree = SOURCE_ROOT; };
+		BE622A13162CA95A00618E26 /* LinkBase.wi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LinkBase.wi.m; path = Test/LinkBase.wi.m; sourceTree = SOURCE_ROOT; };
+		BE697F2E167ED42900880DC7 /* PropSS.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; name = PropSS.wi; path = Wis/PropSS.wi; sourceTree = "<group>"; };
+		BE730ACC18108F50005582C5 /* sample.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; name = sample.wi; path = Sample/sample.wi; sourceTree = "<group>"; };
+		BE730ACD18108F50005582C5 /* wi.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = wi.sh; path = Sample/wi.sh; sourceTree = "<group>"; };
+		BE730AD31810A4FB005582C5 /* sample.wi.decl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sample.wi.decl.h; path = Sample/sample.wi.decl.h; sourceTree = "<group>"; };
+		BE730AD41810A4FB005582C5 /* sample.wi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sample.wi.h; path = Sample/sample.wi.h; sourceTree = "<group>"; };
+		BE730AD51810A4FB005582C5 /* sample.wi.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = sample.wi.html; path = Sample/sample.wi.html; sourceTree = "<group>"; };
+		BE730AD61810A4FB005582C5 /* sample.wi.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = sample.wi.mm; path = Sample/sample.wi.mm; sourceTree = "<group>"; };
+		BE93AD83165E9D9C001BA629 /* WI_iosTests.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = WI_iosTests.xcodeproj; path = WI_iosTests/WI_iosTests.xcodeproj; sourceTree = "<group>"; };
+		BE93AD8D165E9E3B001BA629 /* wi.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = wi.sh; sourceTree = SOURCE_ROOT; };
+		BE99B96E161BAE720041B8EA /* WInterface */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = WInterface; sourceTree = BUILT_PRODUCTS_DIR; };
+		BE99B972161BAE720041B8EA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		BE99B975161BAE720041B8EA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		BE99B978161BAE720041B8EA /* WInterface-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WInterface-Prefix.pch"; sourceTree = "<group>"; };
+		BE99B979161BAE720041B8EA /* WInterface.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = WInterface.1; sourceTree = "<group>"; };
+		BE99B980161BAEBA0041B8EA /* Classes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Classes.h; sourceTree = "<group>"; };
+		BE99B981161BAEBA0041B8EA /* Classes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Classes.m; sourceTree = "<group>"; };
+		BE99B983161BAFD30041B8EA /* WReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WReader.h; sourceTree = "<group>"; };
+		BE99B984161BAFD30041B8EA /* WReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WReader.m; sourceTree = "<group>"; };
+		BEA020A41629505100CA480A /* Prop1A.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = Prop1A.wi; path = Wis/Prop1A.wi; sourceTree = "<group>"; };
+		BEA020A81629505100CA480A /* Prop1S.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = Prop1S.wi; path = Wis/Prop1S.wi; sourceTree = "<group>"; };
+		BEA020AC1629505100CA480A /* Prop11.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = Prop11.wi; path = Wis/Prop11.wi; sourceTree = "<group>"; };
+		BEA020B01629505100CA480A /* PropA1.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = PropA1.wi; path = Wis/PropA1.wi; sourceTree = "<group>"; };
+		BEA020B41629505100CA480A /* PropS1.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = PropS1.wi; path = Wis/PropS1.wi; sourceTree = "<group>"; };
+		BEA020B8162951B100CA480A /* PropBase.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = PropBase.wi; path = Wis/PropBase.wi; sourceTree = "<group>"; };
+		BEAA02971621F7280026192D /* WReaderTokenizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WReaderTokenizer.h; sourceTree = "<group>"; };
+		BEAA02981621F7280026192D /* WReaderTokenizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WReaderTokenizer.m; sourceTree = "<group>"; };
+		BEC3EDAE162B2999001BA99B /* ModelNS1.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = ModelNS1.wi; path = Wis/ModelNS1.wi; sourceTree = "<group>"; };
+		BEC3EDAF162B299A001BA99B /* ModelNSA.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = ModelNSA.wi; path = Wis/ModelNSA.wi; sourceTree = "<group>"; };
+		BEC3EDB0162B299A001BA99B /* ModelNSS.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = ModelNSS.wi; path = Wis/ModelNSS.wi; sourceTree = "<group>"; };
+		BEC8A4A8182742340090BBAD /* ModelNS1A.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; name = ModelNS1A.wi; path = Wis/ModelNS1A.wi; sourceTree = "<group>"; };
+		BEC8A4A9182742340090BBAD /* ModelNS1M.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; name = ModelNS1M.wi; path = Wis/ModelNS1M.wi; sourceTree = "<group>"; };
+		BEC8A4B718280D550090BBAD /* base.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = base.wi; sourceTree = "<group>"; };
+		BEC8A4B818280D550090BBAD /* cacheandrequest.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = cacheandrequest.wi; sourceTree = "<group>"; };
+		BEC8A4B918280D550090BBAD /* collectionArray.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = collectionArray.wi; sourceTree = "<group>"; };
+		BEC8A4BA18280D550090BBAD /* collectionAtomicAndTracker.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = collectionAtomicAndTracker.wi; sourceTree = "<group>"; };
+		BEC8A4BB18280D550090BBAD /* collectionDictionary.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = collectionDictionary.wi; sourceTree = "<group>"; };
+		BEC8A4BC18280D550090BBAD /* collectionFollowers.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = collectionFollowers.wi; sourceTree = "<group>"; };
+		BEC8A4BD18280D550090BBAD /* collectionNS.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = collectionNS.wi; sourceTree = "<group>"; };
+		BEC8A4BE18280D550090BBAD /* collections.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = collections.wi; sourceTree = "<group>"; };
+		BEC8A4BF18280D550090BBAD /* collectionSet.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = collectionSet.wi; sourceTree = "<group>"; };
+		BEC8A4C018280D550090BBAD /* collectionTester.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = collectionTester.wi; sourceTree = "<group>"; };
+		BEC8A4C118280D550090BBAD /* collectionTesters.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = collectionTesters.wi; sourceTree = "<group>"; };
+		BEC8A4C218280D550090BBAD /* collectionUnions.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = collectionUnions.wi; sourceTree = "<group>"; };
+		BEC8A4C318280D550090BBAD /* GC.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = GC.wi; sourceTree = "<group>"; };
+		BEC8A4C418280D550090BBAD /* linkBase.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = linkBase.wi; sourceTree = "<group>"; };
+		BEC8A4C518280D550090BBAD /* model.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = model.wi; sourceTree = "<group>"; };
+		BEC8A4C618280D550090BBAD /* ModelNS1.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = ModelNS1.wi; sourceTree = "<group>"; };
+		BEC8A4C718280D550090BBAD /* ModelNS1A.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = ModelNS1A.wi; sourceTree = "<group>"; };
+		BEC8A4C818280D550090BBAD /* ModelNS1M.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = ModelNS1M.wi; sourceTree = "<group>"; };
+		BEC8A4C918280D550090BBAD /* ModelNSA.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = ModelNSA.wi; sourceTree = "<group>"; };
+		BEC8A4CA18280D550090BBAD /* ModelNSM.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = ModelNSM.wi; sourceTree = "<group>"; };
+		BEC8A4CB18280D550090BBAD /* ModelNSS.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = ModelNSS.wi; sourceTree = "<group>"; };
+		BEC8A4CC18280D550090BBAD /* ModelT1.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = ModelT1.wi; sourceTree = "<group>"; };
+		BEC8A4CD18280D550090BBAD /* obfuscateULL.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = obfuscateULL.wi; sourceTree = "<group>"; };
+		BEC8A4CE18280D550090BBAD /* OID.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = OID.wi; sourceTree = "<group>"; };
+		BEC8A4CF18280D550090BBAD /* Prop11.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = Prop11.wi; sourceTree = "<group>"; };
+		BEC8A4D018280D550090BBAD /* Prop1A.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = Prop1A.wi; sourceTree = "<group>"; };
+		BEC8A4D118280D550090BBAD /* Prop1D.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = Prop1D.wi; sourceTree = "<group>"; };
+		BEC8A4D218280D550090BBAD /* Prop1S.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = Prop1S.wi; sourceTree = "<group>"; };
+		BEC8A4D318280D550090BBAD /* PropA1.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = PropA1.wi; sourceTree = "<group>"; };
+		BEC8A4D418280D550090BBAD /* PropBase.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = PropBase.wi; sourceTree = "<group>"; };
+		BEC8A4D518280D550090BBAD /* PropD1.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = PropD1.wi; sourceTree = "<group>"; };
+		BEC8A4D618280D550090BBAD /* PropS1.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = PropS1.wi; sourceTree = "<group>"; };
+		BEC8A4D718280D550090BBAD /* PropSS.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = PropSS.wi; sourceTree = "<group>"; };
+		BEC8A4D818280D550090BBAD /* token.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = token.wi; sourceTree = "<group>"; };
+		BEC8A4D918280D550090BBAD /* types.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = types.wi; sourceTree = "<group>"; };
+		BEC8A4DA18280D550090BBAD /* uispecific.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = uispecific.wi; sourceTree = "<group>"; };
+		BEC8A4DB18280D550090BBAD /* util.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = util.wi; sourceTree = "<group>"; };
+		BEC8A4DC18280D550090BBAD /* BC.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; name = BC.wi; path = ../wiLibrary/BC.wi; sourceTree = "<group>"; };
+		BEC8A4DE18280D550090BBAD /* 3d.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = 3d.h; sourceTree = "<group>"; };
+		BEC8A4DF18280D550090BBAD /* Array.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Array.h; sourceTree = "<group>"; };
+		BEC8A4E018280D550090BBAD /* Basic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Basic.h; sourceTree = "<group>"; };
+		BEC8A4E118280D550090BBAD /* BasicArray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BasicArray.h; sourceTree = "<group>"; };
+		BEC8A4E218280D550090BBAD /* BasicConvert.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BasicConvert.h; sourceTree = "<group>"; };
+		BEC8A4E318280D550090BBAD /* BigUInt.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BigUInt.h; sourceTree = "<group>"; };
+		BEC8A4E418280D550090BBAD /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		BEC8A4E518280D550090BBAD /* ErrorsAndNotes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ErrorsAndNotes.h; sourceTree = "<group>"; };
+		BEC8A4E618280D550090BBAD /* Headers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Headers.h; sourceTree = "<group>"; };
+		BEC8A4E718280D550090BBAD /* Maths.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Maths.h; sourceTree = "<group>"; };
+		BEC8A4E918280D550090BBAD /* BC.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BC.mm; sourceTree = "<group>"; };
+		BEC8A4EA18280D550090BBAD /* BCArray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BCArray.h; sourceTree = "<group>"; };
+		BEC8A4EB18280D550090BBAD /* BCArrayImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BCArrayImpl.h; sourceTree = "<group>"; };
+		BEC8A4EC18280D550090BBAD /* BCString.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BCString.h; sourceTree = "<group>"; };
+		BEC8A4ED18280D550090BBAD /* BCStringImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BCStringImpl.h; sourceTree = "<group>"; };
+		BEC8A4EE18280D550090BBAD /* Profiler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Profiler.h; sourceTree = "<group>"; };
+		BEC8A4EF18280D550090BBAD /* QuickHash.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QuickHash.h; sourceTree = "<group>"; };
+		BEC8A4F018280D550090BBAD /* Store.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Store.h; sourceTree = "<group>"; };
+		BEC8A4F118280D550090BBAD /* String.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = String.h; sourceTree = "<group>"; };
+		BEC8A4F218280D550090BBAD /* Tree.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Tree.h; sourceTree = "<group>"; };
+		BEC8A4F418280D550090BBAD /* matrix44.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = matrix44.wi; sourceTree = "<group>"; };
+		BEC8A4F518280D550090BBAD /* message.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = message.wi; sourceTree = "<group>"; };
+		BEC8A4F618280D550090BBAD /* orientation.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = orientation.wi; sourceTree = "<group>"; };
+		BEC8A4F718280D550090BBAD /* recordVideo.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = recordVideo.wi; sourceTree = "<group>"; };
+		BEC8A4F818280D550090BBAD /* VC.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = VC.wi; sourceTree = "<group>"; };
+		BEC8A4FA18280D550090BBAD /* camera.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = camera.wi; sourceTree = "<group>"; };
+		BEC8A4FB18280D550090BBAD /* eagl.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = eagl.wi; sourceTree = "<group>"; };
+		BEC8A4FD18280D550090BBAD /* MetaData.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = MetaData.wi; sourceTree = "<group>"; };
+		BEC8A4FE18280D550090BBAD /* parse.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = parse.wi; sourceTree = "<group>"; };
+		BEC8A4FF18280D550090BBAD /* RenderedView.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = RenderedView.wi; sourceTree = "<group>"; };
+		BEC8A50018280D550090BBAD /* renderLoop.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = renderLoop.wi; sourceTree = "<group>"; };
+		BEC8A50118280D550090BBAD /* RenderShader.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = RenderShader.wi; sourceTree = "<group>"; };
+		BEC8A50218280D550090BBAD /* renderuiview.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = renderuiview.wi; sourceTree = "<group>"; };
+		BEC8A50318280D550090BBAD /* shader.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = shader.wi; sourceTree = "<group>"; };
+		BEC8A50418280D550090BBAD /* ShaderForRender.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = ShaderForRender.wi; sourceTree = "<group>"; };
+		BEC8A50518280D550090BBAD /* ShaderLib.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = ShaderLib.wi; sourceTree = "<group>"; };
+		BEC8A50618280D550090BBAD /* su.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = su.wi; sourceTree = "<group>"; };
+		BEC8A50718280D550090BBAD /* Texture2D.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = Texture2D.wi; sourceTree = "<group>"; };
+		BEC8A50818280D550090BBAD /* viewGraph.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = viewGraph.wi; sourceTree = "<group>"; };
+		BEC8A50A18280D550090BBAD /* DataModel.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = DataModel.wi; sourceTree = "<group>"; };
+		BEC8A50B18280D550090BBAD /* DataRegistry.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = DataRegistry.wi; sourceTree = "<group>"; };
+		BEC8A50D18280D550090BBAD /* dict.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = dict.wi; sourceTree = "<group>"; };
+		BEC8A50E18280D550090BBAD /* dict2.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = dict2.wi; sourceTree = "<group>"; };
+		BEC8A50F18280D550090BBAD /* styler.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = styler.wi; sourceTree = "<group>"; };
+		BEC8A51118280D550090BBAD /* sound.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = sound.wi; sourceTree = "<group>"; };
+		BEC8A51218280D550090BBAD /* soundios.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = soundios.wi; sourceTree = "<group>"; };
+		BEC8A51318280D550090BBAD /* soundosx.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = soundosx.wi; sourceTree = "<group>"; };
+		BEC8A51418280D550090BBAD /* trackersound.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = trackersound.wi; sourceTree = "<group>"; };
+		BEC8A51618280D550090BBAD /* stdCells.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = stdCells.wi; sourceTree = "<group>"; };
+		BEC8A51718280D550090BBAD /* table.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = table.wi; sourceTree = "<group>"; };
+		BEC8A51818280D550090BBAD /* wi.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; name = wi.wi; path = ../wiLibrary/wi.wi; sourceTree = "<group>"; };
+		BEC8A51918280D550090BBAD /* wiui.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; name = wiui.wi; path = ../wiLibrary/wiui.wi; sourceTree = "<group>"; };
+		BEC8A51A18296AA50090BBAD /* inserts.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = inserts.mm; path = Sample/inserts.mm; sourceTree = "<group>"; };
+		BED5D57B164A122800540B71 /* ModelT1.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = ModelT1.wi; path = Wis/ModelT1.wi; sourceTree = "<group>"; };
+		BED5D57E164A16F200540B71 /* ModelNSM.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = ModelNSM.wi; path = Wis/ModelNSM.wi; sourceTree = "<group>"; };
+		BED5D57F164A16F200540B71 /* Prop1D.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = Prop1D.wi; path = Wis/Prop1D.wi; sourceTree = "<group>"; };
+		BED5D580164A16F200540B71 /* PropD1.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = PropD1.wi; path = Wis/PropD1.wi; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		BE4152E01811B03200E421D7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BE4152E41811B03200E421D7 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BE99B96B161BAE720041B8EA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BE99B973161BAE720041B8EA /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		BE0C5207161FB20800B8C658 /* Basic */ = {
+			isa = PBXGroup;
+			children = (
+				BE0C5209161FB23C00B8C658 /* TokenizeC.h */,
+			);
+			name = Basic;
+			sourceTree = "<group>";
+		};
+		BE4152E51811B03200E421D7 /* WInterfaceSample */ = {
+			isa = PBXGroup;
+			children = (
+				BE4152E61811B03200E421D7 /* main.m */,
+				BE4152EA1811B03200E421D7 /* WInterfaceSample.1 */,
+				BE4152E81811B03200E421D7 /* Supporting Files */,
+			);
+			path = WInterfaceSample;
+			sourceTree = "<group>";
+		};
+		BE4152E81811B03200E421D7 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				BE4152E91811B03200E421D7 /* WInterfaceSample-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		BE730AC918108F3B005582C5 /* Sample */ = {
+			isa = PBXGroup;
+			children = (
+				BEC8A4B318280D200090BBAD /* lib */,
+				BE730ACE1810A4E7005582C5 /* op */,
+				BE730ACC18108F50005582C5 /* sample.wi */,
+				BE3A169018231A3700B5752A /* wierrors.wi */,
+				BE730ACD18108F50005582C5 /* wi.sh */,
+			);
+			name = Sample;
+			sourceTree = "<group>";
+		};
+		BE730ACE1810A4E7005582C5 /* op */ = {
+			isa = PBXGroup;
+			children = (
+				BEC8A51A18296AA50090BBAD /* inserts.mm */,
+				BE730AD31810A4FB005582C5 /* sample.wi.decl.h */,
+				BE730AD41810A4FB005582C5 /* sample.wi.h */,
+				BE730AD51810A4FB005582C5 /* sample.wi.html */,
+				BE730AD61810A4FB005582C5 /* sample.wi.mm */,
+			);
+			name = op;
+			sourceTree = "<group>";
+		};
+		BE796C761624A47E00E550C2 /* Test */ = {
+			isa = PBXGroup;
+			children = (
+				BE622A12162CA95A00618E26 /* LinkBase.wi */,
+				BE622A13162CA95A00618E26 /* LinkBase.wi.m */,
+				BE19E8A316295D960013C92B /* TestProp.wi.m */,
+				BE19E8A216295CF10013C92B /* TestProp.wi */,
+				BE61F57B1627D02300614210 /* Test.wi.m */,
+				BE61F57A1627C7CB00614210 /* Test.wi */,
+			);
+			name = Test;
+			sourceTree = "<group>";
+		};
+		BE93AD84165E9D9C001BA629 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BE93AD89165E9D9D001BA629 /* WI_iosTests.app */,
+				BE93AD8B165E9D9D001BA629 /* WI_iosTestsTests.octest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BE99B963161BAE710041B8EA = {
+			isa = PBXGroup;
+			children = (
+				BE730AC918108F3B005582C5 /* Sample */,
+				BE99B974161BAE720041B8EA /* WInterface */,
+				BE4152E51811B03200E421D7 /* WInterfaceSample */,
+				BE99B971161BAE720041B8EA /* Frameworks */,
+				BE99B96F161BAE720041B8EA /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		BE99B96F161BAE720041B8EA /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BE99B96E161BAE720041B8EA /* WInterface */,
+				BE4152E31811B03200E421D7 /* WInterfaceSample */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BE99B971161BAE720041B8EA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BE99B972161BAE720041B8EA /* Foundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		BE99B974161BAE720041B8EA /* WInterface */ = {
+			isa = PBXGroup;
+			children = (
+				BE93AD8D165E9E3B001BA629 /* wi.sh */,
+				BE93AD83165E9D9C001BA629 /* WI_iosTests.xcodeproj */,
+				BE3CEBE0164BA18500881540 /* wi.wi */,
+				BEA020A31629503700CA480A /* Props */,
+				BE796C761624A47E00E550C2 /* Test */,
+				BE0C5207161FB20800B8C658 /* Basic */,
+				BE99B975161BAE720041B8EA /* main.m */,
+				BE99B979161BAE720041B8EA /* WInterface.1 */,
+				BE99B977161BAE720041B8EA /* Supporting Files */,
+				BE99B980161BAEBA0041B8EA /* Classes.h */,
+				BE99B981161BAEBA0041B8EA /* Classes.m */,
+				BE99B983161BAFD30041B8EA /* WReader.h */,
+				BE99B984161BAFD30041B8EA /* WReader.m */,
+				BEAA02971621F7280026192D /* WReaderTokenizer.h */,
+				BEAA02981621F7280026192D /* WReaderTokenizer.m */,
+			);
+			path = WInterface;
+			sourceTree = "<group>";
+		};
+		BE99B977161BAE720041B8EA /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				BE99B978161BAE720041B8EA /* WInterface-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		BEA020A31629503700CA480A /* Props */ = {
+			isa = PBXGroup;
+			children = (
+				BEC8A4A8182742340090BBAD /* ModelNS1A.wi */,
+				BEC8A4A9182742340090BBAD /* ModelNS1M.wi */,
+				BED5D57E164A16F200540B71 /* ModelNSM.wi */,
+				BE697F2E167ED42900880DC7 /* PropSS.wi */,
+				BED5D57F164A16F200540B71 /* Prop1D.wi */,
+				BED5D580164A16F200540B71 /* PropD1.wi */,
+				BED5D57B164A122800540B71 /* ModelT1.wi */,
+				BEC3EDAF162B299A001BA99B /* ModelNSA.wi */,
+				BEC3EDB0162B299A001BA99B /* ModelNSS.wi */,
+				BEA020B8162951B100CA480A /* PropBase.wi */,
+				BEA020A41629505100CA480A /* Prop1A.wi */,
+				BEA020A81629505100CA480A /* Prop1S.wi */,
+				BEA020AC1629505100CA480A /* Prop11.wi */,
+				BEA020B01629505100CA480A /* PropA1.wi */,
+				BEC3EDAE162B2999001BA99B /* ModelNS1.wi */,
+				BEA020B41629505100CA480A /* PropS1.wi */,
+			);
+			name = Props;
+			sourceTree = "<group>";
+		};
+		BEC8A4B318280D200090BBAD /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				BEC8A4B618280D550090BBAD /* Basic */,
+				BEC8A4DC18280D550090BBAD /* BC.wi */,
+				BEC8A4DD18280D550090BBAD /* Cpp */,
+				BEC8A4F318280D550090BBAD /* General */,
+				BEC8A4F918280D550090BBAD /* Image */,
+				BEC8A50918280D550090BBAD /* Model */,
+				BEC8A50C18280D550090BBAD /* Old */,
+				BEC8A51018280D550090BBAD /* Sound */,
+				BEC8A51518280D550090BBAD /* Table */,
+				BEC8A51818280D550090BBAD /* wi.wi */,
+				BEC8A51918280D550090BBAD /* wiui.wi */,
+			);
+			name = lib;
+			sourceTree = "<group>";
+		};
+		BEC8A4B618280D550090BBAD /* Basic */ = {
+			isa = PBXGroup;
+			children = (
+				BEC8A4B718280D550090BBAD /* base.wi */,
+				BEC8A4B818280D550090BBAD /* cacheandrequest.wi */,
+				BEC8A4B918280D550090BBAD /* collectionArray.wi */,
+				BEC8A4BA18280D550090BBAD /* collectionAtomicAndTracker.wi */,
+				BEC8A4BB18280D550090BBAD /* collectionDictionary.wi */,
+				BEC8A4BC18280D550090BBAD /* collectionFollowers.wi */,
+				BEC8A4BD18280D550090BBAD /* collectionNS.wi */,
+				BEC8A4BE18280D550090BBAD /* collections.wi */,
+				BEC8A4BF18280D550090BBAD /* collectionSet.wi */,
+				BEC8A4C018280D550090BBAD /* collectionTester.wi */,
+				BEC8A4C118280D550090BBAD /* collectionTesters.wi */,
+				BEC8A4C218280D550090BBAD /* collectionUnions.wi */,
+				BEC8A4C318280D550090BBAD /* GC.wi */,
+				BEC8A4C418280D550090BBAD /* linkBase.wi */,
+				BEC8A4C518280D550090BBAD /* model.wi */,
+				BEC8A4C618280D550090BBAD /* ModelNS1.wi */,
+				BEC8A4C718280D550090BBAD /* ModelNS1A.wi */,
+				BEC8A4C818280D550090BBAD /* ModelNS1M.wi */,
+				BEC8A4C918280D550090BBAD /* ModelNSA.wi */,
+				BEC8A4CA18280D550090BBAD /* ModelNSM.wi */,
+				BEC8A4CB18280D550090BBAD /* ModelNSS.wi */,
+				BEC8A4CC18280D550090BBAD /* ModelT1.wi */,
+				BEC8A4CD18280D550090BBAD /* obfuscateULL.wi */,
+				BEC8A4CE18280D550090BBAD /* OID.wi */,
+				BEC8A4CF18280D550090BBAD /* Prop11.wi */,
+				BEC8A4D018280D550090BBAD /* Prop1A.wi */,
+				BEC8A4D118280D550090BBAD /* Prop1D.wi */,
+				BEC8A4D218280D550090BBAD /* Prop1S.wi */,
+				BEC8A4D318280D550090BBAD /* PropA1.wi */,
+				BEC8A4D418280D550090BBAD /* PropBase.wi */,
+				BEC8A4D518280D550090BBAD /* PropD1.wi */,
+				BEC8A4D618280D550090BBAD /* PropS1.wi */,
+				BEC8A4D718280D550090BBAD /* PropSS.wi */,
+				BEC8A4D818280D550090BBAD /* token.wi */,
+				BEC8A4D918280D550090BBAD /* types.wi */,
+				BEC8A4DA18280D550090BBAD /* uispecific.wi */,
+				BEC8A4DB18280D550090BBAD /* util.wi */,
+			);
+			name = Basic;
+			path = ../wiLibrary/Basic;
+			sourceTree = "<group>";
+		};
+		BEC8A4DD18280D550090BBAD /* Cpp */ = {
+			isa = PBXGroup;
+			children = (
+				BEC8A4DE18280D550090BBAD /* 3d.h */,
+				BEC8A4DF18280D550090BBAD /* Array.h */,
+				BEC8A4E018280D550090BBAD /* Basic.h */,
+				BEC8A4E118280D550090BBAD /* BasicArray.h */,
+				BEC8A4E218280D550090BBAD /* BasicConvert.h */,
+				BEC8A4E318280D550090BBAD /* BigUInt.h */,
+				BEC8A4E418280D550090BBAD /* Constants.h */,
+				BEC8A4E518280D550090BBAD /* ErrorsAndNotes.h */,
+				BEC8A4E618280D550090BBAD /* Headers.h */,
+				BEC8A4E718280D550090BBAD /* Maths.h */,
+				BEC8A4E818280D550090BBAD /* ObjCPP */,
+				BEC8A4EE18280D550090BBAD /* Profiler.h */,
+				BEC8A4EF18280D550090BBAD /* QuickHash.h */,
+				BEC8A4F018280D550090BBAD /* Store.h */,
+				BEC8A4F118280D550090BBAD /* String.h */,
+				BEC8A4F218280D550090BBAD /* Tree.h */,
+			);
+			name = Cpp;
+			path = ../wiLibrary/Cpp;
+			sourceTree = "<group>";
+		};
+		BEC8A4E818280D550090BBAD /* ObjCPP */ = {
+			isa = PBXGroup;
+			children = (
+				BEC8A4E918280D550090BBAD /* BC.mm */,
+				BEC8A4EA18280D550090BBAD /* BCArray.h */,
+				BEC8A4EB18280D550090BBAD /* BCArrayImpl.h */,
+				BEC8A4EC18280D550090BBAD /* BCString.h */,
+				BEC8A4ED18280D550090BBAD /* BCStringImpl.h */,
+			);
+			path = ObjCPP;
+			sourceTree = "<group>";
+		};
+		BEC8A4F318280D550090BBAD /* General */ = {
+			isa = PBXGroup;
+			children = (
+				BEC8A4F418280D550090BBAD /* matrix44.wi */,
+				BEC8A4F518280D550090BBAD /* message.wi */,
+				BEC8A4F618280D550090BBAD /* orientation.wi */,
+				BEC8A4F718280D550090BBAD /* recordVideo.wi */,
+				BEC8A4F818280D550090BBAD /* VC.wi */,
+			);
+			name = General;
+			path = ../wiLibrary/General;
+			sourceTree = "<group>";
+		};
+		BEC8A4F918280D550090BBAD /* Image */ = {
+			isa = PBXGroup;
+			children = (
+				BEC8A4FA18280D550090BBAD /* camera.wi */,
+				BEC8A4FB18280D550090BBAD /* eagl.wi */,
+				BEC8A4FC18280D550090BBAD /* GetMeta */,
+				BEC8A4FD18280D550090BBAD /* MetaData.wi */,
+				BEC8A4FE18280D550090BBAD /* parse.wi */,
+				BEC8A4FF18280D550090BBAD /* RenderedView.wi */,
+				BEC8A50018280D550090BBAD /* renderLoop.wi */,
+				BEC8A50118280D550090BBAD /* RenderShader.wi */,
+				BEC8A50218280D550090BBAD /* renderuiview.wi */,
+				BEC8A50318280D550090BBAD /* shader.wi */,
+				BEC8A50418280D550090BBAD /* ShaderForRender.wi */,
+				BEC8A50518280D550090BBAD /* ShaderLib.wi */,
+				BEC8A50618280D550090BBAD /* su.wi */,
+				BEC8A50718280D550090BBAD /* Texture2D.wi */,
+				BEC8A50818280D550090BBAD /* viewGraph.wi */,
+			);
+			name = Image;
+			path = ../wiLibrary/Image;
+			sourceTree = "<group>";
+		};
+		BEC8A4FC18280D550090BBAD /* GetMeta */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = GetMeta;
+			sourceTree = "<group>";
+		};
+		BEC8A50918280D550090BBAD /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				BEC8A50A18280D550090BBAD /* DataModel.wi */,
+				BEC8A50B18280D550090BBAD /* DataRegistry.wi */,
+			);
+			name = Model;
+			path = ../wiLibrary/Model;
+			sourceTree = "<group>";
+		};
+		BEC8A50C18280D550090BBAD /* Old */ = {
+			isa = PBXGroup;
+			children = (
+				BEC8A50D18280D550090BBAD /* dict.wi */,
+				BEC8A50E18280D550090BBAD /* dict2.wi */,
+				BEC8A50F18280D550090BBAD /* styler.wi */,
+			);
+			name = Old;
+			path = ../wiLibrary/Old;
+			sourceTree = "<group>";
+		};
+		BEC8A51018280D550090BBAD /* Sound */ = {
+			isa = PBXGroup;
+			children = (
+				BEC8A51118280D550090BBAD /* sound.wi */,
+				BEC8A51218280D550090BBAD /* soundios.wi */,
+				BEC8A51318280D550090BBAD /* soundosx.wi */,
+				BEC8A51418280D550090BBAD /* trackersound.wi */,
+			);
+			name = Sound;
+			path = ../wiLibrary/Sound;
+			sourceTree = "<group>";
+		};
+		BEC8A51518280D550090BBAD /* Table */ = {
+			isa = PBXGroup;
+			children = (
+				BEC8A51618280D550090BBAD /* stdCells.wi */,
+				BEC8A51718280D550090BBAD /* table.wi */,
+			);
+			name = Table;
+			path = ../wiLibrary/Table;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		BE4152E21811B03200E421D7 /* WInterfaceSample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BE4152EC1811B03200E421D7 /* Build configuration list for PBXNativeTarget "WInterfaceSample" */;
+			buildPhases = (
+				BE4152DF1811B03200E421D7 /* Sources */,
+				BE4152E01811B03200E421D7 /* Frameworks */,
+				BE4152E11811B03200E421D7 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = WInterfaceSample;
+			productName = WInterfaceSample;
+			productReference = BE4152E31811B03200E421D7 /* WInterfaceSample */;
+			productType = "com.apple.product-type.tool";
+		};
+		BE99B96D161BAE720041B8EA /* WInterface */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BE99B97D161BAE720041B8EA /* Build configuration list for PBXNativeTarget "WInterface" */;
+			buildPhases = (
+				BE99B96A161BAE720041B8EA /* Sources */,
+				BE99B96B161BAE720041B8EA /* Frameworks */,
+				BE99B96C161BAE720041B8EA /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = WInterface;
+			productName = WInterface;
+			productReference = BE99B96E161BAE720041B8EA /* WInterface */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BE99B965161BAE710041B8EA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0430;
+			};
+			buildConfigurationList = BE99B968161BAE710041B8EA /* Build configuration list for PBXProject "WInterface" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = BE99B963161BAE710041B8EA;
+			productRefGroup = BE99B96F161BAE720041B8EA /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = BE93AD84165E9D9C001BA629 /* Products */;
+					ProjectRef = BE93AD83165E9D9C001BA629 /* WI_iosTests.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				BE99B96D161BAE720041B8EA /* WInterface */,
+				BE4152E21811B03200E421D7 /* WInterfaceSample */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		BE93AD89165E9D9D001BA629 /* WI_iosTests.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = WI_iosTests.app;
+			remoteRef = BE93AD88165E9D9D001BA629 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		BE93AD8B165E9D9D001BA629 /* WI_iosTestsTests.octest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = WI_iosTestsTests.octest;
+			remoteRef = BE93AD8A165E9D9D001BA629 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BE4152DF1811B03200E421D7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BEC8A51B18296AA50090BBAD /* inserts.mm in Sources */,
+				BE4152FC1811B04200E421D7 /* sample.wi.mm in Sources */,
+				BE4152E71811B03200E421D7 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BE99B96A161BAE720041B8EA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BE99B976161BAE720041B8EA /* main.m in Sources */,
+				BE99B982161BAEBA0041B8EA /* Classes.m in Sources */,
+				BE99B985161BAFD30041B8EA /* WReader.m in Sources */,
+				BEAA02991621F7280026192D /* WReaderTokenizer.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		BE4152ED1811B03200E421D7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Developer/Local/Frameworks,
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "WInterfaceSample/WInterfaceSample-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		BE4152EE1811B03200E421D7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Developer/Local/Frameworks,
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "WInterfaceSample/WInterfaceSample-Prefix.pch";
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		BE99B97B161BAE720041B8EA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INSTALL_PATH = deploy;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		BE99B97C161BAE720041B8EA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INSTALL_PATH = deploy;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		BE99B97E161BAE720041B8EA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEPLOYMENT_LOCATION = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Developer/Local/Frameworks,
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "WInterface/WInterface-Prefix.pch";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		BE99B97F161BAE720041B8EA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEPLOYMENT_LOCATION = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Developer/Local/Frameworks,
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "WInterface/WInterface-Prefix.pch";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		BE4152EC1811B03200E421D7 /* Build configuration list for PBXNativeTarget "WInterfaceSample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BE4152ED1811B03200E421D7 /* Debug */,
+				BE4152EE1811B03200E421D7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BE99B968161BAE710041B8EA /* Build configuration list for PBXProject "WInterface" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BE99B97B161BAE720041B8EA /* Debug */,
+				BE99B97C161BAE720041B8EA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BE99B97D161BAE720041B8EA /* Build configuration list for PBXNativeTarget "WInterface" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BE99B97E161BAE720041B8EA /* Debug */,
+				BE99B97F161BAE720041B8EA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BE99B965161BAE710041B8EA /* Project object */;
+}
