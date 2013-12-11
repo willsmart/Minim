@@ -143,7 +143,7 @@
 		BEC8A4DA18280D550090BBAD /* uispecific.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = uispecific.wi; sourceTree = "<group>"; };
 		BEC8A4DB18280D550090BBAD /* util.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = util.wi; sourceTree = "<group>"; };
 		BEC8A4DC18280D550090BBAD /* BC.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; name = BC.wi; path = ../wiLibrary/BC.wi; sourceTree = "<group>"; };
-		BEC8A4DE18280D550090BBAD /* 3d.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = 3d.h; sourceTree = "<group>"; };
+		BEC8A4DE18280D550090BBAD /* 3d.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 2; path = 3d.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		BEC8A4DF18280D550090BBAD /* Array.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Array.h; sourceTree = "<group>"; };
 		BEC8A4E018280D550090BBAD /* Basic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Basic.h; sourceTree = "<group>"; };
 		BEC8A4E118280D550090BBAD /* BasicArray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BasicArray.h; sourceTree = "<group>"; };

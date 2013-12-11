@@ -24,7 +24,8 @@
 @property int bracketCount,linei;
 @property char type;
 - (id)initWithTokenizer:(WReaderTokenizer*)atokenizer string:(NSString*)astr bracketCount:(int)bc linei:(int)linei type:(char)type;
-- (id)initWithTokenizer:(WReaderTokenizer*)atokenizer string:(NSString*)astr bracketCount:(int)bc linei:(int)linei type:(char)type notes:(NSString*)anotes;
+- (id)initWithTokenizer:(WReaderTokenizer*)atokenizer string:(NSString*)astr bracketCount:(int)bc linei:(int)linei type:(char)type note:(NSString*)anote;
+-(void)addNote:(NSString*)format,...;
 @end
 
 @interface WReaderTokenizer : NSObject {

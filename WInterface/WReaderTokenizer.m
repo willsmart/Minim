@@ -22,11 +22,12 @@
     return([self initWithTokenizer:atokenizer string:astr bracketCount:bc linei:linei type:atype notes:nil]);
 }
 
-- (id)initWithTokenizer:(WReaderTokenizer*)atokenizer string:(NSString*)astr bracketCount:(int)bc linei:(int)linei type:(char)atype notes:(NSString*)anotes {
+- (id)initWithTokenizer:(WReaderTokenizer*)atokenizer string:(NSString*)astr bracketCount:(int)bc linei:(int)linei type:(char)atype note:(NSString*)anote {
     if (!(self=[super init])) return(nil);
     tokenizer=atokenizer;
     self.str=[astr.copy autorelease];
-    self.notes=[anotes.copy autorelease];
+    self.notes=[NSString stringWithFormat:@"|%c:%p:%@|",atype,self,[astr stringByReplacingOccurrencesOfString:@"|" withString:@"pipe"]];
+    if (anote.length) [self addNote:@"%@",anote];
     self.type=atype;
     self.bracketCount=bc;
     self.linei=linei;
@@ -41,6 +42,13 @@
 
 - (void)setStr:(NSString *)v {self._str=v;}
 - (void)setNotes:(NSString *)v {self._notes=v;}
+
+
+-(void)addNote:(NSString*)format,... {
+    va_list args;va_start(args,format);
+    self.notes=[self.notes stringByAppendingFormat:@"%@|",[[[[NSString alloc] initWithFormat:format arguments:args] autorelease] stringByReplacingOccurrencesOfString:@"|" withString:@"pipe"]];
+    va_end(args);
+}
 
 @end
 
@@ -181,18 +189,14 @@
     
     NSMutableString *bs=[NSMutableString string];
     bool malformed=NO;
-    NSMutableArray *newTokens=[NSMutableArray array];
     
     bool changed=NO;
     for (WReaderToken *t in tokens) {
-        if ((t.type=='z')||(t.type=='c')||(t.type=='r')) {
-            [newTokens addObject:t];
-            continue;
-        }
         if (!malformed) do {
-            if ([t.str isEqualToString:@"["]) [bs appendString:@"["];
-            else if ([t.str isEqualToString:@"{"]) [bs appendString:@"{"];
-            else if ([t.str isEqualToString:@"("]) [bs appendString:@"("];
+            int nbs=bs.length;
+            if ([t.str isEqualToString:@"["]) {[bs appendString:@"["];nbs++;}
+            else if ([t.str isEqualToString:@"{"]) {[bs appendString:@"{"];nbs++;}
+            else if ([t.str isEqualToString:@"("]) {[bs appendString:@"("];nbs++;}
             else if ([t.str isEqualToString:@"]"]) {
                 if ((!bs.length)||([bs characterAtIndex:bs.length-1]!='[')) malformed=YES;
                 else [bs deleteCharactersInRange:NSMakeRange(bs.length-1,1)];
@@ -208,7 +212,7 @@
             else break;
             if (!malformed) {
                 changed=YES;
-                [newTokens addObject:[[[WReaderToken alloc] initWithTokenizer:self string:@"" bracketCount:t.bracketCount linei:t.linei type:'(' notes:bs] autorelease]];
+                [t addNote:@"()%d%@",nbs,t.str];
             }
         } while(NO);
         [newTokens addObject:t];
