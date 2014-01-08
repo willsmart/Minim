@@ -17,6 +17,7 @@
 		BE99B982161BAEBA0041B8EA /* Classes.m in Sources */ = {isa = PBXBuildFile; fileRef = BE99B981161BAEBA0041B8EA /* Classes.m */; };
 		BE99B985161BAFD30041B8EA /* WReader.m in Sources */ = {isa = PBXBuildFile; fileRef = BE99B984161BAFD30041B8EA /* WReader.m */; };
 		BEAA02991621F7280026192D /* WReaderTokenizer.m in Sources */ = {isa = PBXBuildFile; fileRef = BEAA02981621F7280026192D /* WReaderTokenizer.m */; };
+		BEAC0E8A187C168200405862 /* RegexKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEAC0E89187C168200405862 /* RegexKit.framework */; };
 		BEC8A51B18296AA50090BBAD /* inserts.mm in Sources */ = {isa = PBXBuildFile; fileRef = BEC8A51A18296AA50090BBAD /* inserts.mm */; };
 /* End PBXBuildFile section */
 
@@ -100,6 +101,7 @@
 		BEA020B8162951B100CA480A /* PropBase.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = PropBase.wi; path = Wis/PropBase.wi; sourceTree = "<group>"; };
 		BEAA02971621F7280026192D /* WReaderTokenizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WReaderTokenizer.h; sourceTree = "<group>"; };
 		BEAA02981621F7280026192D /* WReaderTokenizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WReaderTokenizer.m; sourceTree = "<group>"; };
+		BEAC0E89187C168200405862 /* RegexKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RegexKit.framework; path = "../../Library/Developer/Xcode/DerivedData/RegexKit-gsxakwhdfsiyoyapmifljrgljotg/Build/Products/Debug/RegexKit.framework"; sourceTree = "<group>"; };
 		BEC3EDAE162B2999001BA99B /* ModelNS1.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = ModelNS1.wi; path = Wis/ModelNS1.wi; sourceTree = "<group>"; };
 		BEC3EDAF162B299A001BA99B /* ModelNSA.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = ModelNSA.wi; path = Wis/ModelNSA.wi; sourceTree = "<group>"; };
 		BEC3EDB0162B299A001BA99B /* ModelNSS.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = ModelNSS.wi; path = Wis/ModelNSS.wi; sourceTree = "<group>"; };
@@ -215,6 +217,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BEAC0E8A187C168200405862 /* RegexKit.framework in Frameworks */,
 				BE99B973161BAE720041B8EA /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -317,6 +320,7 @@
 		BE99B971161BAE720041B8EA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BEAC0E89187C168200405862 /* RegexKit.framework */,
 				BE99B972161BAE720041B8EA /* Foundation.framework */,
 			);
 			name = Frameworks;
@@ -788,6 +792,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Developer/Local/Frameworks,
+					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/RegexKit-gsxakwhdfsiyoyapmifljrgljotg/Build/Products/Debug",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "WInterface/WInterface-Prefix.pch";
@@ -802,6 +807,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Developer/Local/Frameworks,
+					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/RegexKit-gsxakwhdfsiyoyapmifljrgljotg/Build/Products/Debug",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "WInterface/WInterface-Prefix.pch";

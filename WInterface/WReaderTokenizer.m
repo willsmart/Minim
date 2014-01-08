@@ -19,14 +19,14 @@
 }
 
 - (id)initWithTokenizer:(WReaderTokenizer*)atokenizer string:(NSString*)astr bracketCount:(int)bc linei:(int)linei type:(char)atype {
-    return([self initWithTokenizer:atokenizer string:astr bracketCount:bc linei:linei type:atype notes:nil]);
+    return([self initWithTokenizer:atokenizer string:astr bracketCount:bc linei:linei type:atype note:nil]);
 }
 
 - (id)initWithTokenizer:(WReaderTokenizer*)atokenizer string:(NSString*)astr bracketCount:(int)bc linei:(int)linei type:(char)atype note:(NSString*)anote {
     if (!(self=[super init])) return(nil);
     tokenizer=atokenizer;
     self.str=[astr.copy autorelease];
-    self.notes=[NSString stringWithFormat:@"|%c:%p:%@|",atype,self,[astr stringByReplacingOccurrencesOfString:@"|" withString:@"pipe"]];
+    self.notes=[NSString stringWithFormat:@"\a\a%c%p%@",atype,self,[astr stringByReplacingOccurrencesOfString:@"\a" withString:@"a"]];
     if (anote.length) [self addNote:@"%@",anote];
     self.type=atype;
     self.bracketCount=bc;
@@ -46,7 +46,7 @@
 
 -(void)addNote:(NSString*)format,... {
     va_list args;va_start(args,format);
-    self.notes=[self.notes stringByAppendingFormat:@"%@|",[[[[NSString alloc] initWithFormat:format arguments:args] autorelease] stringByReplacingOccurrencesOfString:@"|" withString:@"pipe"]];
+    self.notes=[self.notes stringByAppendingFormat:@"\a%@",[[[[NSString alloc] initWithFormat:format arguments:args] autorelease] stringByReplacingOccurrencesOfString:@"\a" withString:@"a"]];
     va_end(args);
 }
 
@@ -177,52 +177,69 @@
 - (NSString*)tokenStr {
     NSMutableString *s=[NSMutableString string];
     for (WReaderToken *t in self.tokens) {
-        [s appendFormat:@"%c:%d:%d:\"%@\"\n",t.type,t.bracketCount,t.linei,t.str];
+        [s appendString:t.notes];
     }
-    return(s);
+    [s appendString:@"\a\a"];
+    return([s.copy autorelease]);
+}
+
+- (NSIndexSet*)tokenIndexSet {
+    NSMutableIndexSet *ret=[NSMutableIndexSet indexSet];
+    NSUInteger ind=0;
+    for (WReaderToken *t in self.tokens) {
+        [ret addIndex:ind];
+        ind+=t.notes.length;
+    }
+    return([ret.copy autorelease]);
 }
 
 
--(bool)addBracketTokens {
-    if (addedBracketTokens) return(YES);
-    addedBracketTokens=YES;
+-(void)applyRegex:(NSString*)regex {
+    NSString *str=self.tokenStr;
+    NSIndexSet *inds=self.tokenIndexSet;
     
-    NSMutableString *bs=[NSMutableString string];
-    bool malformed=NO;
-    
-    bool changed=NO;
-    for (WReaderToken *t in tokens) {
-        if (!malformed) do {
-            int nbs=bs.length;
-            if ([t.str isEqualToString:@"["]) {[bs appendString:@"["];nbs++;}
-            else if ([t.str isEqualToString:@"{"]) {[bs appendString:@"{"];nbs++;}
-            else if ([t.str isEqualToString:@"("]) {[bs appendString:@"("];nbs++;}
-            else if ([t.str isEqualToString:@"]"]) {
-                if ((!bs.length)||([bs characterAtIndex:bs.length-1]!='[')) malformed=YES;
-                else [bs deleteCharactersInRange:NSMakeRange(bs.length-1,1)];
+    RKRegex *re=[[[RKRegex alloc] initWithRegexString:regex options:0] autorelease];
+    NSArray *refs=re.captureNameArray;
+    RKEnumerator *en=[str matchEnumeratorWithRegex:re];
+
+    NSRange *ranges;
+    int seq=1;
+    while ((ranges=[en nextRanges])) {
+        int ind=-1;
+        for (NSObject *_name in refs) {ind++;
+            if (![_name isKindOfClass:[NSString class]]) continue;
+            NSString *name=(NSString*)_name;
+            
+            NSRange r=ranges[ind];
+            if (r.location+r.length<=str.length) {
+                NSUInteger sti=[inds countOfIndexesInRange:NSMakeRange(0, r.location)]-1;
+                NSUInteger endi=[inds countOfIndexesInRange:NSMakeRange(0, r.location+(r.length?r.length-1:0))]-1;
+                if (sti==endi) {
+                    [(WReaderToken*)[self.tokens objectAtIndex:sti] addNote:@"%@",name];
+                }
+                else {
+                    [(WReaderToken*)[self.tokens objectAtIndex:sti] addNote:@"%d:%@",seq,name];
+                    [(WReaderToken*)[self.tokens objectAtIndex:endi] addNote:@"%d",seq];
+                    seq++;
+                }
             }
-            else if ([t.str isEqualToString:@"}"]) {
-                if ((!bs.length)||([bs characterAtIndex:bs.length-1]!='{')) malformed=YES;
-                else [bs deleteCharactersInRange:NSMakeRange(bs.length-1,1)];
-            }
-            else if ([t.str isEqualToString:@")"]) {
-                if ((!bs.length)||([bs characterAtIndex:bs.length-1]!='(')) malformed=YES;
-                else [bs deleteCharactersInRange:NSMakeRange(bs.length-1,1)];
-            }
-            else break;
-            if (!malformed) {
-                changed=YES;
-                [t addNote:@"()%d%@",nbs,t.str];
-            }
-        } while(NO);
-        [newTokens addObject:t];
+        }
     }
-    if (changed) [tokens setArray:newTokens];
-    return(!malformed);
 }
 
 
--(bool)addSelectorTokens {
+
+-(void)addBracketTokens {
+    [self applyRegex:@"(?'paran'\a\ao\\((?:(?>[^\(]*)|(?-2))*\a\ao\\))"];
+    [self applyRegex:@"(?'squ'\a\ao\\[(?:(?>[^\(]*)|(?-2))*\a\ao\\])"];
+    [self applyRegex:@"(?'curl'\a\ao\\{(?:(?>[^\(]*)|(?-2))*\a\ao\\})"];
+}
+
+
+
+
+-(void)addSelectorTokens {
+/*
     if (addedSelectorTokens) return(NO);
     addedSelectorTokens=YES;
     [self addBracketTokens];
@@ -271,7 +288,7 @@
                                 }
                                 //NSLog(@"y %ld",(long)ind);
                                 changed=YES;
-                                [newTokens insertObject:[[[WReaderToken alloc] initWithTokenizer:self string:@"" bracketCount:t.bracketCount linei:t.linei type:'[' notes:@""] autorelease] atIndex:ind];
+                                [newTokens insertObject:[[[WReaderToken alloc] initWithTokenizer:self string:@"" bracketCount:t.bracketCount linei:t.linei type:'[' note:@""] autorelease] atIndex:ind];
                             }
                         }
                     case ')':case '}':// note pass through
@@ -297,6 +314,7 @@
     }
     if (changed) [tokens setArray:newTokens];
     return(changed);
+    */
 }
 
 @end

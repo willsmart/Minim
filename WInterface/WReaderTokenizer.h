@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <RegexKit/RegexKit.h>
 
 @class WReaderTokenizer;
 @class WReaderToken;
@@ -38,9 +39,12 @@
 @property (retain,nonatomic) NSString *str,*_str;
 
 @property (readonly) NSString *tokenStr;
+@property (readonly) NSIndexSet *tokenIndexSet;
+
+-(void)applyRegex:(NSString*)regex;
 
 - (id)initWithReader:(WReader*)areader;
--(bool)addBracketTokens;
--(bool)addSelectorTokens;
+-(void)addBracketTokens;
+-(void)addSelectorTokens;
 
 @end
