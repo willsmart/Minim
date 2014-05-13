@@ -2484,7 +2484,7 @@ static WClasses *_default=nil;
             [altypeps addObject:[WClass getProtocolWithName:p]];
         }
     }
-    return([[[WType alloc] initWithClass:[WClass getClassWithName:altypec] protocols:altypeps.allObjects addObject:NO] autorelease]);
+    return([[WType alloc] initWithClass:[WClass getClassWithName:altypec] protocols:altypeps.allObjects addObject:NO]);
 }
 
 
@@ -2789,7 +2789,7 @@ static WClasses *_default=nil;
 }
 
 -(WType*)wType {
-    return([[[WType alloc] initWithClass:(self.isProtocol?nil:self) protocols:(self.isProtocol?[NSArray arrayWithObject:self]:nil) addObject:NO] autorelease]);
+    return([[WType alloc] initWithClass:(self.isProtocol?nil:self) protocols:(self.isProtocol?[NSArray arrayWithObject:self]:nil) addObject:NO]);
 }
 
 //@synthesize name,superType,varNames,vars,fns,varPatterns,fnNames,isProtocol,isType,isSys,hasDef,isWIOnly;
@@ -2992,7 +2992,7 @@ static WClasses *_default=nil;
             WVar *v=[self.vars objectForKey:k];
             [s appendFormat:(s.length?@"|%@":@"%@"),[NSRegularExpression escapedPatternForString:v.localizedName]];
         }
-        getterSetterRE=[[NSRegularExpression regularExpressionWithPattern:[NSString stringWithFormat:@"(?<![\\w\\d_\\.\\s]|->)\\s*(?:%@)(?:$|[^\\w\\d_])",s] options:0 error:&err] retain];
+        getterSetterRE=[NSRegularExpression regularExpressionWithPattern:[NSString stringWithFormat:@"(?<![\\w\\d_\\.\\s]|->)\\s*(?:%@)(?:$|[^\\w\\d_])",s] options:0 error:&err];
         if (err) {
             NSLog(@"WInterface internal error %@",err.description);
             exit(1);
@@ -3083,10 +3083,10 @@ static WClasses *_default=nil;
 
 
 -(WType*)myWType {
-    return([[[WType alloc] initWithClass:(myclas.isProtocol?nil:myclas) protocols:(myclas.isProtocol?[NSArray arrayWithObject:myclas]:nil) addObject:NO] autorelease]);
+    return([[WType alloc] initWithClass:(myclas.isProtocol?nil:myclas) protocols:(myclas.isProtocol?[NSArray arrayWithObject:myclas]:nil) addObject:NO]);
 }
 -(WType*)hisWType {
-    return([[[WType alloc] initWithClass:(hisclas.isProtocol?nil:hisclas) protocols:(hisclas.isProtocol?[NSArray arrayWithObject:hisclas]:nil) addObject:NO] autorelease]);
+    return([[WType alloc] initWithClass:(hisclas.isProtocol?nil:hisclas) protocols:(hisclas.isProtocol?[NSArray arrayWithObject:hisclas]:nil) addObject:NO]);
 }
 
 

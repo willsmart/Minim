@@ -11804,7 +11804,7 @@ __set=nil;
 @implementation NSString(winterface)
 
 -(NSString*)urlEncodeUsingEncoding:(NSStringEncoding)encoding {
-          return([(NSString *)CFURLCreateStringByAddingPercentEscapes(NULL,(CFStringRef)self,NULL,(CFStringRef)@"!*'\"();:@&=+$,/?%[]% ",CFStringConvertNSStringEncodingToEncoding(encoding)) autorelease]);
+          return((NSString *)CFURLCreateStringByAddingPercentEscapes(NULL,(CFStringRef)self,NULL,(CFStringRef)@"!*'\"();:@&=+$,/?%[]% ",CFStringConvertNSStringEncodingToEncoding(encoding)));
     }
 
 @end
