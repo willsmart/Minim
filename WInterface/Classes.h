@@ -169,8 +169,6 @@
 @property bool hasDef;
 @property (readonly) bool exists;
 
-@property (readonly) NSString *initObjSig;
-
 @property bool isProtocol,isSys,isType,isWIOnly;
 @property (retain,nonatomic) NSString *name;
 @property (retain,nonatomic) WType *superType;
