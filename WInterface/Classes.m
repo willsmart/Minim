@@ -19,9 +19,6 @@
 
 @implementation InFiles
 -(void)dealloc {
-    [inFilesLocations release];
-    [inFilesMessages release];
-    [useLocationsFrom release];
     [super dealloc];
 }
 
@@ -142,7 +139,6 @@ static NSMutableArray *InFiles_allInFiles=nil;
     }
             
     NSDictionary *d=locations.copy;
-    [locations release];
     return(d);
 }
 
@@ -214,7 +210,6 @@ static NSMutableArray *InFiles_allInFiles=nil;
             else offs=((NSNumber*)[lns objectAtIndex:ln]).intValue;
             NSData *d=[msg dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
             [InFiles insertData:d intoFile:fil at:offs];
-            [msg release];
         }
         
         fclose(fil);
@@ -2991,7 +2986,6 @@ static WClasses *_default=nil;
 
 -(NSRegularExpression*)getterSetterRE {
     if (!self.vars.count) {
-        [getterSetterRE release];
         getterSetterRE=nil;
     }
     else if (!getterSetterRE) {
@@ -3547,7 +3541,6 @@ static WClasses *_default=nil;
     }
     NSMutableString *ret=[NSMutableString string];
     for (WReaderToken *t in tkn.tokens) [ret appendString:t.str];
-    [tkn release];
     return(ret);
 }
 
@@ -3782,7 +3775,6 @@ static WClasses *_default=nil;
     if (changed) {
         ret=[r stringWithTokensInRange:NSMakeRange(0,r.tokenizer.tokens.count)];
     }
-    [r release];
     return(ret);
 }
 
@@ -3819,8 +3811,6 @@ static WClasses *_default=nil;
     self.name=self.defaultValue=nil;
     self.attributes=nil;
     self.clas=nil;
-    [localizedName release];
-    [localizedType release];
     [super dealloc];
 }
 
@@ -4015,7 +4005,7 @@ static WClasses *_default=nil;
     return(__name=ret); \
 }
 #define CACHEVARATTRFN_retain(I,__name,...) -(I)__name {if (attributesCached) return(__name);\
-    [__name release];__name=nil; \
+__name=nil; \
     I ret=nil; \
     {__VA_ARGS__} \
     return([(__name=ret) retain]); \
@@ -4332,7 +4322,6 @@ CACHEVARATTRFN_retain(NSString*,localizedVarName,
                     }
                     [WClasses note:[NSString stringWithFormat:@"Suspected positive reference count in default value. The value has been changed to %@",defaultValue] withToken:nil context:self];
                 }
-                [r release];
             }
             [WFn getFnWithSig:@"-(init)" body:[NSString stringWithFormat:@"@-500 /*ivar*/%@=(%@);%@\n",self.localizedVarName,(self.retains?[NSString stringWithFormat:@"[(id)(%@) retain]",defaultValue]:defaultValue),(self.tracked?[NSString stringWithFormat:@"  ADDOWNER(%@,self);",self.localizedVarName]:@"")] clas:clas];
         }

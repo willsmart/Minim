@@ -150,7 +150,6 @@ static PropBlocks *_default=nil;
 }
 + (void)clearStaticData {
     if (_default) {
-        [_default release];
         _default=nil;
     }
 }

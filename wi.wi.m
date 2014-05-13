@@ -141,7 +141,7 @@ void clearSingletons();
 
 #define DEB(...) __VA_ARGS__
 NSMutableArray *singletons=nil;
-void clearSingletons() {[singletons release];singletons=nil;}
+void clearSingletons() {singletons=nil;}
 static Util* _Util_default=nil;
     
 static ULL ullHashCodes[8][1024];
@@ -4885,7 +4885,6 @@ static Model *_Model_default=nil;
           for (int i=0;i<100;i++) {
                 CollectionTestObject *o=[[CollectionTestObject alloc] initWithInt:i tester:self];
                 [array addObject:o];
-                [o release];
                 [arrayk addObject:[NSString stringWithFormat:@"k%d",i]];
                 printf("%p: %s %s\n",array.lastObject,((CollectionTestObject*)array.lastObject).description.UTF8String,((NSString*)arrayk.lastObject).description.UTF8String);
             }
@@ -4984,15 +4983,11 @@ static Model *_Model_default=nil;
           NSArray *aa=[[a arrayByAddingObject:self.object] retain];
           NSArray *bb=[[b arrayByAddingObject:self.object] retain];
           [self passFail:[aa isEqualToArray:bb] format:@"arrayByAddingObject"];
-          [aa release];
-          [bb release];
     }
 -(void)arrayByAddingObjectsFromArray {
           NSArray *aa=[[a arrayByAddingObjectsFromArray:self.objectArray] retain];
           NSArray *bb=[[b arrayByAddingObjectsFromArray:self.objectArray] retain];
           [self passFail:[aa isEqualToArray:bb] format:@"arrayByAddingObjectsFromArray"];
-          [aa release];
-          [bb release];
     }
 -(void)clearTest {
           [self._keyArray removeAllObjects];
@@ -5023,18 +5018,18 @@ static Model *_Model_default=nil;
           [self passFail:a.count==b.count format:@"count"];
     }
 -(void)dealloc {
-      [b release];b=nil;
-      [c release];c=nil;
-      [v__allObjects release];v__allObjects=nil;
-      [v__keyArray release];v__keyArray=nil;
-      [v__objectSet release];v__objectSet=nil;
-      [v_collections release];v_collections=nil;
-      [v_errs release];v_errs=nil;
-      [v__dictionary release];v__dictionary=nil;
-      [v__allKeys release];v__allKeys=nil;
-      [v__objectArray release];v__objectArray=nil;
-      [v__indexes release];v__indexes=nil;
-      [a release];a=nil;
+b=nil;
+c=nil;
+v__allObjects=nil;
+v__keyArray=nil;
+v__objectSet=nil;
+v_collections=nil;
+v_errs=nil;
+v__dictionary=nil;
+v__allKeys=nil;
+v__objectArray=nil;
+v__indexes=nil;
+a=nil;
   @999 [super dealloc];
     }
 -(void)exchangeObjectAtIndexWithObjectAtIndex {
@@ -5219,8 +5214,6 @@ static Model *_Model_default=nil;
           NSArray *aa=[[a subarrayWithRange:self.range] retain];
           NSArray *bb=[[b subarrayWithRange:self.range] retain];
           [self passFail:[aa isEqualToArray:bb] format:@"subarrayWithRange"];
-          [aa release];
-          [bb release];
     }
 -(void)verifyRC {
           for (CollectionTestObject *o in self._allObjects) {
@@ -5476,8 +5469,8 @@ static Model *_Model_default=nil;
           [__array addObserver:observer toObjectsAtIndexes:indexes forKeyPath:keyPath options:options context:context];
     }
 -(void)dealloc {
-      [trackerArray release];trackerArray=nil;
-      [__array release];__array=nil;
+trackerArray=nil;
+__array=nil;
   @999 [super dealloc];
     }
 -(void)encodeWithCoder:(NSCoder*)coder {
@@ -5511,7 +5504,6 @@ static Model *_Model_default=nil;
             }
           if (toRemove) {
                 [self removeObjectsAtIndexes:toRemove];
-                [toRemove release];
             }
     }
 -(void)getObjects:(id[])aBuffer range:(NSRange)aRange {  [__array getObjects:aBuffer range:aRange];}
@@ -5799,8 +5791,8 @@ static Model *_Model_default=nil;
           [trackerDictionary addEntriesFromDictionary:dictionary];
     }
 -(void)dealloc {
-      [__dictionary release];__dictionary=nil;
-      [trackerDictionary release];trackerDictionary=nil;
+__dictionary=nil;
+trackerDictionary=nil;
   @999 [super dealloc];
     }
 -(void)encodeWithCoder:(NSCoder*)coder {
@@ -5958,8 +5950,8 @@ static Model *_Model_default=nil;
           [__set addObserver:observer forKeyPath:keyPath options:options context:context];
     }
 -(void)dealloc {
-      [trackerSet release];trackerSet=nil;
-      [__set release];__set=nil;
+trackerSet=nil;
+__set=nil;
   @999 [super dealloc];
     }
 -(void)encodeWithCoder:(NSCoder*)coder {
@@ -6089,7 +6081,7 @@ static Model *_Model_default=nil;
           return(s);
     }
 -(void)dealloc {
-      [subObjects release];subObjects=nil;
+subObjects=nil;
   @999 [super dealloc];
     }
 -(void)didAdd {
@@ -6110,7 +6102,6 @@ static Model *_Model_default=nil;
                 if (so) [so _release];
             }
           //printf("release %d->%d %s\n",self.rcIs,self.rcWillBe,self.description.UTF8String);
-          [super release];
     }
 -(void)willAdd {
           if (testKey) {
@@ -6296,7 +6287,6 @@ static Model *_Model_default=nil;
           for (int i=0;i<100;i++) {
                 CollectionTestObject *o=[[CollectionTestObject alloc] initWithInt:i tester:self];
                 [array addObject:o];
-                [o release];
                 [arrayk addObject:[NSString stringWithFormat:@"k%d",i]];
                 printf("%p: %s %s\n",array.lastObject,((CollectionTestObject*)array.lastObject).description.UTF8String,((NSString*)arrayk.lastObject).description.UTF8String);
             }
@@ -6418,18 +6408,18 @@ static Model *_Model_default=nil;
           [self passFail:a.count==b.count format:@"count"];
     }
 -(void)dealloc {
-      [b release];b=nil;
-      [c release];c=nil;
-      [v__allObjects release];v__allObjects=nil;
-      [v__keyArray release];v__keyArray=nil;
-      [v__objectSet release];v__objectSet=nil;
-      [v_collections release];v_collections=nil;
-      [v_errs release];v_errs=nil;
-      [v__dictionary release];v__dictionary=nil;
-      [v__allKeys release];v__allKeys=nil;
-      [v__objectArray release];v__objectArray=nil;
-      [v__indexes release];v__indexes=nil;
-      [a release];a=nil;
+b=nil;
+c=nil;
+v__allObjects=nil;
+v__keyArray=nil;
+v__objectSet=nil;
+v_collections=nil;
+v_errs=nil;
+v__dictionary=nil;
+v__allKeys=nil;
+v__objectArray=nil;
+v__indexes=nil;
+a=nil;
   @999 [super dealloc];
     }
 -(void)isEqualToDictionary {
@@ -6931,9 +6921,9 @@ static Model *_Model_default=nil;
     }
 -(void)dealloc {  
   @-100 [self removeAllObjects];
-@0 [__arrayObjectIndexes release];__arrayObjectIndexes=nil;
-    [v_errs release];v_errs=nil;
-    [__array release];__array=nil;
+@0__arrayObjectIndexes=nil;
+v_errs=nil;
+__array=nil;
 @999 [super dealloc];
     }
 -(void)didAddObject:(id)object {  
@@ -6998,7 +6988,6 @@ static Model *_Model_default=nil;
             }
           if (toRemove) {
                 [self removeObjectsAtIndexes:toRemove];
-                [toRemove release];
             }
           [self allObjectsMoved];
           [self stateOK];
@@ -7052,7 +7041,6 @@ static Model *_Model_default=nil;
           for (id object in was) [self willRemoveObject:object];
           [__mutableArray removeAllObjects];
           for (id object in was) [self didRemoveObject:object];
-          [was release];
           [self allObjectsMoved];
           [self stateOK];
     }
@@ -7078,7 +7066,6 @@ static Model *_Model_default=nil;
                 for (id object2 in toRemove) [self didRemoveObject:object2];
                 if (toRemove.count==1) [self objectsMovedFromRange:NSMakeRange(oi+1,__array.count-oi) toLocation:oi];
                 else [self allObjectsMoved];
-                [toRemove release];
             }
           [self stateOK];
     }
@@ -7102,7 +7089,6 @@ static Model *_Model_default=nil;
                 for (id object2 in toRemove) [self didRemoveObject:object2];
                 if (toRemove.count==1) [self objectsMovedFromRange:NSMakeRange(oi+1,__array.count-oi) toLocation:oi];
                 else [self allObjectsMoved];
-                [toRemove release];
             }
           [self stateOK];
     }
@@ -7111,7 +7097,6 @@ static Model *_Model_default=nil;
           [self willRemoveObject:object fromIndex:index];
           [__mutableArray removeObjectAtIndex:index];
           [self didRemoveObject:object];
-          [object release];
           [self objectsMovedFromRange:NSMakeRange(index+1,__array.count-index) toLocation:index];
           [self stateOK];
     }
@@ -7128,7 +7113,6 @@ static Model *_Model_default=nil;
             }
           [__mutableArray removeObjectIdenticalTo:object];
           for (int cc=0;cc<c;cc++) [self didRemoveObject:object];
-          [object release];
           if (c==1) [self objectsMovedFromRange:NSMakeRange(oi+1,__array.count-oi) toLocation:oi];
           else [self allObjectsMoved];
           [self stateOK];
@@ -7149,7 +7133,6 @@ static Model *_Model_default=nil;
             }
           [__mutableArray removeObjectIdenticalTo:object inRange:r];
           for (int cc=0;cc<c;cc++) [self didRemoveObject:object];
-          [object release];
           if (c==1) [self objectsMovedFromRange:NSMakeRange(oi+1,__array.count-oi) toLocation:oi];
           else [self allObjectsMoved];
           [self stateOK];
@@ -7160,7 +7143,6 @@ static Model *_Model_default=nil;
                 [self willRemoveObject:object];
                 [__mutableArray removeObjectAtIndex:index-i];
                 [self didRemoveObject:object];
-                [object release];
             }
           [self allObjectsMoved];
           [self stateOK];
@@ -7174,7 +7156,6 @@ static Model *_Model_default=nil;
                 [self willRemoveObject:object fromIndex:r.location+i];
                 [__mutableArray removeObjectAtIndex:r.location+i];
                 [self didRemoveObject:object];
-                [object release];
             }
           [self objectsMovedFromRange:NSMakeRange(r.location+r.length,__array.count-r.location) toLocation:r.location];
           [self stateOK];
@@ -7197,7 +7178,6 @@ static Model *_Model_default=nil;
           [self willRemoveObject:object2 fromIndex:index];
           [__mutableArray replaceObjectAtIndex:index withObject:object];
           [self didRemoveObject:object2];
-          [object2 release];
           [self didAddObject:object withIndex:index];
           [self stateOK];
     }
@@ -7214,7 +7194,6 @@ static Model *_Model_default=nil;
           NSMutableArray *subArray=[[NSMutableArray alloc] initWithCapacity:r.length];
           for (int i=r.location;i<r.location+r.length;i++) [subArray addObject:[__array objectAtIndex:i]];
           bool __changed=[Util getInsertsAndDeletesAsIndexSetWhenChanging:subArray to:array inss:&inss dels:&dels];
-          [subArray release];
           if (!__changed) return;
           if (r.location) {
                 NSMutableIndexSet *indexes=dels.mutableCopy;
@@ -7235,8 +7214,6 @@ static Model *_Model_default=nil;
           NSMutableArray *asubArray=[[NSMutableArray alloc] initWithCapacity:arrayRange.length];
           for (int i=arrayRange.location;i<arrayRange.location+arrayRange.length;i++) [asubArray addObject:[array objectAtIndex:i]];
           bool __changed=[Util getInsertsAndDeletesAsIndexSetWhenChanging:subArray to:asubArray inss:&inss dels:&dels];
-          [subArray release];
-          [asubArray release];
           if (!__changed) return;
           if (r.location) {
                 NSMutableIndexSet *indexes=dels.mutableCopy;
@@ -7613,12 +7590,12 @@ static Model *_Model_default=nil;
     }
 -(void)dealloc {  
   @-100 [self removeAllObjects];
-@0 [__arrayObjectIndexes release];__arrayObjectIndexes=nil;
-    [v_errs release];v_errs=nil;
-    [__array release];__array=nil;
-    [indexToIndexMap release];indexToIndexMap=nil;
-    [atomicArray release];atomicArray=nil;
-    [deletedObjectMap release];deletedObjectMap=nil;
+@0__arrayObjectIndexes=nil;
+v_errs=nil;
+__array=nil;
+indexToIndexMap=nil;
+atomicArray=nil;
+deletedObjectMap=nil;
 @999 [super dealloc];
     }
 -(void)didAddObject:(id)object {
@@ -7732,7 +7709,6 @@ static Model *_Model_default=nil;
           [self willRemoveObject:object fromIndex:index];
           [__mutableArray removeObjectAtIndex:index];
           [self didRemoveObject:object];
-          [object release];
           [self objectsMovedFromRange:NSMakeRange(index+1,__array.count-index) toLocation:index];
           [self stateOK];
     }
@@ -7754,7 +7730,6 @@ static Model *_Model_default=nil;
           [self willRemoveObject:object2 fromIndex:index];
           [__mutableArray replaceObjectAtIndex:index withObject:object];
           [self didRemoveObject:object2];
-          [object2 release];
           [self didAddObject:object withIndex:index];
           [self stateOK];
     }
@@ -8016,9 +7991,9 @@ static Model *_Model_default=nil;
     }
 -(void)dealloc {  
   @-100 [self removeAllObjects];
-@0 [__dictionaryObjectKeys release];__dictionaryObjectKeys=nil;
-    [__dictionary release];__dictionary=nil;
-    [v_errs release];v_errs=nil;
+@0__dictionaryObjectKeys=nil;
+__dictionary=nil;
+v_errs=nil;
 @999 [super dealloc];
     }
 -(void)didAddObject:(id)object forKey:(id<NSCopying>)key {  
@@ -8052,7 +8027,6 @@ static Model *_Model_default=nil;
           for (id<NSCopying> key in was) {
                 [self didRemoveObject:[was objectForKey:key] forKey:key];
             }
-          [was release];
           [self stateOK];
     }
 -(void)removeObjectForKey:(id<NSCopying>)key {
@@ -8077,7 +8051,6 @@ static Model *_Model_default=nil;
             }
           if (toRemove) {
                 for (id<NSCopying> key in toRemove) [self removeObjectForKey:key];
-                [toRemove release];
             }
           [self addEntriesFromDictionary:dictionary];
           [self stateOK];
@@ -8092,7 +8065,6 @@ static Model *_Model_default=nil;
                 [__mutableDictionary setObject:object forKey:key];
                 [self didRemoveObject:was forKey:key];
                 [self didAddObject:object forKey:key];
-                [was release];
             }
           else {
                 [__mutableDictionary setObject:object forKey:key];
@@ -8109,7 +8081,6 @@ static Model *_Model_default=nil;
                 [__mutableDictionary setValue:object forKey:key];
                 [self didRemoveObject:was forKey:key];
                 [self didAddObject:object forKey:key];
-                [was release];
             }
           else {
                 [__mutableDictionary setValue:object forKey:key];
@@ -8371,10 +8342,10 @@ static Model *_Model_default=nil;
     }
 -(void)dealloc {  
   @-100 [self removeAllObjects];
-@0 [__dictionaryObjectKeys release];__dictionaryObjectKeys=nil;
-    [v_errs release];v_errs=nil;
-    [atomicDictionary release];atomicDictionary=nil;
-    [__dictionary release];__dictionary=nil;
+@0__dictionaryObjectKeys=nil;
+v_errs=nil;
+atomicDictionary=nil;
+__dictionary=nil;
 @999 [super dealloc];
     }
 -(void)didAddObject:(id)object forKey:(id<NSCopying>)key {  
@@ -8408,7 +8379,6 @@ static Model *_Model_default=nil;
           for (id<NSCopying> key in was) {
                 [self didRemoveObject:[was objectForKey:key] forKey:key];
             }
-          [was release];
           [self stateOK];
     }
 -(void)removeObjectForKey:(id<NSCopying>)key {
@@ -8433,7 +8403,6 @@ static Model *_Model_default=nil;
             }
           if (toRemove) {
                 for (id<NSCopying> key in toRemove) [self removeObjectForKey:key];
-                [toRemove release];
             }
           [self addEntriesFromDictionary:dictionary];
           [self stateOK];
@@ -8448,7 +8417,6 @@ static Model *_Model_default=nil;
                 [__mutableDictionary setObject:object forKey:key];
                 [self didRemoveObject:was forKey:key];
                 [self didAddObject:object forKey:key];
-                [was release];
             }
           else {
                 [__mutableDictionary setObject:object forKey:key];
@@ -8465,7 +8433,6 @@ static Model *_Model_default=nil;
                 [__mutableDictionary setValue:object forKey:key];
                 [self didRemoveObject:was forKey:key];
                 [self didAddObject:object forKey:key];
-                [was release];
             }
           else {
                 [__mutableDictionary setValue:object forKey:key];
@@ -8662,7 +8629,7 @@ static Model *_Model_default=nil;
     }
 -(void)dealloc {  
   @-100 [self removeAllObjects];
-@0 [__set release];__set=nil;
+@0__set=nil;
 @999 [super dealloc];
     }
 -(void)didAddObject:(id)object {  
@@ -8686,7 +8653,6 @@ static Model *_Model_default=nil;
             }
           if (toRemove) {
                 [self minusSet:toRemove];
-                [toRemove release];
             }
     }
 -(void)intersectSet:(NSSet*)set {
@@ -8697,7 +8663,6 @@ static Model *_Model_default=nil;
             }
           if (toRemove) {
                 [self minusSet:toRemove];
-                [toRemove release];
             }
     }
 -(void)makeObjectsPerformSelector:(SEL)selector {  [__set makeObjectsPerformSelector:selector];}
@@ -8711,7 +8676,6 @@ static Model *_Model_default=nil;
           for (id object in was) [self willRemoveObject:object];
           [__mutableSet removeAllObjects];
           for (id object in was) [self didRemoveObject:object];
-          [was release];
     }
 -(void)removeObject:(id)object {
           if ([__set containsObject:object]) {
@@ -8919,8 +8883,8 @@ static Model *_Model_default=nil;
     }
 -(void)dealloc {  
   @-100 [self removeAllObjects];
-@0 [atomicSet release];atomicSet=nil;
-    [__set release];__set=nil;
+@0atomicSet=nil;
+__set=nil;
 @999 [super dealloc];
     }
 -(void)didAddObject:(id)object {  
@@ -8944,7 +8908,6 @@ static Model *_Model_default=nil;
             }
           if (toRemove) {
                 [self minusSet:toRemove];
-                [toRemove release];
             }
     }
 -(void)intersectSet:(NSSet*)set {
@@ -8955,7 +8918,6 @@ static Model *_Model_default=nil;
             }
           if (toRemove) {
                 [self minusSet:toRemove];
-                [toRemove release];
             }
     }
 -(void)makeObjectsPerformSelector:(SEL)selector {  [__set makeObjectsPerformSelector:selector];}
@@ -8969,7 +8931,6 @@ static Model *_Model_default=nil;
           for (id object in was) [self willRemoveObject:object];
           [__mutableSet removeAllObjects];
           for (id object in was) [self didRemoveObject:object];
-          [was release];
     }
 -(void)removeObject:(id)object {
           if ([__set containsObject:object]) {
@@ -9154,9 +9115,9 @@ static Model *_Model_default=nil;
           return(bi);
     }
 -(void)dealloc {
-      [bValidIndexes release];bValidIndexes=nil;
-      [aValidIndexes release];aValidIndexes=nil;
-      [atobMap release];atobMap=nil;
+bValidIndexes=nil;
+aValidIndexes=nil;
+atobMap=nil;
   @999 [super dealloc];
     }
 -(void)setIdentityWithCount:(NSUInteger)N {
@@ -9406,8 +9367,8 @@ static Model *_Model_default=nil;
   @999 NSSet *chs=self.child_for_commits;if (chs) for (NSObject<BaseObject> *ch in chs) [ch commitModel:stage];
     }
 -(void)dealloc {
-      [v_child_for_commits release];v_child_for_commits=nil;
-      [v_parent_for_commit_endpoint release];v_parent_for_commit_endpoint=nil;
+v_child_for_commits=nil;
+v_parent_for_commit_endpoint=nil;
   @102 [[ObjectRegistry getDefault] deregisterObject:self];
     
 @999 [super dealloc];
@@ -9648,8 +9609,8 @@ static Model *_Model_default=nil;
     }
 -(void)dealloc {  
   @-100 [self removeAllObjects];
-@0 [arrayDelegate release];arrayDelegate=nil;
-    [__array release];__array=nil;
+@0arrayDelegate=nil;
+__array=nil;
 @999 [super dealloc];
     }
 -(void)didAddObject:(id)object {
@@ -9692,7 +9653,6 @@ static Model *_Model_default=nil;
             }
           if (toRemove) {
                 [self removeObjectsAtIndexes:toRemove];
-                [toRemove release];
             }
           [self allObjectsMoved];
           [self stateOK];
@@ -9737,7 +9697,6 @@ static Model *_Model_default=nil;
           for (id object in was) [self willRemoveObject:object];
           [__mutableArray removeAllObjects];
           for (id object in was) [self didRemoveObject:object];
-          [was release];
           [self allObjectsMoved];
           [self stateOK];
     }
@@ -9763,7 +9722,6 @@ static Model *_Model_default=nil;
                 for (id object2 in toRemove) [self didRemoveObject:object2];
                 if (toRemove.count==1) [self objectsMovedFromRange:NSMakeRange(oi+1,__array.count-oi) toLocation:oi];
                 else [self allObjectsMoved];
-                [toRemove release];
             }
           [self stateOK];
     }
@@ -9787,7 +9745,6 @@ static Model *_Model_default=nil;
                 for (id object2 in toRemove) [self didRemoveObject:object2];
                 if (toRemove.count==1) [self objectsMovedFromRange:NSMakeRange(oi+1,__array.count-oi) toLocation:oi];
                 else [self allObjectsMoved];
-                [toRemove release];
             }
           [self stateOK];
     }
@@ -9796,7 +9753,6 @@ static Model *_Model_default=nil;
           [self willRemoveObject:object fromIndex:index];
           [__mutableArray removeObjectAtIndex:index];
           [self didRemoveObject:object];
-          [object release];
           [self objectsMovedFromRange:NSMakeRange(index+1,__array.count-index) toLocation:index];
           [self stateOK];
     }
@@ -9813,7 +9769,6 @@ static Model *_Model_default=nil;
             }
           [__mutableArray removeObjectIdenticalTo:object];
           for (int cc=0;cc<c;cc++) [self didRemoveObject:object];
-          [object release];
           if (c==1) [self objectsMovedFromRange:NSMakeRange(oi+1,__array.count-oi) toLocation:oi];
           else [self allObjectsMoved];
           [self stateOK];
@@ -9834,7 +9789,6 @@ static Model *_Model_default=nil;
             }
           [__mutableArray removeObjectIdenticalTo:object inRange:r];
           for (int cc=0;cc<c;cc++) [self didRemoveObject:object];
-          [object release];
           if (c==1) [self objectsMovedFromRange:NSMakeRange(oi+1,__array.count-oi) toLocation:oi];
           else [self allObjectsMoved];
           [self stateOK];
@@ -9845,7 +9799,6 @@ static Model *_Model_default=nil;
                 [self willRemoveObject:object];
                 [__mutableArray removeObjectAtIndex:index-i];
                 [self didRemoveObject:object];
-                [object release];
             }
           [self allObjectsMoved];
           [self stateOK];
@@ -9859,7 +9812,6 @@ static Model *_Model_default=nil;
                 [self willRemoveObject:object fromIndex:r.location+i];
                 [__mutableArray removeObjectAtIndex:r.location+i];
                 [self didRemoveObject:object];
-                [object release];
             }
           [self objectsMovedFromRange:NSMakeRange(r.location+r.length,__array.count-r.location) toLocation:r.location];
           [self stateOK];
@@ -9882,7 +9834,6 @@ static Model *_Model_default=nil;
           [self willRemoveObject:object2 fromIndex:index];
           [__mutableArray replaceObjectAtIndex:index withObject:object];
           [self didRemoveObject:object2];
-          [object2 release];
           [self didAddObject:object withIndex:index];
           [self stateOK];
     }
@@ -9899,7 +9850,6 @@ static Model *_Model_default=nil;
           NSMutableArray *subArray=[[NSMutableArray alloc] initWithCapacity:r.length];
           for (int i=r.location;i<r.location+r.length;i++) [subArray addObject:[__array objectAtIndex:i]];
           bool __changed=[Util getInsertsAndDeletesAsIndexSetWhenChanging:subArray to:array inss:&inss dels:&dels];
-          [subArray release];
           if (!__changed) return;
           if (r.location) {
                 NSMutableIndexSet *indexes=dels.mutableCopy;
@@ -9920,8 +9870,6 @@ static Model *_Model_default=nil;
           NSMutableArray *asubArray=[[NSMutableArray alloc] initWithCapacity:arrayRange.length];
           for (int i=arrayRange.location;i<arrayRange.location+arrayRange.length;i++) [asubArray addObject:[array objectAtIndex:i]];
           bool __changed=[Util getInsertsAndDeletesAsIndexSetWhenChanging:subArray to:asubArray inss:&inss dels:&dels];
-          [subArray release];
-          [asubArray release];
           if (!__changed) return;
           if (r.location) {
                 NSMutableIndexSet *indexes=dels.mutableCopy;
@@ -10251,9 +10199,9 @@ static Model *_Model_default=nil;
     }
 -(void)dealloc {  
   @-100 [self removeAllObjects];
-@0 [__arrayObjectIndexes release];__arrayObjectIndexes=nil;
-    [v_errs release];v_errs=nil;
-    [__array release];__array=nil;
+@0__arrayObjectIndexes=nil;
+v_errs=nil;
+__array=nil;
 @999 [super dealloc];
     }
 -(void)didAddObject:(id)object {  
@@ -10325,7 +10273,6 @@ static Model *_Model_default=nil;
             }
           if (toRemove) {
                 [self removeObjectsAtIndexes:toRemove];
-                [toRemove release];
             }
           [self allObjectsMoved];
           [self stateOK];
@@ -10379,7 +10326,6 @@ static Model *_Model_default=nil;
           for (id object in was) [self willRemoveObject:object];
           [__mutableArray removeAllObjects];
           for (id object in was) [self didRemoveObject:object];
-          [was release];
           [self allObjectsMoved];
           [self stateOK];
     }
@@ -10405,7 +10351,6 @@ static Model *_Model_default=nil;
                 for (id object2 in toRemove) [self didRemoveObject:object2];
                 if (toRemove.count==1) [self objectsMovedFromRange:NSMakeRange(oi+1,__array.count-oi) toLocation:oi];
                 else [self allObjectsMoved];
-                [toRemove release];
             }
           [self stateOK];
     }
@@ -10429,7 +10374,6 @@ static Model *_Model_default=nil;
                 for (id object2 in toRemove) [self didRemoveObject:object2];
                 if (toRemove.count==1) [self objectsMovedFromRange:NSMakeRange(oi+1,__array.count-oi) toLocation:oi];
                 else [self allObjectsMoved];
-                [toRemove release];
             }
           [self stateOK];
     }
@@ -10438,7 +10382,6 @@ static Model *_Model_default=nil;
           [self willRemoveObject:object fromIndex:index];
           [__mutableArray removeObjectAtIndex:index];
           [self didRemoveObject:object];
-          [object release];
           [self objectsMovedFromRange:NSMakeRange(index+1,__array.count-index) toLocation:index];
           [self stateOK];
     }
@@ -10455,7 +10398,6 @@ static Model *_Model_default=nil;
             }
           [__mutableArray removeObjectIdenticalTo:object];
           for (int cc=0;cc<c;cc++) [self didRemoveObject:object];
-          [object release];
           if (c==1) [self objectsMovedFromRange:NSMakeRange(oi+1,__array.count-oi) toLocation:oi];
           else [self allObjectsMoved];
           [self stateOK];
@@ -10476,7 +10418,6 @@ static Model *_Model_default=nil;
             }
           [__mutableArray removeObjectIdenticalTo:object inRange:r];
           for (int cc=0;cc<c;cc++) [self didRemoveObject:object];
-          [object release];
           if (c==1) [self objectsMovedFromRange:NSMakeRange(oi+1,__array.count-oi) toLocation:oi];
           else [self allObjectsMoved];
           [self stateOK];
@@ -10487,7 +10428,6 @@ static Model *_Model_default=nil;
                 [self willRemoveObject:object];
                 [__mutableArray removeObjectAtIndex:index-i];
                 [self didRemoveObject:object];
-                [object release];
             }
           [self allObjectsMoved];
           [self stateOK];
@@ -10501,7 +10441,6 @@ static Model *_Model_default=nil;
                 [self willRemoveObject:object fromIndex:r.location+i];
                 [__mutableArray removeObjectAtIndex:r.location+i];
                 [self didRemoveObject:object];
-                [object release];
             }
           [self objectsMovedFromRange:NSMakeRange(r.location+r.length,__array.count-r.location) toLocation:r.location];
           [self stateOK];
@@ -10524,7 +10463,6 @@ static Model *_Model_default=nil;
           [self willRemoveObject:object2 fromIndex:index];
           [__mutableArray replaceObjectAtIndex:index withObject:object];
           [self didRemoveObject:object2];
-          [object2 release];
           [self didAddObject:object withIndex:index];
           [self stateOK];
     }
@@ -10541,7 +10479,6 @@ static Model *_Model_default=nil;
           NSMutableArray *subArray=[[NSMutableArray alloc] initWithCapacity:r.length];
           for (int i=r.location;i<r.location+r.length;i++) [subArray addObject:[__array objectAtIndex:i]];
           bool __changed=[Util getInsertsAndDeletesAsIndexSetWhenChanging:subArray to:array inss:&inss dels:&dels];
-          [subArray release];
           if (!__changed) return;
           if (r.location) {
                 NSMutableIndexSet *indexes=dels.mutableCopy;
@@ -10562,8 +10499,6 @@ static Model *_Model_default=nil;
           NSMutableArray *asubArray=[[NSMutableArray alloc] initWithCapacity:arrayRange.length];
           for (int i=arrayRange.location;i<arrayRange.location+arrayRange.length;i++) [asubArray addObject:[array objectAtIndex:i]];
           bool __changed=[Util getInsertsAndDeletesAsIndexSetWhenChanging:subArray to:asubArray inss:&inss dels:&dels];
-          [subArray release];
-          [asubArray release];
           if (!__changed) return;
           if (r.location) {
                 NSMutableIndexSet *indexes=dels.mutableCopy;
@@ -10818,8 +10753,8 @@ static Model *_Model_default=nil;
     }
 -(void)dealloc {  
   @-100 [self removeAllObjects];
-@0 [__dictionary release];__dictionary=nil;
-    [dictionaryDelegate release];dictionaryDelegate=nil;
+@0__dictionary=nil;
+dictionaryDelegate=nil;
 @999 [super dealloc];
     }
 -(void)didAddObject:(id)object forKey:(id<NSCopying>)key {
@@ -10850,7 +10785,6 @@ static Model *_Model_default=nil;
           for (id<NSCopying> key in was) {
                 [self didRemoveObject:[was objectForKey:key] forKey:key];
             }
-          [was release];
           [self stateOK];
     }
 -(void)removeObjectForKey:(id<NSCopying>)key {
@@ -10875,7 +10809,6 @@ static Model *_Model_default=nil;
             }
           if (toRemove) {
                 for (id<NSCopying> key in toRemove) [self removeObjectForKey:key];
-                [toRemove release];
             }
           [self addEntriesFromDictionary:dictionary];
           [self stateOK];
@@ -10890,7 +10823,6 @@ static Model *_Model_default=nil;
                 [__mutableDictionary setObject:object forKey:key];
                 [self didRemoveObject:was forKey:key];
                 [self didAddObject:object forKey:key];
-                [was release];
             }
           else {
                 [__mutableDictionary setObject:object forKey:key];
@@ -10907,7 +10839,6 @@ static Model *_Model_default=nil;
                 [__mutableDictionary setValue:object forKey:key];
                 [self didRemoveObject:was forKey:key];
                 [self didAddObject:object forKey:key];
-                [was release];
             }
           else {
                 [__mutableDictionary setValue:object forKey:key];
@@ -11129,9 +11060,9 @@ static Model *_Model_default=nil;
     }
 -(void)dealloc {  
   @-100 [self removeAllObjects];
-@0 [v_errs release];v_errs=nil;
-    [__dictionaryObjectKeys release];__dictionaryObjectKeys=nil;
-    [__dictionary release];__dictionary=nil;
+@0v_errs=nil;
+__dictionaryObjectKeys=nil;
+__dictionary=nil;
 @999 [super dealloc];
     }
 -(void)didAddObject:(id)object forKey:(id<NSCopying>)key {  
@@ -11171,7 +11102,6 @@ static Model *_Model_default=nil;
           for (id<NSCopying> key in was) {
                 [self didRemoveObject:[was objectForKey:key] forKey:key];
             }
-          [was release];
           [self stateOK];
     }
 -(void)removeObjectForKey:(id<NSCopying>)key {
@@ -11196,7 +11126,6 @@ static Model *_Model_default=nil;
             }
           if (toRemove) {
                 for (id<NSCopying> key in toRemove) [self removeObjectForKey:key];
-                [toRemove release];
             }
           [self addEntriesFromDictionary:dictionary];
           [self stateOK];
@@ -11211,7 +11140,6 @@ static Model *_Model_default=nil;
                 [__mutableDictionary setObject:object forKey:key];
                 [self didRemoveObject:was forKey:key];
                 [self didAddObject:object forKey:key];
-                [was release];
             }
           else {
                 [__mutableDictionary setObject:object forKey:key];
@@ -11228,7 +11156,6 @@ static Model *_Model_default=nil;
                 [__mutableDictionary setValue:object forKey:key];
                 [self didRemoveObject:was forKey:key];
                 [self didAddObject:object forKey:key];
-                [was release];
             }
           else {
                 [__mutableDictionary setValue:object forKey:key];
@@ -11400,8 +11327,8 @@ static Model *_Model_default=nil;
     }
 -(void)dealloc {  
   @-100 [self removeAllObjects];
-@0 [__set release];__set=nil;
-    [setDelegate release];setDelegate=nil;
+@0__set=nil;
+setDelegate=nil;
 @999 [super dealloc];
     }
 -(void)didAddObject:(id)object {
@@ -11427,7 +11354,6 @@ static Model *_Model_default=nil;
             }
           if (toRemove) {
                 [self minusSet:toRemove];
-                [toRemove release];
             }
     }
 -(void)intersectSet:(NSSet*)set {
@@ -11438,7 +11364,6 @@ static Model *_Model_default=nil;
             }
           if (toRemove) {
                 [self minusSet:toRemove];
-                [toRemove release];
             }
     }
 -(void)makeObjectsPerformSelector:(SEL)selector {  [__set makeObjectsPerformSelector:selector];}
@@ -11452,7 +11377,6 @@ static Model *_Model_default=nil;
           for (id object in was) [self willRemoveObject:object];
           [__mutableSet removeAllObjects];
           for (id object in was) [self didRemoveObject:object];
-          [was release];
     }
 -(void)removeObject:(id)object {
           if ([__set containsObject:object]) {
@@ -11646,9 +11570,9 @@ static Model *_Model_default=nil;
     }
 -(void)dealloc {  
   @-100 [self removeAllObjects];
-@0 [__mirrorSet release];__mirrorSet=nil;
-    [v_errs release];v_errs=nil;
-    [__set release];__set=nil;
+@0__mirrorSet=nil;
+v_errs=nil;
+__set=nil;
 @999 [super dealloc];
     }
 -(void)didAddObject:(id)object {  
@@ -11682,7 +11606,6 @@ static Model *_Model_default=nil;
             }
           if (toRemove) {
                 [self minusSet:toRemove];
-                [toRemove release];
             }
     }
 -(void)intersectSet:(NSSet*)set {
@@ -11693,7 +11616,6 @@ static Model *_Model_default=nil;
             }
           if (toRemove) {
                 [self minusSet:toRemove];
-                [toRemove release];
             }
     }
 -(void)makeObjectsPerformSelector:(SEL)selector {  [__set makeObjectsPerformSelector:selector];}
@@ -11707,7 +11629,6 @@ static Model *_Model_default=nil;
           for (id object in was) [self willRemoveObject:object];
           [__mutableSet removeAllObjects];
           for (id object in was) [self didRemoveObject:object];
-          [was release];
     }
 -(void)removeObject:(id)object {
           if ([__set containsObject:object]) {
@@ -11819,7 +11740,6 @@ static Model *_Model_default=nil;
 -(void)addWeakObject:(id)anObject {
           WeakObject *v=[[WeakObject alloc] initWithObject:anObject];
           [self addObject:v];
-          [v release];
     }
 -(void)insertObject:(id)anObject weak:(bool)weakObject atIndex:(NSUInteger)index {
           if (weakObject) [self insertWeakObject:anObject atIndex:index];
@@ -11828,7 +11748,6 @@ static Model *_Model_default=nil;
 -(void)insertWeakObject:(id)anObject atIndex:(NSUInteger)index {
           WeakObject *v=[[WeakObject alloc] initWithObject:anObject];
           [self insertObject:v atIndex:index];
-          [v release];
     }
 -(void)replaceObjectAtIndex:(NSUInteger)index withObject:(id)anObject weak:(bool)weakObject {
           if (weakObject) [self replaceObjectAtIndex:index withWeakObject:(id)anObject];
@@ -11837,7 +11756,6 @@ static Model *_Model_default=nil;
 -(void)replaceObjectAtIndex:(NSUInteger)index withWeakObject:(id)anObject {
           WeakObject *v=[[WeakObject alloc] initWithObject:anObject];
           [self replaceObjectAtIndex:index withObject:v];
-          [v release];
     }
 
 @end
@@ -11855,12 +11773,10 @@ static Model *_Model_default=nil;
 -(void)setObject:(id)anObject forPointerKey:(id)aKeyo {
           PointerKey *k=[[PointerKey alloc] initWithObject:aKeyo];
           [self setObject:anObject forKey:k];
-          [k release];
     }
 -(void)setObject:(id)anObject forWeakKey:(id)aKeyo {
           WeakObject *k=[[WeakObject alloc] initWithObject:aKeyo];
           [self setObject:anObject forKey:k];
-          [k release];
     }
 -(void)setObject:(id)anObject weak:(bool)weakObject forKey:(id)aKeyo weak:(bool)weakKey pointer:(bool)pointerKey {
           if (weakKey) {
@@ -11879,21 +11795,16 @@ static Model *_Model_default=nil;
 -(void)setWeakObject:(id)anObject forKey:(id)aKeyo {
           WeakObject *v=[[WeakObject alloc] initWithObject:anObject];
           [self setObject:v forKey:aKeyo];
-          [v release];
     }
 -(void)setWeakObject:(id)anObject forPointerKey:(id)aKeyo {
           WeakObject *v=[[WeakObject alloc] initWithObject:anObject];
           PointerKey *k=[[PointerKey alloc] initWithObject:aKeyo];
           [self setObject:v forKey:k];
-          [k release];
-          [v release];
     }
 -(void)setWeakObject:(id)anObject forWeakKey:(id)aKeyo {
           WeakObject *v=[[WeakObject alloc] initWithObject:anObject];
           WeakObject *k=[[WeakObject alloc] initWithObject:aKeyo];
           [self setObject:v forKey:k];
-          [k release];
-          [v release];
     }
 
 @end
@@ -11915,7 +11826,6 @@ static Model *_Model_default=nil;
 -(void)addWeakObject:(id)anObject {
           WeakObject *v=[[WeakObject alloc] initWithObject:anObject];
           [self addObject:v];
-          [v release];
     }
 
 @end
@@ -12020,7 +11930,7 @@ static Model *_Model_default=nil;
   /*!-10001*/if (!(self=[super init])) return(nil);
   
   @0 NSLog(@"Base init called");
-          [self release];return(self=nil);
+return(self=nil);
       
   @11 [self _startObjectOfClassObjectPointer];
 
@@ -12065,8 +11975,7 @@ static Model *_Model_default=nil;
           //if ([_allObjects objectForKey:obj]) return(NO);
           //DEB(printf("alloc %s\n",[obj.description cStringUsingEncoding:NSASCIIStringEncoding]);)
           //[_allObjects setObject:obj forKey:obj];
-          //[obj release];
-          return(YES);
+          //          return(YES);
     }
 -(ObjectRegistry*)_startObjectOfClassObjectRegistry {  
   @-999 NSDictionary *d __attribute__((unused)) =([self respondsToSelector:@selector(__initializeUsingDictionary)]?[self performSelector:@selector(__initializeUsingDictionary)]:nil);
@@ -12079,7 +11988,7 @@ static Model *_Model_default=nil;
     }
 -(NSDictionary*)allObjects {  return(self._allObjects);}
 -(void)dealloc {
-      [v__allObjects release];v__allObjects=nil;
+v__allObjects=nil;
   @999 [super dealloc];
     }
 -(void)newIDToMakerID:(ULL*)pmakerID toObjectID:(ULL*)pobjectID {
@@ -12154,8 +12063,7 @@ static Model *_Model_default=nil;
     }
 -(NSString*)debugDescription {  return([NSString stringWithFormat:@"Wrapped:%p",o]);}
 -(NSString*)description {  return([NSString stringWithFormat:@"Wrapped:%p",o]);}
--(void)dealloc {  [o release];
-  @999 [super dealloc];
+-(void)dealloc {  @999 [super dealloc];
     }
 
 @end
@@ -12267,7 +12175,6 @@ static Model *_Model_default=nil;
           for (int i=0;i<100;i++) {
                 CollectionTestObject *o=[[CollectionTestObject alloc] initWithInt:i tester:self];
                 [array addObject:o];
-                [o release];
                 [arrayk addObject:[NSString stringWithFormat:@"k%d",i]];
                 printf("%p: %s %s\n",array.lastObject,((CollectionTestObject*)array.lastObject).description.UTF8String,((NSString*)arrayk.lastObject).description.UTF8String);
             }
@@ -12393,18 +12300,18 @@ static Model *_Model_default=nil;
           [self passFail:a.count==b.count format:@"count"];
     }
 -(void)dealloc {
-      [b release];b=nil;
-      [c release];c=nil;
-      [v__allObjects release];v__allObjects=nil;
-      [v__keyArray release];v__keyArray=nil;
-      [v__objectSet release];v__objectSet=nil;
-      [v_collections release];v_collections=nil;
-      [v_errs release];v_errs=nil;
-      [v__dictionary release];v__dictionary=nil;
-      [v__allKeys release];v__allKeys=nil;
-      [v__objectArray release];v__objectArray=nil;
-      [v__indexes release];v__indexes=nil;
-      [a release];a=nil;
+b=nil;
+c=nil;
+v__allObjects=nil;
+v__keyArray=nil;
+v__objectSet=nil;
+v_collections=nil;
+v_errs=nil;
+v__dictionary=nil;
+v__allKeys=nil;
+v__objectArray=nil;
+v__indexes=nil;
+a=nil;
   @999 [super dealloc];
     }
 -(void)intersectSet {
@@ -12793,10 +12700,10 @@ static Model *_Model_default=nil;
     }
 -(void)dealloc {  
   @-100 [self removeAllObjects];
-@0 [__array release];__array=nil;
-    [deletedObjectMap release];deletedObjectMap=nil;
-    [indexToIndexMap release];indexToIndexMap=nil;
-    [atomicArray release];atomicArray=nil;
+@0__array=nil;
+deletedObjectMap=nil;
+indexToIndexMap=nil;
+atomicArray=nil;
 @999 [super dealloc];
     }
 -(void)didAddObject:(id)object {
@@ -12869,7 +12776,6 @@ static Model *_Model_default=nil;
           [self willRemoveObject:object fromIndex:index];
           [__mutableArray removeObjectAtIndex:index];
           [self didRemoveObject:object];
-          [object release];
           [self objectsMovedFromRange:NSMakeRange(index+1,__array.count-index) toLocation:index];
           [self stateOK];
     }
@@ -12891,7 +12797,6 @@ static Model *_Model_default=nil;
           [self willRemoveObject:object2 fromIndex:index];
           [__mutableArray replaceObjectAtIndex:index withObject:object];
           [self didRemoveObject:object2];
-          [object2 release];
           [self didAddObject:object withIndex:index];
           [self stateOK];
     }
@@ -13089,8 +12994,8 @@ static Model *_Model_default=nil;
     }
 -(void)dealloc {  
   @-100 [self removeAllObjects];
-@0 [__dictionary release];__dictionary=nil;
-    [atomicDictionary release];atomicDictionary=nil;
+@0__dictionary=nil;
+atomicDictionary=nil;
 @999 [super dealloc];
     }
 -(void)didAddObject:(id)object forKey:(id<NSCopying>)key {}
@@ -13117,7 +13022,6 @@ static Model *_Model_default=nil;
           for (id<NSCopying> key in was) {
                 [self didRemoveObject:[was objectForKey:key] forKey:key];
             }
-          [was release];
           [self stateOK];
     }
 -(void)removeObjectForKey:(id<NSCopying>)key {
@@ -13142,7 +13046,6 @@ static Model *_Model_default=nil;
             }
           if (toRemove) {
                 for (id<NSCopying> key in toRemove) [self removeObjectForKey:key];
-                [toRemove release];
             }
           [self addEntriesFromDictionary:dictionary];
           [self stateOK];
@@ -13157,7 +13060,6 @@ static Model *_Model_default=nil;
                 [__mutableDictionary setObject:object forKey:key];
                 [self didRemoveObject:was forKey:key];
                 [self didAddObject:object forKey:key];
-                [was release];
             }
           else {
                 [__mutableDictionary setObject:object forKey:key];
@@ -13174,7 +13076,6 @@ static Model *_Model_default=nil;
                 [__mutableDictionary setValue:object forKey:key];
                 [self didRemoveObject:was forKey:key];
                 [self didAddObject:object forKey:key];
-                [was release];
             }
           else {
                 [__mutableDictionary setValue:object forKey:key];
@@ -13319,8 +13220,8 @@ static Model *_Model_default=nil;
     }
 -(void)dealloc {  
   @-100 [self removeAllObjects];
-@0 [atomicSet release];atomicSet=nil;
-    [__set release];__set=nil;
+@0atomicSet=nil;
+__set=nil;
 @999 [super dealloc];
     }
 -(void)didAddObject:(id)object {}
@@ -13342,7 +13243,6 @@ static Model *_Model_default=nil;
             }
           if (toRemove) {
                 [self minusSet:toRemove];
-                [toRemove release];
             }
     }
 -(void)intersectSet:(NSSet*)set {
@@ -13353,7 +13253,6 @@ static Model *_Model_default=nil;
             }
           if (toRemove) {
                 [self minusSet:toRemove];
-                [toRemove release];
             }
     }
 -(void)makeObjectsPerformSelector:(SEL)selector {  [__set makeObjectsPerformSelector:selector];}
@@ -13367,7 +13266,6 @@ static Model *_Model_default=nil;
           for (id object in was) [self willRemoveObject:object];
           [__mutableSet removeAllObjects];
           for (id object in was) [self didRemoveObject:object];
-          [was release];
     }
 -(void)removeObject:(id)object {
           if ([__set containsObject:object]) {
@@ -13523,7 +13421,7 @@ static Model *_Model_default=nil;
           return(_Util_default);
     }
 +(void)clearStaticData {
-          if (_Util_default) {[_Util_default release];_Util_default=nil;}
+          if (_Util_default) {_Util_default=nil;}
     }
 +(void)logString:(NSString*)str object:(NSObject*)obj {
           if (!obj) printf("\n%s\n",str.UTF8String);
@@ -13810,20 +13708,18 @@ static Model *_Model_default=nil;
     }
 -(void)dealloc {  
   @-100 [self removeAllObjects];
-@0 [arrayDelegate release];arrayDelegate=nil;
-    [__array release];__array=nil;
+@0arrayDelegate=nil;
+__array=nil;
 @999 [super dealloc];
     }
 -(void)didAddObject:(id)object {
           [arrayDelegate didAddObject:object];
       
-  @900 [object release];
-    }
+  @900    }
 -(void)didAddObject:(id)object withIndex:(NSUInteger)index {
           [arrayDelegate didAddObject:object withIndex:index];
       
-  @900 [object release];
-    }
+  @900    }
 -(void)didRemoveObject:(id)object {
           [arrayDelegate didRemoveObject:object];
     }
@@ -13858,7 +13754,6 @@ static Model *_Model_default=nil;
             }
           if (toRemove) {
                 [self removeObjectsAtIndexes:toRemove];
-                [toRemove release];
             }
           [self allObjectsMoved];
           [self stateOK];
@@ -13903,7 +13798,6 @@ static Model *_Model_default=nil;
           for (id object in was) [self willRemoveObject:object];
           [__mutableArray removeAllObjects];
           for (id object in was) [self didRemoveObject:object];
-          [was release];
           [self allObjectsMoved];
           [self stateOK];
     }
@@ -13929,7 +13823,6 @@ static Model *_Model_default=nil;
                 for (id object2 in toRemove) [self didRemoveObject:object2];
                 if (toRemove.count==1) [self objectsMovedFromRange:NSMakeRange(oi+1,__array.count-oi) toLocation:oi];
                 else [self allObjectsMoved];
-                [toRemove release];
             }
           [self stateOK];
     }
@@ -13953,7 +13846,6 @@ static Model *_Model_default=nil;
                 for (id object2 in toRemove) [self didRemoveObject:object2];
                 if (toRemove.count==1) [self objectsMovedFromRange:NSMakeRange(oi+1,__array.count-oi) toLocation:oi];
                 else [self allObjectsMoved];
-                [toRemove release];
             }
           [self stateOK];
     }
@@ -13962,7 +13854,6 @@ static Model *_Model_default=nil;
           [self willRemoveObject:object fromIndex:index];
           [__mutableArray removeObjectAtIndex:index];
           [self didRemoveObject:object];
-          [object release];
           [self objectsMovedFromRange:NSMakeRange(index+1,__array.count-index) toLocation:index];
           [self stateOK];
     }
@@ -13979,7 +13870,6 @@ static Model *_Model_default=nil;
             }
           [__mutableArray removeObjectIdenticalTo:object];
           for (int cc=0;cc<c;cc++) [self didRemoveObject:object];
-          [object release];
           if (c==1) [self objectsMovedFromRange:NSMakeRange(oi+1,__array.count-oi) toLocation:oi];
           else [self allObjectsMoved];
           [self stateOK];
@@ -14000,7 +13890,6 @@ static Model *_Model_default=nil;
             }
           [__mutableArray removeObjectIdenticalTo:object inRange:r];
           for (int cc=0;cc<c;cc++) [self didRemoveObject:object];
-          [object release];
           if (c==1) [self objectsMovedFromRange:NSMakeRange(oi+1,__array.count-oi) toLocation:oi];
           else [self allObjectsMoved];
           [self stateOK];
@@ -14011,7 +13900,6 @@ static Model *_Model_default=nil;
                 [self willRemoveObject:object];
                 [__mutableArray removeObjectAtIndex:index-i];
                 [self didRemoveObject:object];
-                [object release];
             }
           [self allObjectsMoved];
           [self stateOK];
@@ -14025,7 +13913,6 @@ static Model *_Model_default=nil;
                 [self willRemoveObject:object fromIndex:r.location+i];
                 [__mutableArray removeObjectAtIndex:r.location+i];
                 [self didRemoveObject:object];
-                [object release];
             }
           [self objectsMovedFromRange:NSMakeRange(r.location+r.length,__array.count-r.location) toLocation:r.location];
           [self stateOK];
@@ -14048,7 +13935,6 @@ static Model *_Model_default=nil;
           [self willRemoveObject:object2 fromIndex:index];
           [__mutableArray replaceObjectAtIndex:index withObject:object];
           [self didRemoveObject:object2];
-          [object2 release];
           [self didAddObject:object withIndex:index];
           [self stateOK];
     }
@@ -14065,7 +13951,6 @@ static Model *_Model_default=nil;
           NSMutableArray *subArray=[[NSMutableArray alloc] initWithCapacity:r.length];
           for (int i=r.location;i<r.location+r.length;i++) [subArray addObject:[__array objectAtIndex:i]];
           bool __changed=[Util getInsertsAndDeletesAsIndexSetWhenChanging:subArray to:array inss:&inss dels:&dels];
-          [subArray release];
           if (!__changed) return;
           if (r.location) {
                 NSMutableIndexSet *indexes=dels.mutableCopy;
@@ -14086,8 +13971,6 @@ static Model *_Model_default=nil;
           NSMutableArray *asubArray=[[NSMutableArray alloc] initWithCapacity:arrayRange.length];
           for (int i=arrayRange.location;i<arrayRange.location+arrayRange.length;i++) [asubArray addObject:[array objectAtIndex:i]];
           bool __changed=[Util getInsertsAndDeletesAsIndexSetWhenChanging:subArray to:asubArray inss:&inss dels:&dels];
-          [subArray release];
-          [asubArray release];
           if (!__changed) return;
           if (r.location) {
                 NSMutableIndexSet *indexes=dels.mutableCopy;
@@ -14421,17 +14304,16 @@ static Model *_Model_default=nil;
     }
 -(void)dealloc {  
   @-100 [self removeAllObjects];
-@0 [__arrayObjectIndexes release];__arrayObjectIndexes=nil;
-    [v_errs release];v_errs=nil;
-    [__array release];__array=nil;
+@0__arrayObjectIndexes=nil;
+v_errs=nil;
+__array=nil;
 @999 [super dealloc];
     }
 -(void)didAddObject:(id)object {  
   @100 [self add:-1 toWillAddCountForObject:object];
         __addingToMirrorArray--;
     
-@900 [object release];
-    }
+@900    }
 -(void)didAddObject:(id)object withIndex:(NSUInteger)index {  
   @-950 //[self objectsMovedFromRange:NSMakeRange(index,__array.count-1-index) toLocation:index+1];
           [self doAddIndex:index forObject:object];
@@ -14440,8 +14322,7 @@ static Model *_Model_default=nil;
           [self add:-1 toWillAddCountForObject:object];
           __addingToMirrorArray--;
       
-  @900 [object release];
-    }
+  @900    }
 -(void)didRemoveObject:(id)object {  
   @100 if (!__removingFromMirrorArray) [self passFail:NO format:@"!!!ait did remove while not removing\n"];
           [self add:-1 toWillRemoveCountForObject:object];
@@ -14499,7 +14380,6 @@ static Model *_Model_default=nil;
             }
           if (toRemove) {
                 [self removeObjectsAtIndexes:toRemove];
-                [toRemove release];
             }
           [self allObjectsMoved];
           [self stateOK];
@@ -14553,7 +14433,6 @@ static Model *_Model_default=nil;
           for (id object in was) [self willRemoveObject:object];
           [__mutableArray removeAllObjects];
           for (id object in was) [self didRemoveObject:object];
-          [was release];
           [self allObjectsMoved];
           [self stateOK];
     }
@@ -14579,7 +14458,6 @@ static Model *_Model_default=nil;
                 for (id object2 in toRemove) [self didRemoveObject:object2];
                 if (toRemove.count==1) [self objectsMovedFromRange:NSMakeRange(oi+1,__array.count-oi) toLocation:oi];
                 else [self allObjectsMoved];
-                [toRemove release];
             }
           [self stateOK];
     }
@@ -14603,7 +14481,6 @@ static Model *_Model_default=nil;
                 for (id object2 in toRemove) [self didRemoveObject:object2];
                 if (toRemove.count==1) [self objectsMovedFromRange:NSMakeRange(oi+1,__array.count-oi) toLocation:oi];
                 else [self allObjectsMoved];
-                [toRemove release];
             }
           [self stateOK];
     }
@@ -14612,7 +14489,6 @@ static Model *_Model_default=nil;
           [self willRemoveObject:object fromIndex:index];
           [__mutableArray removeObjectAtIndex:index];
           [self didRemoveObject:object];
-          [object release];
           [self objectsMovedFromRange:NSMakeRange(index+1,__array.count-index) toLocation:index];
           [self stateOK];
     }
@@ -14629,7 +14505,6 @@ static Model *_Model_default=nil;
             }
           [__mutableArray removeObjectIdenticalTo:object];
           for (int cc=0;cc<c;cc++) [self didRemoveObject:object];
-          [object release];
           if (c==1) [self objectsMovedFromRange:NSMakeRange(oi+1,__array.count-oi) toLocation:oi];
           else [self allObjectsMoved];
           [self stateOK];
@@ -14650,7 +14525,6 @@ static Model *_Model_default=nil;
             }
           [__mutableArray removeObjectIdenticalTo:object inRange:r];
           for (int cc=0;cc<c;cc++) [self didRemoveObject:object];
-          [object release];
           if (c==1) [self objectsMovedFromRange:NSMakeRange(oi+1,__array.count-oi) toLocation:oi];
           else [self allObjectsMoved];
           [self stateOK];
@@ -14661,7 +14535,6 @@ static Model *_Model_default=nil;
                 [self willRemoveObject:object];
                 [__mutableArray removeObjectAtIndex:index-i];
                 [self didRemoveObject:object];
-                [object release];
             }
           [self allObjectsMoved];
           [self stateOK];
@@ -14675,7 +14548,6 @@ static Model *_Model_default=nil;
                 [self willRemoveObject:object fromIndex:r.location+i];
                 [__mutableArray removeObjectAtIndex:r.location+i];
                 [self didRemoveObject:object];
-                [object release];
             }
           [self objectsMovedFromRange:NSMakeRange(r.location+r.length,__array.count-r.location) toLocation:r.location];
           [self stateOK];
@@ -14698,7 +14570,6 @@ static Model *_Model_default=nil;
           [self willRemoveObject:object2 fromIndex:index];
           [__mutableArray replaceObjectAtIndex:index withObject:object];
           [self didRemoveObject:object2];
-          [object2 release];
           [self didAddObject:object withIndex:index];
           [self stateOK];
     }
@@ -14715,7 +14586,6 @@ static Model *_Model_default=nil;
           NSMutableArray *subArray=[[NSMutableArray alloc] initWithCapacity:r.length];
           for (int i=r.location;i<r.location+r.length;i++) [subArray addObject:[__array objectAtIndex:i]];
           bool __changed=[Util getInsertsAndDeletesAsIndexSetWhenChanging:subArray to:array inss:&inss dels:&dels];
-          [subArray release];
           if (!__changed) return;
           if (r.location) {
                 NSMutableIndexSet *indexes=dels.mutableCopy;
@@ -14736,8 +14606,6 @@ static Model *_Model_default=nil;
           NSMutableArray *asubArray=[[NSMutableArray alloc] initWithCapacity:arrayRange.length];
           for (int i=arrayRange.location;i<arrayRange.location+arrayRange.length;i++) [asubArray addObject:[array objectAtIndex:i]];
           bool __changed=[Util getInsertsAndDeletesAsIndexSetWhenChanging:subArray to:asubArray inss:&inss dels:&dels];
-          [subArray release];
-          [asubArray release];
           if (!__changed) return;
           if (r.location) {
                 NSMutableIndexSet *indexes=dels.mutableCopy;
@@ -14996,15 +14864,14 @@ static Model *_Model_default=nil;
     }
 -(void)dealloc {  
   @-100 [self removeAllObjects];
-@0 [__dictionary release];__dictionary=nil;
-    [dictionaryDelegate release];dictionaryDelegate=nil;
+@0__dictionary=nil;
+dictionaryDelegate=nil;
 @999 [super dealloc];
     }
 -(void)didAddObject:(id)object forKey:(id<NSCopying>)key {
           [dictionaryDelegate didAddObject:object forKey:key];
       
-  @900 [object release];
-    }
+  @900    }
 -(void)didRemoveObject:(id)object forKey:(id<NSCopying>)key {
           [dictionaryDelegate didRemoveObject:object forKey:key];
     }
@@ -15030,7 +14897,6 @@ static Model *_Model_default=nil;
           for (id<NSCopying> key in was) {
                 [self didRemoveObject:[was objectForKey:key] forKey:key];
             }
-          [was release];
           [self stateOK];
     }
 -(void)removeObjectForKey:(id<NSCopying>)key {
@@ -15055,7 +14921,6 @@ static Model *_Model_default=nil;
             }
           if (toRemove) {
                 for (id<NSCopying> key in toRemove) [self removeObjectForKey:key];
-                [toRemove release];
             }
           [self addEntriesFromDictionary:dictionary];
           [self stateOK];
@@ -15070,7 +14935,6 @@ static Model *_Model_default=nil;
                 [__mutableDictionary setObject:object forKey:key];
                 [self didRemoveObject:was forKey:key];
                 [self didAddObject:object forKey:key];
-                [was release];
             }
           else {
                 [__mutableDictionary setObject:object forKey:key];
@@ -15087,7 +14951,6 @@ static Model *_Model_default=nil;
                 [__mutableDictionary setValue:object forKey:key];
                 [self didRemoveObject:was forKey:key];
                 [self didAddObject:object forKey:key];
-                [was release];
             }
           else {
                 [__mutableDictionary setValue:object forKey:key];
@@ -15311,9 +15174,9 @@ static Model *_Model_default=nil;
     }
 -(void)dealloc {  
   @-100 [self removeAllObjects];
-@0 [v_errs release];v_errs=nil;
-    [__dictionaryObjectKeys release];__dictionaryObjectKeys=nil;
-    [__dictionary release];__dictionary=nil;
+@0v_errs=nil;
+__dictionaryObjectKeys=nil;
+__dictionary=nil;
 @999 [super dealloc];
     }
 -(void)didAddObject:(id)object forKey:(id<NSCopying>)key {  
@@ -15326,8 +15189,7 @@ static Model *_Model_default=nil;
           [self add:-1 toWillAddCountForObject:object];
           __addingToMirrorDictionary--;
       
-  @900 [object release];
-    }
+  @900    }
 -(void)didRemoveObject:(id)object forKey:(id<NSCopying>)key {  
   @100 if (!__removingFromMirrorDictionary) [self passFail:NO format:@"!!!dkt did remove while not removing\n"];
           [self add:-1 toWillRemoveCountForObject:object];
@@ -15355,7 +15217,6 @@ static Model *_Model_default=nil;
           for (id<NSCopying> key in was) {
                 [self didRemoveObject:[was objectForKey:key] forKey:key];
             }
-          [was release];
           [self stateOK];
     }
 -(void)removeObjectForKey:(id<NSCopying>)key {
@@ -15380,7 +15241,6 @@ static Model *_Model_default=nil;
             }
           if (toRemove) {
                 for (id<NSCopying> key in toRemove) [self removeObjectForKey:key];
-                [toRemove release];
             }
           [self addEntriesFromDictionary:dictionary];
           [self stateOK];
@@ -15395,7 +15255,6 @@ static Model *_Model_default=nil;
                 [__mutableDictionary setObject:object forKey:key];
                 [self didRemoveObject:was forKey:key];
                 [self didAddObject:object forKey:key];
-                [was release];
             }
           else {
                 [__mutableDictionary setObject:object forKey:key];
@@ -15412,7 +15271,6 @@ static Model *_Model_default=nil;
                 [__mutableDictionary setValue:object forKey:key];
                 [self didRemoveObject:was forKey:key];
                 [self didAddObject:object forKey:key];
-                [was release];
             }
           else {
                 [__mutableDictionary setValue:object forKey:key];
@@ -15586,15 +15444,14 @@ static Model *_Model_default=nil;
     }
 -(void)dealloc {  
   @-100 [self removeAllObjects];
-@0 [__set release];__set=nil;
-    [setDelegate release];setDelegate=nil;
+@0__set=nil;
+setDelegate=nil;
 @999 [super dealloc];
     }
 -(void)didAddObject:(id)object {
           [setDelegate didAddObject:object];
       
-  @900 [object release];
-    }
+  @900    }
 -(void)didRemoveObject:(id)object {
           [setDelegate didRemoveObject:object];
     }
@@ -15615,7 +15472,6 @@ static Model *_Model_default=nil;
             }
           if (toRemove) {
                 [self minusSet:toRemove];
-                [toRemove release];
             }
     }
 -(void)intersectSet:(NSSet*)set {
@@ -15626,7 +15482,6 @@ static Model *_Model_default=nil;
             }
           if (toRemove) {
                 [self minusSet:toRemove];
-                [toRemove release];
             }
     }
 -(void)makeObjectsPerformSelector:(SEL)selector {  [__set makeObjectsPerformSelector:selector];}
@@ -15640,7 +15495,6 @@ static Model *_Model_default=nil;
           for (id object in was) [self willRemoveObject:object];
           [__mutableSet removeAllObjects];
           for (id object in was) [self didRemoveObject:object];
-          [was release];
     }
 -(void)removeObject:(id)object {
           if ([__set containsObject:object]) {
@@ -15836,9 +15690,9 @@ static Model *_Model_default=nil;
     }
 -(void)dealloc {  
   @-100 [self removeAllObjects];
-@0 [__mirrorSet release];__mirrorSet=nil;
-    [v_errs release];v_errs=nil;
-    [__set release];__set=nil;
+@0__mirrorSet=nil;
+v_errs=nil;
+__set=nil;
 @999 [super dealloc];
     }
 -(void)didAddObject:(id)object {  
@@ -15848,7 +15702,6 @@ static Model *_Model_default=nil;
           [self add:-1 toWillAddCountForObject:object];
           [self verifyMirrorSet];
     
-          [object release];
     }
 -(void)didRemoveObject:(id)object {  
   @900 if (__addingToMirrorSet) [self passFail:NO format:@"!!! did remove while adding\n"];
@@ -15874,7 +15727,6 @@ static Model *_Model_default=nil;
             }
           if (toRemove) {
                 [self minusSet:toRemove];
-                [toRemove release];
             }
     }
 -(void)intersectSet:(NSSet*)set {
@@ -15885,7 +15737,6 @@ static Model *_Model_default=nil;
             }
           if (toRemove) {
                 [self minusSet:toRemove];
-                [toRemove release];
             }
     }
 -(void)makeObjectsPerformSelector:(SEL)selector {  [__set makeObjectsPerformSelector:selector];}
@@ -15899,7 +15750,6 @@ static Model *_Model_default=nil;
           for (id object in was) [self willRemoveObject:object];
           [__mutableSet removeAllObjects];
           for (id object in was) [self didRemoveObject:object];
-          [was release];
     }
 -(void)removeObject:(id)object {
           if ([__set containsObject:object]) {

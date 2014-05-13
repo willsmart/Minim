@@ -56,7 +56,6 @@ Singletons<Ticker> "-Object" "fn:object"
             [d setObject:[NSNumber numberWithInt:(int)((ClassCount*)[self.typeCounts objectForKey:key]).count] forKey:key];
         }
         [self.typeCountHistory insertObject:d atIndex:0];
-        [d release];
     }
     
 
@@ -140,8 +139,7 @@ Singletons<Ticker> "-Object" "fn:object"
         if (self.printRetain) {
             prnt("%d -> %d release %s %s\n",___rc,___rc-___arc,isAutorelease?"(autorelease)":"",[self.objectName cStringUsingEncoding:NSASCIIStringEncoding]);
         }
-        @999 [super release];
-    }
+        @999    }
     -(id)autorelease {@-999 
         ___arc++;
         if (self.printRetain) {
