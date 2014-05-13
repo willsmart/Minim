@@ -19,8 +19,7 @@
 
 @implementation InFiles
 -(void)dealloc {
-    [super dealloc];
-}
+    }
 
 @synthesize inFilesLocations,inFilesMessages,useLocationsFrom;
 
@@ -307,8 +306,7 @@ static NSMutableArray *InFiles_allInFiles=nil;
     self.ins_set_first_impl=self.ins_set_after_decl_impl=self.ins_set_after_structs_impl=self.ins_set_after_protocols_impl=self.ins_set_after_ifaces_impl=self.ins_set_last_impl=self.ins_set_after_imports_impl=nil;
     self.ins_set_each_impl=nil;
     self.ins_each_impl=nil;
-    [super dealloc];
-}
+    }
 
 - (id)init {
     if (!(self=[super init])) return(nil);
@@ -2372,8 +2370,7 @@ static WClasses *_default=nil;
     self.varPatterns=nil;
     self.fns=self.vars=nil;
     self.varNames=self.fnNames=nil;
-    [super dealloc];
-}
+    }
 - (id)initClassWithName:(NSString*)aname superClass:(WClass*)superClass protocolList:(NSArray*)protocolList varPatterns:(NSSet *)avarPatterns {
     if (!(self=[super init])) return(nil);
     self.name=aname;
@@ -3046,8 +3043,7 @@ static WClasses *_default=nil;
 - (void)dealloc {
     self.myname=self.hisname=self.type=nil;
     self.myclas=self.hisclas=nil;
-    [super dealloc];
-}
+    }
 - (id)initWithType:(NSString*)atype origType:(NSString*)aorigType myClass:(WClass*)amyclas myName:(NSString*)amyname myQName:(NSString *)amyqname hisClass:(WClass*)ahisclas hisName:(NSString*)ahisname hisQName:(NSString *)ahisqname {
     if (!(self=[super init])) return(nil);
     [[WClasses getDefault].props addObject:self];
@@ -3313,8 +3309,7 @@ static WClasses *_default=nil;
 - (void)dealloc {
     self.sig=self.sigWithArgs=self.body=nil;
     self.clas=nil;
-    [super dealloc];
-}
+    }
 
 +(NSString*)trimmedReplaceString:(NSString*)s {
     NSRange r=[s rangeOfString:@"__"];
@@ -3811,8 +3806,7 @@ static WClasses *_default=nil;
     self.name=self.defaultValue=nil;
     self.attributes=nil;
     self.clas=nil;
-    [super dealloc];
-}
+    }
 
 
 
@@ -4485,8 +4479,7 @@ CACHEVARATTRFN_retain(NSString*,localizedVarName,
 - (void)dealloc {
     self.clas=nil;
     self.protocols=nil;
-    [super dealloc];
-}
+    }
 
 -(WPotentialType*)initWithType:(WType*)t {
     if (!(self=[super init])) return(nil);
@@ -4540,8 +4533,7 @@ CACHEVARATTRFN_retain(NSString*,localizedVarName,
 - (void)dealloc {
     self.clas=nil;
     self.protocols=nil;
-    [super dealloc];
-}
+    }
 
 -(WPotentialType*)potentialType {
     if (!self._potentialType) self._potentialType=[[WPotentialType alloc] initWithType:self];

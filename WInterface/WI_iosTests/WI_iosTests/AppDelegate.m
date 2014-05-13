@@ -12,8 +12,7 @@
 
 - (void)dealloc
 {
-    [super dealloc];
-}
+    }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {

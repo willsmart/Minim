@@ -5030,8 +5030,7 @@ v__allKeys=nil;
 v__objectArray=nil;
 v__indexes=nil;
 a=nil;
-  @999 [super dealloc];
-    }
+  @999     }
 -(void)exchangeObjectAtIndexWithObjectAtIndex {
           if (!a.count) return;
           NSUInteger i=rand()%a.count;
@@ -5471,8 +5470,7 @@ a=nil;
 -(void)dealloc {
 trackerArray=nil;
 __array=nil;
-  @999 [super dealloc];
-    }
+  @999     }
 -(void)encodeWithCoder:(NSCoder*)coder {
           [__array encodeWithCoder:coder];
     }
@@ -5793,8 +5791,7 @@ __array=nil;
 -(void)dealloc {
 __dictionary=nil;
 trackerDictionary=nil;
-  @999 [super dealloc];
-    }
+  @999     }
 -(void)encodeWithCoder:(NSCoder*)coder {
           [__dictionary encodeWithCoder:coder];
     }
@@ -5952,8 +5949,7 @@ trackerDictionary=nil;
 -(void)dealloc {
 trackerSet=nil;
 __set=nil;
-  @999 [super dealloc];
-    }
+  @999     }
 -(void)encodeWithCoder:(NSCoder*)coder {
           [__set encodeWithCoder:coder];
     }
@@ -6082,8 +6078,7 @@ __set=nil;
     }
 -(void)dealloc {
 subObjects=nil;
-  @999 [super dealloc];
-    }
+  @999     }
 -(void)didAdd {
           if (testKey) {
                 CollectionTestSubObject *so=[subObjects objectForKey:testKey];
@@ -6172,8 +6167,7 @@ subObjects=nil;
           //printf("retain %d->%d %s\n",self.rcIs,self.rcWillBe,self.description.UTF8String);
     }
 -(void)dealloc {  
-  @999 [super dealloc];
-    }
+  @999     }
 
 @end
 
@@ -6420,8 +6414,7 @@ v__allKeys=nil;
 v__objectArray=nil;
 v__indexes=nil;
 a=nil;
-  @999 [super dealloc];
-    }
+  @999     }
 -(void)isEqualToDictionary {
           [self passFail:[a isEqualToDictionary:self.dictionary]==[b isEqualToDictionary:self.dictionary] format:@"isEqualToDictionary"];
     }
@@ -6614,8 +6607,7 @@ a=nil;
             }
     }
 -(void)dealloc {  
-  @999 [super dealloc];
-    }
+  @999     }
 -(void)setValue:(id)v {
               if ((v_value==v)||(v&&[self unacceptable:v])) return;
               if (v_value) {
@@ -6924,8 +6916,7 @@ a=nil;
 @0__arrayObjectIndexes=nil;
 v_errs=nil;
 __array=nil;
-@999 [super dealloc];
-    }
+@999     }
 -(void)didAddObject:(id)object {  
   @900 if (!retains) [object release];
     }
@@ -7594,8 +7585,7 @@ __array=nil;
 indexToIndexMap=nil;
 atomicArray=nil;
 deletedObjectMap=nil;
-@999 [super dealloc];
-    }
+@999     }
 -(void)didAddObject:(id)object {
           mappingIsValid=NO;
       
@@ -7992,8 +7982,7 @@ deletedObjectMap=nil;
 @0__dictionaryObjectKeys=nil;
 __dictionary=nil;
 v_errs=nil;
-@999 [super dealloc];
-    }
+@999     }
 -(void)didAddObject:(id)object forKey:(id<NSCopying>)key {  
   @-950 NSMutableSet *keys=[__dictionaryObjectKeys objectForKey:(id<NSCopying>)object];
           if (!keys) [__dictionaryObjectKeys setObject:keys=[NSMutableSet set] forWeakKey:object];
@@ -8342,8 +8331,7 @@ v_errs=nil;
 v_errs=nil;
 atomicDictionary=nil;
 __dictionary=nil;
-@999 [super dealloc];
-    }
+@999     }
 -(void)didAddObject:(id)object forKey:(id<NSCopying>)key {  
   @-950 NSMutableSet *keys=[__dictionaryObjectKeys objectForKey:(id<NSCopying>)object];
           if (!keys) [__dictionaryObjectKeys setObject:keys=[NSMutableSet set] forWeakKey:object];
@@ -8624,8 +8612,7 @@ __dictionary=nil;
 -(void)dealloc {  
   @-100 [self removeAllObjects];
 @0__set=nil;
-@999 [super dealloc];
-    }
+@999     }
 -(void)didAddObject:(id)object {  
   @900 if (!retains) [object release];
     }
@@ -8879,8 +8866,7 @@ __dictionary=nil;
   @-100 [self removeAllObjects];
 @0atomicSet=nil;
 __set=nil;
-@999 [super dealloc];
-    }
+@999     }
 -(void)didAddObject:(id)object {  
   @900 if (!retains) [object release];
     }
@@ -9112,8 +9098,7 @@ __set=nil;
 bValidIndexes=nil;
 aValidIndexes=nil;
 atobMap=nil;
-  @999 [super dealloc];
-    }
+  @999     }
 -(void)setIdentityWithCount:(NSUInteger)N {
           self.aValidIndexes=[NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(0,N)];
           self.bValidIndexes=[NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(0,N)];
@@ -9152,8 +9137,7 @@ atobMap=nil;
 
 /*!10001*/return(self);}
 -(void)dealloc {  
-  @999 [super dealloc];
-    }
+  @999     }
 
 @end
 
@@ -9365,8 +9349,7 @@ v_child_for_commits=nil;
 v_parent_for_commit_endpoint=nil;
   @102 [[ObjectRegistry getDefault] deregisterObject:self];
     
-@999 [super dealloc];
-    }
+@999     }
 -(void)die {  [v_child_for_commits removeAllObjects];self.parent_for_commit=nil;}
 -(void)removeAllChild_for_commits {  [v_child_for_commits removeAllObjects];}
 -(void)removeChild_for_commit:(NSObject<BaseObject>*)v {  [v_child_for_commits removeObject:v];}
@@ -9605,8 +9588,7 @@ v_parent_for_commit_endpoint=nil;
   @-100 [self removeAllObjects];
 @0arrayDelegate=nil;
 __array=nil;
-@999 [super dealloc];
-    }
+@999     }
 -(void)didAddObject:(id)object {
           [arrayDelegate didAddObject:object];
     }
@@ -10194,8 +10176,7 @@ __array=nil;
 @0__arrayObjectIndexes=nil;
 v_errs=nil;
 __array=nil;
-@999 [super dealloc];
-    }
+@999     }
 -(void)didAddObject:(id)object {  
   @100 [self add:-1 toWillAddCountForObject:object];
         __addingToMirrorArray--;
@@ -10745,8 +10726,7 @@ __array=nil;
   @-100 [self removeAllObjects];
 @0__dictionary=nil;
 dictionaryDelegate=nil;
-@999 [super dealloc];
-    }
+@999     }
 -(void)didAddObject:(id)object forKey:(id<NSCopying>)key {
           [dictionaryDelegate didAddObject:object forKey:key];
     }
@@ -11051,8 +11031,7 @@ dictionaryDelegate=nil;
 @0v_errs=nil;
 __dictionaryObjectKeys=nil;
 __dictionary=nil;
-@999 [super dealloc];
-    }
+@999     }
 -(void)didAddObject:(id)object forKey:(id<NSCopying>)key {  
   @-950 NSMutableSet *keys=[__dictionaryObjectKeys objectForKey:(id<NSCopying>)object];
           if (!keys) [__dictionaryObjectKeys setObject:keys=[NSMutableSet set] forWeakKey:object];
@@ -11315,8 +11294,7 @@ __dictionary=nil;
   @-100 [self removeAllObjects];
 @0__set=nil;
 setDelegate=nil;
-@999 [super dealloc];
-    }
+@999     }
 -(void)didAddObject:(id)object {
           [setDelegate didAddObject:object];
     }
@@ -11559,8 +11537,7 @@ setDelegate=nil;
 @0__mirrorSet=nil;
 v_errs=nil;
 __set=nil;
-@999 [super dealloc];
-    }
+@999     }
 -(void)didAddObject:(id)object {  
   @900 if (!__addingToMirrorSet) [self passFail:NO format:@"!!!st did add while not adding\n"];
           if (__removingFromMirrorSet) [self passFail:NO format:@"!!!st did add while removing\n"];
@@ -11925,8 +11902,7 @@ return(self=nil);
 -(void)dealloc {  
   @102 [[ObjectRegistry getDefault] deregisterObject:self];
     
-@999 [super dealloc];
-    }
+@999     }
 
 @end
 
@@ -11974,8 +11950,7 @@ return(self=nil);
 -(NSDictionary*)allObjects {  return(self._allObjects);}
 -(void)dealloc {
 v__allObjects=nil;
-  @999 [super dealloc];
-    }
+  @999     }
 -(void)newIDToMakerID:(ULL*)pmakerID toObjectID:(ULL*)pobjectID {
           @synchronized (self) {*pmakerID=makerID;*pobjectID=nextObjectID++;}
     }
@@ -12048,8 +12023,7 @@ v__allObjects=nil;
     }
 -(NSString*)debugDescription {  return([NSString stringWithFormat:@"Wrapped:%p",o]);}
 -(NSString*)description {  return([NSString stringWithFormat:@"Wrapped:%p",o]);}
--(void)dealloc {  @999 [super dealloc];
-    }
+-(void)dealloc {  @999     }
 
 @end
 
@@ -12297,8 +12271,7 @@ v__allKeys=nil;
 v__objectArray=nil;
 v__indexes=nil;
 a=nil;
-  @999 [super dealloc];
-    }
+  @999     }
 -(void)intersectSet {
           [self objectSet];
           ITERATECOLLECTIONS(NSMutableSet*,v,[v intersectSet:self.objectSet];)
@@ -12689,8 +12662,7 @@ a=nil;
 deletedObjectMap=nil;
 indexToIndexMap=nil;
 atomicArray=nil;
-@999 [super dealloc];
-    }
+@999     }
 -(void)didAddObject:(id)object {
           mappingIsValid=NO;
     }
@@ -12981,8 +12953,7 @@ atomicArray=nil;
   @-100 [self removeAllObjects];
 @0__dictionary=nil;
 atomicDictionary=nil;
-@999 [super dealloc];
-    }
+@999     }
 -(void)didAddObject:(id)object forKey:(id<NSCopying>)key {}
 -(void)didRemoveObject:(id)object forKey:(id<NSCopying>)key {}
 -(void)encodeWithCoder:(NSCoder*)coder {
@@ -13205,8 +13176,7 @@ atomicDictionary=nil;
   @-100 [self removeAllObjects];
 @0atomicSet=nil;
 __set=nil;
-@999 [super dealloc];
-    }
+@999     }
 -(void)didAddObject:(id)object {}
 -(void)didRemoveObject:(id)object {}
 -(void)encodeWithCoder:(NSCoder*)coder {
@@ -13431,8 +13401,7 @@ __set=nil;
   @999 return(self);
     }
 -(void)dealloc {  
-  @999 [super dealloc];
-    }
+  @999     }
 
 @end
 
@@ -13693,8 +13662,7 @@ __set=nil;
   @-100 [self removeAllObjects];
 @0arrayDelegate=nil;
 __array=nil;
-@999 [super dealloc];
-    }
+@999     }
 -(void)didAddObject:(id)object {
           [arrayDelegate didAddObject:object];
       
@@ -14286,8 +14254,7 @@ __array=nil;
 @0__arrayObjectIndexes=nil;
 v_errs=nil;
 __array=nil;
-@999 [super dealloc];
-    }
+@999     }
 -(void)didAddObject:(id)object {  
   @100 [self add:-1 toWillAddCountForObject:object];
         __addingToMirrorArray--;
@@ -14841,8 +14808,7 @@ __array=nil;
   @-100 [self removeAllObjects];
 @0__dictionary=nil;
 dictionaryDelegate=nil;
-@999 [super dealloc];
-    }
+@999     }
 -(void)didAddObject:(id)object forKey:(id<NSCopying>)key {
           [dictionaryDelegate didAddObject:object forKey:key];
       
@@ -15149,8 +15115,7 @@ dictionaryDelegate=nil;
 @0v_errs=nil;
 __dictionaryObjectKeys=nil;
 __dictionary=nil;
-@999 [super dealloc];
-    }
+@999     }
 -(void)didAddObject:(id)object forKey:(id<NSCopying>)key {  
   @-950 NSMutableSet *keys=[__dictionaryObjectKeys objectForKey:(id<NSCopying>)object];
           if (!keys) [__dictionaryObjectKeys setObject:keys=[NSMutableSet set] forWeakKey:object];
@@ -15415,8 +15380,7 @@ __dictionary=nil;
   @-100 [self removeAllObjects];
 @0__set=nil;
 setDelegate=nil;
-@999 [super dealloc];
-    }
+@999     }
 -(void)didAddObject:(id)object {
           [setDelegate didAddObject:object];
       
@@ -15661,8 +15625,7 @@ setDelegate=nil;
 @0__mirrorSet=nil;
 v_errs=nil;
 __set=nil;
-@999 [super dealloc];
-    }
+@999     }
 -(void)didAddObject:(id)object {  
   @900 if (!__addingToMirrorSet) [self passFail:NO format:@"!!!st did add while not adding\n"];
           if (__removingFromMirrorSet) [self passFail:NO format:@"!!!st did add while removing\n"];
@@ -15796,8 +15759,7 @@ __set=nil;
 -(NSString*)debugDescription {  return([NSString stringWithFormat:@"Weak:%p",o]);}
 -(NSString*)description {  return([NSString stringWithFormat:@"Weak:%p",o]);}
 -(void)dealloc {  
-  @999 [super dealloc];
-    }
+  @999     }
 
 @end
 

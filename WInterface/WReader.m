@@ -21,8 +21,7 @@
     self.lines=nil;
     self.replaces=nil;
     self.tokenizer=nil;
-    [super dealloc];
-}
+    }
 
 - (id)init {
     if (!(self=[super init])) return(nil);

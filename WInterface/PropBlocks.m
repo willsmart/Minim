@@ -15,8 +15,7 @@
 
 - (void)dealloc {
     self.ivarStr=self.ifaceStr=self.deallocStr=self.dieStr=self.initStr=self.implStr=nil;
-    [super dealloc];
-}
+    }
 
 - (id)initWithMyType:(char)amytype hisType:(char)ahistype {
     if (!(self=[super init])) return(nil);
@@ -105,8 +104,7 @@
 
 - (void)dealloc {
     self.types=nil;
-    [super dealloc];
-}
+    }
 
 - (id)init {
     if (!(self=[super init])) return(nil);

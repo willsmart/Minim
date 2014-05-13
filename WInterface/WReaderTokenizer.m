@@ -15,8 +15,7 @@
 - (void)dealloc {
     self.str=nil;
     self.notes=nil;
-    [super dealloc];
-}
+    }
 
 - (id)initWithTokenizer:(WReaderTokenizer*)atokenizer string:(NSString*)astr bracketCount:(int)bc linei:(int)linei type:(char)atype {
     return([self initWithTokenizer:atokenizer string:astr bracketCount:bc linei:linei type:atype note:nil]);
@@ -58,8 +57,7 @@
 - (void)dealloc {
     self.tokens=nil;
     self._str=nil;
-    [super dealloc];
-}
+    }
 
 - (id)initWithReader:(WReader*)areader {
     if (!(self=[super init])) return(nil);
