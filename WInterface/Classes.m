@@ -4002,7 +4002,7 @@ static WClasses *_default=nil;
 __name=nil; \
     I ret=nil; \
     {__VA_ARGS__} \
-    return([(__name=ret) retain]); \
+    return((__name=ret)); \
 }
 CACHEVARATTRFN_retain(NSString*,getterName,
     if (attributes) for (NSString *s in attributes) if ([s hasPrefix:@"getter="]) ret=[s substringFromIndex:@"getter=".length];
@@ -4169,9 +4169,9 @@ CACHEVARATTRFN_retain(NSMutableString*,localizedSetterBody,
                     (self.retains?
                         (!self.atomic?
                             [NSMutableString stringWithFormat:
-                                @"@-905 if(!memcmp(&%@,&%@,sizeof(%@)))return;@-900 {%@=[(id)%@ retain];}",vv,self.setterArg,self.setterArg,vv,self.setterArg]:
+                                @"@-905 if(!memcmp(&%@,&%@,sizeof(%@)))return;@-900 {%@=(id)%@;}",vv,self.setterArg,self.setterArg,vv,self.setterArg]:
                             [NSMutableString stringWithFormat:
-                                @"@-905 @synchronized(self) {@-904 if(%@==%@)return;@-900 {%@=[(id)%@ retain];}@-895}",vv,self.setterArg,vv,self.setterArg]):
+                                @"@-905 @synchronized(self) {@-904 if(%@==%@)return;@-900 {%@=(id)%@;}@-895}",vv,self.setterArg,vv,self.setterArg]):
                         (!self.atomic?
                             [NSMutableString stringWithFormat:
                                 @"@-905 if(!memcmp(&%@,&%@,sizeof(%@)))return;@-900 memcpy(&%@,&%@,sizeof(%@));",vv,self.setterArg,vv,vv,self.setterArg,vv]:
@@ -4388,7 +4388,7 @@ CACHEVARATTRFN_retain(NSString*,localizedVarName,
         }
         if (def.length) {
             hasDef=YES;
-            [WFn getFnWithSig:@"-(init)" body:[NSString stringWithFormat:@"@-500         /*ivar*/%@=[(id)%@ retain];\n",localizedVarName,def] clas:clas];
+            [WFn getFnWithSig:@"-(init)" body:[NSString stringWithFormat:@"@-500         /*ivar*/%@=(id)%@;\n",localizedVarName,def] clas:clas];
         }
     }
     if (self.hasIVar&&!(hasDef||self.imaginary)) {

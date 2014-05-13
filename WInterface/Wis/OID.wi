@@ -49,7 +49,7 @@ Singletons<Ticker> "-Object" "fn:object"
 
     -(void)tick {
         prnt("%s\n",self.description.UTF8String);
-        NSMutableDictionary *d=[(NSMutableDictionary*)[self.typeCountHistory objectAtIndex:4] retain];
+        NSMutableDictionary *d=(NSMutableDictionary*)[self.typeCountHistory objectAtIndex:4];
         [self.typeCountHistory removeLastObject];
         [d removeAllObjects];
         for (kid key in self.typeCounts) {
