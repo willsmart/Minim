@@ -4309,7 +4309,7 @@ CACHEVARATTRFN_retain(NSString*,localizedVarName,
                     [WClasses note:[NSString stringWithFormat:@"Suspected positive reference count in default value. odd"] withToken:nil context:self];
                 }
             }
-            [WFn getFnWithSig:@"-(init)" body:[NSString stringWithFormat:@"@-500 /*ivar*/%@=(%@);%@\n",self.localizedVarName,(self.retains?[NSString stringWithFormat:@"[(id)(%@) retain]",defaultValue]:defaultValue),(self.tracked?[NSString stringWithFormat:@"  ADDOWNER(%@,self);",self.localizedVarName]:@"")] clas:clas];
+            [WFn getFnWithSig:@"-(init)" body:[NSString stringWithFormat:@"@-500 /*ivar*/%@=(%@);%@\n",self.localizedVarName,defaultValue,(self.tracked?[NSString stringWithFormat:@"  ADDOWNER(%@,self);",self.localizedVarName]:@"")] clas:clas];
         }
     }
     else if (attributes) {
