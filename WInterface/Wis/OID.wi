@@ -119,7 +119,7 @@ Singletons<Ticker> "-Object" "fn:object"
         if (self.printRetain) {
             prnt("%d -> %d retain %s\n",___rc,___rc-___arc,[self.objectName cStringUsingEncoding:NSASCIIStringEncoding]);
         }
-        @999 return([super retain]);
+        @999 return(super);
     }
     -(void)dealloc {@-999 
         if (self.printRetain||self.printDealloc) {

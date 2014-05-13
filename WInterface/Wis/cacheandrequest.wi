@@ -196,7 +196,7 @@ LRUCacheItem<LRUCacheItem> "fn:util"
     float size (nodef,ivar)
     -(init[super init])initWithObject:(NSObject*)aobject size:(float)asize {
         size=asize;
-        object=[aobject retain];
+        object=aobject;
     }
 
 

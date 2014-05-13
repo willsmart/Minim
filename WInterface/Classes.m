@@ -1888,9 +1888,9 @@ static WClasses *_default=nil;
     [self read:r logContext:nil];
 }
 - (void)read:(WReader *)r logContext:(InFiles*)alogContext {
-    WClass *cwas=[self.classContext retain];
-    NSMutableArray *pwas=[self.propertyContexts retain];
-    NSMutableIndexSet *piwas=[self.propertyContextBrackets retain];
+    WClass *cwas=self.classContext;
+    NSMutableArray *pwas=self.propertyContexts;
+    NSMutableIndexSet *piwas=self.propertyContextBrackets;
     int cbwas=self.classContextBracket;
     
     self.classContext=nil;
@@ -1898,7 +1898,7 @@ static WClasses *_default=nil;
     self.propertyContexts=[NSMutableArray array];
     self.propertyContextBrackets=[NSMutableIndexSet indexSet];
     
-    InFiles *logContextWas=[self.logContext retain];
+    InFiles *logContextWas=self.logContext;
     if (alogContext) {
         while (alogContext.useLocationsFrom) alogContext=alogContext.useLocationsFrom;
         self.logContext=alogContext;
@@ -3828,8 +3828,8 @@ static WClasses *_default=nil;
     self.stars=astars>0?astars:(atype.clas.isType?0:1);
     //[WClasses warning:[NSString stringWithFormat:@"%@ %d %d",aname,stars,astars] withReader:nil];
     self.name=aname;
-    localizedName=[[aclas localizeString:aname] retain];
-    localizedType=[[aclas localizeType:type] retain];
+    localizedName=[aclas localizeString:aname];
+    localizedType=[aclas localizeType:type];
     
     self.qname=aqname;
     self.setterArg=@"v";
@@ -4056,10 +4056,10 @@ CACHEVARATTRFN(bool,readonly,
     ret=((![clas.varPatterns containsObject:@"-Object"])&&[attributes containsObject:@"publicreadonly"])||self.objc_readonly;
 )
 CACHEVARATTRFN_retain(WFn*,hasGetter,
-    ret=[[clas.fns objectForKey:[self getterSig]] retain];
+    ret=[clas.fns objectForKey:[self getterSig]];
 )
 CACHEVARATTRFN_retain(WFn*,hasSetter,
-    ret=[[clas.fns objectForKey:[self setterSig]] retain];
+    ret=[clas.fns objectForKey:[self setterSig]];
 )
 CACHEVARATTRFN(bool,atomic,
     ret=[attributes containsObject:@"atomic"];

@@ -101,7 +101,7 @@ typedef unsigned short WRD;
 
 
 extern NSMutableArray *singletons;
-#define ADDSINGLETON(o) [(!singletons?singletons=[[NSMutableArray array] retain]:singletons) addObject:o]
+#define ADDSINGLETON(o) [(!singletons?singletons=[NSMutableArray array]:singletons) addObject:o]
 void clearSingletons();
 
 

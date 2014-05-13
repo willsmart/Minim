@@ -136,7 +136,7 @@ typedef unsigned short WRD;
 
 
 extern NSMutableArray *singletons;
-#define ADDSINGLETON(o) [(!singletons?singletons=[[NSMutableArray array] retain]:singletons) addObject:o]
+#define ADDSINGLETON(o) [(!singletons?singletons=[NSMutableArray array]:singletons) addObject:o]
 void clearSingletons();
 
 #define DEB(...) __VA_ARGS__
@@ -4980,13 +4980,13 @@ static Model *_Model_default=nil;
           [self passFailWithFormat:@"addObjectsFromArray"];
     }
 -(void)arrayByAddingObject {
-          NSArray *aa=[[a arrayByAddingObject:self.object] retain];
-          NSArray *bb=[[b arrayByAddingObject:self.object] retain];
+          NSArray *aa=[a arrayByAddingObject:self.object];
+          NSArray *bb=[b arrayByAddingObject:self.object];
           [self passFail:[aa isEqualToArray:bb] format:@"arrayByAddingObject"];
     }
 -(void)arrayByAddingObjectsFromArray {
-          NSArray *aa=[[a arrayByAddingObjectsFromArray:self.objectArray] retain];
-          NSArray *bb=[[b arrayByAddingObjectsFromArray:self.objectArray] retain];
+          NSArray *aa=[a arrayByAddingObjectsFromArray:self.objectArray];
+          NSArray *bb=[b arrayByAddingObjectsFromArray:self.objectArray];
           [self passFail:[aa isEqualToArray:bb] format:@"arrayByAddingObjectsFromArray"];
     }
 -(void)clearTest {
@@ -5211,8 +5211,8 @@ a=nil;
     }
 -(void)subarrayWithRange {
           if (!a.count) return;
-          NSArray *aa=[[a subarrayWithRange:self.range] retain];
-          NSArray *bb=[[b subarrayWithRange:self.range] retain];
+          NSArray *aa=[a subarrayWithRange:self.range];
+          NSArray *bb=[b subarrayWithRange:self.range];
           [self passFail:[aa isEqualToArray:bb] format:@"subarrayWithRange"];
     }
 -(void)verifyRC {
@@ -6051,7 +6051,7 @@ __set=nil;
                 if (so) [so _retain];
             }
           //printf("retain %d->%d %s\n",self.rcIs,self.rcWillBe,self.description.UTF8String);
-          return([super retain]);
+          return(super);
     }
 -(CollectionTestObject*)_startObjectOfClassCollectionTestObject {  
   @-999 NSDictionary *d __attribute__((unused)) =([self respondsToSelector:@selector(__initializeUsingDictionary)]?[self performSelector:@selector(__initializeUsingDictionary)]:nil);
@@ -6584,7 +6584,7 @@ a=nil;
           return(YES);
     }
 -(bool)unacceptable:(id)obj {  return(!(acceptableSel&&[self.owner performSelector:acceptableSel withObject:obj]));}
--(id)value {  return([v_value retain]);}
+-(id)value {  return(v_value);}
 -(Endpoint1*)_startObjectOfClassEndpoint1 {
           
   @-999 NSDictionary *d __attribute__((unused)) =([self respondsToSelector:@selector(__initializeUsingDictionary)]?[self performSelector:@selector(__initializeUsingDictionary)]:nil);
@@ -7093,7 +7093,7 @@ __array=nil;
           [self stateOK];
     }
 -(void)removeObjectAtIndex:(NSUInteger)index {
-          id object=[[__array objectAtIndex:index] retain];
+          id object=[__array objectAtIndex:index];
           [self willRemoveObject:object fromIndex:index];
           [__mutableArray removeObjectAtIndex:index];
           [self didRemoveObject:object];
@@ -7139,7 +7139,7 @@ __array=nil;
     }
 -(void)removeObjectsAtIndexes:(NSIndexSet*)indexes {
           for (int index=[indexes firstIndex],i=0;index!=NSNotFound;index=[indexes indexGreaterThanIndex:index],i++) {
-                id object=[[__array objectAtIndex:index-i] retain];
+                id object=[__array objectAtIndex:index-i];
                 [self willRemoveObject:object];
                 [__mutableArray removeObjectAtIndex:index-i];
                 [self didRemoveObject:object];
@@ -7152,7 +7152,7 @@ __array=nil;
     }
 -(void)removeObjectsInRange:(NSRange)r {
           for (int i=r.length-1;i>=0;i--) {
-                id object=[[__array objectAtIndex:r.location+i] retain];
+                id object=[__array objectAtIndex:r.location+i];
                 [self willRemoveObject:object fromIndex:r.location+i];
                 [__mutableArray removeObjectAtIndex:r.location+i];
                 [self didRemoveObject:object];
@@ -7174,7 +7174,7 @@ __array=nil;
     }
 -(void)replaceObjectAtIndex:(int)index withObject:(id)object {
           if (![self shouldAddObject:object]) return;
-          id object2=[[__array objectAtIndex:index] retain];
+          id object2=[__array objectAtIndex:index];
           [self willRemoveObject:object2 fromIndex:index];
           [__mutableArray replaceObjectAtIndex:index withObject:object];
           [self didRemoveObject:object2];
@@ -7705,7 +7705,7 @@ deletedObjectMap=nil;
           [self stateOK];
     }
 -(void)removeObjectAtIndex:(NSUInteger)index {
-          id object=[[__array objectAtIndex:index] retain];
+          id object=[__array objectAtIndex:index];
           [self willRemoveObject:object fromIndex:index];
           [__mutableArray removeObjectAtIndex:index];
           [self didRemoveObject:object];
@@ -7726,7 +7726,7 @@ deletedObjectMap=nil;
     }
 -(void)replaceObjectAtIndex:(int)index withObject:(id)object {
           if (![self shouldAddObject:object]) return;
-          id object2=[[__array objectAtIndex:index] retain];
+          id object2=[__array objectAtIndex:index];
           [self willRemoveObject:object2 fromIndex:index];
           [__mutableArray replaceObjectAtIndex:index withObject:object];
           [self didRemoveObject:object2];
@@ -9749,7 +9749,7 @@ __array=nil;
           [self stateOK];
     }
 -(void)removeObjectAtIndex:(NSUInteger)index {
-          id object=[[__array objectAtIndex:index] retain];
+          id object=[__array objectAtIndex:index];
           [self willRemoveObject:object fromIndex:index];
           [__mutableArray removeObjectAtIndex:index];
           [self didRemoveObject:object];
@@ -9795,7 +9795,7 @@ __array=nil;
     }
 -(void)removeObjectsAtIndexes:(NSIndexSet*)indexes {
           for (int index=[indexes firstIndex],i=0;index!=NSNotFound;index=[indexes indexGreaterThanIndex:index],i++) {
-                id object=[[__array objectAtIndex:index-i] retain];
+                id object=[__array objectAtIndex:index-i];
                 [self willRemoveObject:object];
                 [__mutableArray removeObjectAtIndex:index-i];
                 [self didRemoveObject:object];
@@ -9808,7 +9808,7 @@ __array=nil;
     }
 -(void)removeObjectsInRange:(NSRange)r {
           for (int i=r.length-1;i>=0;i--) {
-                id object=[[__array objectAtIndex:r.location+i] retain];
+                id object=[__array objectAtIndex:r.location+i];
                 [self willRemoveObject:object fromIndex:r.location+i];
                 [__mutableArray removeObjectAtIndex:r.location+i];
                 [self didRemoveObject:object];
@@ -9830,7 +9830,7 @@ __array=nil;
     }
 -(void)replaceObjectAtIndex:(int)index withObject:(id)object {
           if (![self shouldAddObject:object]) return;
-          id object2=[[__array objectAtIndex:index] retain];
+          id object2=[__array objectAtIndex:index];
           [self willRemoveObject:object2 fromIndex:index];
           [__mutableArray replaceObjectAtIndex:index withObject:object];
           [self didRemoveObject:object2];
@@ -10378,7 +10378,7 @@ __array=nil;
           [self stateOK];
     }
 -(void)removeObjectAtIndex:(NSUInteger)index {
-          id object=[[__array objectAtIndex:index] retain];
+          id object=[__array objectAtIndex:index];
           [self willRemoveObject:object fromIndex:index];
           [__mutableArray removeObjectAtIndex:index];
           [self didRemoveObject:object];
@@ -10424,7 +10424,7 @@ __array=nil;
     }
 -(void)removeObjectsAtIndexes:(NSIndexSet*)indexes {
           for (int index=[indexes firstIndex],i=0;index!=NSNotFound;index=[indexes indexGreaterThanIndex:index],i++) {
-                id object=[[__array objectAtIndex:index-i] retain];
+                id object=[__array objectAtIndex:index-i];
                 [self willRemoveObject:object];
                 [__mutableArray removeObjectAtIndex:index-i];
                 [self didRemoveObject:object];
@@ -10437,7 +10437,7 @@ __array=nil;
     }
 -(void)removeObjectsInRange:(NSRange)r {
           for (int i=r.length-1;i>=0;i--) {
-                id object=[[__array objectAtIndex:r.location+i] retain];
+                id object=[__array objectAtIndex:r.location+i];
                 [self willRemoveObject:object fromIndex:r.location+i];
                 [__mutableArray removeObjectAtIndex:r.location+i];
                 [self didRemoveObject:object];
@@ -10459,7 +10459,7 @@ __array=nil;
     }
 -(void)replaceObjectAtIndex:(int)index withObject:(id)object {
           if (![self shouldAddObject:object]) return;
-          id object2=[[__array objectAtIndex:index] retain];
+          id object2=[__array objectAtIndex:index];
           [self willRemoveObject:object2 fromIndex:index];
           [__mutableArray replaceObjectAtIndex:index withObject:object];
           [self didRemoveObject:object2];
@@ -12049,7 +12049,7 @@ v__allObjects=nil;
 -(id) initWithObject:(id)ao {
           if (!(self=[super init])) return(nil);
           hash=[ao hash];
-          o=[ao retain];
+          o=ao;
           return(self);
     }
 -(id)copyWithZone:(NSZone *)zone {
@@ -12772,7 +12772,7 @@ atomicArray=nil;
           [self stateOK];
     }
 -(void)removeObjectAtIndex:(NSUInteger)index {
-          id object=[[__array objectAtIndex:index] retain];
+          id object=[__array objectAtIndex:index];
           [self willRemoveObject:object fromIndex:index];
           [__mutableArray removeObjectAtIndex:index];
           [self didRemoveObject:object];
@@ -12793,7 +12793,7 @@ atomicArray=nil;
     }
 -(void)replaceObjectAtIndex:(int)index withObject:(id)object {
           if (![self shouldAddObject:object]) return;
-          id object2=[[__array objectAtIndex:index] retain];
+          id object2=[__array objectAtIndex:index];
           [self willRemoveObject:object2 fromIndex:index];
           [__mutableArray replaceObjectAtIndex:index withObject:object];
           [self didRemoveObject:object2];
@@ -13850,7 +13850,7 @@ __array=nil;
           [self stateOK];
     }
 -(void)removeObjectAtIndex:(NSUInteger)index {
-          id object=[[__array objectAtIndex:index] retain];
+          id object=[__array objectAtIndex:index];
           [self willRemoveObject:object fromIndex:index];
           [__mutableArray removeObjectAtIndex:index];
           [self didRemoveObject:object];
@@ -13896,7 +13896,7 @@ __array=nil;
     }
 -(void)removeObjectsAtIndexes:(NSIndexSet*)indexes {
           for (int index=[indexes firstIndex],i=0;index!=NSNotFound;index=[indexes indexGreaterThanIndex:index],i++) {
-                id object=[[__array objectAtIndex:index-i] retain];
+                id object=[__array objectAtIndex:index-i];
                 [self willRemoveObject:object];
                 [__mutableArray removeObjectAtIndex:index-i];
                 [self didRemoveObject:object];
@@ -13909,7 +13909,7 @@ __array=nil;
     }
 -(void)removeObjectsInRange:(NSRange)r {
           for (int i=r.length-1;i>=0;i--) {
-                id object=[[__array objectAtIndex:r.location+i] retain];
+                id object=[__array objectAtIndex:r.location+i];
                 [self willRemoveObject:object fromIndex:r.location+i];
                 [__mutableArray removeObjectAtIndex:r.location+i];
                 [self didRemoveObject:object];
@@ -13931,7 +13931,7 @@ __array=nil;
     }
 -(void)replaceObjectAtIndex:(int)index withObject:(id)object {
           if (![self shouldAddObject:object]) return;
-          id object2=[[__array objectAtIndex:index] retain];
+          id object2=[__array objectAtIndex:index];
           [self willRemoveObject:object2 fromIndex:index];
           [__mutableArray replaceObjectAtIndex:index withObject:object];
           [self didRemoveObject:object2];
@@ -14485,7 +14485,7 @@ __array=nil;
           [self stateOK];
     }
 -(void)removeObjectAtIndex:(NSUInteger)index {
-          id object=[[__array objectAtIndex:index] retain];
+          id object=[__array objectAtIndex:index];
           [self willRemoveObject:object fromIndex:index];
           [__mutableArray removeObjectAtIndex:index];
           [self didRemoveObject:object];
@@ -14531,7 +14531,7 @@ __array=nil;
     }
 -(void)removeObjectsAtIndexes:(NSIndexSet*)indexes {
           for (int index=[indexes firstIndex],i=0;index!=NSNotFound;index=[indexes indexGreaterThanIndex:index],i++) {
-                id object=[[__array objectAtIndex:index-i] retain];
+                id object=[__array objectAtIndex:index-i];
                 [self willRemoveObject:object];
                 [__mutableArray removeObjectAtIndex:index-i];
                 [self didRemoveObject:object];
@@ -14544,7 +14544,7 @@ __array=nil;
     }
 -(void)removeObjectsInRange:(NSRange)r {
           for (int i=r.length-1;i>=0;i--) {
-                id object=[[__array objectAtIndex:r.location+i] retain];
+                id object=[__array objectAtIndex:r.location+i];
                 [self willRemoveObject:object fromIndex:r.location+i];
                 [__mutableArray removeObjectAtIndex:r.location+i];
                 [self didRemoveObject:object];
@@ -14566,7 +14566,7 @@ __array=nil;
     }
 -(void)replaceObjectAtIndex:(int)index withObject:(id)object {
           if (![self shouldAddObject:object]) return;
-          id object2=[[__array objectAtIndex:index] retain];
+          id object2=[__array objectAtIndex:index];
           [self willRemoveObject:object2 fromIndex:index];
           [__mutableArray replaceObjectAtIndex:index withObject:object];
           [self didRemoveObject:object2];

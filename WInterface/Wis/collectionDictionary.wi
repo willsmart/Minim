@@ -186,7 +186,7 @@ WeakMutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirr
         if (v==self) return;
         if (dictionaryDelegate) [dictionaryDelegate addDelegate:v];
         else {
-            dictionaryDelegate=[v retain];
+            dictionaryDelegate=v;
             v.delegateForDictionary=self.delegateForDictionary;
             [v delegateForDictionaryChanged];
         }
@@ -196,7 +196,7 @@ WeakMutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirr
         if (dictionaryDelegate) {
             if (dictionaryDelegate==v) {
                 v.delegateForDictionary=nil;
-                dictionaryDelegate=[v.dictionaryDelegate retain];
+                dictionaryDelegate=v.dictionaryDelegate;
                 [v removedDelegate];
                 [v delegateForDictionaryChanged];
             }
@@ -513,7 +513,7 @@ MutableDictionaryPrefixedKeyDelegate:MutableDictionaryFollowerDelegate
     NSString keyPrefix=
         {return(keyPrefix);}
         -v{
-keyPrefix=[v retain];
+keyPrefix=v;
             [self refreshFollowerDictionary];
         } (nodef,dealloc,ivar=keyPrefix)
     int keepKeyPrefixSuffixLength=
@@ -525,7 +525,7 @@ keyPrefix=[v retain];
     NSString filterKeyPrefix=
         {return(filterKeyPrefix);}
         -v{
-filterKeyPrefix=[v retain];
+filterKeyPrefix=v;
             [self refreshFollowerDictionary];
         } (nodef,dealloc,ivar=filterKeyPrefix)
 
@@ -557,7 +557,7 @@ MutableDictionaryFollowerDelegate<MutableDictionaryDelegate,BaseObject>
     NSMutableDictionary __mapv=[[NSMutableDictionary alloc] init] (readonly,ivar=mapv,dealloc)
     <MutableDictionary> followerDictionary=
         {return(followerDictionary);}
-        -v{followerDictionary=[v retain];[self refreshFollowerDictionary];} (ivar=followerDictionary,dealloc)
+        -v{followerDictionary=v;[self refreshFollowerDictionary];} (ivar=followerDictionary,dealloc)
 
     -(void)delegateForDictionaryChanged {
         [self refreshFollowerDictionary];
@@ -652,7 +652,7 @@ MutableDictionaryUnionDelegate<MutableArrayDelegate,BaseObject>
 
     <MutableDictionary> unionDictionary=
         {return(unionDictionary);}
-        -v{unionDictionary=[v retain];[self refreshUnionDictionary];} (ivar=unionDictionary,dealloc)
+        -v{unionDictionary=v;[self refreshUnionDictionary];} (ivar=unionDictionary,dealloc)
 
     //-(void)setDelegateInArray:(NSObject<NSArray>*)v {@500 
     //    if (unionDictionary) [self refreshUnionDictionary];
@@ -713,8 +713,8 @@ MutableDictionaryUnionDelegate<MutableArrayDelegate,BaseObject>
 
     -(void)objectsSwappedWithIndex:(NSUInteger)fromIndex andIndex:(NSUInteger)toIndex {
         if (fromIndex!=toIndex) {
-            MutableDictionary *fromd=[[mapdicts objectAtIndex:fromIndex] retain];
-            MutableDictionary *tod=[[mapdicts objectAtIndex:toIndex] retain];
+            MutableDictionary *fromd=[mapdicts objectAtIndex:fromIndex];
+            MutableDictionary *tod=[mapdicts objectAtIndex:toIndex];
             for (kid key in fromd) [self unionWillRemoveObject1:[fromd objectForKey:key] forKey:key depth:fromIndex];
             [mapdicts removeObjectAtIndex:fromIndex];
             if (toIndex>fromIndex) toIndex--;
