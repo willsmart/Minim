@@ -23,7 +23,7 @@
 //!!        for (id object in __set) release;
     }
     -(void)makeStrong {
-        for (id object in __set) [object retain];
+//!!        for (id object in __set) !!retain of object;
     }
     -(init) {@-500 [self makeWeak];}
     -(void)dealloc {@-500 [self makeStrong];}
@@ -48,7 +48,7 @@
 //!!        for (id<NSCopying> key in __dictionary) release;
     }
     -(void)makeStrong {
-        for (id<NSCopying> key in __dictionary) [[__dictionary objectForKey:key] retain];
+//!!        for (id<NSCopying> key in __dictionary) !!retain of [__dictionary objectForKey:key];
     }
     -(init) {@-500 [self makeWeak];}
     -(void)dealloc {@-500 [self makeStrong];}
@@ -80,7 +80,7 @@
 //!!        for (id object in __array) releasex;
     }
     -(void)makeStrong {
-        for (id object in __array) [object retain];
+//!!        for (id object in __array) !!retain of object;
     }
     -(init) {@-500 [self makeWeak];}
     -(void)dealloc {@-500 [self makeStrong];}

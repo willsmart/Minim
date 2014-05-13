@@ -476,11 +476,9 @@ MutableSetFollowerDelegate<MutableSetDelegate,BaseObject>
     }
     -(void)_refreshFollowerSet {
         [ocounts removeAllObjects];
-        for (kid key in map1) [[map1 objectForKey:key] retain];
         [map1 removeAllObjects];
         for (kid key in mapsets) {
             NSSet *s=[mapsets objectForKey:key];
-            for (id o in s) [o retain];
         }
         [mapsets removeAllObjects];
         

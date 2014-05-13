@@ -428,7 +428,7 @@ WeakMutableArrayMirrorTesterImpl:NSMutableArray <MutableArrayMirrorTester,WeakMu
         if (![self shouldAddObject:object]) [self wontAddObject:object withIndex:index];
         else {
             [self willRemoveObjectsWithCount:1];
-            [self willRemoveObject:[object2 retain] fromIndex:index];
+            [self willRemoveObject:object2 fromIndex:index];
             [__mutableArray removeObjectAtIndex:index];
             [self didRemoveObject:object2];
 

@@ -35,7 +35,7 @@
         if ([line hasPrefix:@"@end"]) inIFace=NO;
         else if (inDealloc) {
             if ([line hasPrefix:@"}"]) inDealloc=NO;
-            else if (![[line stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] hasPrefix:@"[super dealloc]"]) {
+            else {
                 [self.deallocStr appendFormat:@"%@\n",line];
             }
         }

@@ -597,7 +597,6 @@ MutableDictionaryFollowerDelegate<MutableDictionaryDelegate,BaseObject>
         [followerDictionary stateOK];
     }
     -(void)_refreshFollowerDictionary {
-        for (kid key in mapv) [[mapv objectForKey:key] retain];
         [mapk removeAllObjects];
         [mapv removeAllObjects];
         

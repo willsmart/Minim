@@ -33,7 +33,7 @@
         if (v==self) return;
         if (valueDelegate) [valueDelegate addDelegate:v];
         else {
-            valueDelegate=(v.retainsAsValueDelegate?[v retain]:v);
+            valueDelegate=v;
             valueDelegate.parentValueDelegate=self;
         }
     }
@@ -43,7 +43,7 @@
             if (valueDelegate==v) {
                 v.parentValueDelegate=nil;
                 if (v.valueDelegate) {
-                    valueDelegate=(v.valueDelegate.retainsAsValueDelegate?[v.valueDelegate retain]:v.valueDelegate);
+                    valueDelegate=v.valueDelegate;
                     valueDelegate.parentValueDelegate=self;
                 }
                 else valueDelegate=nil;
@@ -77,7 +77,6 @@
                 if (![[self endpointForObject:v] _addReferrer:self]) {
                     v_value=nil;
                 }
-                else if (retains) [v retain];
             }
             [self didSetValueTo:v];
         } (assign,ivar=v_value)
@@ -89,9 +88,7 @@
         if (v_value) {
             [[self endpointForObject:v_value] _removeReferrer:self];
         }
-        if ((v_value=v)) {
-            if (retains) [v retain];
-        }
+        v_value=v;
         [self didSetValueTo:v];
         return(YES);
     }
@@ -121,7 +118,6 @@
         if (!__restrictRef) [[self endpointForObject:object] _addReferrer:self];
     }
     -(void)willRemoveObject:(id)object {@-900 
-        if (!retains) [object retain];
         if (!__restrictRef) [[self endpointForObject:object] _removeReferrer:self];
     }
 
@@ -162,7 +158,6 @@
         }
     }
     -(void)willRemoveObject:(id)object fromIndex:(NSUInteger)index {@-900 
-        if (!retains) [object retain];
         if (!__restrictRef) {
             [[self endpointForObject:object] _removeReferrer:self];
         }
@@ -203,7 +198,6 @@
         if (!__restrictRef) [[self endpointForObject:object] _addReferrer:self];
     }
     -(void)willRemoveObject:(id)object forKey:(id<NSCopying>)key {@-900 
-        if (!retains) [object retain];
         if (!__restrictRef) [[self endpointForObject:object] _removeReferrer:self];
     }
 

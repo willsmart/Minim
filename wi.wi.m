@@ -6572,7 +6572,7 @@ a=nil;
                 if (retains) v_value;
             }
           if ((v_value=v)) {
-                if (retains) [v retain];
+                if (retains) !!retain of v;
             }
           return(YES);
     }
@@ -6618,7 +6618,7 @@ a=nil;
                     if (![[self endpointForObject:v] _addReferrer:self]) {
                           v_value=nil;
                       }
-                    else if (retains) [v retain];
+                    else if (retains) !!retain of v;
                 }
         }
 
@@ -6918,13 +6918,13 @@ v_errs=nil;
 __array=nil;
 @999     }
 -(void)didAddObject:(id)object {  
-  @900 if (!retains) [object release];
+  @900 if (!retains) !!release of object;
     }
 -(void)didAddObject:(id)object withIndex:(NSUInteger)index {  
   @-950 //[self objectsMovedFromRange:NSMakeRange(index,__array.count-1-index) toLocation:index+1];
           [self doAddIndex:index forObject:object];
       
-  @900 if (!retains) [object release];
+  @900 if (!retains) !!release of object;
     }
 -(void)didRemoveObject:(id)object {}
 -(void)doAddIndex:(NSUInteger)index forObject:(id)object {
@@ -7256,11 +7256,11 @@ __array=nil;
     }
 -(void)stateOK {}
 -(void)willRemoveObject:(id)object {  
-  @-900 if (!retains) [object retain];
+  @-900 if (!retains) !!retain of object;
           [[self endpointForObject:object] _removeReferrer:self];
     }
 -(void)willRemoveObject:(id)object fromIndex:(NSUInteger)index {  
-  @-900 if (!retains) [object retain];
+  @-900 if (!retains) !!retain of object;
           [[self endpointForObject:object] _removeReferrer:self];
       
   @950 [self doRemoveIndex:index forObject:object];
@@ -7589,7 +7589,7 @@ deletedObjectMap=nil;
 -(void)didAddObject:(id)object {
           mappingIsValid=NO;
       
-  @900 if (!retains) [object release];
+  @900 if (!retains) !!release of object;
     }
 -(void)didAddObject:(id)object withIndex:(NSUInteger)index {  
   @-950 //[self objectsMovedFromRange:NSMakeRange(index,__array.count-1-index) toLocation:index+1];
@@ -7615,7 +7615,7 @@ deletedObjectMap=nil;
           if (bi!=NSNotFound) [indexToIndexMap addAIndex:index withBIndex:bi];
           else mappingIsValid=NO;
       
-  @900 if (!retains) [object release];
+  @900 if (!retains) !!release of object;
     }
 -(void)didRemoveObject:(id)object {}
 -(void)doAddIndex:(NSUInteger)index forObject:(id)object {
@@ -7726,13 +7726,13 @@ deletedObjectMap=nil;
     }
 -(void)stateOK {}
 -(void)willRemoveObject:(id)object {  
-  @-900 if (!retains) [object retain];
+  @-900 if (!retains) !!retain of object;
           [[self endpointForObject:object] _removeReferrer:self];
       
   @0 mappingIsValid=NO;
     }
 -(void)willRemoveObject:(id)object fromIndex:(NSUInteger)index {  
-  @-900 if (!retains) [object retain];
+  @-900 if (!retains) !!retain of object;
           [[self endpointForObject:object] _removeReferrer:self];
       
   @0 if (!mappingIsValid) return;
@@ -7989,7 +7989,7 @@ v_errs=nil;
           else if ([keys containsObject:key]) [self passFail:NO format:@"!!!dk Key exists\n"];
           [keys addObject:key];
       
-  @900 if (!retains) [object release];
+  @900 if (!retains) !!release of object;
     }
 -(void)didRemoveObject:(id)object forKey:(id<NSCopying>)key {}
 -(void)encodeWithCoder:(NSCoder*)coder {
@@ -8075,7 +8075,7 @@ v_errs=nil;
     }
 -(void)stateOK {}
 -(void)willRemoveObject:(id)object forKey:(id<NSCopying>)key {  
-  @-900 if (!retains) [object retain];
+  @-900 if (!retains) !!retain of object;
           [[self endpointForObject:object] _removeReferrer:self];
       
   @950 NSMutableSet *keys=[__dictionaryObjectKeys objectForKey:(id<NSCopying>)object];
@@ -8338,7 +8338,7 @@ __dictionary=nil;
           else if ([keys containsObject:key]) [self passFail:NO format:@"!!!dk Key exists\n"];
           [keys addObject:key];
       
-  @900 if (!retains) [object release];
+  @900 if (!retains) !!release of object;
     }
 -(void)didRemoveObject:(id)object forKey:(id<NSCopying>)key {}
 -(void)encodeWithCoder:(NSCoder*)coder {
@@ -8424,7 +8424,7 @@ __dictionary=nil;
     }
 -(void)stateOK {}
 -(void)willRemoveObject:(id)object forKey:(id<NSCopying>)key {  
-  @-900 if (!retains) [object retain];
+  @-900 if (!retains) !!retain of object;
           [[self endpointForObject:object] _removeReferrer:self];
       
   @950 NSMutableSet *keys=[__dictionaryObjectKeys objectForKey:(id<NSCopying>)object];
@@ -8614,7 +8614,7 @@ __dictionary=nil;
 @0__set=nil;
 @999     }
 -(void)didAddObject:(id)object {  
-  @900 if (!retains) [object release];
+  @900 if (!retains) !!release of object;
     }
 -(void)didRemoveObject:(id)object {}
 -(void)encodeWithCoder:(NSCoder*)coder {
@@ -8680,7 +8680,7 @@ __dictionary=nil;
           for (id object in set) [self addObject:object];
     }
 -(void)willRemoveObject:(id)object {  
-  @-900 if (!retains) [object retain];
+  @-900 if (!retains) !!retain of object;
           if (!__restrictRef) [[self endpointForObject:object] _removeReferrer:self];
     }
 
@@ -8868,7 +8868,7 @@ __dictionary=nil;
 __set=nil;
 @999     }
 -(void)didAddObject:(id)object {  
-  @900 if (!retains) [object release];
+  @900 if (!retains) !!release of object;
     }
 -(void)didRemoveObject:(id)object {}
 -(void)encodeWithCoder:(NSCoder*)coder {
@@ -8934,7 +8934,7 @@ __set=nil;
           for (id object in set) [self addObject:object];
     }
 -(void)willRemoveObject:(id)object {  
-  @-900 if (!retains) [object retain];
+  @-900 if (!retains) !!retain of object;
           if (!__restrictRef) [[self endpointForObject:object] _removeReferrer:self];
     }
 
