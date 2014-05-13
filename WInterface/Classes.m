@@ -4169,9 +4169,9 @@ CACHEVARATTRFN_retain(NSMutableString*,localizedSetterBody,
                     (self.retains?
                         (!self.atomic?
                             [NSMutableString stringWithFormat:
-                                @"@-905 if(!memcmp(&%@,&%@,sizeof(%@)))return;@-900 {[(id)%@ release];%@=[(id)%@ retain];}",vv,self.setterArg,self.setterArg,vv,vv,self.setterArg]:
+                                @"@-905 if(!memcmp(&%@,&%@,sizeof(%@)))return;@-900 {%@=[(id)%@ retain];}",vv,self.setterArg,self.setterArg,vv,self.setterArg]:
                             [NSMutableString stringWithFormat:
-                                @"@-905 @synchronized(self) {@-904 if(%@==%@)return;@-900 {[(id)%@ release];%@=[(id)%@ retain];}@-895}",vv,self.setterArg,vv,vv,self.setterArg]):
+                                @"@-905 @synchronized(self) {@-904 if(%@==%@)return;@-900 {%@=[(id)%@ retain];}@-895}",vv,self.setterArg,vv,self.setterArg]):
                         (!self.atomic?
                             [NSMutableString stringWithFormat:
                                 @"@-905 if(!memcmp(&%@,&%@,sizeof(%@)))return;@-900 memcpy(&%@,&%@,sizeof(%@));",vv,self.setterArg,vv,vv,self.setterArg,vv]:
@@ -4404,7 +4404,7 @@ CACHEVARATTRFN_retain(NSString*,localizedVarName,
     }
 
     if (self.retains&&self.hasIVar) {
-        [WFn getFnWithSig:@"-(void)dealloc" body:(self.tracked?[NSString stringWithFormat:@"\n    REMOVEOWNER(%@,self);[(id)%@ release];%@=nil;",self.localizedVarName,self.localizedVarName,self.localizedVarName]:[NSString stringWithFormat:@"\n    [(id)%@ release];%@=nil;",self.localizedVarName,self.localizedVarName]) clas:clas];
+        [WFn getFnWithSig:@"-(void)dealloc" body:(self.tracked?[NSString stringWithFormat:@"\n    REMOVEOWNER(%@,self);%@=nil;",self.localizedVarName,self.localizedVarName]:[NSString stringWithFormat:@"\n%@=nil;",self.localizedVarName,self.localizedVarName]) clas:clas];
     }
     if (self.needsGetter) {
         WFn *fn=self.hasGetter;
