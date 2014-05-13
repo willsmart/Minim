@@ -42,8 +42,6 @@
         if (valueDelegate) {
             if (valueDelegate==v) {
                 v.parentValueDelegate=nil;
-                if (v.retainsAsValueDelegate) [v release];
-
                 if (v.valueDelegate) {
                     valueDelegate=(v.valueDelegate.retainsAsValueDelegate?[v.valueDelegate retain]:v.valueDelegate);
                     valueDelegate.parentValueDelegate=self;
@@ -74,7 +72,6 @@
             [self willChangeValueFrom:v_value to:v];
             if (v_value) {
                 [[self endpointForObject:v_value] _removeReferrer:self];
-                if (retains) [v_value release];
             }
             if ((v_value=v)) {
                 if (![[self endpointForObject:v] _addReferrer:self]) {
@@ -91,7 +88,6 @@
         [self willChangeValueFrom:v_value to:v];
         if (v_value) {
             [[self endpointForObject:v_value] _removeReferrer:self];
-            if (retains) [v_value release];
         }
         if ((v_value=v)) {
             if (retains) [v retain];
@@ -103,7 +99,6 @@
         id v=ep.owner;
         if (v&&(v==v_value)) {
             [self willChangeValueFrom:v_value to:nil];
-            if (retains) [v_value release];
             v_value=nil;
             [self didSetValueTo:nil];
         }
@@ -124,7 +119,6 @@
     }
     -(void)didAddObject:(id)object {@900 
         if (!__restrictRef) [[self endpointForObject:object] _addReferrer:self];
-        if (!retains) [object release];
     }
     -(void)willRemoveObject:(id)object {@-900 
         if (!retains) [object retain];
@@ -166,7 +160,6 @@
         if (!__restrictRef) {
             [[self endpointForObject:object] _addReferrer:self];
         }
-        if (!retains) [object release];
     }
     -(void)willRemoveObject:(id)object fromIndex:(NSUInteger)index {@-900 
         if (!retains) [object retain];
@@ -208,7 +201,6 @@
     }
     -(void)didAddObject:(id)object forKey:(id<NSCopying>)key {@900 
         if (!__restrictRef) [[self endpointForObject:object] _addReferrer:self];
-        if (!retains) [object release];
     }
     -(void)willRemoveObject:(id)object forKey:(id<NSCopying>)key {@-900 
         if (!retains) [object retain];
