@@ -112,16 +112,16 @@
     if (!(self=[super init])) return(nil);
     self.types=[NSMutableDictionary dictionary];
 
-    WReader *r=[[[WReader alloc] init] autorelease];
+    WReader *r=[[WReader alloc] init];
     r.fileName=@"Prop.wi";
     [[WClasses getDefault] read:r];
 
-    [self.types addObject:[[[PropBlockType alloc] initWithMyType:0 hisType:0] autorelease]];
-    [self.types addObject:[[[PropBlockType alloc] initWithMyType:'-' hisType:'-'] autorelease]];
-    [self.types addObject:[[[PropBlockType alloc] initWithMyType:'-' hisType:'S'] autorelease]];
-    [self.types addObject:[[[PropBlockType alloc] initWithMyType:'S' hisType:'-'] autorelease]];
-    [self.types addObject:[[[PropBlockType alloc] initWithMyType:'-' hisType:'A'] autorelease]];
-    [self.types addObject:[[[PropBlockType alloc] initWithMyType:'A' hisType:'-'] autorelease]];
+    [self.types addObject:[[PropBlockType alloc] initWithMyType:0 hisType:0]];
+    [self.types addObject:[[PropBlockType alloc] initWithMyType:'-' hisType:'-']];
+    [self.types addObject:[[PropBlockType alloc] initWithMyType:'-' hisType:'S']];
+    [self.types addObject:[[PropBlockType alloc] initWithMyType:'S' hisType:'-']];
+    [self.types addObject:[[PropBlockType alloc] initWithMyType:'-' hisType:'A']];
+    [self.types addObject:[[PropBlockType alloc] initWithMyType:'A' hisType:'-']];
 
     NSError *err=nil;
     NSString *s=[NSString stringWithFormat:@"%@\n%@\n",

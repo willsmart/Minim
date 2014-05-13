@@ -431,7 +431,7 @@ UnionArraysMutableArrayDelegate<MutableArrayFollowerDelegate,BaseObject>
     }
 
     -(id)objectForObject:(id)object {
-        ret=[[[UnionArrayDelegate alloc] initWithArray:(NSMutableArray<MutableArrayDelegate>*)object] autorelease];
+        ret=[[UnionArrayDelegate alloc] initWithArray:(NSMutableArray<MutableArrayDelegate>*)object];
     }
 
 

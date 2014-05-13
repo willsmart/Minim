@@ -43,7 +43,7 @@ int main(int argc, const char * argv[])
                 fprintf(stderr,"\n>>%s -- ",fn.UTF8String);
                 @autoreleasepool {
                     [cs clear];
-                    WReader *r=[[[WReader alloc] init] autorelease];
+                    WReader *r=[[WReader alloc] init];
                     r.tokenizer.tokenDelegate=cs;
                     [InFiles clearMarksFromFiles:@[fn]];
                     r.fileName=fn;

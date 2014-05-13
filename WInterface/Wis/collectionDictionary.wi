@@ -61,12 +61,12 @@ WeakMutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirr
 
 
     // Creating an dictionary
-    +(__WIClass__*)dictionary {return([[[__WIClass__ alloc] init] autorelease]);}
-    +(__WIClass__*)dictionaryWithContentsOfFile:(NSString*)file {return([[[__WIClass__ alloc] initWithContentsOfFile:file] autorelease]);}
-    +(__WIClass__*)dictionaryWithContentsOfURL:(NSURL*)url {return([[[__WIClass__ alloc] initWithContentsOfURL:url] autorelease]);}
-    +(__WIClass__*)dictionaryWithDictionary:(NSDictionary*)dictionary {return([[[__WIClass__ alloc] initWithDictionary:dictionary] autorelease]);}
-    +(__WIClass__*)dictionaryWithObject:(id)object forKey:(id<NSCopying>)key {return([[[__WIClass__ alloc] initWithObjects:&object forKeys:&key count:1] autorelease]);}
-    +(__WIClass__*)dictionaryWithObjects:(id[])objects forKeys:(id<NSCopying>[])keys count:(NSUInteger)count {return([[[__WIClass__ alloc] initWithObjects:objects forKeys:keys count:count] autorelease]);}
+    +(__WIClass__*)dictionary {return([[__WIClass__ alloc] init]);}
+    +(__WIClass__*)dictionaryWithContentsOfFile:(NSString*)file {return([[__WIClass__ alloc] initWithContentsOfFile:file]);}
+    +(__WIClass__*)dictionaryWithContentsOfURL:(NSURL*)url {return([[__WIClass__ alloc] initWithContentsOfURL:url]);}
+    +(__WIClass__*)dictionaryWithDictionary:(NSDictionary*)dictionary {return([[__WIClass__ alloc] initWithDictionary:dictionary]);}
+    +(__WIClass__*)dictionaryWithObject:(id)object forKey:(id<NSCopying>)key {return([[__WIClass__ alloc] initWithObjects:&object forKeys:&key count:1]);}
+    +(__WIClass__*)dictionaryWithObjects:(id[])objects forKeys:(id<NSCopying>[])keys count:(NSUInteger)count {return([[__WIClass__ alloc] initWithObjects:objects forKeys:keys count:count]);}
 
 
 
@@ -276,7 +276,7 @@ WeakMutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirr
 
     //Creating a Mutable Dictionary
     +(id)dictionaryWithCapacity:(NSUInteger)numItems {
-        return([[[__WIClass__ alloc] initWithCapacity:numItems] autorelease]);
+        return([[__WIClass__ alloc] initWithCapacity:numItems]);
     }
     -(init)init {
         /*!-100*/__dictionary=__mutableDictionary=[[NSMutableDictionary alloc] init];
@@ -671,7 +671,7 @@ MutableDictionaryUnionDelegate<MutableArrayDelegate,BaseObject>
     -(void)unionWillAddObject:(id)object withIndex:(NSUInteger)index {
         NSObject<MutableDictionary>* d=[self dictionaryForObject:object];
         if (d) {
-            [d addDelegate:[[[MutableDictionaryUnionDelegate1 alloc] initWithOwner:self depth:index] autorelease]];
+            [d addDelegate:[[MutableDictionaryUnionDelegate1 alloc] initWithOwner:self depth:index]];
             [mapdicts insertObject:d atIndex:index];
             for (kid key in d) {
                 [self unionWillAddObject1:[d objectForKey:key] forKey:key depth:index];

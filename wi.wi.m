@@ -4833,7 +4833,7 @@ static Model *_Model_default=nil;
 @synthesize errs=v_errs;
 -(bool)passFail:(bool)pass format:(NSString*)format,... {
           va_list args;va_start(args,format);
-          NSString *s=[[[NSString alloc] initWithFormat:format arguments:args] autorelease];
+          NSString *s=[[NSString alloc] initWithFormat:format arguments:args];
           if (pass) printf("pass: %s\n",s.UTF8String);
           else {
                 printf("!!FAIL: %s\n",s.UTF8String);
@@ -4845,7 +4845,7 @@ static Model *_Model_default=nil;
 -(bool)passFailWithFormat:(NSString*)format,... {
           bool pass=self.stateGood;
           va_list args;va_start(args,format);
-          NSString *s=[[[NSString alloc] initWithFormat:format arguments:args] autorelease];
+          NSString *s=[[NSString alloc] initWithFormat:format arguments:args];
           if (pass) printf("pass: %s\n",s.UTF8String);
           else {
                 printf("!!FAIL: %s\n",s.UTF8String);
@@ -5274,14 +5274,14 @@ static Model *_Model_default=nil;
 @synthesize __array=__array;
 @synthesize __mutableArray=__mutableArray;
 @synthesize trackerArray=trackerArray;
-+(AtomiclyMutableArray*)array {  return([[[AtomiclyMutableArray alloc] init] autorelease]);}
-+(AtomiclyMutableArray*)arrayWithArray:(NSArray*)array {  return([[[AtomiclyMutableArray alloc] initWithArray:array] autorelease]);}
-+(AtomiclyMutableArray*)arrayWithContentsOfFile:(NSString*)file {  return([[[AtomiclyMutableArray alloc] initWithContentsOfFile:file] autorelease]);}
-+(AtomiclyMutableArray*)arrayWithContentsOfURL:(NSURL*)url {  return([[[AtomiclyMutableArray alloc] initWithContentsOfURL:url] autorelease]);}
-+(AtomiclyMutableArray*)arrayWithObject:(id)object {  return([[[AtomiclyMutableArray alloc] initWithObjects:&object count:1] autorelease]);}
-+(AtomiclyMutableArray*)arrayWithObjects:(id*)objects count:(NSUInteger)count {  return([[[AtomiclyMutableArray alloc] initWithObjects:objects count:count] autorelease]);}
++(AtomiclyMutableArray*)array {  return([[AtomiclyMutableArray alloc] init]);}
++(AtomiclyMutableArray*)arrayWithArray:(NSArray*)array {  return([[AtomiclyMutableArray alloc] initWithArray:array]);}
++(AtomiclyMutableArray*)arrayWithContentsOfFile:(NSString*)file {  return([[AtomiclyMutableArray alloc] initWithContentsOfFile:file]);}
++(AtomiclyMutableArray*)arrayWithContentsOfURL:(NSURL*)url {  return([[AtomiclyMutableArray alloc] initWithContentsOfURL:url]);}
++(AtomiclyMutableArray*)arrayWithObject:(id)object {  return([[AtomiclyMutableArray alloc] initWithObjects:&object count:1]);}
++(AtomiclyMutableArray*)arrayWithObjects:(id*)objects count:(NSUInteger)count {  return([[AtomiclyMutableArray alloc] initWithObjects:objects count:count]);}
 +(id)arrayWithCapacity:(NSUInteger)numItems {
-          return([[[AtomiclyMutableArray alloc] initWithCapacity:numItems] autorelease]);
+          return([[AtomiclyMutableArray alloc] initWithCapacity:numItems]);
     }
 -(BOOL)containsObject:(id)object {  return([__array containsObject:object]);}
 -(BOOL)isEqualToArray:(NSArray*)array {
@@ -5650,14 +5650,14 @@ static Model *_Model_default=nil;
 @synthesize __dictionary=__dictionary;
 @synthesize __mutableDictionary=__mutableDictionary;
 @synthesize trackerDictionary=trackerDictionary;
-+(AtomiclyMutableDictionary*)dictionary {  return([[[AtomiclyMutableDictionary alloc] init] autorelease]);}
-+(AtomiclyMutableDictionary*)dictionaryWithContentsOfFile:(NSString*)file {  return([[[AtomiclyMutableDictionary alloc] initWithContentsOfFile:file] autorelease]);}
-+(AtomiclyMutableDictionary*)dictionaryWithContentsOfURL:(NSURL*)url {  return([[[AtomiclyMutableDictionary alloc] initWithContentsOfURL:url] autorelease]);}
-+(AtomiclyMutableDictionary*)dictionaryWithDictionary:(NSDictionary*)dictionary {  return([[[AtomiclyMutableDictionary alloc] initWithDictionary:dictionary] autorelease]);}
-+(AtomiclyMutableDictionary*)dictionaryWithObject:(id)object forKey:(id<NSCopying>)key {  return([[[AtomiclyMutableDictionary alloc] initWithObjects:&object forKeys:&key count:1] autorelease]);}
-+(AtomiclyMutableDictionary*)dictionaryWithObjects:(id[])objects forKeys:(id<NSCopying>[])keys count:(NSUInteger)count {  return([[[AtomiclyMutableDictionary alloc] initWithObjects:objects forKeys:keys count:count] autorelease]);}
++(AtomiclyMutableDictionary*)dictionary {  return([[AtomiclyMutableDictionary alloc] init]);}
++(AtomiclyMutableDictionary*)dictionaryWithContentsOfFile:(NSString*)file {  return([[AtomiclyMutableDictionary alloc] initWithContentsOfFile:file]);}
++(AtomiclyMutableDictionary*)dictionaryWithContentsOfURL:(NSURL*)url {  return([[AtomiclyMutableDictionary alloc] initWithContentsOfURL:url]);}
++(AtomiclyMutableDictionary*)dictionaryWithDictionary:(NSDictionary*)dictionary {  return([[AtomiclyMutableDictionary alloc] initWithDictionary:dictionary]);}
++(AtomiclyMutableDictionary*)dictionaryWithObject:(id)object forKey:(id<NSCopying>)key {  return([[AtomiclyMutableDictionary alloc] initWithObjects:&object forKeys:&key count:1]);}
++(AtomiclyMutableDictionary*)dictionaryWithObjects:(id[])objects forKeys:(id<NSCopying>[])keys count:(NSUInteger)count {  return([[AtomiclyMutableDictionary alloc] initWithObjects:objects forKeys:keys count:count]);}
 +(id)DictionaryWithCapacity:(NSUInteger)numItems {
-          return([[[AtomiclyMutableDictionary alloc] initWithCapacity:numItems] autorelease]);
+          return([[AtomiclyMutableDictionary alloc] initWithCapacity:numItems]);
     }
 -(BOOL)fileExtensionHidden {  return([__dictionary fileExtensionHidden]);}
 -(BOOL)fileIsAppendOnly {  return([__dictionary fileIsAppendOnly]);}
@@ -5851,12 +5851,12 @@ static Model *_Model_default=nil;
 @synthesize __mutableSet=__mutableSet;
 @synthesize __set=__set;
 @synthesize trackerSet=trackerSet;
-+(AtomiclyMutableSet*)set {  return([[[AtomiclyMutableSet alloc] init] autorelease]);}
-+(AtomiclyMutableSet*)setWithArray:(NSArray*)array {  return([[[AtomiclyMutableSet alloc] initWithArray:array] autorelease]);}
-+(AtomiclyMutableSet*)setWithObject:(id)object {  return([[[AtomiclyMutableSet alloc] initWithObjects:&object count:1] autorelease]);}
-+(AtomiclyMutableSet*)setWithSet:(NSSet*)set {  return([[[AtomiclyMutableSet alloc] initWithSet:set] autorelease]);}
++(AtomiclyMutableSet*)set {  return([[AtomiclyMutableSet alloc] init]);}
++(AtomiclyMutableSet*)setWithArray:(NSArray*)array {  return([[AtomiclyMutableSet alloc] initWithArray:array]);}
++(AtomiclyMutableSet*)setWithObject:(id)object {  return([[AtomiclyMutableSet alloc] initWithObjects:&object count:1]);}
++(AtomiclyMutableSet*)setWithSet:(NSSet*)set {  return([[AtomiclyMutableSet alloc] initWithSet:set]);}
 +(id)SetWithCapacity:(NSUInteger)numItems {
-          return([[[AtomiclyMutableSet alloc] initWithCapacity:numItems] autorelease]);
+          return([[AtomiclyMutableSet alloc] initWithCapacity:numItems]);
     }
 -(BOOL)containsObject:(id)object {  return([__set containsObject:object]);}
 -(BOOL)intersectsSet:(NSSet*)set {  return([__set intersectsSet:set]);}
@@ -6051,7 +6051,7 @@ static Model *_Model_default=nil;
                 if (so) [so _autorelease];
             }
           //printf("autorelease %d->%d %s\n",self.rcIs,self.rcWillBe,self.description.UTF8String);
-          return([super autorelease]);
+          return(super);
     }
 -(id)retain {
           if (testKey) {
@@ -6066,9 +6066,9 @@ static Model *_Model_default=nil;
           
   @-500 self.subObjects=[NSMutableDictionary dictionary];
   
-  @0 [subObjects setObject:[[[CollectionTestSubObject alloc] initWithTestObject:self] autorelease] forKey:@"std"];
-        [subObjects setObject:[[[CollectionTestSubObject alloc] initWithTestObject:self] autorelease] forKey:@"strong"];
-        [subObjects setObject:[[[CollectionTestSubObject alloc] initWithTestObject:self] autorelease] forKey:@"weak"];
+  @0 [subObjects setObject:[[CollectionTestSubObject alloc] initWithTestObject:self] forKey:@"std"];
+        [subObjects setObject:[[CollectionTestSubObject alloc] initWithTestObject:self] forKey:@"strong"];
+        [subObjects setObject:[[CollectionTestSubObject alloc] initWithTestObject:self] forKey:@"weak"];
     
         
 @999 return(self);
@@ -6244,7 +6244,7 @@ static Model *_Model_default=nil;
 @synthesize errs=v_errs;
 -(bool)passFail:(bool)pass format:(NSString*)format,... {
           va_list args;va_start(args,format);
-          NSString *s=[[[NSString alloc] initWithFormat:format arguments:args] autorelease];
+          NSString *s=[[NSString alloc] initWithFormat:format arguments:args];
           if (pass) printf("pass: %s\n",s.UTF8String);
           else {
                 printf("!!FAIL: %s\n",s.UTF8String);
@@ -6256,7 +6256,7 @@ static Model *_Model_default=nil;
 -(bool)passFailWithFormat:(NSString*)format,... {
           bool pass=self.stateGood;
           va_list args;va_start(args,format);
-          NSString *s=[[[NSString alloc] initWithFormat:format arguments:args] autorelease];
+          NSString *s=[[NSString alloc] initWithFormat:format arguments:args];
           if (pass) printf("pass: %s\n",s.UTF8String);
           else {
                 printf("!!FAIL: %s\n",s.UTF8String);
@@ -6578,7 +6578,7 @@ static Model *_Model_default=nil;
 @synthesize owner=v_owner;
 @synthesize retains=retains;
 +(Endpoint1*)endpointWithOwner:(id)aowner retains:(bool)aretains acceptableSel:(SEL)aacceptableSel otherEndObjectToEndpoint:(SEL)aotherEndObjectToEndpoint {
-          return((Endpoint1*)[[[Endpoint1 alloc] initWithOwner:aowner retains:aretains acceptableSel:aacceptableSel otherEndObjectToEndpoint:aotherEndObjectToEndpoint] autorelease]);
+          return((Endpoint1*)[[Endpoint1 alloc] initWithOwner:aowner retains:aretains acceptableSel:aacceptableSel otherEndObjectToEndpoint:aotherEndObjectToEndpoint]);
     }
 -(bool)_addReferrer:(NSObject<LinkEndpoint>*)ep {
           id v=ep.owner;
@@ -6586,7 +6586,7 @@ static Model *_Model_default=nil;
           if (v_value==v) return(YES);
           if (v_value) {
                 [[self endpointForObject:v_value] _removeReferrer:self];
-                if (retains) [v_value autorelease];
+                if (retains) v_value;
             }
           if ((v_value=v)) {
                 if (retains) [v retain];
@@ -6594,7 +6594,7 @@ static Model *_Model_default=nil;
           return(YES);
     }
 -(bool)unacceptable:(id)obj {  return(!(acceptableSel&&[self.owner performSelector:acceptableSel withObject:obj]));}
--(id)value {  return([[v_value retain] autorelease]);}
+-(id)value {  return([v_value retain]);}
 -(Endpoint1*)_startObjectOfClassEndpoint1 {
           
   @-999 NSDictionary *d __attribute__((unused)) =([self respondsToSelector:@selector(__initializeUsingDictionary)]?[self performSelector:@selector(__initializeUsingDictionary)]:nil);
@@ -6619,7 +6619,7 @@ static Model *_Model_default=nil;
 -(void)_removeReferrer:(NSObject<LinkEndpoint>*)ep {
           id v=ep.owner;
           if (v&&(v==v_value)) {
-                if (retains) [v_value autorelease];
+                if (retains) v_value;
                 v_value=nil;
             }
     }
@@ -6630,7 +6630,7 @@ static Model *_Model_default=nil;
               if ((v_value==v)||(v&&[self unacceptable:v])) return;
               if (v_value) {
                     [[self endpointForObject:v_value] _removeReferrer:self];
-                    if (retains) [v_value autorelease];
+                    if (retains) v_value;
                 }
               if ((v_value=v)) {
                     if (![[self endpointForObject:v] _addReferrer:self]) {
@@ -6661,17 +6661,17 @@ static Model *_Model_default=nil;
 @synthesize otherEndObjectToEndpoint=otherEndObjectToEndpoint;
 @synthesize owner=v_owner;
 @synthesize retains=retains;
-+(EndpointA*)array {  return([[[EndpointA alloc] init] autorelease]);}
-+(EndpointA*)arrayWithArray:(NSArray*)array {  return([[[EndpointA alloc] initWithArray:array] autorelease]);}
-+(EndpointA*)arrayWithContentsOfFile:(NSString*)file {  return([[[EndpointA alloc] initWithContentsOfFile:file] autorelease]);}
-+(EndpointA*)arrayWithContentsOfURL:(NSURL*)url {  return([[[EndpointA alloc] initWithContentsOfURL:url] autorelease]);}
-+(EndpointA*)arrayWithObject:(id)object {  return([[[EndpointA alloc] initWithObjects:&object count:1] autorelease]);}
-+(EndpointA*)arrayWithObjects:(id*)objects count:(NSUInteger)count {  return([[[EndpointA alloc] initWithObjects:objects count:count] autorelease]);}
++(EndpointA*)array {  return([[EndpointA alloc] init]);}
++(EndpointA*)arrayWithArray:(NSArray*)array {  return([[EndpointA alloc] initWithArray:array]);}
++(EndpointA*)arrayWithContentsOfFile:(NSString*)file {  return([[EndpointA alloc] initWithContentsOfFile:file]);}
++(EndpointA*)arrayWithContentsOfURL:(NSURL*)url {  return([[EndpointA alloc] initWithContentsOfURL:url]);}
++(EndpointA*)arrayWithObject:(id)object {  return([[EndpointA alloc] initWithObjects:&object count:1]);}
++(EndpointA*)arrayWithObjects:(id*)objects count:(NSUInteger)count {  return([[EndpointA alloc] initWithObjects:objects count:count]);}
 +(EndpointA*)endpointWithOwner:(id)aowner retains:(bool)aretains acceptableSel:(SEL)aacceptableSel otherEndObjectToEndpoint:(SEL)aotherEndObjectToEndpoint {
-          return((EndpointA*)[[[EndpointA alloc] initWithOwner:aowner retains:aretains acceptableSel:aacceptableSel otherEndObjectToEndpoint:aotherEndObjectToEndpoint] autorelease]);
+          return((EndpointA*)[[EndpointA alloc] initWithOwner:aowner retains:aretains acceptableSel:aacceptableSel otherEndObjectToEndpoint:aotherEndObjectToEndpoint]);
     }
 +(id)arrayWithCapacity:(NSUInteger)numItems {
-          return([[[EndpointA alloc] initWithCapacity:numItems] autorelease]);
+          return([[EndpointA alloc] initWithCapacity:numItems]);
     }
 -(bool)_addReferrer:(NSObject<LinkEndpoint>*)ep {
           id v=ep.owner;
@@ -6688,7 +6688,7 @@ static Model *_Model_default=nil;
     }
 -(bool)passFail:(bool)pass format:(NSString*)format,... {
           va_list args;va_start(args,format);
-          NSString *s=[[[NSString alloc] initWithFormat:format arguments:args] autorelease];
+          NSString *s=[[NSString alloc] initWithFormat:format arguments:args];
           if (pass) printf("pass: %s\n",s.UTF8String);
           else {
                 printf("!!FAIL: %s\n",s.UTF8String);
@@ -7217,7 +7217,7 @@ static Model *_Model_default=nil;
           [subArray release];
           if (!__changed) return;
           if (r.location) {
-                NSMutableIndexSet *indexes=[dels.mutableCopy autorelease];
+                NSMutableIndexSet *indexes=dels.mutableCopy;
                 [indexes shiftIndexesStartingAtIndex:0 by:r.location];
                 dels=indexes;
             }
@@ -7239,7 +7239,7 @@ static Model *_Model_default=nil;
           [asubArray release];
           if (!__changed) return;
           if (r.location) {
-                NSMutableIndexSet *indexes=[dels.mutableCopy autorelease];
+                NSMutableIndexSet *indexes=dels.mutableCopy;
                 [indexes shiftIndexesStartingAtIndex:0 by:r.location];
                 dels=indexes;
             }
@@ -7326,17 +7326,17 @@ static Model *_Model_default=nil;
 @synthesize otherEndObjectToEndpoint=otherEndObjectToEndpoint;
 @synthesize owner=v_owner;
 @synthesize retains=retains;
-+(EndpointA_tracker*)array {  return([[[EndpointA_tracker alloc] init] autorelease]);}
-+(EndpointA_tracker*)arrayWithArray:(NSArray*)array {  return([[[EndpointA_tracker alloc] initWithArray:array] autorelease]);}
-+(EndpointA_tracker*)arrayWithContentsOfFile:(NSString*)file {  return([[[EndpointA_tracker alloc] initWithContentsOfFile:file] autorelease]);}
-+(EndpointA_tracker*)arrayWithContentsOfURL:(NSURL*)url {  return([[[EndpointA_tracker alloc] initWithContentsOfURL:url] autorelease]);}
-+(EndpointA_tracker*)arrayWithObject:(id)object {  return([[[EndpointA_tracker alloc] initWithObjects:&object count:1] autorelease]);}
-+(EndpointA_tracker*)arrayWithObjects:(id*)objects count:(NSUInteger)count {  return([[[EndpointA_tracker alloc] initWithObjects:objects count:count] autorelease]);}
++(EndpointA_tracker*)array {  return([[EndpointA_tracker alloc] init]);}
++(EndpointA_tracker*)arrayWithArray:(NSArray*)array {  return([[EndpointA_tracker alloc] initWithArray:array]);}
++(EndpointA_tracker*)arrayWithContentsOfFile:(NSString*)file {  return([[EndpointA_tracker alloc] initWithContentsOfFile:file]);}
++(EndpointA_tracker*)arrayWithContentsOfURL:(NSURL*)url {  return([[EndpointA_tracker alloc] initWithContentsOfURL:url]);}
++(EndpointA_tracker*)arrayWithObject:(id)object {  return([[EndpointA_tracker alloc] initWithObjects:&object count:1]);}
++(EndpointA_tracker*)arrayWithObjects:(id*)objects count:(NSUInteger)count {  return([[EndpointA_tracker alloc] initWithObjects:objects count:count]);}
 +(EndpointA_tracker*)endpointWithOwner:(id)aowner retains:(bool)aretains acceptableSel:(SEL)aacceptableSel otherEndObjectToEndpoint:(SEL)aotherEndObjectToEndpoint {
-          return((EndpointA_tracker*)[[[EndpointA_tracker alloc] initWithOwner:aowner retains:aretains acceptableSel:aacceptableSel otherEndObjectToEndpoint:aotherEndObjectToEndpoint] autorelease]);
+          return((EndpointA_tracker*)[[EndpointA_tracker alloc] initWithOwner:aowner retains:aretains acceptableSel:aacceptableSel otherEndObjectToEndpoint:aotherEndObjectToEndpoint]);
     }
 +(id)arrayWithCapacity:(NSUInteger)numItems {
-          return([[[EndpointA_tracker alloc] initWithCapacity:numItems] autorelease]);
+          return([[EndpointA_tracker alloc] initWithCapacity:numItems]);
     }
 -(bool)_addReferrer:(NSObject<LinkEndpoint>*)ep {
           id v=ep.owner;
@@ -7353,7 +7353,7 @@ static Model *_Model_default=nil;
     }
 -(bool)passFail:(bool)pass format:(NSString*)format,... {
           va_list args;va_start(args,format);
-          NSString *s=[[[NSString alloc] initWithFormat:format arguments:args] autorelease];
+          NSString *s=[[NSString alloc] initWithFormat:format arguments:args];
           if (pass) printf("pass: %s\n",s.UTF8String);
           else {
                 printf("!!FAIL: %s\n",s.UTF8String);
@@ -7394,7 +7394,7 @@ static Model *_Model_default=nil;
   @-500 self.__restrictRef=NO;
   self.__arrayObjectIndexes=[NSMutableDictionary dictionary];
   self.errs=[NSMutableString string];
-  self.indexToIndexMap=[[[IndexToIndexMap alloc] init] autorelease];
+  self.indexToIndexMap=[[IndexToIndexMap alloc] init];
   self.mappingIsValid=1;
   self.deletedObjectMap=[NSMutableDictionary dictionary];
   
@@ -7806,17 +7806,17 @@ static Model *_Model_default=nil;
 @synthesize otherEndObjectToEndpoint=otherEndObjectToEndpoint;
 @synthesize owner=v_owner;
 @synthesize retains=retains;
-+(EndpointD*)dictionary {  return([[[EndpointD alloc] init] autorelease]);}
-+(EndpointD*)dictionaryWithContentsOfFile:(NSString*)file {  return([[[EndpointD alloc] initWithContentsOfFile:file] autorelease]);}
-+(EndpointD*)dictionaryWithContentsOfURL:(NSURL*)url {  return([[[EndpointD alloc] initWithContentsOfURL:url] autorelease]);}
-+(EndpointD*)dictionaryWithDictionary:(NSDictionary*)dictionary {  return([[[EndpointD alloc] initWithDictionary:dictionary] autorelease]);}
-+(EndpointD*)dictionaryWithObject:(id)object forKey:(id<NSCopying>)key {  return([[[EndpointD alloc] initWithObjects:&object forKeys:&key count:1] autorelease]);}
-+(EndpointD*)dictionaryWithObjects:(id[])objects forKeys:(id<NSCopying>[])keys count:(NSUInteger)count {  return([[[EndpointD alloc] initWithObjects:objects forKeys:keys count:count] autorelease]);}
++(EndpointD*)dictionary {  return([[EndpointD alloc] init]);}
++(EndpointD*)dictionaryWithContentsOfFile:(NSString*)file {  return([[EndpointD alloc] initWithContentsOfFile:file]);}
++(EndpointD*)dictionaryWithContentsOfURL:(NSURL*)url {  return([[EndpointD alloc] initWithContentsOfURL:url]);}
++(EndpointD*)dictionaryWithDictionary:(NSDictionary*)dictionary {  return([[EndpointD alloc] initWithDictionary:dictionary]);}
++(EndpointD*)dictionaryWithObject:(id)object forKey:(id<NSCopying>)key {  return([[EndpointD alloc] initWithObjects:&object forKeys:&key count:1]);}
++(EndpointD*)dictionaryWithObjects:(id[])objects forKeys:(id<NSCopying>[])keys count:(NSUInteger)count {  return([[EndpointD alloc] initWithObjects:objects forKeys:keys count:count]);}
 +(EndpointD*)endpointWithOwner:(id)aowner retains:(bool)aretains acceptableSel:(SEL)aacceptableSel otherEndObjectToEndpoint:(SEL)aotherEndObjectToEndpoint {
-          return((EndpointD*)[[[EndpointD alloc] initWithOwner:aowner retains:aretains acceptableSel:aacceptableSel otherEndObjectToEndpoint:aotherEndObjectToEndpoint] autorelease]);
+          return((EndpointD*)[[EndpointD alloc] initWithOwner:aowner retains:aretains acceptableSel:aacceptableSel otherEndObjectToEndpoint:aotherEndObjectToEndpoint]);
     }
 +(id)dictionaryWithCapacity:(NSUInteger)numItems {
-          return([[[EndpointD alloc] initWithCapacity:numItems] autorelease]);
+          return([[EndpointD alloc] initWithCapacity:numItems]);
     }
 -(bool)_addReferrer:(NSObject<LinkEndpoint>*)ep {
           id v=ep.owner;
@@ -7833,7 +7833,7 @@ static Model *_Model_default=nil;
 -(BOOL)isEqualToDictionary:(NSDictionary*)dictionary {  return([__dictionary isEqualToDictionary:dictionary]);}
 -(bool)passFail:(bool)pass format:(NSString*)format,... {
           va_list args;va_start(args,format);
-          NSString *s=[[[NSString alloc] initWithFormat:format arguments:args] autorelease];
+          NSString *s=[[NSString alloc] initWithFormat:format arguments:args];
           if (pass) printf("pass: %s\n",s.UTF8String);
           else {
                 printf("!!FAIL: %s\n",s.UTF8String);
@@ -8155,17 +8155,17 @@ static Model *_Model_default=nil;
 @synthesize otherEndObjectToEndpoint=otherEndObjectToEndpoint;
 @synthesize owner=v_owner;
 @synthesize retains=retains;
-+(EndpointD_tracker*)dictionary {  return([[[EndpointD_tracker alloc] init] autorelease]);}
-+(EndpointD_tracker*)dictionaryWithContentsOfFile:(NSString*)file {  return([[[EndpointD_tracker alloc] initWithContentsOfFile:file] autorelease]);}
-+(EndpointD_tracker*)dictionaryWithContentsOfURL:(NSURL*)url {  return([[[EndpointD_tracker alloc] initWithContentsOfURL:url] autorelease]);}
-+(EndpointD_tracker*)dictionaryWithDictionary:(NSDictionary*)dictionary {  return([[[EndpointD_tracker alloc] initWithDictionary:dictionary] autorelease]);}
-+(EndpointD_tracker*)dictionaryWithObject:(id)object forKey:(id<NSCopying>)key {  return([[[EndpointD_tracker alloc] initWithObjects:&object forKeys:&key count:1] autorelease]);}
-+(EndpointD_tracker*)dictionaryWithObjects:(id[])objects forKeys:(id<NSCopying>[])keys count:(NSUInteger)count {  return([[[EndpointD_tracker alloc] initWithObjects:objects forKeys:keys count:count] autorelease]);}
++(EndpointD_tracker*)dictionary {  return([[EndpointD_tracker alloc] init]);}
++(EndpointD_tracker*)dictionaryWithContentsOfFile:(NSString*)file {  return([[EndpointD_tracker alloc] initWithContentsOfFile:file]);}
++(EndpointD_tracker*)dictionaryWithContentsOfURL:(NSURL*)url {  return([[EndpointD_tracker alloc] initWithContentsOfURL:url]);}
++(EndpointD_tracker*)dictionaryWithDictionary:(NSDictionary*)dictionary {  return([[EndpointD_tracker alloc] initWithDictionary:dictionary]);}
++(EndpointD_tracker*)dictionaryWithObject:(id)object forKey:(id<NSCopying>)key {  return([[EndpointD_tracker alloc] initWithObjects:&object forKeys:&key count:1]);}
++(EndpointD_tracker*)dictionaryWithObjects:(id[])objects forKeys:(id<NSCopying>[])keys count:(NSUInteger)count {  return([[EndpointD_tracker alloc] initWithObjects:objects forKeys:keys count:count]);}
 +(EndpointD_tracker*)endpointWithOwner:(id)aowner retains:(bool)aretains acceptableSel:(SEL)aacceptableSel otherEndObjectToEndpoint:(SEL)aotherEndObjectToEndpoint {
-          return((EndpointD_tracker*)[[[EndpointD_tracker alloc] initWithOwner:aowner retains:aretains acceptableSel:aacceptableSel otherEndObjectToEndpoint:aotherEndObjectToEndpoint] autorelease]);
+          return((EndpointD_tracker*)[[EndpointD_tracker alloc] initWithOwner:aowner retains:aretains acceptableSel:aacceptableSel otherEndObjectToEndpoint:aotherEndObjectToEndpoint]);
     }
 +(id)dictionaryWithCapacity:(NSUInteger)numItems {
-          return([[[EndpointD_tracker alloc] initWithCapacity:numItems] autorelease]);
+          return([[EndpointD_tracker alloc] initWithCapacity:numItems]);
     }
 -(bool)_addReferrer:(NSObject<LinkEndpoint>*)ep {
           id v=ep.owner;
@@ -8182,7 +8182,7 @@ static Model *_Model_default=nil;
 -(BOOL)isEqualToDictionary:(NSDictionary*)dictionary {  return([__dictionary isEqualToDictionary:dictionary]);}
 -(bool)passFail:(bool)pass format:(NSString*)format,... {
           va_list args;va_start(args,format);
-          NSString *s=[[[NSString alloc] initWithFormat:format arguments:args] autorelease];
+          NSString *s=[[NSString alloc] initWithFormat:format arguments:args];
           if (pass) printf("pass: %s\n",s.UTF8String);
           else {
                 printf("!!FAIL: %s\n",s.UTF8String);
@@ -8508,15 +8508,15 @@ static Model *_Model_default=nil;
 @synthesize otherEndObjectToEndpoint=otherEndObjectToEndpoint;
 @synthesize owner=v_owner;
 @synthesize retains=retains;
-+(EndpointS*)set {  return([[[EndpointS alloc] init] autorelease]);}
-+(EndpointS*)setWithArray:(NSArray*)array {  return([[[EndpointS alloc] initWithArray:array] autorelease]);}
-+(EndpointS*)setWithObject:(id)object {  return([[[EndpointS alloc] initWithObjects:&object count:1] autorelease]);}
-+(EndpointS*)setWithSet:(NSSet*)set {  return([[[EndpointS alloc] initWithSet:set] autorelease]);}
++(EndpointS*)set {  return([[EndpointS alloc] init]);}
++(EndpointS*)setWithArray:(NSArray*)array {  return([[EndpointS alloc] initWithArray:array]);}
++(EndpointS*)setWithObject:(id)object {  return([[EndpointS alloc] initWithObjects:&object count:1]);}
++(EndpointS*)setWithSet:(NSSet*)set {  return([[EndpointS alloc] initWithSet:set]);}
 +(EndpointS*)endpointWithOwner:(id)aowner retains:(bool)aretains acceptableSel:(SEL)aacceptableSel otherEndObjectToEndpoint:(SEL)aotherEndObjectToEndpoint {
-          return((EndpointS*)[[[EndpointS alloc] initWithOwner:aowner retains:aretains acceptableSel:aacceptableSel otherEndObjectToEndpoint:aotherEndObjectToEndpoint] autorelease]);
+          return((EndpointS*)[[EndpointS alloc] initWithOwner:aowner retains:aretains acceptableSel:aacceptableSel otherEndObjectToEndpoint:aotherEndObjectToEndpoint]);
     }
 +(id)setWithCapacity:(NSUInteger)numItems {
-          return([[[EndpointS alloc] initWithCapacity:numItems] autorelease]);
+          return([[EndpointS alloc] initWithCapacity:numItems]);
     }
 -(bool)_addReferrer:(NSObject<LinkEndpoint>*)ep {
           id v=ep.owner;
@@ -8759,15 +8759,15 @@ static Model *_Model_default=nil;
 @synthesize otherEndObjectToEndpoint=otherEndObjectToEndpoint;
 @synthesize owner=v_owner;
 @synthesize retains=retains;
-+(EndpointS_tracker*)set {  return([[[EndpointS_tracker alloc] init] autorelease]);}
-+(EndpointS_tracker*)setWithArray:(NSArray*)array {  return([[[EndpointS_tracker alloc] initWithArray:array] autorelease]);}
-+(EndpointS_tracker*)setWithObject:(id)object {  return([[[EndpointS_tracker alloc] initWithObjects:&object count:1] autorelease]);}
-+(EndpointS_tracker*)setWithSet:(NSSet*)set {  return([[[EndpointS_tracker alloc] initWithSet:set] autorelease]);}
++(EndpointS_tracker*)set {  return([[EndpointS_tracker alloc] init]);}
++(EndpointS_tracker*)setWithArray:(NSArray*)array {  return([[EndpointS_tracker alloc] initWithArray:array]);}
++(EndpointS_tracker*)setWithObject:(id)object {  return([[EndpointS_tracker alloc] initWithObjects:&object count:1]);}
++(EndpointS_tracker*)setWithSet:(NSSet*)set {  return([[EndpointS_tracker alloc] initWithSet:set]);}
 +(EndpointS_tracker*)endpointWithOwner:(id)aowner retains:(bool)aretains acceptableSel:(SEL)aacceptableSel otherEndObjectToEndpoint:(SEL)aotherEndObjectToEndpoint {
-          return((EndpointS_tracker*)[[[EndpointS_tracker alloc] initWithOwner:aowner retains:aretains acceptableSel:aacceptableSel otherEndObjectToEndpoint:aotherEndObjectToEndpoint] autorelease]);
+          return((EndpointS_tracker*)[[EndpointS_tracker alloc] initWithOwner:aowner retains:aretains acceptableSel:aacceptableSel otherEndObjectToEndpoint:aotherEndObjectToEndpoint]);
     }
 +(id)setWithCapacity:(NSUInteger)numItems {
-          return([[[EndpointS_tracker alloc] initWithCapacity:numItems] autorelease]);
+          return([[EndpointS_tracker alloc] initWithCapacity:numItems]);
     }
 -(bool)_addReferrer:(NSObject<LinkEndpoint>*)ep {
           id v=ep.owner;
@@ -9180,7 +9180,7 @@ static Model *_Model_default=nil;
 
 @synthesize intValue=intValue;
 +(IntCarrier*)carrierWithInt:(int)v {
-          return([[[IntCarrier alloc] initWithInt:v] autorelease]);
+          return([[IntCarrier alloc] initWithInt:v]);
     }
 -(IntCarrier*)_startObjectOfClassIntCarrier {
           
@@ -9249,11 +9249,11 @@ static Model *_Model_default=nil;
 @synthesize makerID=makerID;
 @synthesize objectID=objectID;
 @synthesize parent_for_commit_endpoint=v_parent_for_commit_endpoint;
-+(Model*)get {  return([[[Model alloc] init] autorelease]);}
++(Model*)get {  return([[Model alloc] init]);}
 +(Model*)getWithDictionary:(NSDictionary*)d {
           NSObject<BaseObject> *o=[[ObjectRegistry getDefault].allObjects objectForKey:d];
           if (o) return([o isKindOfClass:[Model class]]?(Model*)o:nil);
-          return([[[Model alloc] initWithDictionary:d] autorelease]);
+          return([[Model alloc] initWithDictionary:d]);
     }
 +(bool)commit {  return([[Model getDefault] _commit]);}
 +(Class)classFromName:(NSString*)className {  
@@ -9278,33 +9278,33 @@ static Model *_Model_default=nil;
                 [o isKindOfClass:[NSNumber class]]||
                 [o isKindOfClass:[NSIndexSet class]]||
                 [o isKindOfClass:[NSData class]]
-            ) return([o.copy autorelease]);
+            ) return(o.copy);
           else if ([o isKindOfClass:[NSArray class]]) {
                 NSMutableArray *ret=[NSMutableArray arrayWithCapacity:((NSArray*)o).count];
                 for (NSObject *o2 in (NSArray*)o) {
                       [ret addObject:[Model representationOfObject:o2]];
                   }
-                return([ret.copy autorelease]);
+                return(ret.copy);
             }
           else if ([o isKindOfClass:[NSSet class]]) {
                 NSMutableSet *ret=[NSMutableSet setWithCapacity:((NSSet*)o).count];
                 for (NSObject *o2 in (NSSet*)o) {
                       [ret addObject:[Model representationOfObject:o2]];
                   }
-                return([ret.copy autorelease]);
+                return(ret.copy);
             }
           else if ([o isKindOfClass:[NSDictionary class]]) {
                 NSMutableDictionary *ret=[NSMutableDictionary dictionaryWithCapacity:((NSDictionary*)o).count];
                 for (NSObject *k2 in ((NSDictionary*)o).allKeys) {
                       [ret setObject:[Model representationOfObject:[(NSDictionary*)o objectForKey:k2]] forKey:[Model representationOfObject:k2]];
                   }
-                return([ret.copy autorelease]);
+                return(ret.copy);
             }
           else return([NSNull null]);
     }
 +(Model*)getDefault {
           if (!_Model_default) {
-                ADDSINGLETON(_Model_default=[[[Model alloc] init] autorelease]);
+                ADDSINGLETON(_Model_default=[[Model alloc] init]);
             }
           return(_Model_default);
     }
@@ -9434,14 +9434,14 @@ static Model *_Model_default=nil;
 @synthesize __array=__array;
 @synthesize __mutableArray=__mutableArray;
 @synthesize arrayDelegate=arrayDelegate;
-+(MutableArray*)array {  return([[[MutableArray alloc] init] autorelease]);}
-+(MutableArray*)arrayWithArray:(NSArray*)array {  return([[[MutableArray alloc] initWithArray:array] autorelease]);}
-+(MutableArray*)arrayWithContentsOfFile:(NSString*)file {  return([[[MutableArray alloc] initWithContentsOfFile:file] autorelease]);}
-+(MutableArray*)arrayWithContentsOfURL:(NSURL*)url {  return([[[MutableArray alloc] initWithContentsOfURL:url] autorelease]);}
-+(MutableArray*)arrayWithObject:(id)object {  return([[[MutableArray alloc] initWithObjects:&object count:1] autorelease]);}
-+(MutableArray*)arrayWithObjects:(id*)objects count:(NSUInteger)count {  return([[[MutableArray alloc] initWithObjects:objects count:count] autorelease]);}
++(MutableArray*)array {  return([[MutableArray alloc] init]);}
++(MutableArray*)arrayWithArray:(NSArray*)array {  return([[MutableArray alloc] initWithArray:array]);}
++(MutableArray*)arrayWithContentsOfFile:(NSString*)file {  return([[MutableArray alloc] initWithContentsOfFile:file]);}
++(MutableArray*)arrayWithContentsOfURL:(NSURL*)url {  return([[MutableArray alloc] initWithContentsOfURL:url]);}
++(MutableArray*)arrayWithObject:(id)object {  return([[MutableArray alloc] initWithObjects:&object count:1]);}
++(MutableArray*)arrayWithObjects:(id*)objects count:(NSUInteger)count {  return([[MutableArray alloc] initWithObjects:objects count:count]);}
 +(id)arrayWithCapacity:(NSUInteger)numItems {
-          return([[[MutableArray alloc] initWithCapacity:numItems] autorelease]);
+          return([[MutableArray alloc] initWithCapacity:numItems]);
     }
 -(BOOL)containsObject:(id)object {  return([__array containsObject:object]);}
 -(BOOL)isEqualToArray:(NSArray*)array {
@@ -9902,7 +9902,7 @@ static Model *_Model_default=nil;
           [subArray release];
           if (!__changed) return;
           if (r.location) {
-                NSMutableIndexSet *indexes=[dels.mutableCopy autorelease];
+                NSMutableIndexSet *indexes=dels.mutableCopy;
                 [indexes shiftIndexesStartingAtIndex:0 by:r.location];
                 dels=indexes;
             }
@@ -9924,7 +9924,7 @@ static Model *_Model_default=nil;
           [asubArray release];
           if (!__changed) return;
           if (r.location) {
-                NSMutableIndexSet *indexes=[dels.mutableCopy autorelease];
+                NSMutableIndexSet *indexes=dels.mutableCopy;
                 [indexes shiftIndexesStartingAtIndex:0 by:r.location];
                 dels=indexes;
             }
@@ -10001,14 +10001,14 @@ static Model *_Model_default=nil;
 @synthesize __mutableArray=__mutableArray;
 @synthesize __removingFromMirrorArray=__removingFromMirrorArray;
 @synthesize errs=v_errs;
-+(MutableArrayMirrorTesterImpl*)array {  return([[[MutableArrayMirrorTesterImpl alloc] init] autorelease]);}
-+(MutableArrayMirrorTesterImpl*)arrayWithArray:(NSArray*)array {  return([[[MutableArrayMirrorTesterImpl alloc] initWithArray:array] autorelease]);}
-+(MutableArrayMirrorTesterImpl*)arrayWithContentsOfFile:(NSString*)file {  return([[[MutableArrayMirrorTesterImpl alloc] initWithContentsOfFile:file] autorelease]);}
-+(MutableArrayMirrorTesterImpl*)arrayWithContentsOfURL:(NSURL*)url {  return([[[MutableArrayMirrorTesterImpl alloc] initWithContentsOfURL:url] autorelease]);}
-+(MutableArrayMirrorTesterImpl*)arrayWithObject:(id)object {  return([[[MutableArrayMirrorTesterImpl alloc] initWithObjects:&object count:1] autorelease]);}
-+(MutableArrayMirrorTesterImpl*)arrayWithObjects:(id*)objects count:(NSUInteger)count {  return([[[MutableArrayMirrorTesterImpl alloc] initWithObjects:objects count:count] autorelease]);}
++(MutableArrayMirrorTesterImpl*)array {  return([[MutableArrayMirrorTesterImpl alloc] init]);}
++(MutableArrayMirrorTesterImpl*)arrayWithArray:(NSArray*)array {  return([[MutableArrayMirrorTesterImpl alloc] initWithArray:array]);}
++(MutableArrayMirrorTesterImpl*)arrayWithContentsOfFile:(NSString*)file {  return([[MutableArrayMirrorTesterImpl alloc] initWithContentsOfFile:file]);}
++(MutableArrayMirrorTesterImpl*)arrayWithContentsOfURL:(NSURL*)url {  return([[MutableArrayMirrorTesterImpl alloc] initWithContentsOfURL:url]);}
++(MutableArrayMirrorTesterImpl*)arrayWithObject:(id)object {  return([[MutableArrayMirrorTesterImpl alloc] initWithObjects:&object count:1]);}
++(MutableArrayMirrorTesterImpl*)arrayWithObjects:(id*)objects count:(NSUInteger)count {  return([[MutableArrayMirrorTesterImpl alloc] initWithObjects:objects count:count]);}
 +(id)arrayWithCapacity:(NSUInteger)numItems {
-          return([[[MutableArrayMirrorTesterImpl alloc] initWithCapacity:numItems] autorelease]);
+          return([[MutableArrayMirrorTesterImpl alloc] initWithCapacity:numItems]);
     }
 -(BOOL)containsObject:(id)object {  return([__array containsObject:object]);}
 -(BOOL)isEqualToArray:(NSArray*)array {
@@ -10016,7 +10016,7 @@ static Model *_Model_default=nil;
     }
 -(bool)passFail:(bool)pass format:(NSString*)format,... {
           va_list args;va_start(args,format);
-          NSString *s=[[[NSString alloc] initWithFormat:format arguments:args] autorelease];
+          NSString *s=[[NSString alloc] initWithFormat:format arguments:args];
           if (pass) printf("pass: %s\n",s.UTF8String);
           else {
                 printf("!!FAIL: %s\n",s.UTF8String);
@@ -10544,7 +10544,7 @@ static Model *_Model_default=nil;
           [subArray release];
           if (!__changed) return;
           if (r.location) {
-                NSMutableIndexSet *indexes=[dels.mutableCopy autorelease];
+                NSMutableIndexSet *indexes=dels.mutableCopy;
                 [indexes shiftIndexesStartingAtIndex:0 by:r.location];
                 dels=indexes;
             }
@@ -10566,7 +10566,7 @@ static Model *_Model_default=nil;
           [asubArray release];
           if (!__changed) return;
           if (r.location) {
-                NSMutableIndexSet *indexes=[dels.mutableCopy autorelease];
+                NSMutableIndexSet *indexes=dels.mutableCopy;
                 [indexes shiftIndexesStartingAtIndex:0 by:r.location];
                 dels=indexes;
             }
@@ -10661,14 +10661,14 @@ static Model *_Model_default=nil;
 @synthesize __dictionary=__dictionary;
 @synthesize __mutableDictionary=__mutableDictionary;
 @synthesize dictionaryDelegate=dictionaryDelegate;
-+(MutableDictionary*)dictionary {  return([[[MutableDictionary alloc] init] autorelease]);}
-+(MutableDictionary*)dictionaryWithContentsOfFile:(NSString*)file {  return([[[MutableDictionary alloc] initWithContentsOfFile:file] autorelease]);}
-+(MutableDictionary*)dictionaryWithContentsOfURL:(NSURL*)url {  return([[[MutableDictionary alloc] initWithContentsOfURL:url] autorelease]);}
-+(MutableDictionary*)dictionaryWithDictionary:(NSDictionary*)dictionary {  return([[[MutableDictionary alloc] initWithDictionary:dictionary] autorelease]);}
-+(MutableDictionary*)dictionaryWithObject:(id)object forKey:(id<NSCopying>)key {  return([[[MutableDictionary alloc] initWithObjects:&object forKeys:&key count:1] autorelease]);}
-+(MutableDictionary*)dictionaryWithObjects:(id[])objects forKeys:(id<NSCopying>[])keys count:(NSUInteger)count {  return([[[MutableDictionary alloc] initWithObjects:objects forKeys:keys count:count] autorelease]);}
++(MutableDictionary*)dictionary {  return([[MutableDictionary alloc] init]);}
++(MutableDictionary*)dictionaryWithContentsOfFile:(NSString*)file {  return([[MutableDictionary alloc] initWithContentsOfFile:file]);}
++(MutableDictionary*)dictionaryWithContentsOfURL:(NSURL*)url {  return([[MutableDictionary alloc] initWithContentsOfURL:url]);}
++(MutableDictionary*)dictionaryWithDictionary:(NSDictionary*)dictionary {  return([[MutableDictionary alloc] initWithDictionary:dictionary]);}
++(MutableDictionary*)dictionaryWithObject:(id)object forKey:(id<NSCopying>)key {  return([[MutableDictionary alloc] initWithObjects:&object forKeys:&key count:1]);}
++(MutableDictionary*)dictionaryWithObjects:(id[])objects forKeys:(id<NSCopying>[])keys count:(NSUInteger)count {  return([[MutableDictionary alloc] initWithObjects:objects forKeys:keys count:count]);}
 +(id)dictionaryWithCapacity:(NSUInteger)numItems {
-          return([[[MutableDictionary alloc] initWithCapacity:numItems] autorelease]);
+          return([[MutableDictionary alloc] initWithCapacity:numItems]);
     }
 -(BOOL)fileExtensionHidden {  return([__dictionary fileExtensionHidden]);}
 -(BOOL)fileIsAppendOnly {  return([__dictionary fileIsAppendOnly]);}
@@ -10940,14 +10940,14 @@ static Model *_Model_default=nil;
 @synthesize __mutableDictionary=__mutableDictionary;
 @synthesize __removingFromMirrorDictionary=__removingFromMirrorDictionary;
 @synthesize errs=v_errs;
-+(MutableDictionaryMirrorTesterImpl*)dictionary {  return([[[MutableDictionaryMirrorTesterImpl alloc] init] autorelease]);}
-+(MutableDictionaryMirrorTesterImpl*)dictionaryWithContentsOfFile:(NSString*)file {  return([[[MutableDictionaryMirrorTesterImpl alloc] initWithContentsOfFile:file] autorelease]);}
-+(MutableDictionaryMirrorTesterImpl*)dictionaryWithContentsOfURL:(NSURL*)url {  return([[[MutableDictionaryMirrorTesterImpl alloc] initWithContentsOfURL:url] autorelease]);}
-+(MutableDictionaryMirrorTesterImpl*)dictionaryWithDictionary:(NSDictionary*)dictionary {  return([[[MutableDictionaryMirrorTesterImpl alloc] initWithDictionary:dictionary] autorelease]);}
-+(MutableDictionaryMirrorTesterImpl*)dictionaryWithObject:(id)object forKey:(id<NSCopying>)key {  return([[[MutableDictionaryMirrorTesterImpl alloc] initWithObjects:&object forKeys:&key count:1] autorelease]);}
-+(MutableDictionaryMirrorTesterImpl*)dictionaryWithObjects:(id[])objects forKeys:(id<NSCopying>[])keys count:(NSUInteger)count {  return([[[MutableDictionaryMirrorTesterImpl alloc] initWithObjects:objects forKeys:keys count:count] autorelease]);}
++(MutableDictionaryMirrorTesterImpl*)dictionary {  return([[MutableDictionaryMirrorTesterImpl alloc] init]);}
++(MutableDictionaryMirrorTesterImpl*)dictionaryWithContentsOfFile:(NSString*)file {  return([[MutableDictionaryMirrorTesterImpl alloc] initWithContentsOfFile:file]);}
++(MutableDictionaryMirrorTesterImpl*)dictionaryWithContentsOfURL:(NSURL*)url {  return([[MutableDictionaryMirrorTesterImpl alloc] initWithContentsOfURL:url]);}
++(MutableDictionaryMirrorTesterImpl*)dictionaryWithDictionary:(NSDictionary*)dictionary {  return([[MutableDictionaryMirrorTesterImpl alloc] initWithDictionary:dictionary]);}
++(MutableDictionaryMirrorTesterImpl*)dictionaryWithObject:(id)object forKey:(id<NSCopying>)key {  return([[MutableDictionaryMirrorTesterImpl alloc] initWithObjects:&object forKeys:&key count:1]);}
++(MutableDictionaryMirrorTesterImpl*)dictionaryWithObjects:(id[])objects forKeys:(id<NSCopying>[])keys count:(NSUInteger)count {  return([[MutableDictionaryMirrorTesterImpl alloc] initWithObjects:objects forKeys:keys count:count]);}
 +(id)dictionaryWithCapacity:(NSUInteger)numItems {
-          return([[[MutableDictionaryMirrorTesterImpl alloc] initWithCapacity:numItems] autorelease]);
+          return([[MutableDictionaryMirrorTesterImpl alloc] initWithCapacity:numItems]);
     }
 -(BOOL)fileExtensionHidden {  return([__dictionary fileExtensionHidden]);}
 -(BOOL)fileIsAppendOnly {  return([__dictionary fileIsAppendOnly]);}
@@ -10955,7 +10955,7 @@ static Model *_Model_default=nil;
 -(BOOL)isEqualToDictionary:(NSDictionary*)dictionary {  return([__dictionary isEqualToDictionary:dictionary]);}
 -(bool)passFail:(bool)pass format:(NSString*)format,... {
           va_list args;va_start(args,format);
-          NSString *s=[[[NSString alloc] initWithFormat:format arguments:args] autorelease];
+          NSString *s=[[NSString alloc] initWithFormat:format arguments:args];
           if (pass) printf("pass: %s\n",s.UTF8String);
           else {
                 printf("!!FAIL: %s\n",s.UTF8String);
@@ -11284,12 +11284,12 @@ static Model *_Model_default=nil;
 @synthesize __mutableSet=__mutableSet;
 @synthesize __set=__set;
 @synthesize setDelegate=setDelegate;
-+(MutableSet*)set {  return([[[MutableSet alloc] init] autorelease]);}
-+(MutableSet*)setWithArray:(NSArray*)array {  return([[[MutableSet alloc] initWithArray:array] autorelease]);}
-+(MutableSet*)setWithObject:(id)object {  return([[[MutableSet alloc] initWithObjects:&object count:1] autorelease]);}
-+(MutableSet*)setWithSet:(NSSet*)set {  return([[[MutableSet alloc] initWithSet:set] autorelease]);}
++(MutableSet*)set {  return([[MutableSet alloc] init]);}
++(MutableSet*)setWithArray:(NSArray*)array {  return([[MutableSet alloc] initWithArray:array]);}
++(MutableSet*)setWithObject:(id)object {  return([[MutableSet alloc] initWithObjects:&object count:1]);}
++(MutableSet*)setWithSet:(NSSet*)set {  return([[MutableSet alloc] initWithSet:set]);}
 +(id)setWithCapacity:(NSUInteger)numItems {
-          return([[[MutableSet alloc] initWithCapacity:numItems] autorelease]);
+          return([[MutableSet alloc] initWithCapacity:numItems]);
     }
 -(BOOL)containsObject:(id)object {  return([__set containsObject:object]);}
 -(BOOL)intersectsSet:(NSSet*)set {  return([__set intersectsSet:set]);}
@@ -11497,12 +11497,12 @@ static Model *_Model_default=nil;
 @synthesize __removingFromMirrorSet=__removingFromMirrorSet;
 @synthesize __set=__set;
 @synthesize errs=v_errs;
-+(MutableSetMirrorTesterImpl*)set {  return([[[MutableSetMirrorTesterImpl alloc] init] autorelease]);}
-+(MutableSetMirrorTesterImpl*)setWithArray:(NSArray*)array {  return([[[MutableSetMirrorTesterImpl alloc] initWithArray:array] autorelease]);}
-+(MutableSetMirrorTesterImpl*)setWithObject:(id)object {  return([[[MutableSetMirrorTesterImpl alloc] initWithObjects:&object count:1] autorelease]);}
-+(MutableSetMirrorTesterImpl*)setWithSet:(NSSet*)set {  return([[[MutableSetMirrorTesterImpl alloc] initWithSet:set] autorelease]);}
++(MutableSetMirrorTesterImpl*)set {  return([[MutableSetMirrorTesterImpl alloc] init]);}
++(MutableSetMirrorTesterImpl*)setWithArray:(NSArray*)array {  return([[MutableSetMirrorTesterImpl alloc] initWithArray:array]);}
++(MutableSetMirrorTesterImpl*)setWithObject:(id)object {  return([[MutableSetMirrorTesterImpl alloc] initWithObjects:&object count:1]);}
++(MutableSetMirrorTesterImpl*)setWithSet:(NSSet*)set {  return([[MutableSetMirrorTesterImpl alloc] initWithSet:set]);}
 +(id)setWithCapacity:(NSUInteger)numItems {
-          return([[[MutableSetMirrorTesterImpl alloc] initWithCapacity:numItems] autorelease]);
+          return([[MutableSetMirrorTesterImpl alloc] initWithCapacity:numItems]);
     }
 -(BOOL)containsObject:(id)object {  return([__set containsObject:object]);}
 -(BOOL)intersectsSet:(NSSet*)set {  return([__set intersectsSet:set]);}
@@ -11510,7 +11510,7 @@ static Model *_Model_default=nil;
 -(BOOL)isSubsetOfSet:(NSSet*)set {  return([__set isSubsetOfSet:set]);}
 -(bool)passFail:(bool)pass format:(NSString*)format,... {
           va_list args;va_start(args,format);
-          NSString *s=[[[NSString alloc] initWithFormat:format arguments:args] autorelease];
+          NSString *s=[[NSString alloc] initWithFormat:format arguments:args];
           if (pass) printf("pass: %s\n",s.UTF8String);
           else {
                 printf("!!FAIL: %s\n",s.UTF8String);
@@ -11985,7 +11985,7 @@ static Model *_Model_default=nil;
           return([NSData dataWithBytes:b length:sizeof(ULL)*3]);
     }
 +(ObjectPointer*)pointerWithMakerID:(ULL)amakerID objectID:(ULL)aobjectID {
-          return([[[ObjectPointer alloc] _initWithMakerID:amakerID objectID:aobjectID] autorelease]);
+          return([[ObjectPointer alloc] _initWithMakerID:amakerID objectID:aobjectID]);
     }
 -(bool)initObjWithDictionary:(NSDictionary*)d {  
   /*!-100*/return(NO);}
@@ -12049,7 +12049,7 @@ static Model *_Model_default=nil;
 @synthesize nextObjectID=nextObjectID;
 +(ObjectRegistry*)getDefault {
           if (!_ObjectRegistry_default) {
-                ADDSINGLETON(_ObjectRegistry_default=[[[ObjectRegistry alloc] init] autorelease]);
+                ADDSINGLETON(_ObjectRegistry_default=[[ObjectRegistry alloc] init]);
             }
           return(_ObjectRegistry_default);
     }
@@ -12129,7 +12129,7 @@ static Model *_Model_default=nil;
 @synthesize hash=hash;
 @synthesize o=o;
 +(PointerKey*)keyWithObject:(id)ao {
-          return([[[PointerKey alloc] initWithObject:ao] autorelease]);
+          return([[PointerKey alloc] initWithObject:ao]);
     }
 -(BOOL)isEqual:(id)object {
           bool ret=(([object isKindOfClass:[PointerKey class]]?(o==((PointerKey*)object).o):
@@ -12218,7 +12218,7 @@ static Model *_Model_default=nil;
 @synthesize errs=v_errs;
 -(bool)passFail:(bool)pass format:(NSString*)format,... {
           va_list args;va_start(args,format);
-          NSString *s=[[[NSString alloc] initWithFormat:format arguments:args] autorelease];
+          NSString *s=[[NSString alloc] initWithFormat:format arguments:args];
           if (pass) printf("pass: %s\n",s.UTF8String);
           else {
                 printf("!!FAIL: %s\n",s.UTF8String);
@@ -12230,7 +12230,7 @@ static Model *_Model_default=nil;
 -(bool)passFailWithFormat:(NSString*)format,... {
           bool pass=self.stateGood;
           va_list args;va_start(args,format);
-          NSString *s=[[[NSString alloc] initWithFormat:format arguments:args] autorelease];
+          NSString *s=[[NSString alloc] initWithFormat:format arguments:args];
           if (pass) printf("pass: %s\n",s.UTF8String);
           else {
                 printf("!!FAIL: %s\n",s.UTF8String);
@@ -12566,14 +12566,14 @@ static Model *_Model_default=nil;
 @synthesize deletedObjectMap=deletedObjectMap;
 @synthesize indexToIndexMap=indexToIndexMap;
 @synthesize mappingIsValid=mappingIsValid;
-+(TrackerMutableArray*)array {  return([[[TrackerMutableArray alloc] init] autorelease]);}
-+(TrackerMutableArray*)arrayWithArray:(NSArray*)array {  return([[[TrackerMutableArray alloc] initWithArray:array] autorelease]);}
-+(TrackerMutableArray*)arrayWithContentsOfFile:(NSString*)file {  return([[[TrackerMutableArray alloc] initWithContentsOfFile:file] autorelease]);}
-+(TrackerMutableArray*)arrayWithContentsOfURL:(NSURL*)url {  return([[[TrackerMutableArray alloc] initWithContentsOfURL:url] autorelease]);}
-+(TrackerMutableArray*)arrayWithObject:(id)object {  return([[[TrackerMutableArray alloc] initWithObjects:&object count:1] autorelease]);}
-+(TrackerMutableArray*)arrayWithObjects:(id*)objects count:(NSUInteger)count {  return([[[TrackerMutableArray alloc] initWithObjects:objects count:count] autorelease]);}
++(TrackerMutableArray*)array {  return([[TrackerMutableArray alloc] init]);}
++(TrackerMutableArray*)arrayWithArray:(NSArray*)array {  return([[TrackerMutableArray alloc] initWithArray:array]);}
++(TrackerMutableArray*)arrayWithContentsOfFile:(NSString*)file {  return([[TrackerMutableArray alloc] initWithContentsOfFile:file]);}
++(TrackerMutableArray*)arrayWithContentsOfURL:(NSURL*)url {  return([[TrackerMutableArray alloc] initWithContentsOfURL:url]);}
++(TrackerMutableArray*)arrayWithObject:(id)object {  return([[TrackerMutableArray alloc] initWithObjects:&object count:1]);}
++(TrackerMutableArray*)arrayWithObjects:(id*)objects count:(NSUInteger)count {  return([[TrackerMutableArray alloc] initWithObjects:objects count:count]);}
 +(id)arrayWithCapacity:(NSUInteger)numItems {
-          return([[[TrackerMutableArray alloc] initWithCapacity:numItems] autorelease]);
+          return([[TrackerMutableArray alloc] initWithCapacity:numItems]);
     }
 -(BOOL)containsObject:(id)object {  return([__array containsObject:object]);}
 -(BOOL)isEqualToArray:(NSArray*)array {
@@ -12605,7 +12605,7 @@ static Model *_Model_default=nil;
   @-999 NSDictionary *d __attribute__((unused)) =([self respondsToSelector:@selector(__initializeUsingDictionary)]?[self performSelector:@selector(__initializeUsingDictionary)]:nil);
           
   @-500 self.deletedObjectMap=[NSMutableDictionary dictionary];
-  self.indexToIndexMap=[[[IndexToIndexMap alloc] init] autorelease];
+  self.indexToIndexMap=[[IndexToIndexMap alloc] init];
   self.mappingIsValid=1;
   
   @999 return(self);
@@ -12928,14 +12928,14 @@ static Model *_Model_default=nil;
 @synthesize __dictionary=__dictionary;
 @synthesize __mutableDictionary=__mutableDictionary;
 @synthesize atomicDictionary=atomicDictionary;
-+(TrackerMutableDictionary*)dictionary {  return([[[TrackerMutableDictionary alloc] init] autorelease]);}
-+(TrackerMutableDictionary*)dictionaryWithContentsOfFile:(NSString*)file {  return([[[TrackerMutableDictionary alloc] initWithContentsOfFile:file] autorelease]);}
-+(TrackerMutableDictionary*)dictionaryWithContentsOfURL:(NSURL*)url {  return([[[TrackerMutableDictionary alloc] initWithContentsOfURL:url] autorelease]);}
-+(TrackerMutableDictionary*)dictionaryWithDictionary:(NSDictionary*)dictionary {  return([[[TrackerMutableDictionary alloc] initWithDictionary:dictionary] autorelease]);}
-+(TrackerMutableDictionary*)dictionaryWithObject:(id)object forKey:(id<NSCopying>)key {  return([[[TrackerMutableDictionary alloc] initWithObjects:&object forKeys:&key count:1] autorelease]);}
-+(TrackerMutableDictionary*)dictionaryWithObjects:(id[])objects forKeys:(id<NSCopying>[])keys count:(NSUInteger)count {  return([[[TrackerMutableDictionary alloc] initWithObjects:objects forKeys:keys count:count] autorelease]);}
++(TrackerMutableDictionary*)dictionary {  return([[TrackerMutableDictionary alloc] init]);}
++(TrackerMutableDictionary*)dictionaryWithContentsOfFile:(NSString*)file {  return([[TrackerMutableDictionary alloc] initWithContentsOfFile:file]);}
++(TrackerMutableDictionary*)dictionaryWithContentsOfURL:(NSURL*)url {  return([[TrackerMutableDictionary alloc] initWithContentsOfURL:url]);}
++(TrackerMutableDictionary*)dictionaryWithDictionary:(NSDictionary*)dictionary {  return([[TrackerMutableDictionary alloc] initWithDictionary:dictionary]);}
++(TrackerMutableDictionary*)dictionaryWithObject:(id)object forKey:(id<NSCopying>)key {  return([[TrackerMutableDictionary alloc] initWithObjects:&object forKeys:&key count:1]);}
++(TrackerMutableDictionary*)dictionaryWithObjects:(id[])objects forKeys:(id<NSCopying>[])keys count:(NSUInteger)count {  return([[TrackerMutableDictionary alloc] initWithObjects:objects forKeys:keys count:count]);}
 +(id)dictionaryWithCapacity:(NSUInteger)numItems {
-          return([[[TrackerMutableDictionary alloc] initWithCapacity:numItems] autorelease]);
+          return([[TrackerMutableDictionary alloc] initWithCapacity:numItems]);
     }
 -(BOOL)fileExtensionHidden {  return([__dictionary fileExtensionHidden]);}
 -(BOOL)fileIsAppendOnly {  return([__dictionary fileIsAppendOnly]);}
@@ -13200,12 +13200,12 @@ static Model *_Model_default=nil;
 @synthesize __mutableSet=__mutableSet;
 @synthesize __set=__set;
 @synthesize atomicSet=atomicSet;
-+(TrackerMutableSet*)set {  return([[[TrackerMutableSet alloc] init] autorelease]);}
-+(TrackerMutableSet*)setWithArray:(NSArray*)array {  return([[[TrackerMutableSet alloc] initWithArray:array] autorelease]);}
-+(TrackerMutableSet*)setWithObject:(id)object {  return([[[TrackerMutableSet alloc] initWithObjects:&object count:1] autorelease]);}
-+(TrackerMutableSet*)setWithSet:(NSSet*)set {  return([[[TrackerMutableSet alloc] initWithSet:set] autorelease]);}
++(TrackerMutableSet*)set {  return([[TrackerMutableSet alloc] init]);}
++(TrackerMutableSet*)setWithArray:(NSArray*)array {  return([[TrackerMutableSet alloc] initWithArray:array]);}
++(TrackerMutableSet*)setWithObject:(id)object {  return([[TrackerMutableSet alloc] initWithObjects:&object count:1]);}
++(TrackerMutableSet*)setWithSet:(NSSet*)set {  return([[TrackerMutableSet alloc] initWithSet:set]);}
 +(id)setWithCapacity:(NSUInteger)numItems {
-          return([[[TrackerMutableSet alloc] initWithCapacity:numItems] autorelease]);
+          return([[TrackerMutableSet alloc] initWithCapacity:numItems]);
     }
 -(BOOL)containsObject:(id)object {  return([__set containsObject:object]);}
 -(BOOL)intersectsSet:(NSSet*)set {  return([__set intersectsSet:set]);}
@@ -13456,7 +13456,7 @@ static Model *_Model_default=nil;
 +(bool) getInsertsAndDeletesForSetAsWhenChanging:(NSSet*)from to:(NSSet*)to inss:(NSSet**)pinss dels:(NSSet**)pdels {
           if ([from isEqualToSet:to]) return(NO);
           if (!(pinss||pdels)) return(YES);
-          NSMutableSet *inss=[to.mutableCopy autorelease],*rems=[from.mutableCopy autorelease];
+          NSMutableSet *inss=to.mutableCopy,*rems=from.mutableCopy;
           [inss minusSet:from];
           [rems minusSet:to];
           if (pinss) *pinss=inss;
@@ -13596,14 +13596,14 @@ static Model *_Model_default=nil;
 @synthesize __array=__array;
 @synthesize __mutableArray=__mutableArray;
 @synthesize arrayDelegate=arrayDelegate;
-+(WeakMutableArray*)array {  return([[[WeakMutableArray alloc] init] autorelease]);}
-+(WeakMutableArray*)arrayWithArray:(NSArray*)array {  return([[[WeakMutableArray alloc] initWithArray:array] autorelease]);}
-+(WeakMutableArray*)arrayWithContentsOfFile:(NSString*)file {  return([[[WeakMutableArray alloc] initWithContentsOfFile:file] autorelease]);}
-+(WeakMutableArray*)arrayWithContentsOfURL:(NSURL*)url {  return([[[WeakMutableArray alloc] initWithContentsOfURL:url] autorelease]);}
-+(WeakMutableArray*)arrayWithObject:(id)object {  return([[[WeakMutableArray alloc] initWithObjects:&object count:1] autorelease]);}
-+(WeakMutableArray*)arrayWithObjects:(id*)objects count:(NSUInteger)count {  return([[[WeakMutableArray alloc] initWithObjects:objects count:count] autorelease]);}
++(WeakMutableArray*)array {  return([[WeakMutableArray alloc] init]);}
++(WeakMutableArray*)arrayWithArray:(NSArray*)array {  return([[WeakMutableArray alloc] initWithArray:array]);}
++(WeakMutableArray*)arrayWithContentsOfFile:(NSString*)file {  return([[WeakMutableArray alloc] initWithContentsOfFile:file]);}
++(WeakMutableArray*)arrayWithContentsOfURL:(NSURL*)url {  return([[WeakMutableArray alloc] initWithContentsOfURL:url]);}
++(WeakMutableArray*)arrayWithObject:(id)object {  return([[WeakMutableArray alloc] initWithObjects:&object count:1]);}
++(WeakMutableArray*)arrayWithObjects:(id*)objects count:(NSUInteger)count {  return([[WeakMutableArray alloc] initWithObjects:objects count:count]);}
 +(id)arrayWithCapacity:(NSUInteger)numItems {
-          return([[[WeakMutableArray alloc] initWithCapacity:numItems] autorelease]);
+          return([[WeakMutableArray alloc] initWithCapacity:numItems]);
     }
 -(BOOL)containsObject:(id)object {  return([__array containsObject:object]);}
 -(BOOL)isEqualToArray:(NSArray*)array {
@@ -14068,7 +14068,7 @@ static Model *_Model_default=nil;
           [subArray release];
           if (!__changed) return;
           if (r.location) {
-                NSMutableIndexSet *indexes=[dels.mutableCopy autorelease];
+                NSMutableIndexSet *indexes=dels.mutableCopy;
                 [indexes shiftIndexesStartingAtIndex:0 by:r.location];
                 dels=indexes;
             }
@@ -14090,7 +14090,7 @@ static Model *_Model_default=nil;
           [asubArray release];
           if (!__changed) return;
           if (r.location) {
-                NSMutableIndexSet *indexes=[dels.mutableCopy autorelease];
+                NSMutableIndexSet *indexes=dels.mutableCopy;
                 [indexes shiftIndexesStartingAtIndex:0 by:r.location];
                 dels=indexes;
             }
@@ -14171,14 +14171,14 @@ static Model *_Model_default=nil;
 @synthesize __mutableArray=__mutableArray;
 @synthesize __removingFromMirrorArray=__removingFromMirrorArray;
 @synthesize errs=v_errs;
-+(WeakMutableArrayMirrorTesterImpl*)array {  return([[[WeakMutableArrayMirrorTesterImpl alloc] init] autorelease]);}
-+(WeakMutableArrayMirrorTesterImpl*)arrayWithArray:(NSArray*)array {  return([[[WeakMutableArrayMirrorTesterImpl alloc] initWithArray:array] autorelease]);}
-+(WeakMutableArrayMirrorTesterImpl*)arrayWithContentsOfFile:(NSString*)file {  return([[[WeakMutableArrayMirrorTesterImpl alloc] initWithContentsOfFile:file] autorelease]);}
-+(WeakMutableArrayMirrorTesterImpl*)arrayWithContentsOfURL:(NSURL*)url {  return([[[WeakMutableArrayMirrorTesterImpl alloc] initWithContentsOfURL:url] autorelease]);}
-+(WeakMutableArrayMirrorTesterImpl*)arrayWithObject:(id)object {  return([[[WeakMutableArrayMirrorTesterImpl alloc] initWithObjects:&object count:1] autorelease]);}
-+(WeakMutableArrayMirrorTesterImpl*)arrayWithObjects:(id*)objects count:(NSUInteger)count {  return([[[WeakMutableArrayMirrorTesterImpl alloc] initWithObjects:objects count:count] autorelease]);}
++(WeakMutableArrayMirrorTesterImpl*)array {  return([[WeakMutableArrayMirrorTesterImpl alloc] init]);}
++(WeakMutableArrayMirrorTesterImpl*)arrayWithArray:(NSArray*)array {  return([[WeakMutableArrayMirrorTesterImpl alloc] initWithArray:array]);}
++(WeakMutableArrayMirrorTesterImpl*)arrayWithContentsOfFile:(NSString*)file {  return([[WeakMutableArrayMirrorTesterImpl alloc] initWithContentsOfFile:file]);}
++(WeakMutableArrayMirrorTesterImpl*)arrayWithContentsOfURL:(NSURL*)url {  return([[WeakMutableArrayMirrorTesterImpl alloc] initWithContentsOfURL:url]);}
++(WeakMutableArrayMirrorTesterImpl*)arrayWithObject:(id)object {  return([[WeakMutableArrayMirrorTesterImpl alloc] initWithObjects:&object count:1]);}
++(WeakMutableArrayMirrorTesterImpl*)arrayWithObjects:(id*)objects count:(NSUInteger)count {  return([[WeakMutableArrayMirrorTesterImpl alloc] initWithObjects:objects count:count]);}
 +(id)arrayWithCapacity:(NSUInteger)numItems {
-          return([[[WeakMutableArrayMirrorTesterImpl alloc] initWithCapacity:numItems] autorelease]);
+          return([[WeakMutableArrayMirrorTesterImpl alloc] initWithCapacity:numItems]);
     }
 -(BOOL)containsObject:(id)object {  return([__array containsObject:object]);}
 -(BOOL)isEqualToArray:(NSArray*)array {
@@ -14186,7 +14186,7 @@ static Model *_Model_default=nil;
     }
 -(bool)passFail:(bool)pass format:(NSString*)format,... {
           va_list args;va_start(args,format);
-          NSString *s=[[[NSString alloc] initWithFormat:format arguments:args] autorelease];
+          NSString *s=[[NSString alloc] initWithFormat:format arguments:args];
           if (pass) printf("pass: %s\n",s.UTF8String);
           else {
                 printf("!!FAIL: %s\n",s.UTF8String);
@@ -14718,7 +14718,7 @@ static Model *_Model_default=nil;
           [subArray release];
           if (!__changed) return;
           if (r.location) {
-                NSMutableIndexSet *indexes=[dels.mutableCopy autorelease];
+                NSMutableIndexSet *indexes=dels.mutableCopy;
                 [indexes shiftIndexesStartingAtIndex:0 by:r.location];
                 dels=indexes;
             }
@@ -14740,7 +14740,7 @@ static Model *_Model_default=nil;
           [asubArray release];
           if (!__changed) return;
           if (r.location) {
-                NSMutableIndexSet *indexes=[dels.mutableCopy autorelease];
+                NSMutableIndexSet *indexes=dels.mutableCopy;
                 [indexes shiftIndexesStartingAtIndex:0 by:r.location];
                 dels=indexes;
             }
@@ -14839,14 +14839,14 @@ static Model *_Model_default=nil;
 @synthesize __dictionary=__dictionary;
 @synthesize __mutableDictionary=__mutableDictionary;
 @synthesize dictionaryDelegate=dictionaryDelegate;
-+(WeakMutableDictionary*)dictionary {  return([[[WeakMutableDictionary alloc] init] autorelease]);}
-+(WeakMutableDictionary*)dictionaryWithContentsOfFile:(NSString*)file {  return([[[WeakMutableDictionary alloc] initWithContentsOfFile:file] autorelease]);}
-+(WeakMutableDictionary*)dictionaryWithContentsOfURL:(NSURL*)url {  return([[[WeakMutableDictionary alloc] initWithContentsOfURL:url] autorelease]);}
-+(WeakMutableDictionary*)dictionaryWithDictionary:(NSDictionary*)dictionary {  return([[[WeakMutableDictionary alloc] initWithDictionary:dictionary] autorelease]);}
-+(WeakMutableDictionary*)dictionaryWithObject:(id)object forKey:(id<NSCopying>)key {  return([[[WeakMutableDictionary alloc] initWithObjects:&object forKeys:&key count:1] autorelease]);}
-+(WeakMutableDictionary*)dictionaryWithObjects:(id[])objects forKeys:(id<NSCopying>[])keys count:(NSUInteger)count {  return([[[WeakMutableDictionary alloc] initWithObjects:objects forKeys:keys count:count] autorelease]);}
++(WeakMutableDictionary*)dictionary {  return([[WeakMutableDictionary alloc] init]);}
++(WeakMutableDictionary*)dictionaryWithContentsOfFile:(NSString*)file {  return([[WeakMutableDictionary alloc] initWithContentsOfFile:file]);}
++(WeakMutableDictionary*)dictionaryWithContentsOfURL:(NSURL*)url {  return([[WeakMutableDictionary alloc] initWithContentsOfURL:url]);}
++(WeakMutableDictionary*)dictionaryWithDictionary:(NSDictionary*)dictionary {  return([[WeakMutableDictionary alloc] initWithDictionary:dictionary]);}
++(WeakMutableDictionary*)dictionaryWithObject:(id)object forKey:(id<NSCopying>)key {  return([[WeakMutableDictionary alloc] initWithObjects:&object forKeys:&key count:1]);}
++(WeakMutableDictionary*)dictionaryWithObjects:(id[])objects forKeys:(id<NSCopying>[])keys count:(NSUInteger)count {  return([[WeakMutableDictionary alloc] initWithObjects:objects forKeys:keys count:count]);}
 +(id)dictionaryWithCapacity:(NSUInteger)numItems {
-          return([[[WeakMutableDictionary alloc] initWithCapacity:numItems] autorelease]);
+          return([[WeakMutableDictionary alloc] initWithCapacity:numItems]);
     }
 -(BOOL)fileExtensionHidden {  return([__dictionary fileExtensionHidden]);}
 -(BOOL)fileIsAppendOnly {  return([__dictionary fileIsAppendOnly]);}
@@ -15122,14 +15122,14 @@ static Model *_Model_default=nil;
 @synthesize __mutableDictionary=__mutableDictionary;
 @synthesize __removingFromMirrorDictionary=__removingFromMirrorDictionary;
 @synthesize errs=v_errs;
-+(WeakMutableDictionaryMirrorTesterImpl*)dictionary {  return([[[WeakMutableDictionaryMirrorTesterImpl alloc] init] autorelease]);}
-+(WeakMutableDictionaryMirrorTesterImpl*)dictionaryWithContentsOfFile:(NSString*)file {  return([[[WeakMutableDictionaryMirrorTesterImpl alloc] initWithContentsOfFile:file] autorelease]);}
-+(WeakMutableDictionaryMirrorTesterImpl*)dictionaryWithContentsOfURL:(NSURL*)url {  return([[[WeakMutableDictionaryMirrorTesterImpl alloc] initWithContentsOfURL:url] autorelease]);}
-+(WeakMutableDictionaryMirrorTesterImpl*)dictionaryWithDictionary:(NSDictionary*)dictionary {  return([[[WeakMutableDictionaryMirrorTesterImpl alloc] initWithDictionary:dictionary] autorelease]);}
-+(WeakMutableDictionaryMirrorTesterImpl*)dictionaryWithObject:(id)object forKey:(id<NSCopying>)key {  return([[[WeakMutableDictionaryMirrorTesterImpl alloc] initWithObjects:&object forKeys:&key count:1] autorelease]);}
-+(WeakMutableDictionaryMirrorTesterImpl*)dictionaryWithObjects:(id[])objects forKeys:(id<NSCopying>[])keys count:(NSUInteger)count {  return([[[WeakMutableDictionaryMirrorTesterImpl alloc] initWithObjects:objects forKeys:keys count:count] autorelease]);}
++(WeakMutableDictionaryMirrorTesterImpl*)dictionary {  return([[WeakMutableDictionaryMirrorTesterImpl alloc] init]);}
++(WeakMutableDictionaryMirrorTesterImpl*)dictionaryWithContentsOfFile:(NSString*)file {  return([[WeakMutableDictionaryMirrorTesterImpl alloc] initWithContentsOfFile:file]);}
++(WeakMutableDictionaryMirrorTesterImpl*)dictionaryWithContentsOfURL:(NSURL*)url {  return([[WeakMutableDictionaryMirrorTesterImpl alloc] initWithContentsOfURL:url]);}
++(WeakMutableDictionaryMirrorTesterImpl*)dictionaryWithDictionary:(NSDictionary*)dictionary {  return([[WeakMutableDictionaryMirrorTesterImpl alloc] initWithDictionary:dictionary]);}
++(WeakMutableDictionaryMirrorTesterImpl*)dictionaryWithObject:(id)object forKey:(id<NSCopying>)key {  return([[WeakMutableDictionaryMirrorTesterImpl alloc] initWithObjects:&object forKeys:&key count:1]);}
++(WeakMutableDictionaryMirrorTesterImpl*)dictionaryWithObjects:(id[])objects forKeys:(id<NSCopying>[])keys count:(NSUInteger)count {  return([[WeakMutableDictionaryMirrorTesterImpl alloc] initWithObjects:objects forKeys:keys count:count]);}
 +(id)dictionaryWithCapacity:(NSUInteger)numItems {
-          return([[[WeakMutableDictionaryMirrorTesterImpl alloc] initWithCapacity:numItems] autorelease]);
+          return([[WeakMutableDictionaryMirrorTesterImpl alloc] initWithCapacity:numItems]);
     }
 -(BOOL)fileExtensionHidden {  return([__dictionary fileExtensionHidden]);}
 -(BOOL)fileIsAppendOnly {  return([__dictionary fileIsAppendOnly]);}
@@ -15137,7 +15137,7 @@ static Model *_Model_default=nil;
 -(BOOL)isEqualToDictionary:(NSDictionary*)dictionary {  return([__dictionary isEqualToDictionary:dictionary]);}
 -(bool)passFail:(bool)pass format:(NSString*)format,... {
           va_list args;va_start(args,format);
-          NSString *s=[[[NSString alloc] initWithFormat:format arguments:args] autorelease];
+          NSString *s=[[NSString alloc] initWithFormat:format arguments:args];
           if (pass) printf("pass: %s\n",s.UTF8String);
           else {
                 printf("!!FAIL: %s\n",s.UTF8String);
@@ -15470,12 +15470,12 @@ static Model *_Model_default=nil;
 @synthesize __mutableSet=__mutableSet;
 @synthesize __set=__set;
 @synthesize setDelegate=setDelegate;
-+(WeakMutableSet*)set {  return([[[WeakMutableSet alloc] init] autorelease]);}
-+(WeakMutableSet*)setWithArray:(NSArray*)array {  return([[[WeakMutableSet alloc] initWithArray:array] autorelease]);}
-+(WeakMutableSet*)setWithObject:(id)object {  return([[[WeakMutableSet alloc] initWithObjects:&object count:1] autorelease]);}
-+(WeakMutableSet*)setWithSet:(NSSet*)set {  return([[[WeakMutableSet alloc] initWithSet:set] autorelease]);}
++(WeakMutableSet*)set {  return([[WeakMutableSet alloc] init]);}
++(WeakMutableSet*)setWithArray:(NSArray*)array {  return([[WeakMutableSet alloc] initWithArray:array]);}
++(WeakMutableSet*)setWithObject:(id)object {  return([[WeakMutableSet alloc] initWithObjects:&object count:1]);}
++(WeakMutableSet*)setWithSet:(NSSet*)set {  return([[WeakMutableSet alloc] initWithSet:set]);}
 +(id)setWithCapacity:(NSUInteger)numItems {
-          return([[[WeakMutableSet alloc] initWithCapacity:numItems] autorelease]);
+          return([[WeakMutableSet alloc] initWithCapacity:numItems]);
     }
 -(BOOL)containsObject:(id)object {  return([__set containsObject:object]);}
 -(BOOL)intersectsSet:(NSSet*)set {  return([__set intersectsSet:set]);}
@@ -15687,12 +15687,12 @@ static Model *_Model_default=nil;
 @synthesize __removingFromMirrorSet=__removingFromMirrorSet;
 @synthesize __set=__set;
 @synthesize errs=v_errs;
-+(WeakMutableSetMirrorTesterImpl*)set {  return([[[WeakMutableSetMirrorTesterImpl alloc] init] autorelease]);}
-+(WeakMutableSetMirrorTesterImpl*)setWithArray:(NSArray*)array {  return([[[WeakMutableSetMirrorTesterImpl alloc] initWithArray:array] autorelease]);}
-+(WeakMutableSetMirrorTesterImpl*)setWithObject:(id)object {  return([[[WeakMutableSetMirrorTesterImpl alloc] initWithObjects:&object count:1] autorelease]);}
-+(WeakMutableSetMirrorTesterImpl*)setWithSet:(NSSet*)set {  return([[[WeakMutableSetMirrorTesterImpl alloc] initWithSet:set] autorelease]);}
++(WeakMutableSetMirrorTesterImpl*)set {  return([[WeakMutableSetMirrorTesterImpl alloc] init]);}
++(WeakMutableSetMirrorTesterImpl*)setWithArray:(NSArray*)array {  return([[WeakMutableSetMirrorTesterImpl alloc] initWithArray:array]);}
++(WeakMutableSetMirrorTesterImpl*)setWithObject:(id)object {  return([[WeakMutableSetMirrorTesterImpl alloc] initWithObjects:&object count:1]);}
++(WeakMutableSetMirrorTesterImpl*)setWithSet:(NSSet*)set {  return([[WeakMutableSetMirrorTesterImpl alloc] initWithSet:set]);}
 +(id)setWithCapacity:(NSUInteger)numItems {
-          return([[[WeakMutableSetMirrorTesterImpl alloc] initWithCapacity:numItems] autorelease]);
+          return([[WeakMutableSetMirrorTesterImpl alloc] initWithCapacity:numItems]);
     }
 -(BOOL)containsObject:(id)object {  return([__set containsObject:object]);}
 -(BOOL)intersectsSet:(NSSet*)set {  return([__set intersectsSet:set]);}
@@ -15700,7 +15700,7 @@ static Model *_Model_default=nil;
 -(BOOL)isSubsetOfSet:(NSSet*)set {  return([__set isSubsetOfSet:set]);}
 -(bool)passFail:(bool)pass format:(NSString*)format,... {
           va_list args;va_start(args,format);
-          NSString *s=[[[NSString alloc] initWithFormat:format arguments:args] autorelease];
+          NSString *s=[[NSString alloc] initWithFormat:format arguments:args];
           if (pass) printf("pass: %s\n",s.UTF8String);
           else {
                 printf("!!FAIL: %s\n",s.UTF8String);
@@ -15953,7 +15953,7 @@ static Model *_Model_default=nil;
                   ([ao isKindOfClass:[PointerKey class]]?((PointerKey*)ao).o:ao)):nil);
     }
 +(WeakObject*)keyWithObject:(void*)ao {
-          return([[[WeakObject alloc] initWithObject:ao] autorelease]);
+          return([[WeakObject alloc] initWithObject:ao]);
     }
 -(BOOL)isEqual:(id)object {
           bool ret=(([object isKindOfClass:[PointerKey class]]?(o==((PointerKey*)object).o):

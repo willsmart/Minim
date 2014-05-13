@@ -30,7 +30,7 @@
     self._filePath=nil;
     self.lines=[NSArray array];
     self.replaces=[NSMutableDictionary dictionary];
-    self.tokenizer=[[[WReaderTokenizer alloc] initWithReader:self] autorelease];
+    self.tokenizer=[[WReaderTokenizer alloc] initWithReader:self];
     pos=-1;
     return(self);
 }
@@ -72,7 +72,7 @@
 }
 
 - (void)setFileString:(NSString *)fileString {
-    self._fileString=[(fileString?[fileString.copy autorelease]:@"") stringByReplacingOccurrencesOfString:@"\r" withString:@""];
+    self._fileString=[(fileString?fileString.copy:@"") stringByReplacingOccurrencesOfString:@"\r" withString:@""];
     for (NSString *from in self.replaces.allKeys) {
         NSString *to=[self.replaces objectForKey:from];
         self._fileString=[self._fileString stringByReplacingOccurrencesOfString:from withString:to];

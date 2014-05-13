@@ -27,17 +27,17 @@
 
 - (void)testSet
 {
-    SetTester *t=[[[SetTester alloc] init] autorelease];
+    SetTester *t=[[SetTester alloc] init];
     if ([t steps:10000]) STFail(@"Failed SetTester fair test");
 }
 - (void)testArray
 {
-    ArrayTester *t=[[[ArrayTester alloc] init] autorelease];
+    ArrayTester *t=[[ArrayTester alloc] init];
     if ([t steps:10000]) STFail(@"Failed ArrayTester fair test");
 }
 - (void)testDictionary
 {
-    DictionaryTester *t=[[[DictionaryTester alloc] init] autorelease];
+    DictionaryTester *t=[[DictionaryTester alloc] init];
     if ([t steps:10000]) STFail(@"Failed DictionaryTester fair test");
 }
 

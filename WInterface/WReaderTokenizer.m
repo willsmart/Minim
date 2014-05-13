@@ -25,7 +25,7 @@
 - (id)initWithTokenizer:(WReaderTokenizer*)atokenizer string:(NSString*)astr bracketCount:(int)bc linei:(int)linei type:(char)atype note:(NSString*)anote {
     if (!(self=[super init])) return(nil);
     tokenizer=atokenizer;
-    self.str=[astr.copy autorelease];
+    self.str=astr.copy;
     self.notes=[NSString stringWithFormat:@"\a\a%c%p%@",atype,self,[astr stringByReplacingOccurrencesOfString:@"\a" withString:@"a"]];
     if (anote.length) [self addNote:@"%@",anote];
     self.type=atype;
@@ -46,7 +46,7 @@
 
 -(void)addNote:(NSString*)format,... {
     va_list args;va_start(args,format);
-    self.notes=[self.notes stringByAppendingFormat:@"\a%@",[[[[NSString alloc] initWithFormat:format arguments:args] autorelease] stringByReplacingOccurrencesOfString:@"\a" withString:@"a"]];
+    self.notes=[self.notes stringByAppendingFormat:@"\a%@",[[[NSString alloc] initWithFormat:format arguments:args] stringByReplacingOccurrencesOfString:@"\a" withString:@"a"]];
     va_end(args);
 }
 
@@ -71,7 +71,7 @@
 
 - (NSString *)str {return(self._str);}
 - (void)setStr:(NSString *)str {
-    self._str=(str?[str.copy autorelease]:@"");
+    self._str=(str?str.copy:@"");
     char *mat[]={
         "     r  w  n  .  +  -  *  /  \\  Q  q  _  ? ",
         "z zz rr ww nn .o +o -o zo co zo qs ss ww zo",
@@ -156,7 +156,7 @@
         else {
             if ([s isEqualToString:@"}"]) bc--;
             if ((typeWas=='c')&&[s hasPrefix:@"/*"]&&((s.length<4)||![s hasSuffix:@"*/"])) [s appendString:@"*/"];
-            [self.tokens addObject:[[[WReaderToken alloc] initWithTokenizer:self string:s bracketCount:bc+indent linei:slinei type:typeWas] autorelease]];
+            [self.tokens addObject:[[WReaderToken alloc] initWithTokenizer:self string:s bracketCount:bc+indent linei:slinei type:typeWas]];
             if ([s isEqualToString:@"{"]) bc++;
             [s setString:@""];
             slinei=linei;
@@ -167,9 +167,9 @@
     }
     if (s.length) {
         if ([s isEqualToString:@"}"]) bc--;
-        [self.tokens addObject:[[[WReaderToken alloc] initWithTokenizer:self string:s bracketCount:bc linei:linei type:typeWas] autorelease]];
+        [self.tokens addObject:[[WReaderToken alloc] initWithTokenizer:self string:s bracketCount:bc linei:linei type:typeWas]];
         if ((typeWas=='c')&&[s hasPrefix:@"//"]) {
-            [self.tokens addObject:[[[WReaderToken alloc] initWithTokenizer:self string:@"\n" bracketCount:bc linei:linei type:'r'] autorelease]];
+            [self.tokens addObject:[[WReaderToken alloc] initWithTokenizer:self string:@"\n" bracketCount:bc linei:linei type:'r']];
         }
     }
 }
@@ -180,7 +180,7 @@
         [s appendString:t.notes];
     }
     [s appendString:@"\a\a"];
-    return([s.copy autorelease]);
+    return(s.copy);
 }
 
 - (NSIndexSet*)tokenIndexSet {
@@ -190,7 +190,7 @@
         [ret addIndex:ind];
         ind+=t.notes.length;
     }
-    return([ret.copy autorelease]);
+    return(ret.copy);
 }
 
 
@@ -198,7 +198,7 @@
     NSString *str=self.tokenStr;
     NSIndexSet *inds=self.tokenIndexSet;
     
-    RKRegex *re=[[[RKRegex alloc] initWithRegexString:regex options:0] autorelease];
+    RKRegex *re=[[RKRegex alloc] initWithRegexString:regex options:0];
     NSArray *refs=re.captureNameArray;
     RKEnumerator *en=[str matchEnumeratorWithRegex:re];
 
@@ -288,7 +288,7 @@
                                 }
                                 //NSLog(@"y %ld",(long)ind);
                                 changed=YES;
-                                [newTokens insertObject:[[[WReaderToken alloc] initWithTokenizer:self string:@"" bracketCount:t.bracketCount linei:t.linei type:'[' note:@""] autorelease] atIndex:ind];
+                                [newTokens insertObject:[[WReaderToken alloc] initWithTokenizer:self string:@"" bracketCount:t.bracketCount linei:t.linei type:'[' note:@""] atIndex:ind];
                             }
                         }
                     case ')':case '}':// note pass through

@@ -48,7 +48,7 @@
 
 -(void)addInFilesMessageUsingFormat:(NSString*)format,... {
       va_list args;va_start(args,format);
-      NSString *s=[[[NSString alloc] initWithFormat:format arguments:args] autorelease];
+      NSString *s=[[NSString alloc] initWithFormat:format arguments:args];
       if (![inFilesMessages containsObject:s]) [inFilesMessages addObject:s];
 }
 
@@ -61,7 +61,7 @@ static NSMutableDictionary *InFiles_staticInFilesMessages=nil;
 
 +(void)addInFilename:(NSString*)fn line:(int)line column:(int)column format:(NSString*)format,... {
     va_list args;va_start(args,format);
-    NSString *s=[[[NSString alloc] initWithFormat:format arguments:args] autorelease];
+    NSString *s=[[NSString alloc] initWithFormat:format arguments:args];
     if (!fn) return;
     NSMutableDictionary *m=[[InFiles staticInFilesMessages] objectForKey:fn];
     if (!m) [[InFiles staticInFilesMessages] setObject:m=[NSMutableDictionary dictionary] forKey:fn];
@@ -141,7 +141,7 @@ static NSMutableArray *InFiles_allInFiles=nil;
         }
     }
             
-    NSDictionary *d=[locations.copy autorelease];
+    NSDictionary *d=locations.copy;
     [locations release];
     return(d);
 }
@@ -383,7 +383,7 @@ static WClasses *_default=nil;
             @"11",@"S1",@"A1",@"D1",@"1S",@"1A",@"1D",@"SS",nil];
         NSMutableDictionary *d=[NSMutableDictionary dictionary];
         for (NSString *s in a) {
-            WReader *r=[[[WReader alloc] init] autorelease];
+            WReader *r=[[WReader alloc] init];
             NSString *fn=[NSString stringWithFormat:@"/Users/Will/Documents/WInterface/WInterface/Wis/Prop%@.wi",s];
             [InFiles clearMarksFromFiles:@[fn]];
             r.fileName=fn;
@@ -392,7 +392,7 @@ static WClasses *_default=nil;
         a=[NSArray arrayWithObjects:@"T1",
             @"NSM",@"NS1M,NS1",@"NS1",@"NSA",@"NS1A,NS1",@"NSS",nil];
         for (NSString *s in a) {
-            WReader *r=[[[WReader alloc] init] autorelease];
+            WReader *r=[[WReader alloc] init];
             if ([s rangeOfString:@","].location!=NSNotFound) {
                 NSArray *ss=[s componentsSeparatedByString:@","];
                 NSMutableString *agg=[NSMutableString string];
@@ -418,7 +418,7 @@ static WClasses *_default=nil;
 }
 
 + (void)clearStaticData {
-    if (_default) {[_default autorelease];_default=nil;}
+    if (_default) {_default;_default=nil;}
 }
 
 -(NSSet*)filenames {
@@ -957,7 +957,7 @@ static WClasses *_default=nil;
             [s appendString:t.str];
         }
         if (r.currentToken) r.pos++;
-        ret=[s.copy autorelease];
+        ret=s.copy;
     }
     else if (([ret isEqualToString:@"privateivar"]||[ret isEqualToString:@"ivar"]||[ret isEqualToString:@"justivar"]||[ret isEqualToString:@"class"]||[ret isEqualToString:@"getter"]||[ret isEqualToString:@"setter"])&&[self readc:r anyof:@"="]&&(w=[self readWord:r])) {
         ret=[ret stringByAppendingFormat:([self readc:r anyof:@":"]?@"=%@:":@"=%@"),w];
@@ -1149,13 +1149,13 @@ static WClasses *_default=nil;
     WClass *clas;
     NSArray *protocolList;
     if (![self readType:r retclas:&clas retprotocolList:&protocolList needColon:NO]) return(nil);
-    return([[[WType alloc] initWithClass:clas protocols:protocolList addObject:NO] autorelease]);
+    return([[WType alloc] initWithClass:clas protocols:protocolList addObject:NO]);
 }
 -(WPotentialType*)readPotentialType:(WReader*)r {
     NSString *clas;
     NSArray *protocolList;
     if (![self readPotentialType:r retclas:&clas retprotocolList:&protocolList needColon:NO]) return(nil);
-    return([[[WPotentialType alloc] initWithClass:clas protocols:protocolList addObject:NO] autorelease]);
+    return([[WPotentialType alloc] initWithClass:clas protocols:protocolList addObject:NO]);
 }
 
 
@@ -1335,11 +1335,11 @@ static WClasses *_default=nil;
             NSMutableSet *attr2=attr;
             int stars=((NSNumber*)[starss objectAtIndex:i]).intValue;
             if ([[getters objectAtIndex:i] isKindOfClass:[NSString class]]&&![[setters objectAtIndex:i] isKindOfClass:[NSString class]]) {
-                //attr2=(attr2?[attr2.mutableCopy autorelease]:[NSMutableSet set]);
+                //attr2=(attr2?attr2.mutableCopy:[NSMutableSet set]);
                 //[attr2 addObject:@"readonly"];
             }
             if (!i) {
-                type=[[[WType alloc] initWithPotentialType:ptype] autorelease];
+                type=[[WType alloc] initWithPotentialType:ptype];
             }
             WVar *v=[WVar getVarWithType:type stars:stars name:name qname:[[qnames objectAtIndex:i] isKindOfClass:[NSString class]]?[qnames objectAtIndex:i]:nil defVal:[[defaultValues objectAtIndex:i] isKindOfClass:[NSNull class]]?nil:[defaultValues objectAtIndex:i] defValLevel:[[defLevels objectAtIndex:i] isKindOfClass:[NSNull class]]?0:((NSNumber*)[defLevels objectAtIndex:i]).intValue attributes:attr2 clas:c];
             [v addInFilename:r.filePath line:linei column:0];
@@ -1395,7 +1395,7 @@ static WClasses *_default=nil;
         r.pos=pos;
         return(nil);
     }
-    sig=[[sig stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].mutableCopy autorelease];
+    sig=[sig stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].mutableCopy;
     body=[self readBlock:r];
     //printf("Fn : %s\n",[[r stringWithTokensInRange:NSMakeRange(pos, r.pos-pos)] cStringUsingEncoding:NSASCIIStringEncoding]);
     [self skipSpacesAndSemicolons:r];
@@ -1703,7 +1703,7 @@ static WClasses *_default=nil;
                 [WClasses error:@"File already included" withToken:t0 context:nil];
             }
             else {
-                WReader *r2=[[[WReader alloc] init] autorelease];
+                WReader *r2=[[WReader alloc] init];
                 r2.tokenizer.tokenDelegate=[WClasses getDefault];
                 [InFiles clearMarksFromFiles:@[s]];
                 r2.fileName=s;
@@ -1893,9 +1893,9 @@ static WClasses *_default=nil;
     [self read:r logContext:nil];
 }
 - (void)read:(WReader *)r logContext:(InFiles*)alogContext {
-    WClass *cwas=[[self.classContext retain] autorelease];
-    NSMutableArray *pwas=[[self.propertyContexts retain] autorelease];
-    NSMutableIndexSet *piwas=[[self.propertyContextBrackets retain] autorelease];
+    WClass *cwas=[self.classContext retain];
+    NSMutableArray *pwas=[self.propertyContexts retain];
+    NSMutableIndexSet *piwas=[self.propertyContextBrackets retain];
     int cbwas=self.classContextBracket;
     
     self.classContext=nil;
@@ -1911,7 +1911,7 @@ static WClasses *_default=nil;
     
     [self readKeepingContext:r];
     
-    self.logContext=[logContextWas autorelease];
+    self.logContext=logContextWas;
 
     self.classContext=cwas;
     self.propertyContexts=pwas;
@@ -2280,11 +2280,11 @@ static WClasses *_default=nil;
 +(WType*)processClassType:(WType*)t class:(WClass*)clas protocols:(NSArray*)protocols tostars:(int*)pstars {
     if (!t) return(nil);
     if (pstars) *pstars=0;
-    WPotentialType *pt=[[[WPotentialType alloc] initWithType:t] autorelease];
+    WPotentialType *pt=[[WPotentialType alloc] initWithType:t];
     //NSLog(@"Type from %@  (%@<%@>)",t.wiType,pt.clas,pt.protocols.description);
     NSMutableSet *ps=[NSMutableSet set];
     if (pt.clas) {
-        NSMutableString *s=[[WClasses processClassString:pt.clas class:clas protocols:protocols].mutableCopy autorelease];
+        NSMutableString *s=[WClasses processClassString:pt.clas class:clas protocols:protocols].mutableCopy;
         while ([s hasSuffix:@"*"]) {
             if (pstars) (*pstars)++;
             [s deleteCharactersInRange:NSMakeRange(s.length-1,1)];
@@ -2297,7 +2297,7 @@ static WClasses *_default=nil;
     }
     else if (ps.count) pt.protocols=ps;
     
-    WType *nt=[[[WType alloc] initWithPotentialType:pt] autorelease];
+    WType *nt=[[WType alloc] initWithPotentialType:pt];
     //NSLog(@"    >>> %@  (%@<%@>)",nt.wiType,pt.clas,pt.protocols.description);
     return(nt);
 }
@@ -2383,8 +2383,8 @@ static WClasses *_default=nil;
     if (!(self=[super init])) return(nil);
     self.name=aname;
     hasDef=NO;
-    self.superType=[[[WType alloc] initWithClass:superClass protocols:protocolList addObject:NO] autorelease];
-    self.varPatterns=[avarPatterns.copy autorelease];
+    self.superType=[[WType alloc] initWithClass:superClass protocols:protocolList addObject:NO];
+    self.varPatterns=avarPatterns.copy;
     if ([name rangeOfString:@"__WIClass__"].location!=NSNotFound) {
         self.varPatterns=[[[(self.varPatterns?self.varPatterns:[NSSet set]) setByAddingObject:@"nac"] setByAddingObject:@"multi"] setByAddingObject:@"undefined"];
     }
@@ -2401,8 +2401,8 @@ static WClasses *_default=nil;
     if (!(self=[super init])) return(nil);
     self.name=aname;
     hasDef=NO;
-    self.superType=[[[WType alloc] initWithClass:nil protocols:asuperList addObject:NO] autorelease];
-    self.varPatterns=[avarPatterns.copy autorelease];
+    self.superType=[[WType alloc] initWithClass:nil protocols:asuperList addObject:NO];
+    self.varPatterns=avarPatterns.copy;
     //if ([name isEqualToString:@"Object"]||[name isEqualToString:@"Globals"]) {
     //    self.varPatterns=[[[(self.varPatterns?self.varPatterns:[NSSet set]) setByAddingObject:@"nac"] setByAddingObject:@"multi"] setByAddingObject:@"undefined"];
     //}
@@ -2428,14 +2428,14 @@ static WClasses *_default=nil;
         [ret.superType addClass:superClass protocols:protocolList];
         if (avarPatterns) {
             if (ret.varPatterns) {
-                NSMutableSet *ms=[ret.varPatterns.mutableCopy autorelease];
+                NSMutableSet *ms=ret.varPatterns.mutableCopy;
                 [ms unionSet:avarPatterns];
                 ret.varPatterns=ms;
             }
-            else ret.varPatterns=[avarPatterns.copy autorelease];
+            else ret.varPatterns=avarPatterns.copy;
         }
     }
-    else ret=[[[WClass alloc] initClassWithName:aname superClass:superClass protocolList:protocolList varPatterns:avarPatterns] autorelease];
+    else ret=[[WClass alloc] initClassWithName:aname superClass:superClass protocolList:protocolList varPatterns:avarPatterns];
     return(ret);
 }
 
@@ -2445,14 +2445,14 @@ static WClasses *_default=nil;
         if (asuperList) [ret.superType addClass:nil protocols:asuperList];
         if (avarPatterns) {
             if (ret.varPatterns) {
-                NSMutableSet *ms=[ret.varPatterns.mutableCopy autorelease];
+                NSMutableSet *ms=ret.varPatterns.mutableCopy;
                 [ms unionSet:avarPatterns];
                 ret.varPatterns=ms;
             }
-            else ret.varPatterns=[avarPatterns.copy autorelease];
+            else ret.varPatterns=avarPatterns.copy;
         }
     }
-    else ret=[[[WClass alloc] initProtocolWithName:aname superList:asuperList varPatterns:avarPatterns] autorelease];
+    else ret=[[WClass alloc] initProtocolWithName:aname superList:asuperList varPatterns:avarPatterns];
     return(ret);
 }
 
@@ -2484,7 +2484,7 @@ static WClasses *_default=nil;
     }
     NSString *altypec=[self localizeString:atype.clas.name];
     if (![altypec isEqualToString:atype.clas.name]) {
-        WReader *r=[[[WReader alloc] init] autorelease];
+        WReader *r=[[WReader alloc] init];
         r.fileString=altypec;
         WPotentialType *t=[[WClasses getDefault] readPotentialType:r];
         altypec=t.clas;
@@ -3069,7 +3069,7 @@ static WClasses *_default=nil;
     return(self);
 }
 + (WProp*)getPropWithMyClass:(WClass *)amyclass myName:(NSString *)amyname myQName:(NSString *)amyqname type:(NSString *)atype origType:(NSString*)aorigType hisClass:(WClass *)ahisclass hisName:(NSString *)ahisname hisQName:(NSString *)ahisqname {
-    return([[[WProp alloc] initWithType:atype origType:aorigType myClass:amyclass myName:amyname myQName:amyqname hisClass:ahisclass hisName:ahisname hisQName:ahisqname] autorelease]);
+    return([[WProp alloc] initWithType:atype origType:aorigType myClass:amyclass myName:amyname myQName:amyqname hisClass:ahisclass hisName:ahisname hisQName:ahisqname]);
 }
 
 - (char)myType {
@@ -3139,7 +3139,7 @@ static WClasses *_default=nil;
 }
 
 + (NSString*)string:(NSString*)as replacePairs:(NSObject*)firstObject,... {
-    NSMutableString *s=[as.mutableCopy autorelease];
+    NSMutableString *s=as.mutableCopy;
     va_list args;va_start(args,firstObject);
     for (NSObject *k=firstObject;k!=nil;k=va_arg(args,NSObject*)) {
         NSObject *o=va_arg(args,NSObject*);
@@ -3148,7 +3148,7 @@ static WClasses *_default=nil;
             [s replaceOccurrencesOfString:(NSString*)k withString:(NSString*)o options:0 range:NSMakeRange(0, s.length)];
         }
     }
-    return([s.copy autorelease]);
+    return(s.copy);
 }
 
 
@@ -3247,26 +3247,26 @@ static WClasses *_default=nil;
 //        if ([hisname isEqualToString:@"base"]) {
 //            [WClasses note:[NSString stringWithFormat:@"%c%c my: %@ %@ %@ his: %@ %@ %@",self.myType,self.hisType,myclas.name,myname,myqname,hisclas.name,hisname,hisqname] withReader:r];
 //        }
-        WReader *r2=[[[WReader alloc] init] autorelease];
+        WReader *r2=[[WReader alloc] init];
         r2.tokenizer.tokenDelegate=[WClasses getDefault];
         r2.fileString=[WProp string:[[WClasses getDefault].propFiles objectForKey:[NSString stringWithFormat:@"%c%c",self.myType,self.hisType]] withMyType:self.myWType myName:self.myname iamOwner:self.ownerIsMe myQName:self.myqname hisType:self.hisWType hisName:self.hisname heIsOwner:self.ownerIsHim hisQName:self.hisqname qprop:[NSString stringWithFormat:@"myname %@ WIHisClass hisname",self.type] noPlurals:NO];
         r2._fileName=[NSString stringWithFormat:@"%@:(%@ :: %@)",r.fileName,[self.myclas.wType wiType],self.hisname];
         [[WClasses getDefault] read:r2 logContext:self];
-        r2=[[[WReader alloc] init] autorelease];
+        r2=[[WReader alloc] init];
         r2.tokenizer.tokenDelegate=[WClasses getDefault];
         r2.fileString=[WProp string:[[WClasses getDefault].propFiles objectForKey:[NSString stringWithFormat:@"%c%c",self.hisType,self.myType]] withMyType:self.hisWType myName:self.hisname iamOwner:self.ownerIsHim myQName:self.hisqname hisType:self.myWType hisName:self.myname heIsOwner:self.ownerIsMe hisQName:self.myqname qprop:@"" noPlurals:NO];
         r2._fileName=[NSString stringWithFormat:@"%@:(%@ :: %@)",r.fileName,[self.hisclas.wType wiType],self.myname];
 //        [WClasses note:r2.fileString withReader:r];
         [[WClasses getDefault] read:r2 logContext:self];
         if (hisqname) {
-            r2=[[[WReader alloc] init] autorelease];
+            r2=[[WReader alloc] init];
             r2.tokenizer.tokenDelegate=[WClasses getDefault];
             r2.fileString=[WProp string:[[WClasses getDefault].propFiles objectForKey:[NSString stringWithFormat:(hisclas.isType?@"T%c":@"NS%c"),self.hisType]] withMyType:self.myWType myName:self.myname iamOwner:self.ownerIsMe myQName:self.myqname hisType:self.hisWType hisName:self.hisname heIsOwner:self.ownerIsHim hisQName:self.hisqname qprop:@"" noPlurals:NO];
             r2._fileName=[NSString stringWithFormat:@"%@:(%@ >> %@)",r.fileName,[self.myclas.wType wiType],self.hisqname];
             [[WClasses getDefault] read:r2 logContext:self];
         }
         if (myqname) {
-            r2=[[[WReader alloc] init] autorelease];
+            r2=[[WReader alloc] init];
             r2.tokenizer.tokenDelegate=[WClasses getDefault];
             NSString *key=((self.hisType=='A')&&(self.myType=='1')?@"NS1A":
                 ((self.hisType=='D')&&(self.myType=='1')?@"NS1D":
@@ -3281,7 +3281,7 @@ static WClasses *_default=nil;
 + (void)stadd:(WClass*)clas {
     if (clas.isSys) return;
     
-    WReader *r2=[[[WReader alloc] init] autorelease];
+    WReader *r2=[[WReader alloc] init];
     r2.tokenizer.tokenDelegate=[WClasses getDefault];
 
     r2.fileString=[WProp string:[[WClasses getDefault].propFiles objectForKey:@"Base"] withMyClass:clas];
@@ -3384,7 +3384,7 @@ static WClasses *_default=nil;
 }
 
 + (void)getFnBlocksFromString:(NSString*)str ret:(NSMutableArray*)ret pveIndexes:(NSMutableIndexSet*)pve nveIndexes:(NSMutableIndexSet*)nve forceIndexes:(NSMutableSet*)forceIndexes {
-    WReaderTokenizer *tk=[[[WReaderTokenizer alloc] initWithReader:nil] autorelease];
+    WReaderTokenizer *tk=[[WReaderTokenizer alloc] initWithReader:nil];
     tk.str=str;
     int n=0,sn=NONUMBER;
     NSMutableString *s=nil;
@@ -3464,7 +3464,7 @@ static WClasses *_default=nil;
 + (WFn*)getFnWithSig:(NSString*)asig body:(NSString*)abody clas:(WClass*)aclas {
     NSString *sig=NSStringFromSelector(NSSelectorFromString(asig));
     WFn *ret=[aclas.fns objectForKey:sig];
-    if (!ret) return([[[WFn alloc] initWithSig:asig body:abody clas:aclas] autorelease]);
+    if (!ret) return([[WFn alloc] initWithSig:asig body:abody clas:aclas]);
 
     ret.sigWithArgs=asig;
     if (abody) {
@@ -3513,7 +3513,7 @@ static WClasses *_default=nil;
             for (int d=0;d<MIN(40,depth);d++) [s appendString:@"  "];
             if (t.type!='r') {
                 if (t.type=='z') t.str=s;
-                else [tkn.tokens insertObject:[[[WReaderToken alloc] initWithTokenizer:tkn string:s bracketCount:t.bracketCount linei:t.linei type:'z'] autorelease] atIndex:i];
+                else [tkn.tokens insertObject:[[WReaderToken alloc] initWithTokenizer:tkn string:s bracketCount:t.bracketCount linei:t.linei type:'z'] atIndex:i];
                 wasnl=NO;
             }
         }
@@ -3523,7 +3523,7 @@ static WClasses *_default=nil;
             }
             else if ((level=[WFn tokenMergeNumber:tkn pos:i append:nil retNumTokens:&numTokens])!=NONUMBER) {
                 [tkn.tokens removeObjectsInRange:NSMakeRange(i-1,numTokens+1)];i--;
-                [tkn.tokens insertObject:[[[WReaderToken alloc] initWithTokenizer:tkn string:[NSString stringWithFormat:@"/*i%d*/",level] bracketCount:t.bracketCount linei:t.linei type:'c'] autorelease] atIndex:i];
+                tkn.tokens insertObject:[[[WReaderToken alloc] initWithTokenizer:tkn string:[NSString stringWithFormat:@"/*i%d*/",level] bracketCount:t.bracketCount linei:t.linei type:'c'] atIndex:i];
             }
             else {
                 wasmk=NO;
@@ -3534,9 +3534,9 @@ static WClasses *_default=nil;
             [tkn.tokens removeObjectsInRange:NSMakeRange(i,numTokens)];
             NSMutableString *s=[NSMutableString string];
             for (int d=0;d<MIN(40,depth);d++) [s appendString:@"  "];
-            [tkn.tokens insertObject:[[[WReaderToken alloc] initWithTokenizer:tkn string:@"\n" bracketCount:t.bracketCount linei:t.linei type:'r'] autorelease] atIndex:i++];
-            [tkn.tokens insertObject:[[[WReaderToken alloc] initWithTokenizer:tkn string:s bracketCount:t.bracketCount linei:t.linei type:'z'] autorelease] atIndex:i++];
-            [tkn.tokens insertObject:[[[WReaderToken alloc] initWithTokenizer:tkn string:[NSString stringWithFormat:@"/*i%d*/",level] bracketCount:t.bracketCount linei:t.linei type:'c'] autorelease] atIndex:i];
+            [tkn.tokens insertObject:[[WReaderToken alloc] initWithTokenizer:tkn string:@"\n" bracketCount:t.bracketCount linei:t.linei type:'r'] atIndex:i++];
+            [tkn.tokens insertObject:[[WReaderToken alloc] initWithTokenizer:tkn string:s bracketCount:t.bracketCount linei:t.linei type:'z'] atIndex:i++];
+            tkn.tokens insertObject:[[[WReaderToken alloc] initWithTokenizer:tkn string:[NSString stringWithFormat:@"/*i%d*/",level] bracketCount:t.bracketCount linei:t.linei type:'c'] atIndex:i];
             wasmk=YES;wasnl=NO;
         }
         else {
@@ -3564,7 +3564,7 @@ static WClasses *_default=nil;
         else sup=[asig substringWithRange:NSMakeRange(@"-(init".length, r.location+1-@"-(init".length)];
         abody=[WFn mergedBody:[NSString stringWithFormat:@"@!-10001 if (!(self=%@)) return(nil);\n@11 [self _startObjectOfClass__WIClass__];\n@!10001 return(self);",sup] with:abody];
     }
-    NSMutableString *s=[abody.mutableCopy autorelease];
+    NSMutableString *s=abody.mutableCopy;
     NSError *err=nil;
     WClass *sup;
     for (sup=self.clas.superType.clas;sup&&!sup.exists;sup=sup.superType.clas);
@@ -3572,7 +3572,7 @@ static WClasses *_default=nil;
     
     [[NSRegularExpression regularExpressionWithPattern:@"__WIDerived__>>>(.*?)<<<" options:0 error:&err] replaceMatchesInString:s options:0 range:NSMakeRange(0, s.length) withTemplate:(supIsWI?@"$1":@"")];
     [[NSRegularExpression regularExpressionWithPattern:@"__WIBase__>>>(.*?)<<<" options:0 error:&err] replaceMatchesInString:s options:0 range:NSMakeRange(0, s.length) withTemplate:(!supIsWI?@"$1":@"")];
-    s=[[self bodyByReplacingSettersAndGettersInBody:[WFn mergedBody:s with:@""]].mutableCopy autorelease];
+    s=[self bodyByReplacingSettersAndGettersInBody:[WFn mergedBody:s with:@""]].mutableCopy;
     return([WFn balance:[WProp string:s replacePairs:
         @"__ClassName__",clas.name,
         @"__className__",[WProp lowerName:clas.name],
@@ -3834,7 +3834,7 @@ static WClasses *_default=nil;
 
 - (id)initWithType:(WType*)atype stars:(int)astars name:(NSString*)aname qname:(NSString*)aqname defVal:(NSString*)adefaultValue defValLevel:(int)adefLevel attributes:(NSSet*)aattributes clas:(WClass*)aclas {
     if (!(self=[super init])) return(nil);
-    self.type=[[[WType alloc] initWithClass:atype.clas protocols:atype.protocols.allObjects addObject:NO] autorelease];
+    self.type=[[WType alloc] initWithClass:atype.clas protocols:atype.protocols.allObjects addObject:NO];
     self.stars=astars>0?astars:(atype.clas.isType?0:1);
     //[WClasses warning:[NSString stringWithFormat:@"%@ %d %d",aname,stars,astars] withReader:nil];
     self.name=aname;
@@ -3847,13 +3847,13 @@ static WClasses *_default=nil;
     addedToFns=NO;
     self.defaultValue=adefaultValue;
     self.defLevel=adefLevel;
-    self.attributes=(aattributes?[aattributes.copy autorelease]:nil);
+    self.attributes=(aattributes?aattributes.copy:nil);
     [(self.clas=aclas).vars setObject:self forKey:self.name];
     return(self);
 }
 + (WVar*)getVarWithType:(WType*)atype stars:(int)astars name:(NSString *)aname qname:(NSString*)aqname defVal:(NSString *)adefaultValue defValLevel:(int)adefLevel attributes:(NSSet *)aattributes clas:(WClass *)aclas {
     WVar *ret=[aclas.vars objectForKey:aname];
-    if (!ret) return([[[WVar alloc] initWithType:atype stars:astars name:aname qname:aqname defVal:adefaultValue defValLevel:adefLevel attributes:aattributes clas:aclas] autorelease]);
+    if (!ret) return([[WVar alloc] initWithType:atype stars:astars name:aname qname:aqname defVal:adefaultValue defValLevel:adefLevel attributes:aattributes clas:aclas]);
     [ret.type addClass:atype.clas protocols:atype.protocols.allObjects];
     if (adefaultValue) ret.defaultValue=adefaultValue;
     if (adefLevel) ret.defLevel=adefLevel;
@@ -4172,7 +4172,7 @@ CACHEVARATTRFN_retain(NSMutableString*,localizedGetterBody,
                     [NSMutableString stringWithFormat:
                         @"@-999 %@ ret;memset(&ret,0,sizeof(ret));@999 return(ret);",self.localizedObjCType]);
         }
-        ret=[[WFn mergedBody:body with:@""].mutableCopy autorelease];
+        ret=[WFn mergedBody:body with:@""].mutableCopy;
     }
 )
 
@@ -4203,7 +4203,7 @@ CACHEVARATTRFN_retain(NSMutableString*,localizedSetterBody,
         if (self.tracked) {
             [body appendFormat:@"@-850 REMOVEOWNER(%@,self);ADDOWNER(%@,self);",self.localizedVarName,self.setterArg];
         }
-        ret=[[WFn mergedBody:body with:@""].mutableCopy autorelease];
+        ret=[WFn mergedBody:body with:@""].mutableCopy;
     }
 )
 
@@ -4233,7 +4233,7 @@ CACHEVARATTRFN_retain(NSString*,localizedVarName,
 
 -(void)add:(WReader*)r {
     if (qname) {
-        WReader *r2=[[[WReader alloc] init] autorelease];
+        WReader *r2=[[WReader alloc] init];
         r2.tokenizer.tokenDelegate=[WClasses getDefault];
         
         //[WClasses note:[NSString stringWithFormat:@"Add var %@ %@ %c",self.localizedName,self.qname,[self varType]] withReader:r];
@@ -4555,7 +4555,7 @@ CACHEVARATTRFN_retain(NSString*,localizedVarName,
 }
 
 -(WPotentialType*)potentialType {
-    if (!self._potentialType) self._potentialType=[[[WPotentialType alloc] initWithType:self] autorelease];
+    if (!self._potentialType) self._potentialType=[[WPotentialType alloc] initWithType:self];
     return(self._potentialType);
 }
 

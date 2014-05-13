@@ -10,7 +10,7 @@
 ClassCount "-Object" "fn:object"
     LL count,nextID (nodef)
     +(ClassCount*)classCount {
-        return([[[ClassCount alloc] init] autorelease]);
+        return([[ClassCount alloc] init]);
     }
     -(init)init {
         count=nextID=1;
@@ -147,7 +147,7 @@ Singletons<Ticker> "-Object" "fn:object"
         if (self.printRetain) {
             prnt("%d -> %d autorelease %s\n",___rc,___rc-___arc,[self.objectName cStringUsingEncoding:NSASCIIStringEncoding]);
         }
-        @999 return([super autorelease]);
+        @999 return(super);
     }
 
     NSString description={@-999 
