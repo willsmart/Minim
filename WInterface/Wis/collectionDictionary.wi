@@ -316,7 +316,6 @@ WeakMutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirr
         if (was==object) return(NO);
         if (![self shouldAddObject:object forKey:key]) return(NO);
         if (was) {
-            [was retain];
             [self willRemoveObject:was forKey:key];
             [self willAddObject:object forKey:key];
             [__mutableDictionary setObject:object forKey:key];
@@ -364,7 +363,6 @@ WeakMutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirr
         id was=[__dictionary valueForKey:key];
         if (was==object) return(NO);
         if (was) {
-            [was retain];
             [self willAddObject:object forKey:key];
             [self willRemoveObject:was forKey:key];
             [__mutableDictionary setValue:object forKey:key];
@@ -434,7 +432,6 @@ WeakMutableDictionaryMirrorTesterImpl:NSMutableDictionary <MutableDictionaryMirr
     -(void)didAddObject:(id)object forKey:(id<NSCopying>)key {@900 
     }
     -(void)willRemoveObject:(id)object forKey:(id<NSCopying>)key {@-900 
-        [object retain];
     }
 
 <ModelMutableDictionary>
@@ -583,7 +580,6 @@ MutableDictionaryFollowerDelegate<MutableDictionaryDelegate,BaseObject>
         id k=[mapk objectForKey:key];
         id o=[mapv objectForKey:key];
         if (o&&k) {
-            [o retain];
             [followerDictionary _removeObjectForKey:k];
             [mapk removeObjectForKey:key];
             [mapv removeObjectForKey:key];

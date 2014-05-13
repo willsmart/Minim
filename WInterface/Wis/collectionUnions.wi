@@ -296,7 +296,6 @@ UnionDictionary<UnionDictionary>
     -(void)didRemoveObject:(id)object forKey:(id<NSCopying>)key fromDelegate:(UnionSetDelegate*)del {
         IntCarrier *n=[__depthsForKeys objectForKey:key];
         if (n&&(n.intValue==del.depth)) {
-            [n retain];
             [__depthsForKeys removeObjectForKey:key];
             [__mutableDictionary removeObjectForKey:key];
             [self didRemoveObject:object forKey:key];
@@ -339,7 +338,6 @@ UnionDictionary<UnionDictionary>
         for (id<NSCopying> key in dels) {
             [__depthsForKeys removeObjectForKey:key];
             id was=[__dictionary objectForKey:key];
-            [was retain];
             [self willRemoveObject:was forKey:key];
             [__mutableDictionary removeObjectForKey:key];
             [self didRemoveObject:was forKey:key];
@@ -362,7 +360,6 @@ UnionDictionary<UnionDictionary>
                 [__depthsForKeys removeObjectForKey:key];
                 id was=[__dictionary objectForKey:key];
                 if (was) {
-                    [was retain];
                     [self willRemoveObject:was forKey:key];
                     [__mutableDictionary removeObjectForKey:key];
                     [self didRemoveObject:was forKey:key];

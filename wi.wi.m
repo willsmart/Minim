@@ -7101,7 +7101,6 @@ __array=nil;
           [self stateOK];
     }
 -(void)removeObjectIdenticalTo:(id)object {
-          [object retain];
           int i=0,c=0,oi=NSNotFound;
           for (id object2 in __array) {
                 if (object2==object) {
@@ -7118,7 +7117,6 @@ __array=nil;
           [self stateOK];
     }
 -(void)removeObjectIdenticalTo:(id)object inRange:(NSRange)r {
-          [object retain];
           int i=0,c=0,oi=NSNotFound;
           for (id object2 in __array) {
                 if (i>=r.location) {
@@ -8060,7 +8058,6 @@ v_errs=nil;
           if (was==object) return;
           if (![self shouldAddObject:object forKey:key]) return;
           if (was) {
-                [was retain];
                 [self willRemoveObject:was forKey:key];
                 [__mutableDictionary setObject:object forKey:key];
                 [self didRemoveObject:was forKey:key];
@@ -8076,7 +8073,6 @@ v_errs=nil;
           if (![self shouldAddObject:object forKey:key]) return;
           id was=[__dictionary valueForKey:key];
           if (was) {
-                [was retain];
                 [self willRemoveObject:was forKey:key];
                 [__mutableDictionary setValue:object forKey:key];
                 [self didRemoveObject:was forKey:key];
@@ -8412,7 +8408,6 @@ __dictionary=nil;
           if (was==object) return;
           if (![self shouldAddObject:object forKey:key]) return;
           if (was) {
-                [was retain];
                 [self willRemoveObject:was forKey:key];
                 [__mutableDictionary setObject:object forKey:key];
                 [self didRemoveObject:was forKey:key];
@@ -8428,7 +8423,6 @@ __dictionary=nil;
           if (![self shouldAddObject:object forKey:key]) return;
           id was=[__dictionary valueForKey:key];
           if (was) {
-                [was retain];
                 [self willRemoveObject:was forKey:key];
                 [__mutableDictionary setValue:object forKey:key];
                 [self didRemoveObject:was forKey:key];
@@ -9757,7 +9751,6 @@ __array=nil;
           [self stateOK];
     }
 -(void)removeObjectIdenticalTo:(id)object {
-          [object retain];
           int i=0,c=0,oi=NSNotFound;
           for (id object2 in __array) {
                 if (object2==object) {
@@ -9774,7 +9767,6 @@ __array=nil;
           [self stateOK];
     }
 -(void)removeObjectIdenticalTo:(id)object inRange:(NSRange)r {
-          [object retain];
           int i=0,c=0,oi=NSNotFound;
           for (id object2 in __array) {
                 if (i>=r.location) {
@@ -10386,7 +10378,6 @@ __array=nil;
           [self stateOK];
     }
 -(void)removeObjectIdenticalTo:(id)object {
-          [object retain];
           int i=0,c=0,oi=NSNotFound;
           for (id object2 in __array) {
                 if (object2==object) {
@@ -10403,7 +10394,6 @@ __array=nil;
           [self stateOK];
     }
 -(void)removeObjectIdenticalTo:(id)object inRange:(NSRange)r {
-          [object retain];
           int i=0,c=0,oi=NSNotFound;
           for (id object2 in __array) {
                 if (i>=r.location) {
@@ -10818,7 +10808,6 @@ dictionaryDelegate=nil;
           if (was==object) return;
           if (![self shouldAddObject:object forKey:key]) return;
           if (was) {
-                [was retain];
                 [self willRemoveObject:was forKey:key];
                 [__mutableDictionary setObject:object forKey:key];
                 [self didRemoveObject:was forKey:key];
@@ -10834,7 +10823,6 @@ dictionaryDelegate=nil;
           if (![self shouldAddObject:object forKey:key]) return;
           id was=[__dictionary valueForKey:key];
           if (was) {
-                [was retain];
                 [self willRemoveObject:was forKey:key];
                 [__mutableDictionary setValue:object forKey:key];
                 [self didRemoveObject:was forKey:key];
@@ -11135,7 +11123,6 @@ __dictionary=nil;
           if (was==object) return;
           if (![self shouldAddObject:object forKey:key]) return;
           if (was) {
-                [was retain];
                 [self willRemoveObject:was forKey:key];
                 [__mutableDictionary setObject:object forKey:key];
                 [self didRemoveObject:was forKey:key];
@@ -11151,7 +11138,6 @@ __dictionary=nil;
           if (![self shouldAddObject:object forKey:key]) return;
           id was=[__dictionary valueForKey:key];
           if (was) {
-                [was retain];
                 [self willRemoveObject:was forKey:key];
                 [__mutableDictionary setValue:object forKey:key];
                 [self didRemoveObject:was forKey:key];
@@ -11967,8 +11953,7 @@ return(self=nil);
           //NSObject *objv=[_allObjects objectForKey:obj];
           //if (!objv) return(NO);
           //DEB(printf("dealloc %s\n",[obj.description cStringUsingEncoding:NSASCIIStringEncoding]);)
-          //[objv retain];
-          //[_allObjects removeObjectForKey:obj];
+          //          //[_allObjects removeObjectForKey:obj];
           return(YES);
     }
 -(bool)registerObject:(NSObject<ObjectID>*)obj {
@@ -13055,7 +13040,6 @@ atomicDictionary=nil;
           if (was==object) return;
           if (![self shouldAddObject:object forKey:key]) return;
           if (was) {
-                [was retain];
                 [self willRemoveObject:was forKey:key];
                 [__mutableDictionary setObject:object forKey:key];
                 [self didRemoveObject:was forKey:key];
@@ -13071,7 +13055,6 @@ atomicDictionary=nil;
           if (![self shouldAddObject:object forKey:key]) return;
           id was=[__dictionary valueForKey:key];
           if (was) {
-                [was retain];
                 [self willRemoveObject:was forKey:key];
                 [__mutableDictionary setValue:object forKey:key];
                 [self didRemoveObject:was forKey:key];
@@ -13858,7 +13841,6 @@ __array=nil;
           [self stateOK];
     }
 -(void)removeObjectIdenticalTo:(id)object {
-          [object retain];
           int i=0,c=0,oi=NSNotFound;
           for (id object2 in __array) {
                 if (object2==object) {
@@ -13875,7 +13857,6 @@ __array=nil;
           [self stateOK];
     }
 -(void)removeObjectIdenticalTo:(id)object inRange:(NSRange)r {
-          [object retain];
           int i=0,c=0,oi=NSNotFound;
           for (id object2 in __array) {
                 if (i>=r.location) {
@@ -14026,13 +14007,11 @@ __array=nil;
           [arrayDelegate stateOK];
     }
 -(void)willRemoveObject:(id)object {  
-  @-900 [object retain];
-    
+  @-900    
 @0 [arrayDelegate willRemoveObject:object];
     }
 -(void)willRemoveObject:(id)object fromIndex:(NSUInteger)index {  
-  @-900 [object retain];
-    
+  @-900    
 @0 [arrayDelegate willRemoveObject:object fromIndex:index];
     }
 
@@ -14493,7 +14472,6 @@ __array=nil;
           [self stateOK];
     }
 -(void)removeObjectIdenticalTo:(id)object {
-          [object retain];
           int i=0,c=0,oi=NSNotFound;
           for (id object2 in __array) {
                 if (object2==object) {
@@ -14510,7 +14488,6 @@ __array=nil;
           [self stateOK];
     }
 -(void)removeObjectIdenticalTo:(id)object inRange:(NSRange)r {
-          [object retain];
           int i=0,c=0,oi=NSNotFound;
           for (id object2 in __array) {
                 if (i>=r.location) {
@@ -14677,14 +14654,12 @@ __array=nil;
             }
     }
 -(void)willRemoveObject:(id)object {  
-  @-900 [object retain];
-    
+  @-900    
 @100 [self add:1 toWillRemoveCountForObject:object];
         __removingFromMirrorArray++;
     }
 -(void)willRemoveObject:(id)object fromIndex:(NSUInteger)index {  
-  @-900 [object retain];
-    
+  @-900    
 @100 [self add:1 toWillRemoveCountForObject:object];
         __removingFromMirrorArray++;
     
@@ -14930,7 +14905,6 @@ dictionaryDelegate=nil;
           if (was==object) return;
           if (![self shouldAddObject:object forKey:key]) return;
           if (was) {
-                [was retain];
                 [self willRemoveObject:was forKey:key];
                 [__mutableDictionary setObject:object forKey:key];
                 [self didRemoveObject:was forKey:key];
@@ -14946,7 +14920,6 @@ dictionaryDelegate=nil;
           if (![self shouldAddObject:object forKey:key]) return;
           id was=[__dictionary valueForKey:key];
           if (was) {
-                [was retain];
                 [self willRemoveObject:was forKey:key];
                 [__mutableDictionary setValue:object forKey:key];
                 [self didRemoveObject:was forKey:key];
@@ -14962,8 +14935,7 @@ dictionaryDelegate=nil;
           [dictionaryDelegate stateOK];
     }
 -(void)willRemoveObject:(id)object forKey:(id<NSCopying>)key {  
-  @-900 [object retain];
-    
+  @-900    
 @0 [dictionaryDelegate willRemoveObject:object forKey:key];
     }
 
@@ -15250,7 +15222,6 @@ __dictionary=nil;
           if (was==object) return;
           if (![self shouldAddObject:object forKey:key]) return;
           if (was) {
-                [was retain];
                 [self willRemoveObject:was forKey:key];
                 [__mutableDictionary setObject:object forKey:key];
                 [self didRemoveObject:was forKey:key];
@@ -15266,7 +15237,6 @@ __dictionary=nil;
           if (![self shouldAddObject:object forKey:key]) return;
           id was=[__dictionary valueForKey:key];
           if (was) {
-                [was retain];
                 [self willRemoveObject:was forKey:key];
                 [__mutableDictionary setValue:object forKey:key];
                 [self didRemoveObject:was forKey:key];
@@ -15297,8 +15267,7 @@ __dictionary=nil;
             }
     }
 -(void)willRemoveObject:(id)object forKey:(id<NSCopying>)key {  
-  @-900 [object retain];
-    
+  @-900    
 @100 [self add:1 toWillRemoveCountForObject:object];
         __removingFromMirrorDictionary++;
     
@@ -15518,8 +15487,7 @@ setDelegate=nil;
           for (id object in set) [self addObject:object];
     }
 -(void)willRemoveObject:(id)object {  
-  @-900 [object retain];
-    
+  @-900    
 @0 [setDelegate willRemoveObject:object];
     }
 
@@ -15776,8 +15744,7 @@ __set=nil;
           if (![__set isEqualToSet:__mirrorSet]) [self passFail:NO format:@"!!! mirror set is different\n"];
     }
 -(void)willRemoveObject:(id)object {  
-  @-900 [object retain];
-    
+  @-900    
 @900 if (__addingToMirrorSet) [self passFail:NO format:@"!!!st will remove while adding\n"];
         [__mirrorSet removeObject:object];
         __removingFromMirrorSet++;
