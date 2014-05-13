@@ -149,7 +149,7 @@ static NSMutableArray *InFiles_allInFiles=nil;
         return;
     }
     for (NSString *fn in fns) {
-        NSMutableString *s=[((NSString*)[NSString stringWithContentsOfFile:fn encoding:NSASCIIStringEncoding error:&err]).mutableCopy autorelease];
+        NSMutableString *s=((NSString*)[NSString stringWithContentsOfFile:fn encoding:NSASCIIStringEncoding error:&err]).mutableCopy;
         if (s&&!err) {
             [re replaceMatchesInString:s options:0 range:NSMakeRange(0,s.length) withTemplate:@""];
             [s writeToFile:fn atomically:YES encoding:NSASCIIStringEncoding error:&err];
@@ -4145,7 +4145,7 @@ CACHEVARATTRFN(bool,justivar,
 
 CACHEVARATTRFN_retain(NSMutableString*,localizedGetterBody,
     if (self.synthesized) {
-        NSMutableString *body=[((WFn*)[clas.fns objectForKey:[self getterSig]]).body.mutableCopy autorelease];
+        NSMutableString *body=((WFn*)[clas.fns objectForKey:[self getterSig]]).body.mutableCopy;
         if (!body) {
             body=(self.hasIVar?
                     ((!self.atomic)||self.isType?
@@ -4162,7 +4162,7 @@ CACHEVARATTRFN_retain(NSMutableString*,localizedGetterBody,
 
 CACHEVARATTRFN_retain(NSMutableString*,localizedSetterBody,
     if (self.synthesized) {
-        NSMutableString *body=[((WFn*)[clas.fns objectForKey:[self setterSig]]).body.mutableCopy autorelease];
+        NSMutableString *body=((WFn*)[clas.fns objectForKey:[self setterSig]]).body.mutableCopy;
         if (!body) {
             NSString *vv=self.localizedVarName;
             body=(self.hasIVar?
@@ -4312,7 +4312,7 @@ CACHEVARATTRFN_retain(NSString*,localizedVarName,
                     }
                     while(rc>0) {
                         rc--;
-                        defaultValue=[NSString stringWithFormat:@"[(id)%@ autorelease]",defaultValue];
+                        defaultValue=[NSString stringWithFormat:@"(id)%@",defaultValue];
                     }
                     [WClasses note:[NSString stringWithFormat:@"Suspected positive reference count in default value. The value has been changed to %@",defaultValue] withToken:nil context:self];
                 }
