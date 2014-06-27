@@ -111,17 +111,15 @@
 +(WType*)processClassType:(WType*)t class:(WClass*)clas protocols:(NSArray*)protocols tostars:(int*)tostars;
 +(NSString*)processClassString:(NSString*)s reader:(WReader*)r;
 +(NSString*)processClassString:(NSString*)s class:(WClass*)clas protocols:(NSArray*)protocols;
--(NSMutableString*)importsDeclWithName:(NSString*)s nameUsed:(NSString**)pnameUsed;
--(NSMutableSet*)importsSetWithName:(NSString*)s nameUsed:(NSString**)pnameUsed;
+-(NSMutableString*)importsDeclWithName:(NSString*)s nameUsed:(NSString*__strong*)pnameUsed;
+-(NSMutableSet*)importsSetWithName:(NSString*)s nameUsed:(NSString*__strong*)pnameUsed;
 -(void)makeImportSets;
 
 @end
 
-@interface WPotentialType : NSObject {
-    NSString *clas;
-    NSMutableSet *protocols;
-}
-@property (assign,nonatomic) NSString *clas;
+@interface WPotentialType : NSObject
+
+@property (strong,nonatomic) NSString *clas;
 @property (retain,nonatomic) NSMutableSet *protocols;
 
 -(WPotentialType*)initWithType:(WType*)t;
@@ -131,12 +129,10 @@
 @end
 
 
-@interface WType : NSObject {
-    WClass *clas;
-    NSMutableSet *protocols;
-}
+@interface WType : NSObject
+
 @property (readonly) WClass *someWClass;
-@property (assign,nonatomic) WClass *clas;
+@property (weak,nonatomic) WClass *clas;
 @property (retain,nonatomic) NSMutableSet *protocols;
 
 @property (readonly) WPotentialType *potentialType;
@@ -169,7 +165,7 @@
 @property bool hasDef;
 @property (readonly) bool exists;
 
-@property bool isProtocol,isSys,isType,isWIOnly;
+@property bool isProtocol,isSys,isType,isBlock,isWIOnly;
 @property (retain,nonatomic) NSString *name;
 @property (retain,nonatomic) WType *superType;
 @property (retain,nonatomic) NSSet *varPatterns;
@@ -206,12 +202,9 @@
 @class WReaderToken;
 
 
-@interface WFn : InFiles {
-    NSString *sig,*sigWithArgs,*body;
-    WClass *clas;
-}
+@interface WFn : InFiles
 @property (retain,nonatomic) NSString *sig,*sigWithArgs,*body;
-@property (assign,nonatomic) WClass *clas;
+@property (weak,nonatomic) WClass *clas;
 @property (readonly) bool imaginary;
 + (WFn*)getExistingFnWithSig:(NSString*)asig clas:(WClass*)aclas;
 + (WFn*)getFnWithSig:(NSString*)asig body:(NSString*)abody clas:(WClass*)aclas;
@@ -232,7 +225,7 @@
     bool addedToFns,ownerIsMe;
 }
 @property (retain,nonatomic) NSString *myname,*hisname,*myqname,*hisqname,*type,*origType;
-@property (assign,nonatomic) WClass *myclas,*hisclas;
+@property (weak,nonatomic) WClass *myclas,*hisclas;
 @property (readonly) char myType,hisType;
 @property (readonly) WType *myWType,*hisWType;
 @property (readonly) bool ownerIsMe,ownerIsHim;
@@ -260,17 +253,12 @@
 
 
 @interface WVar : InFiles {
-    NSString *name,*qname,*defaultValue;
-    NSSet *attributes;
-    WClass *clas;
-    WType *type;
-    int stars;
     bool addedToFns;
     NSRegularExpression *setterRE,*getterRE;
     
     
 
-    bool attributesCached,imaginary,retains,isType,modelretains,readonly,atomic,synthesized,objc_readonly,needsGetter,needsSetter,hasIVar,superHasIVar,privateIVar,hasDefaultValue,justivar;
+    bool attributesCached,imaginary,retains,copies,isType,isBlock,modelretains,readonly,atomic,synthesized,objc_readonly,needsGetter,needsSetter,hasIVar,superHasIVar,privateIVar,hasDefaultValue,justivar;
     WFn *hasGetter,*hasSetter;
     NSString *setterName,*getterName,*getterSig,*setterSig,*localizedSetterName,*localizedGetterName,*localizedGetterSig,*localizedSetterSig,*localizedVarName,*localizedName;
     WType *localizedType;
@@ -281,9 +269,9 @@
 
 @property (retain,nonatomic) NSString *name,*qname,*defaultValue,*setterArg;
 @property (retain,nonatomic) NSSet *attributes;
-@property (assign,nonatomic) WClass *clas;
-@property (assign,nonatomic) WType *type;
-@property (assign,nonatomic) NSMutableSet *type_protocols;
+@property (weak,nonatomic) WClass *clas;
+@property (strong,nonatomic) WType *type;
+@property (strong,nonatomic) NSMutableSet *type_protocols;
 @property int stars;
 @property (readonly) NSString *localizedVarName;
 @property int defLevel;
@@ -308,8 +296,8 @@
 @property (readonly) bool tracked;
 @property (readonly) bool imaginary;
 @property (readonly) WFn *hasGetter,*hasSetter;
-@property (readonly) bool retains;
-@property (readonly) bool isType;
+@property (readonly) bool retains,copies;
+@property (readonly) bool isType,isBlock;
 @property (readonly) bool modelretains;
 @property (readonly) bool readonly;
 @property (readonly) bool atomic;
