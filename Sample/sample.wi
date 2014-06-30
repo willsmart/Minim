@@ -49,10 +49,10 @@ type kid "typedef:id<NSCopying,Retains>" "retains"
 #define _PrivateAccessMask_ __private_access_thread_mask_in___ClassName__
 */
 
-ThreadIDKey<ThreadKey> "keyName=>id" "valueType=>NSInteger" "nac"
+ThreadIDKey<ThreadKey> "keyName=>id" "valueType=>Int" "nac"
     -decl:{
-        extern NSInteger g_prevThreadId;
-        NSInteger getThreadId();
+        extern Int g_prevThreadId;
+        Int getThreadId();
         ULL getThreadMask();
 
         bool authorized_thread(ULL&mask);
@@ -61,14 +61,14 @@ ThreadIDKey<ThreadKey> "keyName=>id" "valueType=>NSInteger" "nac"
         #define privateaccess(...) do {bool __needdeauth=authorize_thread(_PrivateAccessMask_);{__VA_ARGS__;}if (__needdeauth) deauthorize_thread(_PrivateAccessMask_);} while (false)
     }
     -decl:impl:{
-        NSInteger g_prevThreadId=0;
+        Int g_prevThreadId=0;
         ULL getThreadMask() {
-            NSInteger ret=getThreadValueNamedId();
+            Int ret=getThreadValueNamedId();
             if (!ret) setThreadValueNamedId(ret=++g_prevThreadId);
             return(1LL<<(ret-1));
         }
-        NSInteger getThreadId() {
-            NSInteger ret=getThreadValueNamedId();
+        Int getThreadId() {
+            Int ret=getThreadValueNamedId();
             if (!ret) setThreadValueNamedId(ret=++g_prevThreadId);
             return(ret);
         }
@@ -118,7 +118,7 @@ ThreadIDKey<ThreadKey> "keyName=>id" "valueType=>NSInteger" "nac"
 //"l\\\"ll\\"llr"rrrr"lrlrrl
 // NSString s=[[[NSString alloc] initWithFormat:(NSString*)[NSString stringWithFormat:@"hello%@",[NSString string]],@"blah",NSMakeRange(c,1,2,3)] autor elease] (readonly)
 A
- NSInteger a
+ Int a
  A b=[A alloc]
  
 "include.wi"
@@ -131,7 +131,7 @@ A
 //sys Sys
 type Type
 type longptr "typedef:long*"
-type NSInteger
+type Int
 type short
 sys NSObject
 type ULL "typedef:unsigned long long"
@@ -146,51 +146,51 @@ RClassMT<RProtocolMT> "RClassMT" "attribute" "fn:mt"
 
 // inherit
 RSubClass:RClass "fn:inherit"
-    NSInteger RSubClass=0//,intg=0
+    Int RSubClass=0//,intg=0
     -(void)RSubClassfn {/*RSubClass*/}
     -(void)fn {/*RSubClass*/}
 RSubClass2:RClass "fn:inherit"
-    NSInteger RSubClass2=0//,intg=0
+    Int RSubClass2=0//,intg=0
     -(void)RSubClass2fn {/*RSubClass2*/}
     -(void)fn {/*RSubClass2*/}
 RClass<RProtocol> "fn:inherit"
-    NSInteger RClass=0//,intg=0
+    Int RClass=0//,intg=0
     -(void)RClassfn {/*RClass*/}
     -(void)fn {/*RClass*/}
 RClass2<RProtocol,RSubProtocol> "fn:inherit"
-    NSInteger RClass2=0//,intg=0
+    Int RClass2=0//,intg=0
     -(void)RClass2fn {/*RClass2*/}
     -(void)fn {/*RClass2*/}
 RClassab<RProtocol,RProtocolb> "fn:inherit"
-    NSInteger RClassab=0//,intg=0
+    Int RClassab=0//,intg=0
     -(void)RClassabfn {/*RClassab*/}
     -(void)fn {/*RClassab*/}
 RSubClassabnapnac:RClassabnapnac "fn:inherit"
-    NSInteger RSubClassabnapnac=0//,intg=0
+    Int RSubClassabnapnac=0//,intg=0
     -(void)RSubClassabnapnacfn {/*RSubClassabnapnac*/}
     -(void)fn {/*RSubClassabnapnac*/}
 RClassabnapnac<RProtocol,RProtocolb,RProtocolnap> "nac" "fn:inherit"
-    NSInteger RClassabnapnac=0//,intg=0
+    Int RClassabnapnac=0//,intg=0
     -(void)RClassabnapnacfn {/*RClassabnapnac*/}
     -(void)fn {/*RClassabnapnac*/}
 RClassabnap<RProtocol,RProtocolb,RProtocolnap> "fn:inherit"
-    NSInteger RClassabnap=0//,intg=0
+    Int RClassabnap=0//,intg=0
     -(void)RClassabnapfn {/*RClassabnap*/}
     -(void)fn {/*RClassabnap*/}
 <RSubProtocol:RProtocol>
-    NSInteger RSubProtocol=0//,intg=0
+    Int RSubProtocol=0//,intg=0
     -(void)RSubProtocolfn {/*RSubProtocol*/}
     -(void)fn {/*RSubProtocol*/}
 <RProtocol>
-    NSInteger RProtocol=0//,intg=0
+    Int RProtocol=0//,intg=0
     -(void)RProtocolfn {/*RProtocol*/}
     -(void)fn {/*RProtocol*/}
 <RProtocolb>
-    NSInteger RProtocolb=0//,intg=0
+    Int RProtocolb=0//,intg=0
     -(void)RProtocolbfn {/*RProtocolb*/}
     -(void)fn {/*RProtocolb*/}
 <RProtocolnap> "nap"
-    NSInteger RProtocolnap=0//,intg=0
+    Int RProtocolnap=0//,intg=0
     -(void)RProtocolnapfn {/*RProtocolnap*/}
     -(void)fn {/*RProtocolnap*/}
 
@@ -199,7 +199,7 @@ RClassabnap<RProtocol,RProtocolb,RProtocolnap> "fn:inherit"
 
 // Category
 NSObject "fn:fns"
-    NSInteger sys={return(0);}-v{/*set*/}
+    Int sys={return(0);}-v{/*set*/}
     -(void)sysfn {@1 /*1*/}
 
 
@@ -216,11 +216,11 @@ Fns "fn:fns"
     -(void)fn2 {
         @100 /*100*/ @99 /*99*/ @98 /*98*/
     }
-    -(void)fn:(NSInteger)i
+    -(void)fn:(Int)i
     {
         @1 /*1*/ @2 /*2*/ @3 /*3*/ @100 /*100*/ @99 /*99*/@98 /*98*/
     }
-    -void cfn(NSInteger i) {@1 /*c*/}
+    -void cfn(Int i) {@1 /*c*/}
 
 SubFns:Fns "fn:fns"
     -(void)fn {
@@ -238,30 +238,30 @@ Clas
 
 <Vars:VarsBase> "fn:vars" "nap" "multi"
     short rw_iv_nodef_short_zero=0,rw_na_iv_def1_short_one=1,rw_na_iv_nodef_short_nill=nil (args)
-    NSInteger pr_iv_def_nm_publicreadonly=123 (readonly,args)
-    NSInteger rw_iv_def_nm_imaginaryi=123 (imaginary,args)
-    NSInteger rw_iv_def_nm_atomici=123 (atomic,args)
-    NSInteger rw_iv_nm_settergetteri=123 (setter=setSG,getter=sg,args)
-    NSInteger r_noiv_nm_getteri={return(123);} (args)
-    NSInteger pr_iv_nm_getteri=0{return(pr_iv_nm_getteri);} (args)
-    NSInteger pr_iv_nm_setter=0-v{pr_iv_nm_setter=123;} (readonly,args)
-    NSInteger rw_iv_nm_setteri=0
+    Int pr_iv_def_nm_publicreadonly=123 (readonly,args)
+    Int rw_iv_def_nm_imaginaryi=123 (imaginary,args)
+    Int rw_iv_def_nm_atomici=123 (atomic,args)
+    Int rw_iv_nm_settergetteri=123 (setter=setSG,getter=sg,args)
+    Int r_noiv_nm_getteri={return(123);} (args)
+    Int pr_iv_nm_getteri=0{return(pr_iv_nm_getteri);} (args)
+    Int pr_iv_nm_setter=0-v{pr_iv_nm_setter=123;} (readonly,args)
+    Int rw_iv_nm_setteri=0
         -v{rw_iv_nm_setteri=123;} (args)
-    NSInteger rw_noiv_nm_setteri=
+    Int rw_noiv_nm_setteri=
         -v{} (args)
-    NSInteger rw_noiv_nm_settergetter=
+    Int rw_noiv_nm_settergetter=
         {return(123);}
         -v{} (args)
-    NSInteger rw_iv_nm_settergetter=123
+    Int rw_iv_nm_settergetter=123
         {return(123);}
         -v{rw_iv_nm_settergetter=123;} (args)
-    NSInteger rw_iv_nm_settergetter2=123
+    Int rw_iv_nm_settergetter2=123
         {return(rw_iv_nm_settergetter2);}
         -v{} (args)
-    NSInteger rw_jiv_nm_justivar=0 (justivar,args)
-    NSInteger pr_iv_nm_ivar=0{return(123);} (ivar,args)
-    NSInteger rw_jiv_nm_justivar_named=0 (justivar=the_justivar_named,args)
-    NSInteger pr_iv_nm_ivar_named=0{return(123);} (ivar=the_ivar_named,args)
+    Int rw_jiv_nm_justivar=0 (justivar,args)
+    Int pr_iv_nm_ivar=0{return(123);} (ivar,args)
+    Int rw_jiv_nm_justivar_named=0 (justivar=the_justivar_named,args)
+    Int pr_iv_nm_ivar_named=0{return(123);} (ivar=the_ivar_named,args)
     -(void)testGetterSetter {
         pr_iv_def_nm_publicreadonly=pr_iv_def_nm_publicreadonly;
         rw_iv_def_nm_atomici=rw_iv_def_nm_atomici;
@@ -279,13 +279,13 @@ Clas
 
 
 VarsInt<Vars> "fn:VarsInt"
-VarsRetain<Vars> "NSInteger=>Clas*" "nm=>Clas" "fn:VarsRetain" "123=>[Clas getDefault]"
+VarsRetain<Vars> "Int=>Clas*" "nm=>Clas" "fn:VarsRetain" "123=>[Clas getDefault]"
 
-VarsAssign<Vars> "NSInteger=>Clas*" "nm=>Clas" "args=>assign" "fn:VarsAssign" "123=>[Clas getDefault]"
+VarsAssign<Vars> "Int=>Clas*" "nm=>Clas" "args=>assign" "fn:VarsAssign" "123=>[Clas getDefault]"
 
-VarsAtomic<Vars> "NSInteger=>Clas*" "nm=>Clas" "args=>atomic" "fn:VarsAtomic" "123=>[Clas getDefault]"
-VarsRetainAtomic<Vars> "NSInteger=>Clas*" "nm=>Clas" "args=>atomic" "fn:VarsRetainAtomic" "123=>[Clas getDefault]"
-VarsAssignAtomic<Vars> "NSInteger=>Clas*" "nm=>Clas" "args=>assign,atomic" "fn:VarsAssignAtomic" "123=>[Clas getDefault]"
+VarsAtomic<Vars> "Int=>Clas*" "nm=>Clas" "args=>atomic" "fn:VarsAtomic" "123=>[Clas getDefault]"
+VarsRetainAtomic<Vars> "Int=>Clas*" "nm=>Clas" "args=>atomic" "fn:VarsRetainAtomic" "123=>[Clas getDefault]"
+VarsAssignAtomic<Vars> "Int=>Clas*" "nm=>Clas" "args=>assign,atomic" "fn:VarsAssignAtomic" "123=>[Clas getDefault]"
 
 
 B
@@ -381,21 +381,21 @@ A<A>
         [(id)a a];
         [[a a] a:a];
         [E(a) a:a];
-        NSInteger a=a;
+        Int a=a;
         return(nil);
     }
 
 ...*/
-type NSInteger
+type Int
 A "-Object"
     A a={return(nil);}=nil (ivar)
-    NSInteger j=nil (readonly)
+    Int j=nil (readonly)
     -(void)fn {
         j=0;
-        NSInteger i=1;
-        NSInteger k;
+        Int i=1;
+        Int k;
     }
-    -(void)a:(NSInteger)aa {}
+    -(void)a:(Int)aa {}
 
     
 
