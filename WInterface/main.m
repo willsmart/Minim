@@ -51,26 +51,28 @@ int main(int argc, const char * argv[])
                     [cs addToFns];
                     NSSet *fns=cs.filenames;
                     
+                    NSString *wiifieddir=@"wied/";
+                    
                     NSError *err=nil;
-                    NSString *html=cs.html,*htmlfn=[r.fileName stringByAppendingString:@".html"];
-                    [html writeToFile:htmlfn atomically:YES encoding:NSUTF8StringEncoding error:&err];
+                    NSString *html=cs.html,*htmlfn=[NSString stringWithFormat:@"%@.html",r.fileName];
+                    [html writeToFile:[wiifieddir stringByAppendingString:htmlfn] atomically:YES encoding:NSUTF8StringEncoding error:&err];
                     printf("Wrote to file %s\n",[htmlfn cStringUsingEncoding:NSASCIIStringEncoding]);
                     
                     NSMutableString *s=[NSMutableString string];
                     [cs appendObjCToString:s iface:NO impl:NO classFilename:nil headerFilename:nil];
                     err=nil;
                     [fm changeCurrentDirectoryPath:baseDir];
-                    NSString *dfn=[r.fileName stringByAppendingString:@".decl.h"];
-                    [s writeToFile:dfn atomically:YES encoding:NSUTF8StringEncoding error:&err];
+                    NSString *dfn=[NSString stringWithFormat:@"%@.decl.h",r.fileName];
+                    [s writeToFile:[wiifieddir stringByAppendingString:dfn] atomically:YES encoding:NSUTF8StringEncoding error:&err];
                     printf("Wrote to file %s\n",[dfn cStringUsingEncoding:NSASCIIStringEncoding]);
                     
 
-                    NSString *hfn=[r.fileName stringByAppendingString:@".h"];
+                    NSString *hfn=[NSString stringWithFormat:@"%@.h",r.fileName];
                     s=[NSMutableString string];
                     [cs appendObjCToString:s iface:YES impl:NO classFilename:nil headerFilename:dfn];
                     err=nil;
                     [fm changeCurrentDirectoryPath:baseDir];
-                    [s writeToFile:hfn atomically:YES encoding:NSUTF8StringEncoding error:&err];
+                    [s writeToFile:[wiifieddir stringByAppendingString:hfn] atomically:YES encoding:NSUTF8StringEncoding error:&err];
                     printf("Wrote to file %s\n",[hfn cStringUsingEncoding:NSASCIIStringEncoding]);
 
                     NSString *errs=nil;
@@ -82,7 +84,7 @@ int main(int argc, const char * argv[])
                         
                         err=nil;
                         [fm changeCurrentDirectoryPath:baseDir];
-                        NSString *ofn=[([fn isEqualToString:@"default"]?r.fileName:fn) stringByAppendingString:@".mm"];
+                        NSString *ofn=[NSString stringWithFormat:@"%@.mm",[fn isEqualToString:@"default"]?r.fileName:fn];
                         NSString *swas=[NSString stringWithContentsOfFile:ofn encoding:NSUTF8StringEncoding error:&err];
                         if (swas&&[swas isEqualToString:s]) {
                             printf("No change to file %s\n",[ofn cStringUsingEncoding:NSASCIIStringEncoding]);
@@ -91,7 +93,7 @@ int main(int argc, const char * argv[])
                             int prefLen=(int)[s commonPrefixWithString:swas options:0].length;
                             NSString *prefix=(swas?[NSString stringWithFormat:@"Changed from\n    [%d]\"%@\"\nis now\n    [%d]\"%@\"",prefLen,[[swas substringFromIndex:prefLen] substringToIndex:(swas.length-prefLen<50?swas.length-prefLen:50)],prefLen,[[s substringFromIndex:prefLen] substringToIndex:(s.length-prefLen<50?s.length-prefLen:50)]]:@"New");
                             err=nil;
-                            [s writeToFile:ofn atomically:YES encoding:NSUTF8StringEncoding error:&err];
+                            [s writeToFile:[wiifieddir stringByAppendingString:ofn] atomically:YES encoding:NSUTF8StringEncoding error:&err];
                             printf("Wrote to file %s -- %s\n",[ofn cStringUsingEncoding:NSASCIIStringEncoding],prefix.UTF8String);
                         }
                     }
