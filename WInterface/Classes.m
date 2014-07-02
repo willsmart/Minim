@@ -1154,7 +1154,13 @@ static WClasses *_default=nil;
 }
 
 
+
 - (NSArray*)readVar:(WReader*)r {
+    return([self readVar:r asStrongThisTime:NO]);
+}
+
+- (NSArray*)readVar:(WReader*)r asStrongThisTime:(bool)asStrongThisTime {
+    bool redoAsStrong=NO;
     int pos1=r.pos;
     WReaderToken *t0=r.currentToken;
 
@@ -1287,14 +1293,35 @@ static WClasses *_default=nil;
         }
         //[WClasses warning:[NSString stringWithFormat:@"%c",ch] withReader:r];
 
+        bool implThisVar=!asStrongThisTime;
+        
         if (ch=='(') {
             attr=[NSMutableSet set];
             NSString *s;
+            bool strongVer=NO;
             for (s=[self readVarAttribute:r];s;s=[self readVarAttribute:r]) {
+                if ([s isEqualToString:@"weakandstrong"]) {
+                    if (asStrongThisTime) {
+                        s=@"strong";implThisVar=strongVer=YES;
+                        for (int i=0;i<names.count;i++) names[i]=[names[i] stringByAppendingString:@"_strong"];
+                        for (int i=0;i<qnames.count;i++) if ([qnames[i] isKindOfClass:NSString.class]) qnames[i]=[qnames[i] stringByAppendingString:@"_strong"];
+                    }
+                    else {s=@"weak";redoAsStrong=YES;}
+                }
                 [attr addObject:s];
                 while ([self readc:r anyof:@","]);
                 if ([self readc:r anyof:@")"]) break;
             }
+            if (strongVer) {
+                NSMutableSet *attr2=nil;
+                for (NSString *a in attr) if ([a hasPrefix:@"ivar="]) {
+                    attr2=attr.mutableCopy;
+                    [attr2 removeObject:a];
+                    [attr2 addObject:[a stringByAppendingString:@"_strong"]];
+                }
+                if (attr2) attr=attr2;
+            }
+                
             if (!s) {
                 [WClasses error:@"Bad attribute array" withToken:t0 context:nil];
                 r.pos=pos2;
@@ -1323,44 +1350,58 @@ static WClasses *_default=nil;
         else r.pos=pos2;
         //printf("Var : %s\n",[[r stringWithTokensInRange:NSMakeRange(pos1, r.pos-pos1)] cStringUsingEncoding:NSASCIIStringEncoding]);
         [self skipSpacesAndSemicolons:r];
-        NSMutableArray *rets=[NSMutableArray array];
-        int i=0;
-        WType *type;
-        for (NSString *name in names) {
-            NSMutableSet *attr2=attr;
-            int stars=((NSNumber*)[starss objectAtIndex:i]).intValue;
-            if ([[getters objectAtIndex:i] isKindOfClass:[NSString class]]&&![[setters objectAtIndex:i] isKindOfClass:[NSString class]]) {
-                //attr2=(attr2?attr2.mutableCopy:[NSMutableSet set]);
-                //[attr2 addObject:@"readonly"];
-            }
-            if (!i) {
-                type=[[WType alloc] initWithPotentialType:ptype];
-            }
-            WVar *v=[WVar getVarWithType:type stars:stars name:name qname:[[qnames objectAtIndex:i] isKindOfClass:[NSString class]]?[qnames objectAtIndex:i]:nil defVal:[[defaultValues objectAtIndex:i] isKindOfClass:[NSNull class]]?nil:[defaultValues objectAtIndex:i] defValLevel:[[defLevels objectAtIndex:i] isKindOfClass:[NSNull class]]?0:((NSNumber*)[defLevels objectAtIndex:i]).intValue attributes:attr2 clas:c];
-            [v addInFilename:r.filePath line:linei column:0];
-            [rets addObject:v];
-//            if ([attr containsObject:@"modelretain"]) {
-//                [getters replaceObjectAtIndex:i withObject:[NSString stringWithFormat:@"return(%@);",v.varName]];
-//                if (![attr2 containsObject:@"readonly"]) {
-//                    [setters replaceObjectAtIndex:i withObject:[NSString stringWithFormat:@"[%@ modelrelease];\n%@=[v modelretain];",v.varName,v.varName]];
-//                    [setterVars replaceObjectAtIndex:i withObject:@"v"];
-//                }
-//            }
-            if ([[getters objectAtIndex:i] isKindOfClass:[NSString class]]) {
-                WFn *fn=[WFn getFnWithSig:[NSString stringWithFormat:@"-(%@)%@",v.objCType,name] body:(NSString*)[getters objectAtIndex:i] clas:c];
-                [fn addInFilename:r.filePath line:linei column:0];
-            }
-            if ([[setters objectAtIndex:i] isKindOfClass:[NSString class]]) {
-                WFn *fn=[WFn getFnWithSig:[NSString stringWithFormat:@"-(void)set%@:(%@)%@",[WProp upperName:name],v.objCType,[setterVars objectAtIndex:i]] body:(NSString*)[setters objectAtIndex:i] clas:c];
-                [fn addInFilename:r.filePath line:linei column:0];
+        
+        if (implThisVar) {
+            NSMutableArray *rets=[NSMutableArray array];
+            int i=0;
+            WType *type;
+            for (NSString *name in names) {
+                NSMutableSet *attr2=attr;
+                int stars=((NSNumber*)[starss objectAtIndex:i]).intValue;
+                if ([[getters objectAtIndex:i] isKindOfClass:[NSString class]]&&![[setters objectAtIndex:i] isKindOfClass:[NSString class]]) {
+                    //attr2=(attr2?attr2.mutableCopy:[NSMutableSet set]);
+                    //[attr2 addObject:@"readonly"];
+                }
+                if (!i) {
+                    type=[[WType alloc] initWithPotentialType:ptype];
+                }
+                WVar *v=[WVar getVarWithType:type stars:stars name:name qname:[[qnames objectAtIndex:i] isKindOfClass:[NSString class]]?[qnames objectAtIndex:i]:nil defVal:[[defaultValues objectAtIndex:i] isKindOfClass:[NSNull class]]?nil:[defaultValues objectAtIndex:i] defValLevel:[[defLevels objectAtIndex:i] isKindOfClass:[NSNull class]]?0:((NSNumber*)[defLevels objectAtIndex:i]).intValue attributes:attr2 clas:c];
+                [v addInFilename:r.filePath line:linei column:0];
+                [rets addObject:v];
+    //            if ([attr containsObject:@"modelretain"]) {
+    //                [getters replaceObjectAtIndex:i withObject:[NSString stringWithFormat:@"return(%@);",v.varName]];
+    //                if (![attr2 containsObject:@"readonly"]) {
+    //                    [setters replaceObjectAtIndex:i withObject:[NSString stringWithFormat:@"[%@ modelrelease];\n%@=[v modelretain];",v.varName,v.varName]];
+    //                    [setterVars replaceObjectAtIndex:i withObject:@"v"];
+    //                }
+    //            }
+                if ([[getters objectAtIndex:i] isKindOfClass:[NSString class]]) {
+                    WFn *fn=[WFn getFnWithSig:[NSString stringWithFormat:@"-(%@)%@",v.objCType,name] body:(NSString*)[getters objectAtIndex:i] clas:c];
+                    [fn addInFilename:r.filePath line:linei column:0];
+                }
+                if ([[setters objectAtIndex:i] isKindOfClass:[NSString class]]) {
+                    WFn *fn=[WFn getFnWithSig:[NSString stringWithFormat:@"-(void)set%@:(%@)%@",[WProp upperName:name],v.objCType,[setterVars objectAtIndex:i]] body:(NSString*)[setters objectAtIndex:i] clas:c];
+                    [fn addInFilename:r.filePath line:linei column:0];
 
+                }
+                i++;
             }
-            i++;
+
+
+            for (WVar *ret in rets) {
+                [ret add:r];
+            }
+            if (redoAsStrong) {
+                NSInteger redopos=r.pos;
+                r.pos=pos1;
+                NSArray *rets2=[self readVar:r asStrongThisTime:YES];
+                r.pos=redopos;
+                if (rets2) [rets addObjectsFromArray:rets2];
+            }
+            return(rets);
         }
-        for (WVar *ret in rets) {
-            [ret add:r];
-        }
-        return(rets);
+        else return(nil);
+        
     } while (false);
     r.pos=pos1;
     return(nil);
@@ -4057,10 +4098,9 @@ CACHEVARATTRFN_retain(NSString*,localizedSetterSig,
 )
 
 CACHEVARATTRFN(bool,retains,
-    ret=self.retainable&&(![attributes containsObject:@"assign"])&&(self.hasIVar||self.superHasIVar);
+    ret=self.retainable&&(!([attributes containsObject:@"assign"]||[attributes containsObject:@"weak"]))&&(self.hasIVar||self.superHasIVar);
 )
 CACHEVARATTRFN(bool,copies,
-    if (self.isBlock) BP();
     ret=self.retainable&&(self.isBlock||[attributes containsObject:@"copy"]);
 )
 CACHEVARATTRFN(bool,imaginary,
@@ -4460,7 +4500,7 @@ CACHEVARATTRFN_retain(NSString*,localizedVarName,
 - (void)appendObjCToString_iface:(NSMutableString*)s {
     if (self.imaginary||self.justivar) return;
     [s appendFormat:@"@property (%@%@%@%@%@%@%@",
-        !self.retainable?@"":(self.copies?@"copy,":(self.retains?@"retain,":@"assign,")),
+        !self.retainable?@"":(self.copies?@"copy,":(self.retains?@"strong,":@"weak,")),
         self.atomic?@"atomic,":@"nonatomic,",
         self.objc_readonly?@"readonly,":(self.readonly?@"readwrite/*(public readonly)*/,":@"readwrite,"),
         [attributes containsObject:@"strong"]?@"strong,":@"",
