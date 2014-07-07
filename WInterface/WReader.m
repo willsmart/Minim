@@ -59,8 +59,11 @@
 - (void)setFileName:(NSString *)fileName {
     NSError *err=nil;
     self._fileName=fileName;
-    NSFileManager *fm=[NSFileManager defaultManager];
-    self._filePath=[fm.currentDirectoryPath stringByAppendingPathComponent:fileName];
+    if (fileName.isAbsolutePath) self._filePath=fileName;
+    else {
+        NSFileManager *fm=[NSFileManager defaultManager];
+        self._filePath=[fm.currentDirectoryPath stringByAppendingPathComponent:fileName];
+    }
 
     NSString *s=[NSString stringWithContentsOfFile:fileName encoding:NSUTF8StringEncoding error:&err];
     
