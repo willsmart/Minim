@@ -55,7 +55,7 @@
 
     +(bool) getInsertsAndDeletesAsIndexSetWhenChanging:(NSArray*)from to:(NSArray*)to inss:(NSIndexSet*__strong*)pinss dels:(NSIndexSet*__strong*)pdels  {
         NSMutableArray *inss,*dels;
-        if (![CollectionsHelper getInsertsAndDeletesWhenChanging:from to:to inss:&inss dels:&dels]) return(NO);
+        if (![Collections getInsertsAndDeletesWhenChanging:from to:to inss:&inss dels:&dels]) return(NO);
         NSMutableIndexSet *s=[[NSMutableIndexSet alloc] init];
         for (NSNumber *num in dels) [s addIndex:num.intValue];
         *pdels=s;
@@ -88,7 +88,7 @@
     +(bool) getInsertsDeletesAndChangesForDictionaryWhenChanging:(NSDictionary*)from to:(NSDictionary*)to insKeys:(NSSet*__strong*)pinss delKeys:(NSSet*__strong*)pdels changeKeys:(NSSet*__strong*)pchanges  {
         NSSet *fromKeys=[[NSSet alloc] initWithArray:from.allKeys];
         NSSet *toKeys=[[NSSet alloc] initWithArray:to.allKeys];
-        bool ret=[CollectionsHelper getInsertsAndDeletesForSetWhenChanging:fromKeys to:toKeys inss:pinss dels:pdels];
+        bool ret=[Collections getInsertsAndDeletesForSetWhenChanging:fromKeys to:toKeys inss:pinss dels:pdels];
         id obj;
         NSMutableSet *changes=nil;
         if (from.count<to.count) {

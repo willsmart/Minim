@@ -10,15 +10,29 @@
 #import "WReaderTokenizer.h"
 #import "Classes.h"
 #import "WReader.h"
+#import "Parse.h"
+#define MAINCPPFILE
+#import "Headers.h"
+
 
 int main(int argc, const char * argv[])
 {
     printf("Winterface 1.1001 (C)2013 Will smart HaND:)\n");
 
     int ret=0;
-    
+
+
     @autoreleasepool {
 
+    ((id<ParseClass>)Parse.class).rulesFilename=@"rules_wi.txt";
+
+    NSError *err=nil;
+    NSString *prog=[NSString stringWithContentsOfFile:@"eg.wi" encoding:NSUTF8StringEncoding error:&err];
+    if (!prog) prog=@"File not found";
+    NSString *json=[Parse jsonFromTokens:[Parse parse:prog] program:prog];
+    [json writeToFile:@"eg.wi.json" atomically:YES encoding:NSUTF8StringEncoding error:&err];
+
+    exit(0);
         NSFileManager *fm=[NSFileManager defaultManager];
 
         NSString *baseDir=fm.currentDirectoryPath;
@@ -42,6 +56,7 @@ int main(int argc, const char * argv[])
             for (NSString *fn in fns) {
                 fprintf(stderr,"\n>>%s -- ",fn.UTF8String);
                 @autoreleasepool {
+
                     [cs clear];
                     WReader *r=[[WReader alloc] init];
                     r.tokenizer.tokenDelegate=cs;

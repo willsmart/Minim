@@ -19,7 +19,7 @@
 @property (readonly,strong,nonatomic) WReader *wreader;
 @property (strong,nonatomic) NSArray *tokens;
 @property (readonly,strong,nonatomic) NSString *path;
-@property (strong,nonatomic) *body;
+@property (strong,nonatomic) NSStrig *body;
 @property (readonly,nonatomic) NSString *filename;
 -(SourceFile*)referedFile:(NSString*)filename;
 

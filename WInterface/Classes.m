@@ -9,6 +9,7 @@
 #import "WReaderTokenizer.h"
 #import "Classes.h"
 #import "WReader.h"
+#import "util.h"
 #import <objc/runtime.h>
 
 #define iNSNotFound ((int)NSNotFound)
@@ -627,7 +628,7 @@ static WClasses *_default=nil;
 - (int)read:(WReader*)r options:(SEL*)options numOptions:(int)N retObject:(NSObject*__strong*)po {
     int pos=r.pos;
     for (int i=0;i<N;i++) {
-        NSObject *o=[self performSelector:options[i] withObject:r];
+        NSObject *o=[self performUnknownSelector:options[i] withObject:r];
         if (o) {
             (*po)=o;
             return(i);
@@ -1392,7 +1393,7 @@ static WClasses *_default=nil;
                 [ret add:r];
             }
             if (redoAsStrong) {
-                NSInteger redopos=r.pos;
+                int redopos=r.pos;
                 r.pos=pos1;
                 NSArray *rets2=[self readVar:r asStrongThisTime:YES];
                 r.pos=redopos;
@@ -2606,13 +2607,13 @@ static WClasses *_default=nil;
     for (NSString *n in self.varNames) {
         WVar *v=[self.vars objectForKey:n];
         if ([v respondsToSelector:sel]) {
-            [v performSelector:sel withObject:s];
+            [v performUnknownSelector:sel withObject:s];
         }
     }    
     for (NSString *n in self.fnNames) {
         WFn *fn=[self.fns objectForKey:n];
         if ([fn respondsToSelector:sel]) {
-            [fn performSelector:sel withObject:s];
+            [fn performUnknownSelector:sel withObject:s];
         }
     }    
 }

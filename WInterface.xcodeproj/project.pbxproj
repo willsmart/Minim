@@ -7,16 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BE38E828196C7B6900C95037 /* Parse.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE38E827196C7B6900C95037 /* Parse.mm */; };
 		BE4152E41811B03200E421D7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE99B972161BAE720041B8EA /* Foundation.framework */; };
 		BE4152E71811B03200E421D7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BE4152E61811B03200E421D7 /* main.m */; };
 		BE4152EB1811B03200E421D7 /* WInterfaceSample.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = BE4152EA1811B03200E421D7 /* WInterfaceSample.1 */; };
 		BE4152FC1811B04200E421D7 /* sample.wi.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE730AD61810A4FB005582C5 /* sample.wi.mm */; };
-		BE681E68196A28A400AA3BE5 /* CodeBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = BE681E67196A28A400AA3BE5 /* CodeBlock.m */; };
-		BE681E6D196A28DC00AA3BE5 /* SourceFile.m in Sources */ = {isa = PBXBuildFile; fileRef = BE681E6C196A28DC00AA3BE5 /* SourceFile.m */; };
 		BE681E70196A30F100AA3BE5 /* Util.m in Sources */ = {isa = PBXBuildFile; fileRef = BE681E6F196A30F100AA3BE5 /* Util.m */; };
 		BE681E73196A31A100AA3BE5 /* Collections.m in Sources */ = {isa = PBXBuildFile; fileRef = BE681E72196A31A100AA3BE5 /* Collections.m */; };
 		BE99B973161BAE720041B8EA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE99B972161BAE720041B8EA /* Foundation.framework */; };
-		BE99B976161BAE720041B8EA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BE99B975161BAE720041B8EA /* main.m */; };
+		BE99B976161BAE720041B8EA /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE99B975161BAE720041B8EA /* main.mm */; };
 		BE99B97A161BAE720041B8EA /* WInterface.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = BE99B979161BAE720041B8EA /* WInterface.1 */; };
 		BE99B982161BAEBA0041B8EA /* Classes.m in Sources */ = {isa = PBXBuildFile; fileRef = BE99B981161BAEBA0041B8EA /* Classes.m */; };
 		BE99B985161BAFD30041B8EA /* WReader.m in Sources */ = {isa = PBXBuildFile; fileRef = BE99B984161BAFD30041B8EA /* WReader.m */; };
@@ -27,14 +26,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		BE93AD88165E9D9D001BA629 /* PBXContainerItemProxy */ = {
+		BE38E82F196C7C3900C95037 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BE93AD83165E9D9C001BA629 /* WI_iosTests.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = BE93AD4A165E9D9B001BA629;
 			remoteInfo = WI_iosTests;
 		};
-		BE93AD8A165E9D9D001BA629 /* PBXContainerItemProxy */ = {
+		BE38E831196C7C3900C95037 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BE93AD83165E9D9C001BA629 /* WI_iosTests.xcodeproj */;
 			proxyType = 2;
@@ -68,9 +67,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		BE0C5209161FB23C00B8C658 /* TokenizeC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TokenizeC.h; path = ../../BasicClasses/Parse/TokenizeC.h; sourceTree = "<group>"; };
 		BE19E8A216295CF10013C92B /* TestProp.wi */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = TestProp.wi; path = Test/TestProp.wi; sourceTree = SOURCE_ROOT; };
 		BE19E8A316295D960013C92B /* TestProp.wi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestProp.wi.m; path = Test/TestProp.wi.m; sourceTree = SOURCE_ROOT; };
+		BE38E825196C7B6900C95037 /* cParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cParser.h; sourceTree = "<group>"; };
+		BE38E826196C7B6900C95037 /* Parse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Parse.h; sourceTree = "<group>"; };
+		BE38E827196C7B6900C95037 /* Parse.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Parse.mm; sourceTree = "<group>"; };
+		BE38E835196C7FD100C95037 /* Files */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Files; sourceTree = "<group>"; };
 		BE3A169018231A3700B5752A /* wierrors.wi */ = {isa = PBXFileReference; lastKnownFileType = text; name = wierrors.wi; path = Sample/wierrors.wi; sourceTree = "<group>"; };
 		BE3CEBE0164BA18500881540 /* wi.wi */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = wi.wi; sourceTree = SOURCE_ROOT; };
 		BE4152E31811B03200E421D7 /* WInterfaceSample */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = WInterfaceSample; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -96,11 +98,11 @@
 		BE730AD41810A4FB005582C5 /* sample.wi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sample.wi.h; path = Sample/sample.wi.h; sourceTree = "<group>"; };
 		BE730AD51810A4FB005582C5 /* sample.wi.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = sample.wi.html; path = Sample/sample.wi.html; sourceTree = "<group>"; };
 		BE730AD61810A4FB005582C5 /* sample.wi.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = sample.wi.mm; path = Sample/sample.wi.mm; sourceTree = "<group>"; };
-		BE93AD83165E9D9C001BA629 /* WI_iosTests.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = WI_iosTests.xcodeproj; path = WI_iosTests/WI_iosTests.xcodeproj; sourceTree = "<group>"; };
+		BE93AD83165E9D9C001BA629 /* WI_iosTests.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = WI_iosTests.xcodeproj; path = WInterface/WI_iosTests/WI_iosTests.xcodeproj; sourceTree = "<group>"; };
 		BE93AD8D165E9E3B001BA629 /* wi.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = wi.sh; sourceTree = SOURCE_ROOT; };
 		BE99B96E161BAE720041B8EA /* WInterface */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = WInterface; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE99B972161BAE720041B8EA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		BE99B975161BAE720041B8EA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		BE99B975161BAE720041B8EA /* main.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
 		BE99B978161BAE720041B8EA /* WInterface-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WInterface-Prefix.pch"; sourceTree = "<group>"; };
 		BE99B979161BAE720041B8EA /* WInterface.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = WInterface.1; sourceTree = "<group>"; };
 		BE99B980161BAEBA0041B8EA /* Classes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Classes.h; sourceTree = "<group>"; };
@@ -239,12 +241,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		BE0C5207161FB20800B8C658 /* Basic */ = {
+		BE38E824196C7B6900C95037 /* Parser */ = {
 			isa = PBXGroup;
 			children = (
-				BE0C5209161FB23C00B8C658 /* TokenizeC.h */,
+				BE38E825196C7B6900C95037 /* cParser.h */,
+				BE38E826196C7B6900C95037 /* Parse.h */,
+				BE38E827196C7B6900C95037 /* Parse.mm */,
 			);
-			name = Basic;
+			name = Parser;
+			path = ../../BasicClassesCPP/Parser;
+			sourceTree = "<group>";
+		};
+		BE38E82B196C7C3900C95037 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BE38E830196C7C3900C95037 /* WI_iosTests.app */,
+				BE38E832196C7C3900C95037 /* WI_iosTestsTests.octest */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		BE4152E51811B03200E421D7 /* WInterfaceSample */ = {
@@ -265,9 +279,34 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		BE5266E3196DC31D00FD10AB /* Sourcefiles */ = {
+			isa = PBXGroup;
+			children = (
+				BE38E824196C7B6900C95037 /* Parser */,
+				BE99B975161BAE720041B8EA /* main.mm */,
+				BE99B980161BAEBA0041B8EA /* Classes.h */,
+				BE99B981161BAEBA0041B8EA /* Classes.m */,
+				BE99B983161BAFD30041B8EA /* WReader.h */,
+				BE99B984161BAFD30041B8EA /* WReader.m */,
+				BEAA02971621F7280026192D /* WReaderTokenizer.h */,
+				BEAA02981621F7280026192D /* WReaderTokenizer.m */,
+				BE681E66196A28A400AA3BE5 /* CodeBlock.h */,
+				BE681E67196A28A400AA3BE5 /* CodeBlock.m */,
+				BE681E6B196A28DC00AA3BE5 /* SourceFile.h */,
+				BE681E6C196A28DC00AA3BE5 /* SourceFile.m */,
+				BE681E71196A31A100AA3BE5 /* Collections.h */,
+				BE681E72196A31A100AA3BE5 /* Collections.m */,
+				BE681E6E196A30F100AA3BE5 /* Util.h */,
+				BE681E6F196A30F100AA3BE5 /* Util.m */,
+			);
+			name = Sourcefiles;
+			path = WInterface;
+			sourceTree = "<group>";
+		};
 		BE730AC918108F3B005582C5 /* Sample */ = {
 			isa = PBXGroup;
 			children = (
+				BE4152E51811B03200E421D7 /* WInterfaceSample */,
 				BEC8A4B318280D200090BBAD /* lib */,
 				BE730ACE1810A4E7005582C5 /* op */,
 				BE730ACC18108F50005582C5 /* sample.wi */,
@@ -302,23 +341,14 @@
 			name = Test;
 			sourceTree = "<group>";
 		};
-		BE93AD84165E9D9C001BA629 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				BE93AD89165E9D9D001BA629 /* WI_iosTests.app */,
-				BE93AD8B165E9D9D001BA629 /* WI_iosTestsTests.octest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		BE99B963161BAE710041B8EA = {
 			isa = PBXGroup;
 			children = (
+				BE93AD83165E9D9C001BA629 /* WI_iosTests.xcodeproj */,
+				BE5266E3196DC31D00FD10AB /* Sourcefiles */,
+				BE38E835196C7FD100C95037 /* Files */,
 				BE730AC918108F3B005582C5 /* Sample */,
 				BE99B974161BAE720041B8EA /* WInterface */,
-				BE4152E51811B03200E421D7 /* WInterfaceSample */,
-				BE99B971161BAE720041B8EA /* Frameworks */,
-				BE99B96F161BAE720041B8EA /* Products */,
 			);
 			sourceTree = "<group>";
 		};
@@ -329,6 +359,7 @@
 				BE4152E31811B03200E421D7 /* WInterfaceSample */,
 			);
 			name = Products;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		BE99B971161BAE720041B8EA /* Frameworks */ = {
@@ -338,34 +369,17 @@
 				BE99B972161BAE720041B8EA /* Foundation.framework */,
 			);
 			name = Frameworks;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		BE99B974161BAE720041B8EA /* WInterface */ = {
 			isa = PBXGroup;
 			children = (
-				BE681E71196A31A100AA3BE5 /* Collections.h */,
-				BE681E72196A31A100AA3BE5 /* Collections.m */,
-				BE681E6E196A30F100AA3BE5 /* Util.h */,
-				BE681E6F196A30F100AA3BE5 /* Util.m */,
-				BE93AD8D165E9E3B001BA629 /* wi.sh */,
-				BE93AD83165E9D9C001BA629 /* WI_iosTests.xcodeproj */,
-				BE3CEBE0164BA18500881540 /* wi.wi */,
+				BE99B96F161BAE720041B8EA /* Products */,
+				BE99B971161BAE720041B8EA /* Frameworks */,
 				BEA020A31629503700CA480A /* Props */,
 				BE796C761624A47E00E550C2 /* Test */,
-				BE0C5207161FB20800B8C658 /* Basic */,
-				BE99B975161BAE720041B8EA /* main.m */,
-				BE99B979161BAE720041B8EA /* WInterface.1 */,
 				BE99B977161BAE720041B8EA /* Supporting Files */,
-				BE99B980161BAEBA0041B8EA /* Classes.h */,
-				BE99B981161BAEBA0041B8EA /* Classes.m */,
-				BE99B983161BAFD30041B8EA /* WReader.h */,
-				BE99B984161BAFD30041B8EA /* WReader.m */,
-				BEAA02971621F7280026192D /* WReaderTokenizer.h */,
-				BEAA02981621F7280026192D /* WReaderTokenizer.m */,
-				BE681E66196A28A400AA3BE5 /* CodeBlock.h */,
-				BE681E67196A28A400AA3BE5 /* CodeBlock.m */,
-				BE681E6B196A28DC00AA3BE5 /* SourceFile.h */,
-				BE681E6C196A28DC00AA3BE5 /* SourceFile.m */,
 			);
 			path = WInterface;
 			sourceTree = "<group>";
@@ -373,7 +387,10 @@
 		BE99B977161BAE720041B8EA /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				BE93AD8D165E9E3B001BA629 /* wi.sh */,
+				BE3CEBE0164BA18500881540 /* wi.wi */,
 				BE99B978161BAE720041B8EA /* WInterface-Prefix.pch */,
+				BE99B979161BAE720041B8EA /* WInterface.1 */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -643,7 +660,7 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = BE93AD84165E9D9C001BA629 /* Products */;
+					ProductGroup = BE38E82B196C7C3900C95037 /* Products */;
 					ProjectRef = BE93AD83165E9D9C001BA629 /* WI_iosTests.xcodeproj */;
 				},
 			);
@@ -656,18 +673,18 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		BE93AD89165E9D9D001BA629 /* WI_iosTests.app */ = {
+		BE38E830196C7C3900C95037 /* WI_iosTests.app */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.application;
 			path = WI_iosTests.app;
-			remoteRef = BE93AD88165E9D9D001BA629 /* PBXContainerItemProxy */;
+			remoteRef = BE38E82F196C7C3900C95037 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		BE93AD8B165E9D9D001BA629 /* WI_iosTestsTests.octest */ = {
+		BE38E832196C7C3900C95037 /* WI_iosTestsTests.octest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
 			path = WI_iosTestsTests.octest;
-			remoteRef = BE93AD8A165E9D9D001BA629 /* PBXContainerItemProxy */;
+			remoteRef = BE38E831196C7C3900C95037 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -687,9 +704,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BE681E6D196A28DC00AA3BE5 /* SourceFile.m in Sources */,
-				BE99B976161BAE720041B8EA /* main.m in Sources */,
-				BE681E68196A28A400AA3BE5 /* CodeBlock.m in Sources */,
+				BE99B976161BAE720041B8EA /* main.mm in Sources */,
+				BE38E828196C7B6900C95037 /* Parse.mm in Sources */,
 				BE99B982161BAEBA0041B8EA /* Classes.m in Sources */,
 				BE99B985161BAFD30041B8EA /* WReader.m in Sources */,
 				BE681E70196A30F100AA3BE5 /* Util.m in Sources */,
@@ -784,6 +800,11 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"/Users/Will/Documents/BasicClassesCPP/**",
+				);
 				INSTALL_PATH = deploy;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
@@ -805,6 +826,11 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"/Users/Will/Documents/BasicClassesCPP/**",
+				);
 				INSTALL_PATH = deploy;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				SDKROOT = macosx;

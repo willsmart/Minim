@@ -1,4 +1,5 @@
 #import "Util.h"
+#import <objc/runtime.h>
 
 time_t _DEBLog_time;
 
@@ -42,9 +43,9 @@ NSError *_IgnoreNSError,*__strong*IgnoreNSError=&_IgnoreNSError;
 
 static long s_breakAt=0,s_breakpoint=0;
 long breakpoint() {
-    DDLogCDebug(@".%ld.",++s_breakpoint);
+    printf(".%ld.",++s_breakpoint);
     if (s_breakAt==s_breakpoint) {
-        DDLogCDebug(@"\n\n!!BREAK!!\n");
+        printf("\n\n!!BREAK!!\n");
     }
     return(s_breakpoint);
 }
@@ -55,95 +56,107 @@ void ERROR(NSString *format,...) {
     va_start(args, format);
     NSString *error=[[NSString alloc] initWithFormat:format arguments:args];
     va_end(args);
-    DDLogCError(@"\n\nERROR: %s\n",error.UTF8String);
+    printf("\n\nERROR: %s\n",error.UTF8String);
     breaknow();
 }
 
 
+static NSString *s_basePath;
+NSString *basePath() {
+    if (!s_basePath) setBasePath(nil);
+    return(s_basePath);
+}
+void setBasePath(NSString *basePath) {
+    if (!basePath) basePath=nil;
+    basePath=[basePath stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
+    if (!basePath.isAbsolutePath) {
+        NSFileManager *fm=NSFileManager.defaultManager;
+        basePath=(basePath?[fm.currentDirectoryPath stringByAppendingPathComponent:basePath]:fm.currentDirectoryPath);
+    }
+    s_basePath=basePath;
+}
+
 NSString* pathForPath(NSString *path) {
-    path=[basePath stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
-    if (!path.isAbsolutePath) path=[self.basePath stringByAppendingPathComponent:path];
-    return([NSURL URLWithString:path relativeToURL:NSBundle.mainBundle.bundleURL].absoluteURL);
+    path=[basePath() stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
+    if (!path.isAbsolutePath) path=[basePath() stringByAppendingPathComponent:path];
+    return([[NSURL URLWithString:path relativeToURL:NSBundle.mainBundle.bundleURL] absoluteString]);
 }
 
 
 @implementation NSObject(winterface)
 
--(bool)isWeakSelf {MSGSTART("NSObject:-(bool)isWeakSelf")
+-(bool)isWeakSelf {
   return(NO);}
--(id)performUnknownSelector:(SEL)aSelector {MSGSTART("NSObject:-(id)performUnknownSelector:(SEL)aSelector")
+-(id)performUnknownSelector:(SEL)aSelector {
 
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
           return [self performSelector:aSelector];
   #pragma clang diagnostic pop
     }
--(void)performUnknownSelector:(SEL)aSelector onThread:(NSThread *)thread withObject:(id)arg waitUntilDone:(BOOL)wait {MSGSTART("NSObject:-(void)performUnknownSelector:(SEL)aSelector onThread:(NSThread *)thread withObject:(id)arg waitUntilDone:(BOOL)wait")
-
+-(void)performUnknownSelector:(SEL)aSelector onThread:(NSThread *)thread withObject:(id)arg waitUntilDone:(BOOL)wait {
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
           [self performSelector:aSelector onThread:thread withObject:arg waitUntilDone:wait];
   #pragma clang diagnostic pop
     }
--(void)performUnknownSelector:(SEL)aSelector onThread:(NSThread *)thread withObject:(id)arg waitUntilDone:(BOOL)wait modes:(NSArray *)array {MSGSTART("NSObject:-(void)performUnknownSelector:(SEL)aSelector onThread:(NSThread *)thread withObject:(id)arg waitUntilDone:(BOOL)wait modes:(NSArray *)array")
-
+-(void)performUnknownSelector:(SEL)aSelector onThread:(NSThread *)thread withObject:(id)arg waitUntilDone:(BOOL)wait modes:(NSArray *)array {
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
           [self performSelector:aSelector onThread:thread withObject:arg waitUntilDone:wait modes:array];
   #pragma clang diagnostic pop
     }
--(void)performUnknownSelector:(SEL)aSelector withObject:(id)anArgument afterDelay:(NSTimeInterval)delay {MSGSTART("NSObject:-(void)performUnknownSelector:(SEL)aSelector withObject:(id)anArgument afterDelay:(NSTimeInterval)delay")
-
+-(void)performUnknownSelector:(SEL)aSelector withObject:(id)anArgument afterDelay:(NSTimeInterval)delay {
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
           [self performSelector:aSelector withObject:anArgument afterDelay:delay];
   #pragma clang diagnostic pop
     }
--(void)performUnknownSelector:(SEL)aSelector withObject:(id)anArgument afterDelay:(NSTimeInterval)delay inModes:(NSArray *)modes {MSGSTART("NSObject:-(void)performUnknownSelector:(SEL)aSelector withObject:(id)anArgument afterDelay:(NSTimeInterval)delay inModes:(NSArray *)modes")
+-(void)performUnknownSelector:(SEL)aSelector withObject:(id)anArgument afterDelay:(NSTimeInterval)delay inModes:(NSArray *)modes {
 
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
           [self performSelector:aSelector withObject:anArgument afterDelay:delay inModes:modes];
   #pragma clang diagnostic pop
     }
--(id)performUnknownSelector:(SEL)aSelector withObject:(id)anObject {MSGSTART("NSObject:-(id)performUnknownSelector:(SEL)aSelector withObject:(id)anObject")
+-(id)performUnknownSelector:(SEL)aSelector withObject:(id)anObject {
 
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
           return [self performSelector:aSelector withObject:anObject];
   #pragma clang diagnostic pop
     }
--(id)performUnknownSelector:(SEL)aSelector withObject:(id)anObject withObject:(id)anotherObject {MSGSTART("NSObject:-(id)performUnknownSelector:(SEL)aSelector withObject:(id)anObject withObject:(id)anotherObject")
+-(id)performUnknownSelector:(SEL)aSelector withObject:(id)anObject withObject:(id)anotherObject {
 
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
           return [self performSelector:aSelector withObject:anObject withObject:anotherObject];
   #pragma clang diagnostic pop
     }
--(void)performUnknownSelectorInBackground:(SEL)aSelector withObject:(id)arg {MSGSTART("NSObject:-(void)performUnknownSelectorInBackground:(SEL)aSelector withObject:(id)arg")
+-(void)performUnknownSelectorInBackground:(SEL)aSelector withObject:(id)arg {
 
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
           [self performSelectorInBackground:aSelector withObject:arg];
   #pragma clang diagnostic pop
     }
--(void)performUnknownSelectorOnMainThread:(SEL)aSelector withObject:(id)arg waitUntilDone:(BOOL)wait {MSGSTART("NSObject:-(void)performUnknownSelectorOnMainThread:(SEL)aSelector withObject:(id)arg waitUntilDone:(BOOL)wait")
+-(void)performUnknownSelectorOnMainThread:(SEL)aSelector withObject:(id)arg waitUntilDone:(BOOL)wait {
 
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
           [self performSelectorOnMainThread:aSelector withObject:arg waitUntilDone:wait];
   #pragma clang diagnostic pop
     }
--(void)performUnknownSelectorOnMainThread:(SEL)aSelector withObject:(id)arg waitUntilDone:(BOOL)wait modes:(NSArray *)array {MSGSTART("NSObject:-(void)performUnknownSelectorOnMainThread:(SEL)aSelector withObject:(id)arg waitUntilDone:(BOOL)wait modes:(NSArray *)array")
+-(void)performUnknownSelectorOnMainThread:(SEL)aSelector withObject:(id)arg waitUntilDone:(BOOL)wait modes:(NSArray *)array {
 
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
           [self performSelectorOnMainThread:aSelector withObject:arg waitUntilDone:wait modes:array];
   #pragma clang diagnostic pop
     }
--(id)strongSelf {MSGSTART("NSObject:-(id)strongSelf")
+-(id)strongSelf {
   return(self);}
--(WeakSelf*)weakSelf {MSGSTART("NSObject:-(WeakSelf*)weakSelf")
+-(WeakSelf*)weakSelf {
 
           void *key=@selector(weakSelf);
           WeakSelf *weakSelf=objc_getAssociatedObject(self,key);
@@ -158,15 +171,15 @@ NSString* pathForPath(NSString *path) {
 
 
 @implementation WeakSelf
-@synthesize strongSelf=v_strongSelf;
+@synthesize index=index;
 
--(bool)isWeakSelf {MSGSTART("WeakSelf:-(bool)isWeakSelf")
+-(bool)isWeakSelf {
   return(YES);}
--(id)strongSelf {MSGSTART("WeakSelf:-(id)strongSelf")
+-(id)strongSelf {
   
   /*i-999*/id ret=v_strongSelf;
   /*i999*/return(ret);}
--(WeakSelf*)weakSelf {MSGSTART("WeakSelf:-(WeakSelf*)weakSelf")
+-(WeakSelf*)weakSelf {
   return(self);}
 +(WeakSelf*)weakSelfFromObject:(id)strongSelf {
     WeakSelf *ret=WeakSelf.new;

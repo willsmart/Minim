@@ -1,0 +1,27 @@
++word:a-z,A-Z,_|word|>>word,wordgroup,_expr
++number:0-9|number|>>number,_expr
++word:rtl:a-z,A-Z,_|>>word,wordgroup,_expr
++number:rtl:0-9|>>number,_expr
++wordgroup:wordgroup|number,wordgroup|>>wordgroup,_expr
++lparanwsl:? ,\t,\n,\r|(|>>(
++lparanwsr:(|? ,\t,\n,\r|>>(
++fnstart:wordgroup|?(|>>fnstart
+fn:fnstart|args,expr|?)|>>fn,_expr
++exprsl:? ,\t,\r,\n|_expr|>>_expr
++exprsr:_expr|? ,\t,\r,\n|>>_expr
++word(:Oa-z,A-Z,_|?o(|>>word(
+expr:rtl:?o(,fnstart|O_expr|>>expr
+expr:rtl:oexpr|?o\,,+,-,*,/|O_expr|>>expr
+expr:rtl:oexpr|?o>|?o>|O_expr|>>expr
+expr:rtl:oexpr|?o<|?o<|O_expr|>>expr
+block:?{|stmt,stmts,expr|?}|>>block,stmt
+timesdiv:expr|?*,/|expr|>>timesdiv,expr
+plussub:expr|?+,-|expr|>>plussub,expr
+shiftl:expr|?<|?<|expr|>>shiftl,expr
+shiftr:expr|?>|?>|expr|>>shiftr,expr
+args:rtl:expr|?\,|expr|>>args
++curl:?{|expr|?}|>>_expr
++paran:?(|expr|?)|>>_expr
++expr:_expr|>>expr
++stmt:expr|?;,\,|>>stmt
+stmts:stmt,expr,stmts|stmt,expr|>>stmts

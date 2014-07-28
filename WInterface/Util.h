@@ -53,6 +53,8 @@ extern id<NSCopying> ObjectKey(id object);
 
 
 extern NSString* pathForPath(NSString *path);
+extern NSString *basePath();
+extern void setBasePath(NSString *basePath);
 
 extern NSError *_IgnoreNSError,*__strong*IgnoreNSError;
 
