@@ -1,5 +1,14 @@
+
+
+AA AA a=0
+AA -(void)fn {}
+AA -
+ hi
+
+/*...
+
 "wierrors.wi"
-//"../../wiLibrary/wiui.wi"
+"../../wiLibrary/wiui.wi"
 "<pthread.h>"
 
 sys NSObject
@@ -48,11 +57,11 @@ type kid "typedef:id<NSCopying,Retains>" "retains"
 #endif
 #define _PrivateAccessMask_ __private_access_thread_mask_in___ClassName__
 */
-
+/*
 ThreadIDKey<ThreadKey> "keyName=>id" "valueType=>Int" "nac"
     -decl:{
-        extern Int g_prevThreadId;
-        Int getThreadId();
+        extern NSInteger g_prevThreadId;
+        NSInteger getThreadId();
         ULL getThreadMask();
 
         bool authorized_thread(ULL&mask);
@@ -61,7 +70,7 @@ ThreadIDKey<ThreadKey> "keyName=>id" "valueType=>Int" "nac"
         #define privateaccess(...) do {bool __needdeauth=authorize_thread(_PrivateAccessMask_);{__VA_ARGS__;}if (__needdeauth) deauthorize_thread(_PrivateAccessMask_);} while (false)
     }
     -decl:impl:{
-        Int g_prevThreadId=0;
+        NSInteger g_prevThreadId=0;
         ULL getThreadMask() {
             Int ret=getThreadValueNamedId();
             if (!ret) setThreadValueNamedId(ret=++g_prevThreadId);
@@ -100,9 +109,8 @@ ThreadIDKey<ThreadKey> "keyName=>id" "valueType=>Int" "nac"
     ULL __private_access_thread_mask_in___ClassName__=0 (justivar,privateivar)
 
 
+*/
 
-
-/*...
 
 // check for non autoreleased properties
 // (\[\s*\[\s*[\w\d_]+\s+alloc\s*]\s*init[^\[\(\{\]\)\}]*([\[\(\{][^\[\(\{\]\)\}]*+([\[\(\{][^\[\(\{\]\)\}]*+([\[\(\{][^\[\(\{\]\)\}]*+([\[\(\{][^\[\(\{\]\)\}]*+[\]\)\}][^\[\(\{\]\)\}]*+)*+[\]\)\}][^\[\(\{\]\)\}]*+)*+[\]\)\}][^\[\(\{\]\)\}]*+)*+[\]\)\}][^\[\(\{\]\)\}]*+)*+((?!autorelease\]).)*)(\(
@@ -117,12 +125,12 @@ ThreadIDKey<ThreadKey> "keyName=>id" "valueType=>Int" "nac"
 //lllrrr "l"l"rr"r
 //"l\\\"ll\\"llr"rrrr"lrlrrl
 // NSString s=[[[NSString alloc] initWithFormat:(NSString*)[NSString stringWithFormat:@"hello%@",[NSString string]],@"blah",NSMakeRange(c,1,2,3)] autor elease] (readonly)
-A
+AA
  Int a
- A b=[A alloc]
+ AA b=[AA alloc]
  
-"include.wi"
-"include.wi"
+//"include.wi"
+//"include.wi"
 //"include/include.wi"
 //"include.h"
 //"<sysinclude.h>"
@@ -290,7 +298,7 @@ VarsAssignAtomic<Vars> "Int=>Clas*" "nm=>Clas" "args=>assign,atomic" "fn:VarsAss
 
 B
 
-A
+AA
     a -- B b
     as2 >s- B bs2
     as3 >s~ B bs3
@@ -319,8 +327,8 @@ A
     amw >> Amq -m< B bmw >> Bmq
 
 
-A
-    A a=nil (publicreadonly)
+AA
+    AA a=nil (publicreadonly)
     -(void)fn {
         a=[hi hi];
         a="hi";
@@ -331,26 +339,26 @@ A
 
 
 <C>
-    A c=nil
-    A pc=nil (privateivar)
+    AA c=nil
+    AA pc=nil (privateivar)
     -(void)fn {/*C*/
         c=nil;
         pc=nil;
         /*ivar*/v_c=nil;
         /*ivar*/v_pc=nil;
     }
-A
-    A a=nil,b=nil
-    A pa=nil,pb=nil (privateivar)
+AA
+    AA a=nil,b=nil
+    AA pa=nil,pb=nil (privateivar)
     -(void)fn {
         a=b=nil;
         pa=pb=nil;
         /*ivar*/v_a=/*ivar*/v_b=nil;
         /*ivar*/v_pa=/*ivar*/v_pb=nil;
     }
-B:A<C>
-    A a=nil
-    A pa=nil (privateivar)
+B:AA<C>
+    AA a=nil
+    AA pa=nil (privateivar)
     -(void)fn {
         a=self.b=c=nil;
         pa=self.pb=pc=nil;
@@ -360,17 +368,17 @@ B:A<C>
     }
 ..*/
 
-<A>
-    A footer={@-999
+<AA>
+    AA footer={@-999
         id ret=(footer?footer:[ViewUtilities loadViewOfClass:self.footerClass withTag:footerTag fromNibWithName:self.nibName]);
         @999 return(ret);
     }=nil (ivar=footer,dealloc,readonly!)
 
-A<A>
+AA<AA>
     -decl:{
         #define E(...) __VA_ARGS__
     }
-    A a=nil
+    AA a=nil
     -(id)a:(id)a1 {
         return(nil);
     }
@@ -385,10 +393,8 @@ A<A>
         return(nil);
     }
 
-...*/
-type Int
-A "-Object"
-    A a={return(nil);}=nil (ivar)
+AA "-Object"
+    AA a={return(nil);}=nil (ivar)
     Int j=nil (readonly)
     -(void)fn {
         j=0;
@@ -398,5 +404,6 @@ A "-Object"
     -(void)a:(Int)aa {}
 
     
+...*/
 
 

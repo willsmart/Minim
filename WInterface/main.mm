@@ -6,14 +6,21 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "WReaderTokenizer.h"
-#import "Classes.h"
-#import "WReader.h"
-#import "Parse.h"
 #define MAINCPPFILE
-#import "Headers.h"
+#define CPPFILE
+#import "WInterface.h"
 
+void testParse() {
+    ((id<ParseClass>)Parse.class).rulesFilename=@"rules_wi.txt";
+
+    NSError *err=nil;
+    NSString *prog=[NSString stringWithContentsOfFile:@"eg.wi" encoding:NSUTF8StringEncoding error:&err];
+    if (!prog) prog=@"File not found";
+    NSString *json=[Parse jsonFromTokens:[Parse parse:prog] program:prog];
+    [json writeToFile:@"eg.wi.json" atomically:YES encoding:NSUTF8StringEncoding error:&err];
+
+    exit(0);
+}
 
 int main(int argc, const char * argv[])
 {
@@ -24,15 +31,6 @@ int main(int argc, const char * argv[])
 
     @autoreleasepool {
 
-    ((id<ParseClass>)Parse.class).rulesFilename=@"rules_wi.txt";
-
-    NSError *err=nil;
-    NSString *prog=[NSString stringWithContentsOfFile:@"eg.wi" encoding:NSUTF8StringEncoding error:&err];
-    if (!prog) prog=@"File not found";
-    NSString *json=[Parse jsonFromTokens:[Parse parse:prog] program:prog];
-    [json writeToFile:@"eg.wi.json" atomically:YES encoding:NSUTF8StringEncoding error:&err];
-
-    exit(0);
         NSFileManager *fm=[NSFileManager defaultManager];
 
         NSString *baseDir=fm.currentDirectoryPath;

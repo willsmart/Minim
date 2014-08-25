@@ -6,11 +6,7 @@
 //
 //
 
-#import "CodeBlock.h"
-#import "Util.h"
-#import "Collections.h"
-#import "WReader.h"
-#import "WReaderTokenizer.h"
+#import "WInterface.h"
 
 
 
@@ -54,10 +50,10 @@
 static NSMutableDictionary *s_tokens=nil;
 
 +(instancetype)_codeTokenWithText:(NSString*)text {
-    if (!s_tokens) s_tokens=NSMutableDictionary.new;
+    if (!s_tokens) s_tokens=[NSMutableDictionary new];
     CodeToken *ret=[s_tokens objectForKey:text];
     if (!ret) {
-        [s_tokens setObject:ret=CodeToken.new forKey:text];
+        [s_tokens setObject:ret=[CodeToken new] forKey:text];
         ret->_text=text;
         [ret baseType];
     }
@@ -69,10 +65,10 @@ static NSMutableDictionary *s_tokens=nil;
 static WReader *s_reader=nil;
 
 +(NSArray*)codeTokensForText:(NSString*)text {
-    if (!s_tokens) s_tokens=NSMutableDictionary.new;
+    if (!s_tokens) s_tokens=[NSMutableDictionary new];
     NSArray *ret=[s_tokens objectForKey:text];
     if (!ret) {
-        if (!s_reader) s_reader=WReader.new;
+        if (!s_reader) s_reader=[WReader new];
         s_reader.fileString=text;
         if (s_reader.tokenizer.tokens.count==1) {
             ret=(id)[self codeTokenWithText:((WReaderToken*)s_reader.tokenizer.tokens.firstObject).str];
@@ -146,7 +142,7 @@ static NSUInteger s_tokenChangeTime=0,s_peerValidationTime=0,s_utilmark=1;
  */
 -(NSDictionary*)subBlocksMembershipCounts {
     if (!_subBlocksMembershipCounts) {
-        _subBlocksMembershipCounts=NSMutableDictionary.new;
+        _subBlocksMembershipCounts=[NSMutableDictionary new];
         s_utilmark++;
         NSUInteger c=0;
         for (CodeBlock *b in _subBlocksInOrder) {
@@ -323,10 +319,10 @@ static NSUInteger s_tokenChangeTime=0,s_peerValidationTime=0,s_utilmark=1;
 
 -(instancetype)init {
     if (!(self=[super init])) return(nil);
-    _subBlocksInOrder=NSMutableArray.new;
-    _subBlocksByKey=NSMutableDictionary.new;
-    _superBlocks=NSMutableSet.new;
-    _peerBlocks=NSMutableDictionary.new;
+    _subBlocksInOrder=[NSMutableArray new];
+    _subBlocksByKey=[NSMutableDictionary new];
+    _superBlocks=[NSMutableSet new];
+    _peerBlocks=[NSMutableDictionary new];
     return(self);
 }
 
@@ -343,7 +339,7 @@ static NSUInteger s_tokenChangeTime=0,s_peerValidationTime=0,s_utilmark=1;
 
 -(void)setPath:(NSString *)path {
     path=pathForPath(path);
-    WReader *r=WReader.new;
+    WReader *r=[WReader new];
     r.fileName=path;
     if (!r.tokenizer.tokens) _path=nil;
     else {
@@ -353,7 +349,7 @@ static NSUInteger s_tokenChangeTime=0,s_peerValidationTime=0,s_utilmark=1;
 }
 
 -(void)setBody:(NSString *)body {
-    WReader *r=WReader.new;
+    WReader *r=[WReader new];
     r.fileString=body;
     if (!r.tokenizer.tokens) _body=nil;
     else {

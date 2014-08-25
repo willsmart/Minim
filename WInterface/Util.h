@@ -11,7 +11,7 @@ extern id nullable_object(id object);
 long breakpoint();
 void breaknow();
 void breakat(long at);
-void ERROR(NSString *error,...);
+void error(NSString *error,...);
 
 
 #define COMPILER_MESSAGE(msg) _Pragma(STR(message(msg)))
@@ -77,6 +77,7 @@ extern NSError *_IgnoreNSError,*__strong*IgnoreNSError;
 -(void)performUnknownSelectorOnMainThread:(SEL)aSelector withObject:(id)arg waitUntilDone:(BOOL)wait modes:(NSArray *)array;
 -(id)strongSelf;
 -(WeakSelf*)weakSelf;
+
 @end
 
 

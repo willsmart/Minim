@@ -1,5 +1,4 @@
-#import "Util.h"
-#import <objc/runtime.h>
+#import "WInterface.h"
 
 time_t _DEBLog_time;
 
@@ -7,9 +6,9 @@ NSString *replaceTokensInFilenameString(NSString *filename) {
     if ([filename rangeOfString:@"TIMESTAMP"].location!=NSNotFound) {
         NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
         [dateFormat setDateFormat:@"yyyy-MM-dd_HH-mm"];
-        NSString *dateString=[dateFormat stringFromDate:NSDate.new];
+        NSString *dateString=[dateFormat stringFromDate:[NSDate new]];
         [dateFormat setDateFormat:@"yyyy-MM-dd_HH-mm-ss_SSS"];
-        NSString *msDateString=[dateFormat stringFromDate:NSDate.new];
+        NSString *msDateString=[dateFormat stringFromDate:[NSDate new]];
         filename=[[filename
             stringByReplacingOccurrencesOfString:@"MSTIMESTAMP" withString:msDateString]
             stringByReplacingOccurrencesOfString:@"TIMESTAMP" withString:dateString];
@@ -51,7 +50,7 @@ long breakpoint() {
 }
 void breaknow() {s_breakAt=s_breakpoint+1;breakpoint();}
 void breakat(long at) {s_breakAt=at;}
-void ERROR(NSString *format,...) {
+void error(NSString *format,...) {
     va_list args;
     va_start(args, format);
     NSString *error=[[NSString alloc] initWithFormat:format arguments:args];
@@ -182,7 +181,7 @@ NSString* pathForPath(NSString *path) {
 -(WeakSelf*)weakSelf {
   return(self);}
 +(WeakSelf*)weakSelfFromObject:(id)strongSelf {
-    WeakSelf *ret=WeakSelf.new;
+    WeakSelf *ret=[WeakSelf new];
     ret->v_strongSelf=strongSelf;
     static NSUInteger s_index=0;
     ret->index=++s_index;

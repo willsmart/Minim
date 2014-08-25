@@ -27,7 +27,6 @@
 */
 
 //#import <RegexKit/RegexKit.h>
-#import <Foundation/Foundation.h>
 @class WReader;
 @class WClass;
 @class WReaderTokenizer;
@@ -64,9 +63,11 @@
     NSMutableDictionary *classes,*protocols;
     NSMutableArray *propertyContexts,*props,*taskList;
     NSMutableIndexSet *propertyContextBrackets;
+    NSMutableArray *propertyContextLineis;
     WClass *classContext;
     InFiles *logContext;
     int classContextBracket;
+    int classContextLinei;
     bool skipNewLines;
     bool madeImportSets;
 }
@@ -75,9 +76,10 @@
 @property (retain,nonatomic) NSMutableDictionary *classes,*protocols;
 @property (retain,nonatomic) NSMutableArray *propertyContexts,*props;
 @property (retain,nonatomic) NSMutableIndexSet *propertyContextBrackets;
+@property (retain,nonatomic) NSMutableArray *propertyContextLineis;
 @property (retain,nonatomic) WClass *classContext;
 @property (retain,nonatomic) InFiles *logContext;
-@property int classContextBracket;
+@property int classContextBracket,classContextLinei;
 @property (retain,nonatomic) NSMutableArray *taskList;
 @property (retain,nonatomic) NSMutableSet *readFNStack;
 @property (retain,nonatomic) NSMutableArray *includes;
@@ -122,8 +124,8 @@
 @property (strong,nonatomic) NSString *clas;
 @property (retain,nonatomic) NSMutableSet *protocols;
 
--(WPotentialType*)initWithType:(WType*)t;
--(WPotentialType*)initWithClass:(NSString*)aclas protocols:(NSArray*)aprotocols addObject:(bool)addObject;
++(WPotentialType*)newWithType:(WType*)t;
++(WPotentialType*)newWithClass:(NSString*)aclas protocols:(NSArray*)aprotocols addObject:(bool)addObject;
 -(void)addClass:(NSString*)aclas protocols:(NSArray*)aprotocols;
 
 @end
@@ -138,8 +140,8 @@
 @property (readonly) WPotentialType *potentialType;
 @property (retain,nonatomic) WPotentialType *_potentialType;
 
--(WType*)initWithPotentialType:(WPotentialType*)pt;
--(WType*)initWithClass:(WClass*)aclas protocols:(NSArray*)aprotocols addObject:(bool)addObject;
++(WType*)newWithPotentialType:(WPotentialType*)pt;
++(WType*)newWithClass:(WClass*)aclas protocols:(NSArray*)aprotocols addObject:(bool)addObject;
 -(void)addClass:(WClass*)aclas protocols:(NSArray*)aprotocols;
 @property (readonly) NSString *wiType;
 -(NSString*)objCTypeWithStars:(int)stars;

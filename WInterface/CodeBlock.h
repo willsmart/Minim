@@ -6,8 +6,6 @@
 //
 //
 
-#import <Foundation/Foundation.h>
-
 @class SourceFile;
 @class WReaderToken;
 

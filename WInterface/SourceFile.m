@@ -6,10 +6,7 @@
 //
 //
 
-#import "SourceFile.h"
-#import "WReader.h"
-#import "WReaderTokenizer.h"
-#import "Collections.h"
+#import "WInterface.h"
 
 @implementation SourceFile
 
@@ -35,7 +32,7 @@ NSMutableDictionary *s_sourceFiles=nil;
     
     if (!s_sourceFiles) s_sourceFiles=@{}.mutableCopy;
     if (!s_sourceFiles[path]) {
-        SourceFile *sf=SourceFile.new;
+        SourceFile *sf=[SourceFile new];
         s_sourceFiles[path]=sf;
         sf._path=path;
     }
@@ -45,12 +42,12 @@ NSMutableDictionary *s_sourceFiles=nil;
 
 -(instancetype)initFileWithPath:(NSString*)path {
     path=[self pathForPath:path];
-    _wreader=WReader.new;
+    _wreader=[WReader new];
     _tokens=_wreader.tokenizer.tokens;
     
     if (!s_sourceFiles) s_sourceFiles=@{}.mutableCopy;
     if (!s_sourceFiles[path]) {
-        SourceFile *sf=SourceFile.new;
+        SourceFile *sf=[SourceFile new];
         s_sourceFiles[path]=sf;
         sf._path=path;
 

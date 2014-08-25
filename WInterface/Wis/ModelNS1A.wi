@@ -6,7 +6,7 @@
 WIMyClass
     NSIndexSet previousIndexesInHisqname=nil (dealloc,readonly,ivar=previousIndexesInHisqname)
     NSIndexSet indexesInHisqname=nil (dealloc,readonly,ivar=indexesInHisqname)
-    UInt indexInHisqname={return(self.indexesInHisqname.firstIndex);}
+    Unsigned indexInHisqname={return(self.indexesInHisqname.firstIndex);}
 
     -(Int)commitProperties:(Int)substageIndex {/*-3*/
         previousIndexesInHisqname=indexesInHisqname;
@@ -50,7 +50,7 @@ JustMyClassOverride
     NSIndexSet previousIndexesInHisqname=nil (dealloc,readonly,ivar=previousIndexesInHisqname)
     NSIndexSet indexesInHisqname=
         {return(useMyHisqname&&indexesInHisqname?indexesInHisqname:self.baseWithHisqname.indexesInHisqname);}=nil (dealloc,ivar=indexesInHisqname)
-    UInt indexInHisqname={return(self.indexesInHisqname.firstIndex);}
+    Unsigned indexInHisqname={return(self.indexesInHisqname.firstIndex);}
 
     -(void)setHisqname:(NSHisClass)v {/*-1000*/ERR("__Class__ Please set indexes");}
 

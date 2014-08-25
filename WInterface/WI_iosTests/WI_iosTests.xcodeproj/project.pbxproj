@@ -271,7 +271,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = /Users/Will/Documents/WInterface/wi.sh;
+			shellScript = /Users/Will/Documents/WInterface/Sample/wi.sh;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -449,6 +449,7 @@
 				BE93AD7F165E9D9C001BA629 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		BE93AD80165E9D9C001BA629 /* Build configuration list for PBXNativeTarget "WI_iosTestsTests" */ = {
 			isa = XCConfigurationList;
@@ -457,6 +458,7 @@
 				BE93AD82165E9D9C001BA629 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

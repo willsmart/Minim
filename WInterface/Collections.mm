@@ -1,4 +1,4 @@
-#import "Collections.h"
+#import "WInterface.h"
 
 @implementation Collections
     +(bool) getInsertsAndDeletesWhenChanging:(NSArray*)from to:(NSArray*)to inss:(NSArray*__strong*)pinss dels:(NSArray*__strong*)pdels  {

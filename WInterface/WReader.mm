@@ -6,10 +6,7 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import "WReader.h"
-#define MAINCPPFILE
-#define CPPFILE
-#import "WReaderTokenizer.h"
+#import "WInterface.h"
 
 
 @implementation WReader

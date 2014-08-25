@@ -6,9 +6,7 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import "WReaderTokenizer.h"
-#import "WReader.h"
-
+#import "WInterface.h"
 
 @implementation WReaderToken : NSObject
 @synthesize type,bracketCount,tokenizer,_str,_notes;
@@ -70,7 +68,7 @@
 - (NSString *)str {return(self._str);}
 - (void)setStr:(NSString *)str {
     self._str=(str?str.copy:@"");
-    char *mat[]={
+    const char *mat[]={
         "     r  w  n  .  +  -  *  /  \\  Q  q  _  ? ",
         "z zz rr ww nn .o +o -o zo co zo qs ss ww zo",
         "r rr rr ww nn .o +o -o zo co zo qs ss ww zo",
@@ -120,10 +118,10 @@
 
     char state='z';
     NSData *csd=[str dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
-    const char *cs=csd.bytes;
+    const char *cs=(const char*)csd.bytes;
     
     NSMutableData *d=[NSMutableData dataWithLength:str.length];
-    char *types=[d mutableBytes];
+    char *types=(char*)[d mutableBytes];
     
     //printf("%s\n",self.reader.fileName.UTF8String);
     int ci=0;
@@ -196,7 +194,7 @@
     NSString *str=self.tokenStr;
     NSIndexSet *inds=self.tokenIndexSet;
     
-    RKRegex *re=[[RKRegex alloc] initWithRegexString:regex options:0];
+    RKRegex *re=[[RKRegex alloc] initWithRegexString:regex options:RKCompileNoOptions];
     NSArray *refs=re.captureNameArray;
     RKEnumerator *en=[str matchEnumeratorWithRegex:re];
 

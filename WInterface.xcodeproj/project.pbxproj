@@ -7,20 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BE1885B519AAF52D00E2CAD4 /* NSString+WI.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE1885B419AAF52D00E2CAD4 /* NSString+WI.mm */; };
 		BE38E828196C7B6900C95037 /* Parse.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE38E827196C7B6900C95037 /* Parse.mm */; };
 		BE4152E41811B03200E421D7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE99B972161BAE720041B8EA /* Foundation.framework */; };
 		BE4152E71811B03200E421D7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BE4152E61811B03200E421D7 /* main.m */; };
 		BE4152EB1811B03200E421D7 /* WInterfaceSample.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = BE4152EA1811B03200E421D7 /* WInterfaceSample.1 */; };
 		BE4152FC1811B04200E421D7 /* sample.wi.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE730AD61810A4FB005582C5 /* sample.wi.mm */; };
-		BE681E70196A30F100AA3BE5 /* Util.m in Sources */ = {isa = PBXBuildFile; fileRef = BE681E6F196A30F100AA3BE5 /* Util.m */; };
-		BE681E73196A31A100AA3BE5 /* Collections.m in Sources */ = {isa = PBXBuildFile; fileRef = BE681E72196A31A100AA3BE5 /* Collections.m */; };
+		BE681E70196A30F100AA3BE5 /* Util.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE681E6F196A30F100AA3BE5 /* Util.mm */; };
+		BE681E73196A31A100AA3BE5 /* Collections.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE681E72196A31A100AA3BE5 /* Collections.mm */; };
 		BE99B973161BAE720041B8EA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE99B972161BAE720041B8EA /* Foundation.framework */; };
 		BE99B976161BAE720041B8EA /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE99B975161BAE720041B8EA /* main.mm */; };
 		BE99B97A161BAE720041B8EA /* WInterface.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = BE99B979161BAE720041B8EA /* WInterface.1 */; };
-		BE99B982161BAEBA0041B8EA /* Classes.m in Sources */ = {isa = PBXBuildFile; fileRef = BE99B981161BAEBA0041B8EA /* Classes.m */; };
-		BE99B985161BAFD30041B8EA /* WReader.m in Sources */ = {isa = PBXBuildFile; fileRef = BE99B984161BAFD30041B8EA /* WReader.m */; };
+		BE99B982161BAEBA0041B8EA /* Classes.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE99B981161BAEBA0041B8EA /* Classes.mm */; };
+		BE99B985161BAFD30041B8EA /* WReader.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE99B984161BAFD30041B8EA /* WReader.mm */; };
 		BE9AF96219524F2B00BA6CA0 /* RegexKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BEAC0E89187C168200405862 /* RegexKit.framework */; };
-		BEAA02991621F7280026192D /* WReaderTokenizer.m in Sources */ = {isa = PBXBuildFile; fileRef = BEAA02981621F7280026192D /* WReaderTokenizer.m */; };
+		BEAA02991621F7280026192D /* WReaderTokenizer.mm in Sources */ = {isa = PBXBuildFile; fileRef = BEAA02981621F7280026192D /* WReaderTokenizer.mm */; };
 		BEAC0E8A187C168200405862 /* RegexKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEAC0E89187C168200405862 /* RegexKit.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		BEC8A51B18296AA50090BBAD /* inserts.mm in Sources */ = {isa = PBXBuildFile; fileRef = BEC8A51A18296AA50090BBAD /* inserts.mm */; };
 /* End PBXBuildFile section */
@@ -67,6 +68,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		BE1885B319AAF52D00E2CAD4 /* NSString+WI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+WI.h"; sourceTree = "<group>"; };
+		BE1885B419AAF52D00E2CAD4 /* NSString+WI.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSString+WI.mm"; sourceTree = "<group>"; };
 		BE19E8A216295CF10013C92B /* TestProp.wi */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = TestProp.wi; path = Test/TestProp.wi; sourceTree = SOURCE_ROOT; };
 		BE19E8A316295D960013C92B /* TestProp.wi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestProp.wi.m; path = Test/TestProp.wi.m; sourceTree = SOURCE_ROOT; };
 		BE38E825196C7B6900C95037 /* cParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cParser.h; sourceTree = "<group>"; };
@@ -88,10 +91,14 @@
 		BE681E6B196A28DC00AA3BE5 /* SourceFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SourceFile.h; sourceTree = "<group>"; };
 		BE681E6C196A28DC00AA3BE5 /* SourceFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SourceFile.m; sourceTree = "<group>"; };
 		BE681E6E196A30F100AA3BE5 /* Util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Util.h; sourceTree = "<group>"; };
-		BE681E6F196A30F100AA3BE5 /* Util.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Util.m; sourceTree = "<group>"; };
+		BE681E6F196A30F100AA3BE5 /* Util.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Util.mm; sourceTree = "<group>"; };
 		BE681E71196A31A100AA3BE5 /* Collections.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Collections.h; sourceTree = "<group>"; };
-		BE681E72196A31A100AA3BE5 /* Collections.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Collections.m; sourceTree = "<group>"; };
+		BE681E72196A31A100AA3BE5 /* Collections.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Collections.mm; sourceTree = "<group>"; };
 		BE697F2E167ED42900880DC7 /* PropSS.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; name = PropSS.wi; path = Wis/PropSS.wi; sourceTree = "<group>"; };
+		BE6FA91419AAB0FB00862360 /* WInterface.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WInterface.h; sourceTree = "<group>"; };
+		BE6FA91719AACEE800862360 /* wied */ = {isa = PBXFileReference; lastKnownFileType = folder; name = wied; path = Sample/wied; sourceTree = "<group>"; };
+		BE6FA91819AAD18A00862360 /* BasicClassesCPP */ = {isa = PBXFileReference; lastKnownFileType = folder; name = BasicClassesCPP; path = ../BasicClassesCPP; sourceTree = "<group>"; };
+		BE6FA91919AAD2E200862360 /* wiLibrary */ = {isa = PBXFileReference; lastKnownFileType = folder; name = wiLibrary; path = ../wiLibrary; sourceTree = "<group>"; };
 		BE730ACC18108F50005582C5 /* sample.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; name = sample.wi; path = Sample/sample.wi; sourceTree = "<group>"; };
 		BE730ACD18108F50005582C5 /* wi.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = wi.sh; path = Sample/wi.sh; sourceTree = "<group>"; };
 		BE730AD31810A4FB005582C5 /* sample.wi.decl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sample.wi.decl.h; path = Sample/sample.wi.decl.h; sourceTree = "<group>"; };
@@ -106,9 +113,9 @@
 		BE99B978161BAE720041B8EA /* WInterface-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WInterface-Prefix.pch"; sourceTree = "<group>"; };
 		BE99B979161BAE720041B8EA /* WInterface.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = WInterface.1; sourceTree = "<group>"; };
 		BE99B980161BAEBA0041B8EA /* Classes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Classes.h; sourceTree = "<group>"; };
-		BE99B981161BAEBA0041B8EA /* Classes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Classes.m; sourceTree = "<group>"; };
+		BE99B981161BAEBA0041B8EA /* Classes.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Classes.mm; sourceTree = "<group>"; };
 		BE99B983161BAFD30041B8EA /* WReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WReader.h; sourceTree = "<group>"; };
-		BE99B984161BAFD30041B8EA /* WReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WReader.m; sourceTree = "<group>"; };
+		BE99B984161BAFD30041B8EA /* WReader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WReader.mm; sourceTree = "<group>"; };
 		BEA020A41629505100CA480A /* Prop1A.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = Prop1A.wi; path = Wis/Prop1A.wi; sourceTree = "<group>"; };
 		BEA020A81629505100CA480A /* Prop1S.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = Prop1S.wi; path = Wis/Prop1S.wi; sourceTree = "<group>"; };
 		BEA020AC1629505100CA480A /* Prop11.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = Prop11.wi; path = Wis/Prop11.wi; sourceTree = "<group>"; };
@@ -116,7 +123,7 @@
 		BEA020B41629505100CA480A /* PropS1.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = PropS1.wi; path = Wis/PropS1.wi; sourceTree = "<group>"; };
 		BEA020B8162951B100CA480A /* PropBase.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = PropBase.wi; path = Wis/PropBase.wi; sourceTree = "<group>"; };
 		BEAA02971621F7280026192D /* WReaderTokenizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WReaderTokenizer.h; sourceTree = "<group>"; };
-		BEAA02981621F7280026192D /* WReaderTokenizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WReaderTokenizer.m; sourceTree = "<group>"; };
+		BEAA02981621F7280026192D /* WReaderTokenizer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WReaderTokenizer.mm; sourceTree = "<group>"; };
 		BEAC0E89187C168200405862 /* RegexKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RegexKit.framework; path = "../../Library/Developer/Xcode/DerivedData/RegexKit-gsxakwhdfsiyoyapmifljrgljotg/Build/Products/Debug/RegexKit.framework"; sourceTree = "<group>"; };
 		BEC3EDAE162B2999001BA99B /* ModelNS1.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = ModelNS1.wi; path = Wis/ModelNS1.wi; sourceTree = "<group>"; };
 		BEC3EDAF162B299A001BA99B /* ModelNSA.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = ModelNSA.wi; path = Wis/ModelNSA.wi; sourceTree = "<group>"; };
@@ -282,22 +289,25 @@
 		BE5266E3196DC31D00FD10AB /* Sourcefiles */ = {
 			isa = PBXGroup;
 			children = (
+				BE1885B319AAF52D00E2CAD4 /* NSString+WI.h */,
+				BE1885B419AAF52D00E2CAD4 /* NSString+WI.mm */,
 				BE38E824196C7B6900C95037 /* Parser */,
 				BE99B975161BAE720041B8EA /* main.mm */,
 				BE99B980161BAEBA0041B8EA /* Classes.h */,
-				BE99B981161BAEBA0041B8EA /* Classes.m */,
+				BE99B981161BAEBA0041B8EA /* Classes.mm */,
 				BE99B983161BAFD30041B8EA /* WReader.h */,
-				BE99B984161BAFD30041B8EA /* WReader.m */,
+				BE99B984161BAFD30041B8EA /* WReader.mm */,
 				BEAA02971621F7280026192D /* WReaderTokenizer.h */,
-				BEAA02981621F7280026192D /* WReaderTokenizer.m */,
+				BEAA02981621F7280026192D /* WReaderTokenizer.mm */,
 				BE681E66196A28A400AA3BE5 /* CodeBlock.h */,
 				BE681E67196A28A400AA3BE5 /* CodeBlock.m */,
 				BE681E6B196A28DC00AA3BE5 /* SourceFile.h */,
 				BE681E6C196A28DC00AA3BE5 /* SourceFile.m */,
 				BE681E71196A31A100AA3BE5 /* Collections.h */,
-				BE681E72196A31A100AA3BE5 /* Collections.m */,
+				BE681E72196A31A100AA3BE5 /* Collections.mm */,
 				BE681E6E196A30F100AA3BE5 /* Util.h */,
-				BE681E6F196A30F100AA3BE5 /* Util.m */,
+				BE681E6F196A30F100AA3BE5 /* Util.mm */,
+				BE6FA91419AAB0FB00862360 /* WInterface.h */,
 			);
 			name = Sourcefiles;
 			path = WInterface;
@@ -306,6 +316,7 @@
 		BE730AC918108F3B005582C5 /* Sample */ = {
 			isa = PBXGroup;
 			children = (
+				BE6FA91719AACEE800862360 /* wied */,
 				BE4152E51811B03200E421D7 /* WInterfaceSample */,
 				BEC8A4B318280D200090BBAD /* lib */,
 				BE730ACE1810A4E7005582C5 /* op */,
@@ -344,6 +355,8 @@
 		BE99B963161BAE710041B8EA = {
 			isa = PBXGroup;
 			children = (
+				BE6FA91919AAD2E200862360 /* wiLibrary */,
+				BE6FA91819AAD18A00862360 /* BasicClassesCPP */,
 				BE93AD83165E9D9C001BA629 /* WI_iosTests.xcodeproj */,
 				BE5266E3196DC31D00FD10AB /* Sourcefiles */,
 				BE38E835196C7FD100C95037 /* Files */,
@@ -706,11 +719,12 @@
 			files = (
 				BE99B976161BAE720041B8EA /* main.mm in Sources */,
 				BE38E828196C7B6900C95037 /* Parse.mm in Sources */,
-				BE99B982161BAEBA0041B8EA /* Classes.m in Sources */,
-				BE99B985161BAFD30041B8EA /* WReader.m in Sources */,
-				BE681E70196A30F100AA3BE5 /* Util.m in Sources */,
-				BEAA02991621F7280026192D /* WReaderTokenizer.m in Sources */,
-				BE681E73196A31A100AA3BE5 /* Collections.m in Sources */,
+				BE1885B519AAF52D00E2CAD4 /* NSString+WI.mm in Sources */,
+				BE99B982161BAEBA0041B8EA /* Classes.mm in Sources */,
+				BE99B985161BAFD30041B8EA /* WReader.mm in Sources */,
+				BE681E70196A30F100AA3BE5 /* Util.mm in Sources */,
+				BEAA02991621F7280026192D /* WReaderTokenizer.mm in Sources */,
+				BE681E73196A31A100AA3BE5 /* Collections.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -722,7 +736,7 @@
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -755,7 +769,7 @@
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -785,6 +799,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -817,6 +832,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;

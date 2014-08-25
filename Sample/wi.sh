@@ -17,7 +17,7 @@ sound="Glass"
 if [ "$arg" = "loop" ]; then
     while [ 1 = 1 ]
     do
-        /Users/Will/Library/Developer/Xcode/DerivedData/WInterface-dinhpkjalqnjmyfrcessbfkhkssu/Build/Products/Debug/WInterface sample.wi
+        ~/WInterface sample.wi
         if [ "$?" = "1" ]; then
             sound="Basso"
             ok=0
@@ -27,7 +27,7 @@ if [ "$arg" = "loop" ]; then
     exit 0
 fi
 
-/Users/Will/Library/Developer/Xcode/DerivedData/WInterface-dinhpkjalqnjmyfrcessbfkhkssu/Build/Products/Debug/WInterface sample.wi
+~/WInterface sample.wi
 if [ "$?" = "1" ]; then
     sound="Basso"
     ok=0

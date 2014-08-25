@@ -6,19 +6,13 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import "WReaderTokenizer.h"
-#import "Classes.h"
-#import "WReader.h"
-#import "util.h"
-#import <objc/runtime.h>
+#import "WInterface.h"
 
 #define iNSNotFound ((int)NSNotFound)
 #define SPACER @"\n\n\n\n\n\n\n\n\n"
 
 
-void BP() {
-}
-
+#define debug 1
 
 @implementation InFiles
 -(void)dealloc {
@@ -146,18 +140,29 @@ static NSMutableArray *InFiles_allInFiles=nil;
 
 +(void)clearMarksFromFiles:(NSArray*)fns {
     NSError *err=nil;
-    NSRegularExpression *re=[NSRegularExpression regularExpressionWithPattern:@"/\\*\\*\\!.*?\\!\\*\\*/\\s*\n" options:NSRegularExpressionDotMatchesLineSeparators error:&err];
+    //NSRegularExpression *re=[NSRegularExpression regularExpressionWithPattern:@"/\\*\\*\\!.*?\\!\\*\\*/\\s*\n" options:NSRegularExpressionDotMatchesLineSeparators error:&err];
+    //if (err||!re) {
+    //    NSLog(@"Bad re : /\\*\\*\\!.*?\\!\\*\\*/\\s*");
+    //    return;
+    //}
+    NSString *reg=@"WI_(?:ERROR|note)\\((?:\\s*+\"(?:\\\\\\\\|\\\\\"|[^\"])*+\")*+\\s*+\\)\n";
+    NSRegularExpression *re=[NSRegularExpression regularExpressionWithPattern:reg options:NSRegularExpressionDotMatchesLineSeparators error:&err];
     if (err||!re) {
-        NSLog(@"Bad re : /\\*\\*\\!.*?\\!\\*\\*/\\s*");
+        NSLog(@"%@",reg);
         return;
     }
     for (NSString *fn in fns) {
         NSMutableString *s=((NSString*)[NSString stringWithContentsOfFile:fn encoding:NSASCIIStringEncoding error:&err]).mutableCopy;
         if (s&&!err) {
-            [re replaceMatchesInString:s options:0 range:NSMakeRange(0,s.length) withTemplate:@""];
-            [s writeToFile:fn atomically:YES encoding:NSASCIIStringEncoding error:&err];
-            if (err) {
-                NSLog(@"Could not write %@ to clear marks",fn);
+            NSUInteger c=[re replaceMatchesInString:s options:0 range:NSMakeRange(0,s.length) withTemplate:@""];
+            if ([fn isEqualToString:@"sample.wi"]) {
+            }
+            if (c) {
+                //dprnt("Replaced %d matches in %s\n",(int)c,fn.UTF8String);
+                [s writeToFile:fn atomically:YES encoding:NSASCIIStringEncoding error:&err];
+                if (err) {
+                    NSLog(@"Could not write %@ to clear marks",fn);
+                }
             }
         }
         else NSLog(@"Could not open %@ to clear marks",fn);
@@ -201,13 +206,42 @@ static NSMutableArray *InFiles_allInFiles=nil;
             
             int ln=(int)r.location;
             //int col=(int)r.length;
-            NSMutableString *msg=[[NSMutableString alloc] initWithFormat:@"/**!"];
-            bool fst=YES;
+            int errCount=0,noteCount=0;
             for (NSString *msg2 in msgs) {
-                [msg appendFormat:(fst?@" -- %@":@"\n     -- %@"),[[[msg2 stringByReplacingOccurrencesOfString:@"/*" withString:@" / *"] stringByReplacingOccurrencesOfString:@"*/" withString:@"* / "] stringByReplacingOccurrencesOfString:@"//" withString:@" / /"]];
-                fst=NO;
+                if ([msg2 hasPrefix:@"!"]) errCount++;
+                else noteCount++;
             }
-            [msg appendString:@" !**/\n"];
+            NSMutableString *msg=[NSMutableString new];
+            if (errCount) {
+                [msg appendString:@"WI_ERROR(  "];
+                for (NSString *msg2 in msgs) if ([msg2 hasPrefix:@"!"]) {
+                    [msg appendFormat:@"\"%@\"%@",
+                        [msg2 stringByReplacingPairs:
+                            @"/*",@" / * ",
+                            @"*/",@" * / ",
+                            @"//",@" / / ",
+                            @"\"",@"\\\"",
+                            @"\\",@"\\\\",
+                            nil],
+                        (--errCount?@"\n          ":@"    )\n")
+                    ];
+                }
+            }
+            if (noteCount) {
+                [msg appendString:@"WI_note(  "];
+                for (NSString *msg2 in msgs) if (![msg2 hasPrefix:@"!"]) {
+                    [msg appendFormat:@"\"%@\"%@",
+                        [msg2 stringByReplacingPairs:
+                            @"/*",@" / * ",
+                            @"*/",@" * / ",
+                            @"//",@" / / ",
+                            @"\\",@"\\\\",
+                            @"\"",@"\\\"",
+                            nil],
+                        (--noteCount?@"\n          ":@"    )\n")
+                    ];
+                }
+            }
             if (ln>=lns.count) offs=sz;
             else offs=((NSNumber*)[lns objectAtIndex:ln]).intValue;
             NSData *d=[msg dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
@@ -279,7 +313,7 @@ static NSMutableArray *InFiles_allInFiles=nil;
 
 @implementation WClasses
 @synthesize classes,protocols,skipNewLines;
-@synthesize classContext,logContext,classContextBracket,propertyContexts,propertyContextBrackets,props,propFiles,taskList,readFNStack,includes,taskFn;
+@synthesize classContext,logContext,classContextBracket,classContextLinei,propertyContexts,propertyContextBrackets,propertyContextLineis,props,propFiles,taskList,readFNStack,includes,taskFn;
 @synthesize ins_first_decl,ins_after_decl_decl,ins_after_structs_decl,ins_after_protocols_decl,ins_after_ifaces_decl,ins_last_decl,incls,ins_after_imports_decl;
 @synthesize ins_first_iface,ins_after_decl_iface,ins_after_structs_iface,ins_after_protocols_iface,ins_after_ifaces_iface,ins_last_iface,ins_after_imports_iface;
 @synthesize ins_first_impl,ins_after_decl_impl,ins_after_structs_impl,ins_after_protocols_impl,ins_after_ifaces_impl,ins_last_impl,ins_after_imports_impl,hasErrors,hasWarnings,finishedParse;
@@ -294,6 +328,7 @@ static NSMutableArray *InFiles_allInFiles=nil;
     self.logContext=nil;
     self.propertyContexts=nil;
     self.propertyContextBrackets=nil;
+    self.propertyContextLineis=nil;
     self.props=nil;
     self.propFiles=nil;
     self.includes=nil;
@@ -318,10 +353,12 @@ static NSMutableArray *InFiles_allInFiles=nil;
     self.props=[NSMutableArray array];
     self.propertyContexts=[NSMutableArray array];
     self.propertyContextBrackets=[NSMutableIndexSet indexSet];
+    self.propertyContextLineis=[NSMutableArray array];
     self.taskList=[NSMutableArray array];
     self.classContext=nil;
     self.includes=[NSMutableArray array];
     self.readFNStack=[NSMutableSet set];
+    self.classContextLinei=-1;
     self.classContextBracket=0;
     self.propFiles=[NSMutableDictionary dictionary];
     self.ins_first_decl=[NSMutableString string];
@@ -532,7 +569,7 @@ static WClasses *_default=nil;
     
     NSMutableDictionary *tags=[NSMutableDictionary dictionary];
     for (int oi=0;tags.count!=self.classes.count+self.protocols.count;oi++) {
-        //printf("%ld %ld\n",tags.count,self.classes.count+self.protocols.count);
+        dprnt("%ld %ld\n",tags.count,self.classes.count+self.protocols.count);
     
         NSMutableArray *notOwnedc=[NSMutableArray array];
         NSMutableArray *notOwnedp=[NSMutableArray array];
@@ -578,10 +615,12 @@ static WClasses *_default=nil;
     [self.propertyContexts removeAllObjects];
     [self.props removeAllObjects];
     [self.propertyContextBrackets removeAllIndexes];
+    [self.propertyContextLineis removeAllObjects];
     [self.taskList removeAllObjects];
     self.classContext=nil;
     [self.includes removeAllObjects];
     [self.readFNStack removeAllObjects];
+    classContextLinei=0;
     classContextBracket=0;
     skipNewLines=YES;
     hasErrors=hasWarnings=finishedParse=NO;
@@ -911,7 +950,7 @@ static WClasses *_default=nil;
     WProp *p=[self enclosingPropNoSkip:r];
     if (p) c=p.hisclas;
     else if (self.classContext) {
-        if (r.currentToken.bracketCount>self.classContextBracket) c=self.classContext;
+        if ((r.currentToken.bracketCount>self.classContextBracket)||(r.currentToken.linei==self.classContextLinei)) c=self.classContext;
     }
     return(c);
 }
@@ -925,7 +964,74 @@ static WClasses *_default=nil;
     if (!t) return(nil);
     return([self enclosingClassNoSkip:r]);
 }
-- (NSString*)readBlock:(WReader*)r {
+- (NSString*)readBlock:(WReader*)r retPrefix:(NSString*__strong*)pprefix linei:(int)pli bracketCount:(int)pbc {
+    int pos=r.pos;
+    int bc=0;
+
+    NSMutableString *sameLine=[NSMutableString new];
+    NSMutableString *preBracket=[NSMutableString new];
+    NSMutableString *mid=[NSMutableString new];
+    NSMutableString *postBracket=[NSMutableString new];
+
+    bool hadBracket=NO,hadMid=NO,hadTwo=NO;
+    WReaderToken *t;
+    for (t=r.currentToken;t;r.pos++,t=r.currentToken) {
+        if ([t.str isEqualToString:@"{"]) {
+            if (!bc++) {
+                if (hadMid) {hadBracket=NO;hadTwo=YES;}
+                else hadBracket=YES;
+            }
+        }
+
+        if (hadMid) {
+            if ((!bc)&&(t.linei>pli)&&(t.bracketCount<=pbc)) break;
+            [postBracket appendString:t.str];
+            if ((t.type!='s')&&(t.type!='c')&&(t.type!='r')) hadTwo=YES;
+        }
+        else if (hadBracket) [mid appendString:t.str];
+        else if (!bc) {
+            if (t.linei==pli) {
+                if ((t.type!='s')&&(t.type!='c')&&(t.type!='r')&&!pprefix) {t=nil;break;}
+                [sameLine appendString:t.str];
+            }
+            else if (t.bracketCount>pbc) {
+                [preBracket appendString:t.str];
+                if ((t.type!='s')&&(t.type!='c')&&(t.type!='r')&&!pprefix) {t=nil;break;}
+            }
+            else break;
+        }
+
+        if ([t.str isEqualToString:@"}"]) {
+            if (!--bc) {
+                hadMid=YES;
+                if (t.bracketCount>pbc) {hadBracket=NO;hadTwo=YES;}
+                if ((t.linei==pli)||(t.bracketCount<=pbc)) break;
+            }
+        }
+    }
+
+    if (!t) {
+        r.pos=pos;
+        return(nil);
+    }
+    else if (hadTwo) {
+        if (pprefix) *pprefix=sameLine;
+        r.pos++;
+        return([preBracket stringByAppendingFormat:@"%@%@",mid,postBracket]);
+    }
+    else if (hadMid) {
+        if (pprefix) *pprefix=[sameLine stringByAppendingString:preBracket];
+        r.pos++;
+        return(mid);
+    }
+    else {
+        if (pprefix) *pprefix=sameLine;
+        r.pos++;
+        return([preBracket stringByAppendingString:mid]);
+    }
+}
+
+- (NSString*)readIndentBlock:(WReader*)r  {
     int pos=r.pos;
     if (![self readc:r anyof:@"{"]) {r.pos=pos;return(nil);}
     int bc=1;
@@ -1145,13 +1251,13 @@ static WClasses *_default=nil;
     WClass *clas;
     NSArray *protocolList;
     if (![self readType:r retclas:&clas retprotocolList:&protocolList needColon:NO]) return(nil);
-    return([[WType alloc] initWithClass:clas protocols:protocolList addObject:NO]);
+    return([WType newWithClass:clas protocols:protocolList addObject:NO]);
 }
 -(WPotentialType*)readPotentialType:(WReader*)r {
     NSString *clas;
     NSArray *protocolList;
     if (![self readPotentialType:r retclas:&clas retprotocolList:&protocolList needColon:NO]) return(nil);
-    return([[WPotentialType alloc] initWithClass:clas protocols:protocolList addObject:NO]);
+    return([WPotentialType newWithClass:clas protocols:protocolList addObject:NO]);
 }
 
 
@@ -1238,9 +1344,10 @@ static WClasses *_default=nil;
                         }
                     }
                     if (!changed) {
+                        WReaderToken *gstoken=r.currentToken;
                         if ((!def)&&((def=[self readVarDefaultValue:r]))) changed=YES;
-                        else if ((!getter)&&((getter=[self readBlock:r]))) changed=YES;
-                        else if ((!setter)&&[self readc:r anyof:@"-"]&&((setterVar=[self readWord:r]))&&((setter=[self readBlock:r]))) changed=YES;
+                        else if ((!getter)&&((getter=[self readBlock:r retPrefix:nil linei:gstoken.linei bracketCount:gstoken.bracketCount]))) changed=YES;
+                        else if ((!setter)&&[self readc:r anyof:@"-"]&&((setterVar=[self readWord:r]))&&((setter=[self readBlock:r retPrefix:nil linei:gstoken.linei bracketCount:gstoken.bracketCount]))) changed=YES;
                     }
                     if (changed) {
                         int lni=r.currentToken.linei;
@@ -1349,7 +1456,7 @@ static WClasses *_default=nil;
             }
         }
         else r.pos=pos2;
-        //printf("Var : %s\n",[[r stringWithTokensInRange:NSMakeRange(pos1, r.pos-pos1)] cStringUsingEncoding:NSASCIIStringEncoding]);
+        dprnt("Var : %s\n",[[r stringWithTokensInRange:NSMakeRange(pos1, r.pos-pos1)] cStringUsingEncoding:NSASCIIStringEncoding]);
         [self skipSpacesAndSemicolons:r];
         
         if (implThisVar) {
@@ -1364,7 +1471,7 @@ static WClasses *_default=nil;
                     //[attr2 addObject:@"readonly"];
                 }
                 if (!i) {
-                    type=[[WType alloc] initWithPotentialType:ptype];
+                    type=[WType newWithPotentialType:ptype];
                 }
                 WVar *v=[WVar getVarWithType:type stars:stars name:name qname:[[qnames objectAtIndex:i] isKindOfClass:[NSString class]]?[qnames objectAtIndex:i]:nil defVal:[[defaultValues objectAtIndex:i] isKindOfClass:[NSNull class]]?nil:[defaultValues objectAtIndex:i] defValLevel:[[defLevels objectAtIndex:i] isKindOfClass:[NSNull class]]?0:((NSNumber*)[defLevels objectAtIndex:i]).intValue attributes:attr2 clas:c];
                 [v addInFilename:r.filePath line:linei column:0];
@@ -1413,6 +1520,7 @@ static WClasses *_default=nil;
     if (!c) return(nil);
 
     int linei=r.currentToken.linei;
+    int bc=r.currentToken.bracketCount;
     int pos=r.pos;
     
     unichar ch;
@@ -1420,21 +1528,20 @@ static WClasses *_default=nil;
         default:return(nil);
         case '-':case '+':break;
     }
-    NSMutableString *sig=[NSMutableString stringWithFormat:@"%c",ch];
+    NSString *sig=nil;
     NSString *body=nil;
 
-    [self skipSpaces:r];
-    WReaderToken *t;
-    for (t=r.currentToken;t&&((t.type!='o')||(((ch=[t.str characterAtIndex:0])!='{')&&(ch!=';')));r.pos++,t=r.currentToken) {
-        [sig appendString:(t.type=='z')||(t.type=='r')?@" ":t.str];
+    body=[self readBlock:r retPrefix:&sig linei:linei bracketCount:bc];
+    if (!body) {r.pos=pos;return(nil);}
+    NSString *trimBody=[body stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    if (!([trimBody hasPrefix:@"{"]&&[trimBody hasSuffix:@"}"])) {
+        body=[@"{\n" stringByAppendingFormat:@"%@\n}",body];
     }
-    if (!t) {
-        r.pos=pos;
-        return(nil);
-    }
-    sig=[sig stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].mutableCopy;
-    body=[self readBlock:r];
-    //printf("Fn : %s\n",[[r stringWithTokensInRange:NSMakeRange(pos, r.pos-pos)] cStringUsingEncoding:NSASCIIStringEncoding]);
+    else body=trimBody;
+
+    sig=[NSString stringWithFormat:@"%c%@",ch,[sig stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
+
+    dprnt("Fn : %s | %s\nFrom : %s\n",sig.UTF8String,body.UTF8String,[[r stringWithTokensInRange:NSMakeRange(pos, r.pos-pos)] cStringUsingEncoding:NSASCIIStringEncoding]);
     [self skipSpacesAndSemicolons:r];
     WFn *fn=[WFn getFnWithSig:sig body:body clas:c];
     [fn addInFilename:r.filePath line:linei column:0];
@@ -1505,10 +1612,11 @@ static WClasses *_default=nil;
     [ret addInFilename:r.filePath line:linei column:0];
 
     [ret add:r];
-    //printf("Prop : %s\n",[[r stringWithTokensInRange:NSMakeRange(pos, r.pos-pos)] cStringUsingEncoding:NSASCIIStringEncoding]);
+    dprnt("Prop : %s\n",[[r stringWithTokensInRange:NSMakeRange(pos, r.pos-pos)] cStringUsingEncoding:NSASCIIStringEncoding]);
     [self skipSpacesAndSemicolons:r];
     [self.propertyContexts addObject:ret];
     [self.propertyContextBrackets addIndex:bc];
+    [self.propertyContextLineis addObject:@(linei)];
     while (YES) {
         [self skipSpaces:r];
         if ((!r.currentToken)||(r.currentToken.bracketCount<=bc)) break;
@@ -1523,7 +1631,8 @@ static WClasses *_default=nil;
     }
     [self.propertyContexts removeObject:ret];
     [self.propertyContextBrackets removeIndex:bc];
-    //printf("Prop and children : %s\n",[[r stringWithTokensInRange:NSMakeRange(pos, r.pos-pos)] cStringUsingEncoding:NSASCIIStringEncoding]);
+    [self.propertyContextLineis removeLastObject];
+    dprnt("Prop and children : %s\n",[[r stringWithTokensInRange:NSMakeRange(pos, r.pos-pos)] cStringUsingEncoding:NSASCIIStringEncoding]);
     [self skipSpacesAndSemicolons:r];
     return(ret);
 }
@@ -1588,15 +1697,16 @@ static WClasses *_default=nil;
 
     if (!finishedParse) c.hasDef=YES;
     
-    //printf("Class : %s\n",[[r stringWithTokensInRange:NSMakeRange(pos, r.pos-pos)] cStringUsingEncoding:NSASCIIStringEncoding]);
+    dprnt("Class : %s\n",[[r stringWithTokensInRange:NSMakeRange(pos, r.pos-pos)] cStringUsingEncoding:NSASCIIStringEncoding]);
     [self skipSpacesAndSemicolons:r];
     bool hasChild=NO;
     self.classContext=c;
     self.classContextBracket=bc;
+    self.classContextLinei=linei;
     bool bch=[self readc:r anyof:@"{"];
     while (YES) {
         [self skipSpaces:r];
-        if ((!r.currentToken)||(r.currentToken.bracketCount<=bc)) break;
+        if ((!r.currentToken)||((r.currentToken.bracketCount<=bc)&&(r.currentToken.linei>linei))) break;
         if (!(
               [self readVar:r]||
               [self readFn:r]||
@@ -1611,7 +1721,8 @@ static WClasses *_default=nil;
     else if (!(hasChild||[self readVar:r]||[self readFn:r]||[self readProp:r])) {}
     self.classContext=nil;
     self.classContextBracket=-1;
-    //printf("Class and children : %s\n",[[r stringWithTokensInRange:NSMakeRange(pos, r.pos-pos)] cStringUsingEncoding:NSASCIIStringEncoding]);
+    self.classContextLinei=-1;
+    dprnt("Class and children : %s\n",[[r stringWithTokensInRange:NSMakeRange(pos, r.pos-pos)] cStringUsingEncoding:NSASCIIStringEncoding]);
     [self skipSpacesAndSemicolons:r];
     return(c);
 }
@@ -1688,11 +1799,12 @@ static WClasses *_default=nil;
     if (!finishedParse) c.hasDef=YES;
     
     if (c==nil) return(nil);
-    //printf("Protocol : %s\n",[[r stringWithTokensInRange:NSMakeRange(pos, r.pos-pos)] cStringUsingEncoding:NSASCIIStringEncoding]);
+    dprnt("Protocol : %s\n",[[r stringWithTokensInRange:NSMakeRange(pos, r.pos-pos)] cStringUsingEncoding:NSASCIIStringEncoding]);
     [self skipSpacesAndSemicolons:r];
     bool hasChild=NO;
     self.classContext=c;
     self.classContextBracket=bc;
+    self.classContextLinei=linei;
     while (YES) {
         [self skipSpaces:r];
         if ((!r.currentToken)||(r.currentToken.bracketCount<=bc)) break;
@@ -1709,7 +1821,8 @@ static WClasses *_default=nil;
     if (!(hasChild||[self readVar:r]||[self readFn:r]||[self readProp:r])) {}
     self.classContext=nil;
     self.classContextBracket=-1;
-    //printf("Protocol and children : %s\n",[[r stringWithTokensInRange:NSMakeRange(pos, r.pos-pos)] cStringUsingEncoding:NSASCIIStringEncoding]);
+    self.classContextLinei=-1;
+    dprnt("Protocol and children : %s\n",[[r stringWithTokensInRange:NSMakeRange(pos, r.pos-pos)] cStringUsingEncoding:NSASCIIStringEncoding]);
     [self skipSpacesAndSemicolons:r];
     return(c);
 }
@@ -1941,14 +2054,18 @@ static WClasses *_default=nil;
 - (void)read:(WReader *)r logContext:(InFiles*)alogContext {
     WClass *cwas=self.classContext;
     NSMutableArray *pwas=self.propertyContexts;
-    NSMutableIndexSet *piwas=self.propertyContextBrackets;
+    NSMutableIndexSet *pbwas=self.propertyContextBrackets;
+    NSMutableArray *plwas=self.propertyContextLineis;
     int cbwas=self.classContextBracket;
-    
+    int clwas=self.classContextLinei;
+
     self.classContext=nil;
     self.classContextBracket=0;
+    self.classContextLinei=-1;
     self.propertyContexts=[NSMutableArray array];
     self.propertyContextBrackets=[NSMutableIndexSet indexSet];
-    
+    self.propertyContextLineis=[NSMutableArray array];
+
     InFiles *logContextWas=self.logContext;
     if (alogContext) {
         while (alogContext.useLocationsFrom) alogContext=alogContext.useLocationsFrom;
@@ -1961,8 +2078,10 @@ static WClasses *_default=nil;
 
     self.classContext=cwas;
     self.propertyContexts=pwas;
-    self.propertyContextBrackets=piwas;
+    self.propertyContextBrackets=pbwas;
+    self.propertyContextLineis=plwas;
     self.classContextBracket=cbwas;
+    self.classContextLinei=clwas;
 }
 
 
@@ -2331,7 +2450,7 @@ static WClasses *_default=nil;
 +(WType*)processClassType:(WType*)t class:(WClass*)clas protocols:(NSArray*)protocols tostars:(int*)pstars {
     if (!t) return(nil);
     if (pstars) *pstars=0;
-    WPotentialType *pt=[[WPotentialType alloc] initWithType:t];
+    WPotentialType *pt=[WPotentialType newWithType:t];
     //NSLog(@"Type from %@  (%@<%@>)",t.wiType,pt.clas,pt.protocols.description);
     NSMutableSet *ps=[NSMutableSet set];
     if (pt.clas) {
@@ -2348,7 +2467,7 @@ static WClasses *_default=nil;
     }
     else if (ps.count) pt.protocols=ps;
     
-    WType *nt=[[WType alloc] initWithPotentialType:pt];
+    WType *nt=[WType newWithPotentialType:pt];
     //NSLog(@"    >>> %@  (%@<%@>)",nt.wiType,pt.clas,pt.protocols.description);
     return(nt);
 }
@@ -2432,8 +2551,9 @@ static WClasses *_default=nil;
 - (id)initClassWithName:(NSString*)aname superClass:(WClass*)superClass protocolList:(NSArray*)protocolList varPatterns:(NSSet *)avarPatterns {
     if (!(self=[super init])) return(nil);
     self.name=aname;
+    dprnt("Class : %s\n",aname.UTF8String);
     hasDef=NO;
-    self.superType=[[WType alloc] initWithClass:superClass protocols:protocolList addObject:NO];
+    self.superType=[WType newWithClass:superClass protocols:protocolList addObject:NO];
     self.varPatterns=avarPatterns.copy;
     if ([name rangeOfString:@"__WIClass__"].location!=NSNotFound) {
         self.varPatterns=[[[(self.varPatterns?self.varPatterns:[NSSet set]) setByAddingObject:@"nac"] setByAddingObject:@"multi"] setByAddingObject:@"undefined"];
@@ -2450,8 +2570,9 @@ static WClasses *_default=nil;
 - (id)initProtocolWithName:(NSString*)aname superList:(NSArray *)asuperList varPatterns:(NSSet*)avarPatterns {
     if (!(self=[super init])) return(nil);
     self.name=aname;
+    dprnt("Protocol : %s\n",aname.UTF8String);
     hasDef=NO;
-    self.superType=[[WType alloc] initWithClass:nil protocols:asuperList addObject:NO];
+    self.superType=[WType newWithClass:nil protocols:asuperList addObject:NO];
     self.varPatterns=avarPatterns.copy;
     //if ([name isEqualToString:@"Object"]||[name isEqualToString:@"Globals"]) {
     //    self.varPatterns=[[[(self.varPatterns?self.varPatterns:[NSSet set]) setByAddingObject:@"nac"] setByAddingObject:@"multi"] setByAddingObject:@"undefined"];
@@ -2542,7 +2663,7 @@ static WClasses *_default=nil;
             [altypeps addObject:[WClass getProtocolWithName:p]];
         }
     }
-    return([[WType alloc] initWithClass:[WClass getClassWithName:altypec] protocols:altypeps.allObjects addObject:NO]);
+    return([WType newWithClass:[WClass getClassWithName:altypec] protocols:altypeps.allObjects addObject:NO]);
 }
 
 
@@ -2847,7 +2968,7 @@ static WClasses *_default=nil;
 }
 
 -(WType*)wType {
-    return([[WType alloc] initWithClass:(self.isProtocol?nil:self) protocols:(self.isProtocol?[NSArray arrayWithObject:self]:nil) addObject:NO]);
+    return([WType newWithClass:(self.isProtocol?nil:self) protocols:(self.isProtocol?[NSArray arrayWithObject:self]:nil) addObject:NO]);
 }
 
 //@synthesize name,superType,varNames,vars,fns,varPatterns,fnNames,isProtocol,isType,isSys,hasDef,isWIOnly;
@@ -3104,6 +3225,7 @@ static WClasses *_default=nil;
     }
 - (id)initWithType:(NSString*)atype origType:(NSString*)aorigType myClass:(WClass*)amyclas myName:(NSString*)amyname myQName:(NSString *)amyqname hisClass:(WClass*)ahisclas hisName:(NSString*)ahisname hisQName:(NSString *)ahisqname {
     if (!(self=[super init])) return(nil);
+    dprnt("Prop : %s:%s\n",amyclas.name.UTF8String,amyname.UTF8String);
     [[WClasses getDefault].props addObject:self];
     self.myclas=amyclas;
     self.myname=amyname;
@@ -3141,10 +3263,10 @@ static WClasses *_default=nil;
 
 
 -(WType*)myWType {
-    return([[WType alloc] initWithClass:(myclas.isProtocol?nil:myclas) protocols:(myclas.isProtocol?[NSArray arrayWithObject:myclas]:nil) addObject:NO]);
+    return([WType newWithClass:(myclas.isProtocol?nil:myclas) protocols:(myclas.isProtocol?[NSArray arrayWithObject:myclas]:nil) addObject:NO]);
 }
 -(WType*)hisWType {
-    return([[WType alloc] initWithClass:(hisclas.isProtocol?nil:hisclas) protocols:(hisclas.isProtocol?[NSArray arrayWithObject:hisclas]:nil) addObject:NO]);
+    return([WType newWithClass:(hisclas.isProtocol?nil:hisclas) protocols:(hisclas.isProtocol?[NSArray arrayWithObject:hisclas]:nil) addObject:NO]);
 }
 
 
@@ -3391,6 +3513,7 @@ static WClasses *_default=nil;
 
 - (id)initWithSig:(NSString*)asig body:(NSString*)abody clas:(WClass*)aclas {
     if (!(self=[super init])) return(nil);
+    dprnt("Fn : %s:%s\n",aclas.name.UTF8String,asig.UTF8String);
     asig=[asig stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     self.sigWithArgs=asig;
     self.sig=(self.imaginary?self.sigWithArgs:NSStringFromSelector(NSSelectorFromString(asig)));
@@ -3879,7 +4002,8 @@ static WClasses *_default=nil;
 
 - (id)initWithType:(WType*)atype stars:(int)astars name:(NSString*)aname qname:(NSString*)aqname defVal:(NSString*)adefaultValue defValLevel:(int)adefLevel attributes:(NSSet*)aattributes clas:(WClass*)aclas {
     if (!(self=[super init])) return(nil);
-    self.type=[[WType alloc] initWithClass:atype.clas protocols:atype.protocols.allObjects addObject:NO];
+    dprnt("Var : %s:%s\n",aclas.name.UTF8String,aname.UTF8String);
+    self.type=[WType newWithClass:atype.clas protocols:atype.protocols.allObjects addObject:NO];
     self.stars=astars>0?astars:(atype.clas.isType?0:1);
     //[WClasses warning:[NSString stringWithFormat:@"%@ %d %d",aname,stars,astars] withReader:nil];
     self.name=aname;
@@ -4040,8 +4164,8 @@ static WClasses *_default=nil;
             [NSNumber numberWithBool:hasIVar],@"hasIVar",
             [NSNumber numberWithBool:hasDefaultValue],@"hasDefaultValue",
             [NSNumber numberWithBool:justivar],@"justivar",
-            [NSNumber numberWithBool:hasGetter],@"hasGetter",
-            [NSNumber numberWithBool:hasSetter],@"hasSetter",
+            [NSNumber numberWithBool:hasGetter!=nil],@"hasGetter",
+            [NSNumber numberWithBool:hasSetter!=nil],@"hasSetter",
             setterName,@"setterName",
             getterName,@"getterName",
             setterSig,@"setterSig",
@@ -4557,8 +4681,16 @@ CACHEVARATTRFN_retain(NSString*,localizedVarName,
     self.protocols=nil;
     }
 
++(WPotentialType*)newWithType:(WType *)t {
+    return([[self alloc] initWithType:t]);
+}
++(WPotentialType*)newWithClass:(NSString *)aclas protocols:(NSArray *)aprotocols addObject:(bool)addObject {
+    return([[self alloc] initWithClass:aclas protocols:aprotocols addObject:addObject]);
+}
+
 -(WPotentialType*)initWithType:(WType*)t {
     if (!(self=[super init])) return(nil);
+    dprnt("PType : %s\n",[t objCTypeWithStars:0].UTF8String);
     self.clas=(t.clas?t.clas.name:nil);
     self.protocols=(t.protocols?[NSMutableSet set]:nil);
     if (t.protocols) for (WClass *c in t.protocols) [self.protocols addObject:c.name];
@@ -4567,6 +4699,11 @@ CACHEVARATTRFN_retain(NSString*,localizedVarName,
 
 -(WPotentialType*)initWithClass:(NSString*)aclas protocols:(NSArray*)aprotocols addObject:(bool)addObject {
     if (!(self=[super init])) return(nil);
+    dprnt("Type : %s <",aclas.UTF8String);
+    [aprotocols enumerateObjectsUsingBlock:^(WClass *obj, NSUInteger idx, BOOL *stop) {
+         dprnt(" %s",([obj isKindOfClass:WClass.class]?obj.name:obj.description).UTF8String);
+    }];
+    dprnt("\n");
     self.clas=nil;
     self.protocols=(addObject?[NSMutableSet setWithObject:@"Object"]:nil);
     [self addClass:aclas protocols:aprotocols];
@@ -4612,7 +4749,7 @@ CACHEVARATTRFN_retain(NSString*,localizedVarName,
     }
 
 -(WPotentialType*)potentialType {
-    if (!self._potentialType) self._potentialType=[[WPotentialType alloc] initWithType:self];
+    if (!self._potentialType) self._potentialType=[WPotentialType newWithType:self];
     return(self._potentialType);
 }
 
@@ -4622,8 +4759,21 @@ CACHEVARATTRFN_retain(NSString*,localizedVarName,
     return(nil);
 }
 
+
++(WType*)newWithPotentialType:(WPotentialType*)pt {
+    return([[self alloc] initWithPotentialType:pt]);
+}
++(WType*)newWithClass:(NSString *)aclas protocols:(NSArray *)aprotocols addObject:(bool)addObject {
+    return([[self alloc] initWithClass:aclas protocols:aprotocols addObject:addObject]);
+}
+
 -(WType*)initWithPotentialType:(WPotentialType*)pt {
     if (!(self=[super init])) return(nil);
+    dprnt("Type : %s <",pt.clas.UTF8String);
+    [pt.protocols enumerateObjectsUsingBlock:^(WClass *obj, BOOL *stop) {
+         dprnt(" %s",([obj isKindOfClass:WClass.class]?obj.name:obj.description).UTF8String);
+    }];
+    dprnt("\n");
     self.clas=(pt.clas?[WClass getClassWithName:pt.clas]:nil);
     self.protocols=(pt.protocols?[NSMutableSet set]:nil);
     if (pt.protocols) for (NSString *s in pt.protocols) [self.protocols addObject:[WClass getProtocolWithName:s]];
@@ -4631,6 +4781,11 @@ CACHEVARATTRFN_retain(NSString*,localizedVarName,
 }
 -(WType*)initWithClass:(WClass*)aclas protocols:(NSArray*)aprotocols addObject:(bool)addObject {
     if (!(self=[super init])) return(nil);
+    dprnt("Type : %s <",aclas.name.UTF8String);
+    [aprotocols enumerateObjectsUsingBlock:^(WClass *obj, NSUInteger idx, BOOL *stop) {
+         dprnt(" %s",([obj isKindOfClass:WClass.class]?obj.name:obj.description).UTF8String);
+    }];
+    dprnt("\n");
     self.clas=nil;
     self.protocols=(addObject?[NSMutableSet setWithObject:[WClass getProtocolWithName:@"Object"]]:nil);
     [self addClass:aclas protocols:aprotocols];
