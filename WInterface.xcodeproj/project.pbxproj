@@ -643,6 +643,7 @@
 				BE99B96A161BAE720041B8EA /* Sources */,
 				BE99B96B161BAE720041B8EA /* Frameworks */,
 				BE99B96C161BAE720041B8EA /* CopyFiles */,
+				BE80D2A719ADD81200E8A479 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -701,6 +702,22 @@
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		BE80D2A719ADD81200E8A479 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "echo cp ${TARGET_BUILD_DIR}/${EXECUTABLE_PATH} /Users/Will/WInterface\ncp ${TARGET_BUILD_DIR}/${EXECUTABLE_PATH} /Users/Will/Documents/WInterface/bin/WInterface\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		BE4152DF1811B03200E421D7 /* Sources */ = {

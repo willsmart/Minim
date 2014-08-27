@@ -138,6 +138,8 @@ static NSMutableArray *InFiles_allInFiles=nil;
     NSDictionary *d=locations.copy;
     return(d);
 }
+// NOTE: hjf
+
 
 +(void)clearMarksFromFiles:(NSArray*)fns {
     NSError *err=nil;
@@ -147,7 +149,7 @@ static NSMutableArray *InFiles_allInFiles=nil;
     //    return;
     //}
     //NSString *reg=@"WI_(?:ERROR|note)\\((?:\\s*+\"(?:\\\\\\\\|\\\\\"|[^\"])*+\")*+\\s*+\\)\n";
-    NSString *reg=@"(?<=^|\n)// (?:\\!\\!\\!|\\?\\?\\?):WI:[^\n]*+";
+    NSString *reg=@"(?<=^|\n)//(?: \\!\\!\\!| \\?\\?\\?| MARK):WI:[^\n]*+";
     NSRegularExpression *re=[NSRegularExpression regularExpressionWithPattern:reg options:0 error:&err];
     if (err||!re) {
         NSLog(@"%@",reg);
@@ -208,9 +210,10 @@ static NSMutableArray *InFiles_allInFiles=nil;
             
             int ln=(int)r.location;
             //int col=(int)r.length;
-            int errCount=0,noteCount=0;
+            int errCount=0,warnCount=0,noteCount=0;
             for (NSString *msg2 in msgs) {
                 if ([msg2 hasPrefix:@"!"]) errCount++;
+                else if ([msg2 hasPrefix:@"?"]) warnCount++;
                 else noteCount++;
             }
             NSMutableString *msg=[NSMutableString new];
@@ -231,10 +234,27 @@ static NSMutableArray *InFiles_allInFiles=nil;
                 }
             }
 
+            if (warnCount) {
+                //[msg appendString:@"WI_ERROR(  "];
+                for (NSString *msg2 in msgs) if ([msg2 hasPrefix:@"?"]) {
+                    [msg appendFormat:@"// ???:WI: %@\n",[[msg2 substringFromIndex:1] stringByReplacingOccurrencesOfString:@"\n" withString:@"     ---     "]];
+                    //[msg appendFormat:@"\"%@\"%@",
+                    //    [msg2 stringByReplacingPairs:
+                    //        @"/*",@" / * ",
+                    //        @"*/",@" * / ",
+                    //        @"//",@" / / ",
+                    //        @"\"",@"\\\"",
+                    //        @"\\",@"\\\\",
+                    //        nil],
+                    //    (--warnCount?@"\n          ":@"    )\n")
+                    //];
+                }
+            }
+
             if (noteCount) {
 //                [msg appendString:@"WI_note(  "];
-                for (NSString *msg2 in msgs) if (![msg2 hasPrefix:@"!"]) {
-                    [msg appendFormat:@"// ???:WI: %@\n",[msg2 stringByReplacingOccurrencesOfString:@"\n" withString:@"     ---     "]];
+                for (NSString *msg2 in msgs) if (!([msg2 hasPrefix:@"!"]||[msg2 hasPrefix:@"?"])) {
+                    [msg appendFormat:@"// MARK:WI: %@\n",[msg2 stringByReplacingOccurrencesOfString:@"\n" withString:@"     ---     "]];
                     //[msg appendFormat:@"\"%@\"%@",
                     //    [msg2 stringByReplacingPairs:
                     //        @"/*",@" / * ",
@@ -1856,7 +1876,6 @@ static WClasses *_default=nil;
 - (bool)readInclude:(WReader*)r {
     if (self.classContext) return(NO);
     int pos=r.pos;
-    WReaderToken *t0=r.currentToken;
     NSString *w,*name=[self readString:r];
     if (name) {
         name=[name substringWithRange:NSMakeRange(1, name.length-2)];
@@ -1872,28 +1891,37 @@ static WClasses *_default=nil;
             if (![self.incls containsObject:name]) [self.incls addObject:name];
         }
         else {        
-            NSString *s=name;
-            printf("Include: %s\n",s.UTF8String);
-            if ([self.readFNStack containsObject:s]) {
-                [WClasses error:@"File already included" withToken:t0 context:nil];
-            }
-            else {
-                WReader *r2=[[WReader alloc] init];
-                r2.tokenizer.tokenDelegate=[WClasses getDefault];
-                [InFiles clearMarksFromFiles:@[s]];
-                r2.fileName=s;
-                if (r2.fileString.length==0) {
-                    [WClasses error:[NSString stringWithFormat:@"File \"%@\" is empty or doesn't exist",name] withToken:t0 context:nil];
+            NSString *fn=[self.class replaceEnvVars:name contextToken:r.currentToken];
+            if (fn) {
+                printf("Include: %s\n",fn.UTF8String);
+                if ([self.readFNStack containsObject:fn]) {
+                    [WClasses error:@"File already included" withToken:r.currentToken context:nil];
                 }
                 else {
-                    NSFileManager *fm=[NSFileManager defaultManager];
-                    NSString *wasDir=fm.currentDirectoryPath;
-                    [[self class] changeToFileDir:s];
-                    [self.readFNStack addObject:s];
-                    if ([s hasSuffix:@"wierrors.wi"]) [InFiles addInFilename:r2.filePath line:0 column:0 format:@"%@",[InFiles excessMsg]];
-                    [self read:r2 logContext:nil];
-                    [self.readFNStack removeObject:s];
-                    [fm changeCurrentDirectoryPath:wasDir];
+                    WReader *r2=[[WReader alloc] init];
+                    r2.tokenizer.tokenDelegate=[WClasses getDefault];
+                    [InFiles clearMarksFromFiles:@[fn]];
+                    r2.fileName=fn;
+                    if (r2.fileString.length==0) {
+                        [WClasses error:
+                            ([fn isEqualToString:name]?
+                                [NSString stringWithFormat:@"File \"%@\" is empty or doesn't exist",name]:
+                                [NSString stringWithFormat:@"File \"%@\" (i.e. %@) is empty or doesn't exist",name,fn]
+                            ) withToken:r.currentToken context:nil];
+                    }
+                    else {
+                        NSFileManager *fm=[NSFileManager defaultManager];
+                        NSString *wasDir=fm.currentDirectoryPath;
+                        [[self class] changeToFileDir:fn];
+                        [self.readFNStack addObject:fn];
+                        if ([fn hasSuffix:@"wierrors.wi"]) [InFiles addInFilename:r2.filePath line:0 column:0 format:@"%@",[InFiles excessMsg]];
+                        [self read:r2 logContext:nil];
+                        [self.readFNStack removeObject:fn];
+                        [fm changeCurrentDirectoryPath:wasDir];
+                        if (![name isEqualToString:fn]) {
+                            [WClasses note:[NSString stringWithFormat:@"(i.e. %@)",fn] withToken:r.currentToken context:nil];
+                        }
+                    }
                 }
             }
         }
@@ -2162,7 +2190,28 @@ static WClasses *_default=nil;
 
 
 
++(NSString*)replaceEnvVars:(NSString*)string contextToken:(WReaderToken*)contextToken  {
+    NSError *err=nil;
+    NSRegularExpression *regex=[NSRegularExpression regularExpressionWithPattern:@"(?<=^|\\})([^\\{]*+)(?=$|\\{)|(?<=\\{)([^\\}]*+)(?=$|\\})" options:0 error:&err];
+    NSArray *matches=[regex matchesInString:string options:0 range:NSMakeRange(0, string.length)];
+    NSMutableString *ret=NSMutableString.string;
 
+    for (NSTextCheckingResult *match in matches) {
+        if ([match rangeAtIndex:1].location!=NSNotFound) {
+            [ret appendString:[string substringWithRange:[match rangeAtIndex:1]]];
+        }
+        else if ([match rangeAtIndex:2].location!=NSNotFound) {
+            NSString *var=[string substringWithRange:[match rangeAtIndex:2]];
+            NSString *val = [[[NSProcessInfo processInfo]environment]objectForKey:var];
+            if (val) [ret appendString:val];
+            else {
+                [WClasses error:[NSString stringWithFormat:@"Couldn't find environment variable \"%@\" to expand string \"%@\"",var,string] withToken:contextToken context:nil];
+                return(nil);
+            }
+        }
+    }
+    return(ret);
+}
 
 - (void)addToFns {
     [WClass getProtocolWithName:@"Object"].hasDef=YES;
@@ -2198,11 +2247,14 @@ static WClasses *_default=nil;
     }
     
     if (iface) {
-        for (NSString *incl in self.incls) {
-            if ([incl hasPrefix:@"\"include:"]) [s appendFormat:@"#include \"%@\n",[incl substringFromIndex:@"\"include:".length]];
-            else if ([incl hasPrefix:@"<include:"]) [s appendFormat:@"#include <%@\n",[incl substringFromIndex:@"<include:".length]];
-            else if ([incl hasPrefix:@"include:"]) [s appendFormat:@"#include %@\n",[incl substringFromIndex:@"include:".length]];
-            else [s appendFormat:@"#import %@\n",incl];
+        for (NSString __strong*incl in self.incls) {
+            incl=[self.class replaceEnvVars:incl contextToken:nil];
+            if (incl) {
+                if ([incl hasPrefix:@"\"include:"]) [s appendFormat:@"#include \"%@\n",[incl substringFromIndex:@"\"include:".length]];
+                else if ([incl hasPrefix:@"<include:"]) [s appendFormat:@"#include <%@\n",[incl substringFromIndex:@"<include:".length]];
+                else if ([incl hasPrefix:@"include:"]) [s appendFormat:@"#include %@\n",[incl substringFromIndex:@"include:".length]];
+                else [s appendFormat:@"#import %@\n",incl];
+            }
         }
         if (self.incls.count) [s appendString:SPACER];
     }
@@ -2364,7 +2416,7 @@ static WClasses *_default=nil;
         [_s appendString:@"//Tasks:\n"];
         for (NSString *task in self.taskList) {
             [_s appendFormat:@"//    %@\n",task];
-            if ([task hasPrefix:@"(notenote)"]) [ret appendFormat:@"%@\n",task];
+            if (![task hasPrefix:@" Note: "]) [ret appendFormat:@"%@\n",task];
         }
         [_s appendString:@"\n\n"];
     }
@@ -2451,15 +2503,15 @@ static WClasses *_default=nil;
 
 
 + (void)error:(NSString *)err withToken:(WReaderToken *)t context:(InFiles*)ctxt {
-     [WClasses _note:[NSString stringWithFormat:@"! Fix error: %@",err] withToken:t context:ctxt aggregatePattern:@"Fix ## embedded errors (look for \"errerr\" in the code)"];
+     [WClasses _note:[NSString stringWithFormat:@"! Fix error: %@",err] withToken:t context:ctxt aggregatePattern:@"Fix ## embedded errors (look for \"!!!:WI:\" in the code)"];
     [WClasses getDefault].hasErrors=YES;
 }
 + (void)warning:(NSString *)err withToken:(WReaderToken *)t context:(InFiles*)ctxt {
-     [WClasses _note:[NSString stringWithFormat:@" Address warning: %@",err] withToken:t context:ctxt aggregatePattern:@"Address ## embedded warnings (look for \"warnwarn\" in the code)"];
+     [WClasses _note:[NSString stringWithFormat:@"? Address warning: %@",err] withToken:t context:ctxt aggregatePattern:@"Address ## embedded warnings (look for \"???:WI:\" in the code)"];
     [WClasses getDefault].hasWarnings=YES;
 }
 + (void)note:(NSString *)n withToken:(WReaderToken *)t context:(InFiles*)ctxt {
-     [WClasses _note:[NSString stringWithFormat:@" Note: %@",n] withToken:t context:ctxt aggregatePattern:@"Embedded ## notes (look for \"notenote\" in the code)"];
+     [WClasses _note:[NSString stringWithFormat:@" Note: %@",n] withToken:t context:ctxt aggregatePattern:@"Embedded ## notes (look for \"MARK:WI:\" in the code)"];
 }
 
 
@@ -3779,7 +3831,17 @@ static WClasses *_default=nil;
 }
 - (void)appendObjCToString_impl:(NSMutableString*)s {
     if (self.imaginary||[self invalidProtocolFunction]) return;
-    if (self.body) [s appendFormat:@"%@ {MSGSTART(\"%@:%@\")\n%@}\n",[self finalSigStr:self.sigWithArgs],clas.wType.wiType,[self finalSigStr:self.sigWithArgs],[self finalBodyStr:self.body withSig:self.sigWithArgs]];
+    if (self.body) {
+        [s appendFormat:@"%@ {%@%@}\n",[self finalSigStr:self.sigWithArgs],
+            ([clas.varPatterns containsObject:@"notrace"]?@"":
+                [NSString stringWithFormat:@"MSGSTART(\"%@:%@\")\n",
+                    clas.wType.wiType,
+                    [self finalSigStr:self.sigWithArgs]
+                ]
+            ),
+            [self finalBodyStr:self.body withSig:self.sigWithArgs]
+        ];
+    }
     else [[WClasses getDefault].taskList addObject:[NSString stringWithFormat:@"Need to implement %@ :: %@",self.clas.name,self.sig]];
 }
 
