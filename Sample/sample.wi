@@ -51,7 +51,7 @@ type kid "typedef:id<NSCopying,Retains>" "retains"
     }
 
 
-/*each:impl:
+/*each:impl
 #ifdef _PrivateAccessMask_
 #undef _PrivateAccessMask_
 #endif

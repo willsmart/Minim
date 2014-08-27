@@ -23,8 +23,8 @@
     if (!(self=[super init])) return(nil);
     tokenizer=atokenizer;
     self.str=astr.copy;
-    self.notes=[NSString stringWithFormat:@"\a\a%c%p%@",atype,self,[astr stringByReplacingOccurrencesOfString:@"\a" withString:@"a"]];
-    if (anote.length) [self addNote:@"%@",anote];
+    self.notes=@"";//[NSString stringWithFormat:@"\a\a%c%p%@",atype,self,[astr stringByReplacingOccurrencesOfString:@"\a" withString:@"a"]];
+    //if (anote.length) [self addNote:@"%@",anote];
     self.type=atype;
     self.bracketCount=bc;
     self.linei=linei;

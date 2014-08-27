@@ -8,7 +8,7 @@ extern id<NSCopying> nullable_key(id<NSCopying> key);
 extern id nullable_object(id object);
 
 
-long breakpoint();
+//long breakpoint();
 void breaknow();
 void breakat(long at);
 void error(NSString *error,...);
