@@ -6,7 +6,6 @@
 //
 //
 
-#import "WInterface.h"
 
 @implementation SourceFile
 

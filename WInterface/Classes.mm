@@ -6,7 +6,6 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import "WInterface.h"
 
 #define iNSNotFound ((int)NSNotFound)
 #define SPACER @"\n\n\n\n\n\n\n\n\n"
@@ -149,7 +148,7 @@ static NSMutableArray *InFiles_allInFiles=nil;
     //    return;
     //}
     //NSString *reg=@"WI_(?:ERROR|note)\\((?:\\s*+\"(?:\\\\\\\\|\\\\\"|[^\"])*+\")*+\\s*+\\)\n";
-    NSString *reg=@"(?<=^|\n)//(?: \\!\\!\\!| \\?\\?\\?| MARK):WI:[^\n]*+";
+    NSString *reg=@"(?<=^|\n)//(?: \\!\\!\\!| \\?\\?\\?| MARK)?:WI:[^\n]*+";
     NSRegularExpression *re=[NSRegularExpression regularExpressionWithPattern:reg options:0 error:&err];
     if (err||!re) {
         NSLog(@"%@",reg);
@@ -1053,7 +1052,7 @@ static WClasses *_default=nil;
     }
     else if (hadTwo) {
         if (pprefix) *pprefix=sameLine;
-        ret=[preBracket stringByAppendingFormat:@"%@%@",mid,postBracket];
+        ret=[preBracket stringByAppendingFormat:@"%@%@\n",mid,postBracket];
     }
     else if (hadMid) {
         if (pprefix) *pprefix=[sameLine stringByAppendingString:preBracket];
@@ -1061,7 +1060,7 @@ static WClasses *_default=nil;
     }
     else {
         if (pprefix) *pprefix=sameLine;
-        ret=[preBracket stringByAppendingString:mid];
+        ret=[preBracket stringByAppendingString:[mid stringByAppendingString:@"\n"]];
     }
     if (ret&&clearBrackets) {
         NSString *trimRet=[ret stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
@@ -1891,7 +1890,7 @@ static WClasses *_default=nil;
             if (![self.incls containsObject:name]) [self.incls addObject:name];
         }
         else {        
-            NSString *fn=[self.class replaceEnvVars:name contextToken:r.currentToken];
+            NSString *fn=name;
             if (fn) {
                 printf("Include: %s\n",fn.UTF8String);
                 if ([self.readFNStack containsObject:fn]) {
@@ -1985,6 +1984,9 @@ static WClasses *_default=nil;
     else if ([s hasPrefix:*n=@"interfaces"]) return(ins_after_ifaces_iface);
     else if ([s hasPrefix:*n=@"bottom"]) return(ins_last_iface);
 
+    else if ([s hasPrefix:*n=@"iface"]) return(ins_after_decl_iface);
+    else if ([s hasPrefix:*n=@"impl"]) return(ins_after_decl_impl);
+
     else if ([s hasPrefix:*n=@"each:impl"]) return(ins_each_impl);
 
     else {*n=@"";return(nil);}
@@ -2012,6 +2014,7 @@ static WClasses *_default=nil;
     else if ([s hasPrefix:*n=@"top:impl"]) return(ins_set_first_impl);
     else if ([s hasPrefix:*n=@"imports:impl"]) return(ins_set_after_imports_impl);
     else if ([s hasPrefix:*n=@"decl:impl"]) return(ins_set_after_decl_impl);
+    else if ([s hasPrefix:*n=@"decl:impl"]) return(ins_set_after_decl_impl);
     else if ([s hasPrefix:*n=@"structs:impl"]) return(ins_set_after_structs_impl);
     else if ([s hasPrefix:*n=@"protocols:impl"]) return(ins_set_after_protocols_impl);
     else if ([s hasPrefix:*n=@"interfaces:impl"]) return(ins_set_after_ifaces_impl);
@@ -2024,6 +2027,9 @@ static WClasses *_default=nil;
     else if ([s hasPrefix:*n=@"protocols"]) return(ins_set_after_protocols_iface);
     else if ([s hasPrefix:*n=@"interfaces"]) return(ins_set_after_ifaces_iface);
     else if ([s hasPrefix:*n=@"bottom"]) return(ins_set_last_iface);
+
+    else if ([s hasPrefix:*n=@"iface"]) return(ins_set_after_decl_iface);
+    else if ([s hasPrefix:*n=@"impl"]) return(ins_set_after_decl_impl);
 
     else if ([s hasPrefix:*n=@"each:impl"]) return(ins_set_each_impl);
 
@@ -2078,7 +2084,7 @@ static WClasses *_default=nil;
             NSString *nameUsed=nil;
             NSMutableString *decl=[self importsDeclWithName:s nameUsed:&nameUsed];
             if (decl) {
-                [decl appendString:[s substringFromIndex:nameUsed.length]];
+                [decl appendFormat:@"%@\n",[s substringFromIndex:nameUsed.length]];
             }
         }
     }
@@ -2190,29 +2196,6 @@ static WClasses *_default=nil;
 
 
 
-+(NSString*)replaceEnvVars:(NSString*)string contextToken:(WReaderToken*)contextToken  {
-    NSError *err=nil;
-    NSRegularExpression *regex=[NSRegularExpression regularExpressionWithPattern:@"(?<=^|\\})([^\\{]*+)(?=$|\\{)|(?<=\\{)([^\\}]*+)(?=$|\\})" options:0 error:&err];
-    NSArray *matches=[regex matchesInString:string options:0 range:NSMakeRange(0, string.length)];
-    NSMutableString *ret=NSMutableString.string;
-
-    for (NSTextCheckingResult *match in matches) {
-        if ([match rangeAtIndex:1].location!=NSNotFound) {
-            [ret appendString:[string substringWithRange:[match rangeAtIndex:1]]];
-        }
-        else if ([match rangeAtIndex:2].location!=NSNotFound) {
-            NSString *var=[string substringWithRange:[match rangeAtIndex:2]];
-            NSString *val = [[[NSProcessInfo processInfo]environment]objectForKey:var];
-            if (val) [ret appendString:val];
-            else {
-                [WClasses error:[NSString stringWithFormat:@"Couldn't find environment variable \"%@\" to expand string \"%@\"",var,string] withToken:contextToken context:nil];
-                return(nil);
-            }
-        }
-    }
-    return(ret);
-}
-
 - (void)addToFns {
     [WClass getProtocolWithName:@"Object"].hasDef=YES;
     [WClass getProtocolWithName:@"DerivedObject"].hasDef=YES;
@@ -2238,7 +2221,59 @@ static WClasses *_default=nil;
     NSString *ins_each_class=(impl?self.ins_each_impl:@"");
 
     NSMutableString *s=[NSMutableString stringWithString:ins_first];
-    
+
+
+
+    NSArray *cs=[self.classes.allValues sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+        WClass *c1=(WClass*)obj1,*c2=(WClass*)obj2;
+        int d1=c1.depth,d2=c2.depth;
+//        int d1=0,d2=0;
+        return(d1<d2?NSOrderedAscending:(d1>d2?NSOrderedDescending:[c1.name compare:c2.name options:NSCaseInsensitiveSearch]));
+    }];
+    NSArray *ps=[self.protocols.allValues sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+        WClass *c1=(WClass*)obj1,*c2=(WClass*)obj2;
+        int d1=c1.depth,d2=c2.depth;
+//        int d1=0,d2=0;
+        return(d1<d2?NSOrderedAscending:(d1>d2?NSOrderedDescending:[c1.name compare:c2.name options:NSCaseInsensitiveSearch]));
+    }];
+
+
+    int myClassCount=0;
+
+    if (impl) {
+        for (WClass *c in cs) if (c.exists&&((!cfn)||[cfn isEqualToString:c.filename])&&!(c.isType||c.empty)) {
+            myClassCount++;
+        }
+        if (myClassCount) {
+            [s appendFormat:@"\n\n#pragma mark -\n#pragma mark Interfaces:\n#ifdef INCLUDE_IFACE\n\n"];
+            int depthWas=-1;
+            for (WClass *c in cs) if (c.exists&&((!cfn)||[cfn isEqualToString:c.filename])&&!(c.isType||c.empty)) {
+                int depth=c.depth;
+                if (depthWas!=depth) {
+                    if (depthWas!=-1) {
+                        [s appendFormat:@"#endif // INCLUDE_IFACE_D%d\n\n",depthWas];
+                    }
+                    depthWas=depth;
+                    [s appendFormat:@"#ifdef INCLUDE_IFACE_D%d\n",depth];
+                    [s appendString:SPACER];
+                }
+
+                [c appendObjCToString_iface:s];
+                [s appendString:SPACER];
+            }
+            if (depthWas!=-1) {
+                [s appendFormat:@"#endif // INCLUDE_IFACE_D%d\n\n",depthWas];
+            }
+            [s appendFormat:@"#else // INCLUDE_IFACE\n\n"];
+            [s appendString:SPACER];
+        }
+    }
+
+
+
+
+
+
     if (impl&&(hasErrors||hasWarnings)) {
         [s appendString:@"static void __wi__warner() {\n"];
         if (hasErrors) [s appendString:@"  wi_reported_errors=1;\n"];
@@ -2248,7 +2283,6 @@ static WClasses *_default=nil;
     
     if (iface) {
         for (NSString __strong*incl in self.incls) {
-            incl=[self.class replaceEnvVars:incl contextToken:nil];
             if (incl) {
                 if ([incl hasPrefix:@"\"include:"]) [s appendFormat:@"#include \"%@\n",[incl substringFromIndex:@"\"include:".length]];
                 else if ([incl hasPrefix:@"<include:"]) [s appendFormat:@"#include <%@\n",[incl substringFromIndex:@"<include:".length]];
@@ -2266,18 +2300,6 @@ static WClasses *_default=nil;
         [s appendString:SPACER];
     }
 
-    NSArray *cs=[self.classes.allValues sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-        WClass *c1=(WClass*)obj1,*c2=(WClass*)obj2;
-        int d1=c1.depth,d2=c2.depth;
-//        int d1=0,d2=0;
-        return(d1<d2?NSOrderedAscending:(d1>d2?NSOrderedDescending:[c1.name compare:c2.name options:NSCaseInsensitiveSearch]));
-    }];
-    NSArray *ps=[self.protocols.allValues sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-        WClass *c1=(WClass*)obj1,*c2=(WClass*)obj2;
-        int d1=c1.depth,d2=c2.depth;
-//        int d1=0,d2=0;
-        return(d1<d2?NSOrderedAscending:(d1>d2?NSOrderedDescending:[c1.name compare:c2.name options:NSCaseInsensitiveSearch]));
-    }];
     int classCount=0,typeCount=0;
 
 
@@ -2285,37 +2307,38 @@ static WClasses *_default=nil;
     for (WClass *c in cs) if (iface&&c.exists&&!(c.isType||c.isSys)) [s appendFormat:@"@class %@;\n",c.name];
     
 
-    for (WClass *c in cs) {
-    //            if ([c.name isEqualToString:@"CommitStage"]) printf("CS %s %s %s\n",c.name.UTF8String,c.vars.description.UTF8String,c.varPatterns.description.UTF8String);
-        if (c.isType&&(!c.vars.count)&&(c.varPatterns.count>=1)) {
-            bool first=YES;
-            for (NSString *p in c.varPatterns) {
-                if (iface) {
-                if (c.isBlock) {
-                }
-                    NSString *typedefPrefix=(c.isBlock?(first?@"":nil):@"typedef:");
-                    if (typedefPrefix&&((!typedefPrefix.length)||[p hasPrefix:typedefPrefix])) {
-                        NSString *t=[p substringFromIndex:typedefPrefix.length];
-                        NSError *err=nil;
-                        NSRegularExpression *regex=[NSRegularExpression regularExpressionWithPattern:@"(?s)^\\s*+(.*?)\\s*+((?:\\[\\s*+\\d++\\s*+(?:,\\s*+\\d++\\s*+)*+\\])?+)\\s*+$" options:0 error:&err];
-                        NSTextCheckingResult *match = [regex firstMatchInString:t options:0 range:NSMakeRange(0, t.length)];
-                        if (match) {
-                            NSRange r=[t rangeOfString:@"__type__"];
-                            if (r.location!=NSNotFound) {
-                                [s appendFormat:@"typedef %@ %@;\n",[[t substringWithRange:[match rangeAtIndex:1]] stringByReplacingCharactersInRange:r withString:c.name],[t substringWithRange:[match rangeAtIndex:2]]];
-                            }
-                            else {
-                                [s appendFormat:@"typedef %@ %@%@;\n",[t substringWithRange:[match rangeAtIndex:1]],c.name,[t substringWithRange:[match rangeAtIndex:2]]];
-                            }
-                        }
-                        break;
+    for (int depth=-2;depth<=2;depth++) {
+        for (WClass *c in cs) {
+        //            if ([c.name isEqualToString:@"CommitStage"]) printf("CS %s %s %s\n",c.name.UTF8String,c.vars.description.UTF8String,c.varPatterns.description.UTF8String);
+            if (c.isType&&(!c.vars.count)&&(c.varPatterns.count>=1)) {
+                bool first=YES;
+                for (NSString *p in c.varPatterns) {
+                    if (iface) {
+                    if (c.isBlock) {
                     }
+                        NSString *typedefPrefix=(c.isBlock?(first&&!depth?@"":nil):(depth?[NSString stringWithFormat:@"typedef@%d:",depth]:@"typedef:"));
+                        if (typedefPrefix&&((!typedefPrefix.length)||[p hasPrefix:typedefPrefix])) {
+                            NSString *t=[p substringFromIndex:typedefPrefix.length];
+                            NSError *err=nil;
+                            NSRegularExpression *regex=[NSRegularExpression regularExpressionWithPattern:@"(?s)^\\s*+(.*?)\\s*+((?:\\[\\s*+\\d++\\s*+(?:,\\s*+\\d++\\s*+)*+\\])?+)\\s*+$" options:0 error:&err];
+                            NSTextCheckingResult *match = [regex firstMatchInString:t options:0 range:NSMakeRange(0, t.length)];
+                            if (match) {
+                                NSRange r=[t rangeOfString:@"__type__"];
+                                if (r.location!=NSNotFound) {
+                                    [s appendFormat:@"typedef %@ %@;\n",[[t substringWithRange:[match rangeAtIndex:1]] stringByReplacingCharactersInRange:r withString:c.name],[t substringWithRange:[match rangeAtIndex:2]]];
+                                }
+                                else {
+                                    [s appendFormat:@"typedef %@ %@%@;\n",[t substringWithRange:[match rangeAtIndex:1]],c.name,[t substringWithRange:[match rangeAtIndex:2]]];
+                                }
+                            }
+                            break;
+                        }
+                    }
+                    first=NO;
                 }
-                first=NO;
             }
         }
     }
-    
     for (WClass *c in cs) if (c.exists) {
         if (!(c.isType||c.isSys)) classCount++; else if (c.vars.count) typeCount++;
     }
@@ -2363,15 +2386,30 @@ static WClasses *_default=nil;
 
     if (iface) {
         if (classCount) {
-            [s appendFormat:@"\n\n#pragma mark -\n#pragma mark Interfaces\n\n"];
+            NSMutableDictionary *depths=NSMutableDictionary.dictionary;
+
             for (WClass *c in cs) if (c.exists&&!(c.isType||c.empty)) {
-                [c appendObjCToString_iface:s];
-                [s appendString:SPACER];
+                int depth=c.depth;
+                if (!depths[@(depth)]) depths[@(depth)]=NSMutableSet.set;
+                [((NSMutableSet*)depths[@(depth)]) addObject:c.filename];
             }
+            NSArray *depthsa=[depths.allKeys sortedArrayUsingSelector:@selector(compare:)];
+
+            [s appendFormat:@"\n\n#pragma mark -\n#pragma mark Include interfaces:\n#define INCLUDE_IFACE\n\n"];
+
+            for (NSNumber *depth in depthsa) {
+                [s appendFormat:@"#pragma mark -\n#pragma mark Include interfaces:\n#define INCLUDE_IFACE_D%d\n",depth.intValue];
+                NSArray *fns=[((NSSet*)depths[depth]).allObjects sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+                for (NSString *fn in fns) {
+                    [s appendFormat:@"    #include \"%@.mm\"\n",fn];
+                }
+                [s appendFormat:@"#undef INCLUDE_IFACE_D%d\n\n",depth.intValue];
+            }
+            [s appendFormat:@"#undef INCLUDE_IFACE\n\n"];
             [s appendString:SPACER];
         }
     }
-    
+
     if (ins_after_ifaces.length) {
         [s appendString:ins_after_ifaces];
         [s appendString:SPACER];
@@ -2405,8 +2443,10 @@ static WClasses *_default=nil;
     if (ins_last.length) {
         [s appendString:ins_last];
         [s appendString:SPACER];
-        [s appendString:SPACER];
     }
+
+    if (impl&&myClassCount) [s appendFormat:@"#endif // INCLUDE_IFACE\n"];
+
         
     NSMutableString *ret=nil;
     //NSDate *date=[NSDate date];
@@ -2416,12 +2456,12 @@ static WClasses *_default=nil;
         [_s appendString:@"//Tasks:\n"];
         for (NSString *task in self.taskList) {
             [_s appendFormat:@"//    %@\n",task];
-            if (![task hasPrefix:@" Note: "]) [ret appendFormat:@"%@\n",task];
+            if ([task hasPrefix:@"// !!!:"]||[task hasPrefix:@"// ???:"]) [ret appendFormat:@"%@\n",task];
         }
         [_s appendString:@"\n\n"];
     }
     [_s appendString:s];
-    return(ret);
+    return(ret.length?ret:nil);
 }
 
 
@@ -3719,7 +3759,7 @@ static WClasses *_default=nil;
     NSRange r=NSMakeRange(NSNotFound,0);
     if ([asig isEqualToString:@"-(init)"]) {
         if (clas.isProtocol) return(nil);
-        asig=@"-(__Class__*)_startObjectOfClass__WIClass__";
+        asig=@"-(void)_startObjectOfClass__WIClass__";
     }
     else if ([asig hasPrefix:@"-(init)"]||([asig hasPrefix:@"-(init["]&&((r=[asig rangeOfString:@"])"]).location!=NSNotFound))) {
         NSUInteger st=(r.location==NSNotFound?@"-(init)".length:(r.location+2));

@@ -1,4 +1,3 @@
-#import "WInterface.h"
 
 time_t _DEBLog_time;
 
@@ -203,3 +202,34 @@ NSString* pathForPath(NSString *path) {
 
 @end
 
+
+
+
+@implementation NSString (winterface)
+-(NSString*)replaceEnvironmentVariables_error:(NSError*__strong*)perror  {
+    if (perror) *perror=nil;
+    NSError *err=nil;
+    NSRegularExpression *regex=[NSRegularExpression regularExpressionWithPattern:@"(?<=^|\\})([^\\{]*+)(?=$|\\{)|(?<=\\{)([^\\}]*+)(?=$|\\})" options:0 error:&err];
+    NSArray *matches=[regex matchesInString:self options:0 range:NSMakeRange(0, self.length)];
+    NSMutableString *ret=NSMutableString.string;
+
+    for (NSTextCheckingResult *match in matches) {
+        if ([match rangeAtIndex:1].location!=NSNotFound) {
+            [ret appendString:[self substringWithRange:[match rangeAtIndex:1]]];
+        }
+        else if ([match rangeAtIndex:2].location!=NSNotFound) {
+            NSString *var=[self substringWithRange:[match rangeAtIndex:2]];
+            NSString *val = [[[NSProcessInfo processInfo]environment]objectForKey:var];
+            if (val) [ret appendString:val];
+            else {
+                if (perror) *perror=[NSError errorWithDomain:
+                    [NSString stringWithFormat:@"Couldn't find environment variable \"%@\" to expand string \"%@\"",var,self]
+                    code:0 userInfo:nil
+                ];
+                return(nil);
+            }
+        }
+    }
+    return(ret);
+}
+@end

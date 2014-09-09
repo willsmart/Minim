@@ -19,7 +19,7 @@
 
 #import <RegexKit/RegexKit.h>
 
-#import "Headers.h"
+#include "Headers.h"
 
 #import "NSString+WI.h"
 #import "WReaderTokenizer.h"

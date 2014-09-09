@@ -20,7 +20,7 @@
 		BE99B97A161BAE720041B8EA /* WInterface.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = BE99B979161BAE720041B8EA /* WInterface.1 */; };
 		BE99B982161BAEBA0041B8EA /* Classes.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE99B981161BAEBA0041B8EA /* Classes.mm */; };
 		BE99B985161BAFD30041B8EA /* WReader.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE99B984161BAFD30041B8EA /* WReader.mm */; };
-		BE9AF96219524F2B00BA6CA0 /* RegexKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BEAC0E89187C168200405862 /* RegexKit.framework */; };
+		BE9AF96219524F2B00BA6CA0 /* RegexKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BEAC0E89187C168200405862 /* RegexKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		BEAA02991621F7280026192D /* WReaderTokenizer.mm in Sources */ = {isa = PBXBuildFile; fileRef = BEAA02981621F7280026192D /* WReaderTokenizer.mm */; };
 		BEAC0E8A187C168200405862 /* RegexKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEAC0E89187C168200405862 /* RegexKit.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		BEC8A51B18296AA50090BBAD /* inserts.mm in Sources */ = {isa = PBXBuildFile; fileRef = BEC8A51A18296AA50090BBAD /* inserts.mm */; };
@@ -82,6 +82,7 @@
 		BE4152E61811B03200E421D7 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		BE4152E91811B03200E421D7 /* WInterfaceSample-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WInterfaceSample-Prefix.pch"; sourceTree = "<group>"; };
 		BE4152EA1811B03200E421D7 /* WInterfaceSample.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = WInterfaceSample.1; sourceTree = "<group>"; };
+		BE54764D19B6635700E3F926 /* www */ = {isa = PBXFileReference; lastKnownFileType = folder; name = www; path = ../Test/www; sourceTree = "<group>"; };
 		BE61F57A1627C7CB00614210 /* Test.wi */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Test.wi; path = Test/Test.wi; sourceTree = SOURCE_ROOT; };
 		BE61F57B1627D02300614210 /* Test.wi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Test.wi.m; path = Test/Test.wi.m; sourceTree = SOURCE_ROOT; };
 		BE622A12162CA95A00618E26 /* LinkBase.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = LinkBase.wi; path = Test/LinkBase.wi; sourceTree = SOURCE_ROOT; };
@@ -355,6 +356,7 @@
 		BE99B963161BAE710041B8EA = {
 			isa = PBXGroup;
 			children = (
+				BE54764D19B6635700E3F926 /* www */,
 				BE6FA91919AAD2E200862360 /* wiLibrary */,
 				BE6FA91819AAD18A00862360 /* BasicClassesCPP */,
 				BE93AD83165E9D9C001BA629 /* WI_iosTests.xcodeproj */,
@@ -660,7 +662,7 @@
 		BE99B965161BAE710041B8EA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0600;
 			};
 			buildConfigurationList = BE99B968161BAE710041B8EA /* Build configuration list for PBXProject "WInterface" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -815,9 +817,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -830,7 +839,9 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -848,16 +859,25 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",

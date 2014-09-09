@@ -5,15 +5,6 @@
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES">
-      <PostActions>
-         <ExecutionAction
-            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
-            <ActionContent
-               title = "Run Script"
-               scriptText = "/Users/Will/Documents/Projects/grabwinterface&#10;">
-            </ActionContent>
-         </ExecutionAction>
-      </PostActions>
       <BuildActionEntries>
          <BuildActionEntry
             buildForTesting = "YES"
@@ -53,7 +44,7 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
       useCustomWorkingDirectory = "YES"
-      customWorkingDirectory = "/Users/Will/Documents/WInterface/Files"
+      customWorkingDirectory = "/Users/Will/Documents/Test/www"
       buildConfiguration = "Debug"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
@@ -69,7 +60,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "wi.wi"
+            argument = "parse"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

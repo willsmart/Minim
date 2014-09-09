@@ -98,4 +98,9 @@ extern NSError *_IgnoreNSError,*__strong*IgnoreNSError;
 @end
 
 
+@interface NSString (winterface)
+-(NSString*)replaceEnvironmentVariables_error:(NSError*__strong*)perror;
+@end
+
+
 

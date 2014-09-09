@@ -1,4 +1,3 @@
-#import "WInterface.h"
 
 @implementation NSString(WI)
 

@@ -6,7 +6,6 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import "WInterface.h"
 
 
 @implementation WReader
@@ -78,8 +77,39 @@
     }
     self.lines=[fileString componentsSeparatedByString:@"\n"];
     self.tokenizer.str=fileString;
-    
+
+    [self processMacros];
     pos=-1;
+}
+
+
+-(bool)processMacros {
+    NSMutableArray *tokens=self.tokenizer.tokens;
+    bool ret=YES;
+    for (NSUInteger i=0;i<tokens.count;i++) {
+        if ((tokens.count>i+1)&&
+            [((WReaderToken*)tokens[i]).str isEqualToString:@"$"]&&
+            (((WReaderToken*)tokens[i+1]).type=='s')
+        ) {
+            [tokens removeObjectAtIndex:i];
+            WReaderToken *t=tokens[i];
+            NSError *error=nil;
+            t.str=[t.str replaceEnvironmentVariables_error:&error];
+            if (error) {
+                tokens[i]=[[WReaderToken alloc] initWithTokenizer:self.tokenizer string:
+                    [NSString stringWithFormat:@"/* %@ */",[error.domain stringByReplacingPairs:
+                        @"/*",@" / * ",
+                        @"*/",@" * / ",
+                        @"//",@" / / ",
+                        nil
+                    ]]
+                 bracketCount:t.bracketCount linei:t.linei type:'c'];
+                 ret=NO;
+            }
+        }
+    }
+    self.tokenizer._str=[self stringWithTokensInRange:NSMakeRange(0, tokens.count)];
+    return(ret);
 }
 
 - (NSString*)localString {

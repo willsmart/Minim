@@ -8,16 +8,17 @@
 
 #define MAINCPPFILE
 #define CPPFILE
-#import "WInterface.h"
+#include "Headers.h"
+
 
 void testParse() {
-    ((id<ParseClass>)Parse.class).rulesFilename=@"rules_wi.txt";
+    ((id<ParseClass>)Parse.class).rulesFilename=@"rules.txt";
 
     NSError *err=nil;
-    NSString *prog=[NSString stringWithContentsOfFile:@"eg.wi" encoding:NSUTF8StringEncoding error:&err];
+    NSString *prog=[NSString stringWithContentsOfFile:@"graph.txt" encoding:NSUTF8StringEncoding error:&err];
     if (!prog) prog=@"File not found";
     NSString *json=[Parse jsonFromTokens:[Parse parse:prog] program:prog];
-    [json writeToFile:@"eg.wi.json" atomically:YES encoding:NSUTF8StringEncoding error:&err];
+    [json writeToFile:@"graph.txt.json" atomically:YES encoding:NSUTF8StringEncoding error:&err];
 
     exit(0);
 }
@@ -28,6 +29,7 @@ int main(int argc, const char * argv[])
 
     int ret=0;
 
+    if ((argc>=2)&&!strcmp(argv[1],"parse")) testParse();
 
     @autoreleasepool {
 
@@ -80,7 +82,7 @@ int main(int argc, const char * argv[])
                     printf("Wrote to file %s\n",[dfn cStringUsingEncoding:NSASCIIStringEncoding]);
                     
 
-                    NSString *hfn=[NSString stringWithFormat:@"%@.h",r.fileName];
+                    NSString *hfn=[NSString stringWithFormat:@"%@.pch",r.fileName];
                     s=[NSMutableString string];
                     [cs appendObjCToString:s iface:YES impl:NO classFilename:nil headerFilename:dfn];
                     err=nil;
@@ -91,13 +93,13 @@ int main(int argc, const char * argv[])
                     NSString *errs=nil;
                     for (NSString *fn in fns) {
                         s=[NSMutableString string];
-                        NSString *errs2=[cs appendObjCToString:s iface:NO impl:YES classFilename:fn headerFilename:hfn];
+                        NSString *errs2=[cs appendObjCToString:s iface:NO impl:YES classFilename:fn headerFilename:nil];
                         if (!errs) errs=errs2;
                         else errs=[errs stringByAppendingString:errs2];
                         
                         err=nil;
                         [fm changeCurrentDirectoryPath:baseDir];
-                        NSString *ofn=[NSString stringWithFormat:@"%@.mm",[fn isEqualToString:@"default"]?r.fileName:fn];
+                        NSString *ofn=[NSString stringWithFormat:@"%@.mm",fn];
                         NSString *swas=[NSString stringWithContentsOfFile:ofn encoding:NSUTF8StringEncoding error:&err];
                         if (swas&&[swas isEqualToString:s]) {
                             printf("No change to file %s\n",[ofn cStringUsingEncoding:NSASCIIStringEncoding]);

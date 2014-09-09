@@ -6,7 +6,6 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import "WInterface.h"
 
 @implementation WReaderToken : NSObject
 @synthesize type,bracketCount,tokenizer,_str,_notes;
