@@ -14,12 +14,15 @@
 void testParse() {
     ((id<ParseClass>)Parse.class).rulesFilename=@"rules.txt";
 
+    efil=FOpen("run.txt", "wb");
     NSError *err=nil;
     NSString *prog=[NSString stringWithContentsOfFile:@"graph.txt" encoding:NSUTF8StringEncoding error:&err];
     if (!prog) prog=@"File not found";
     NSString *json=[Parse jsonFromTokens:[Parse parse:prog] program:prog];
     [json writeToFile:@"graph.txt.json" atomically:YES encoding:NSUTF8StringEncoding error:&err];
 
+    FClose(efil);
+    efil=stderr;
     exit(0);
 }
 

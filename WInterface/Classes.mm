@@ -4745,7 +4745,7 @@ CACHEVARATTRFN_retain(NSString*,localizedVarName,
 - (void)appendObjCToString_iface:(NSMutableString*)s {
     if (self.imaginary||self.justivar) return;
     [s appendFormat:@"@property (%@%@%@%@%@%@%@",
-        !self.retainable?@"":(self.copies?@"copy,":(self.retains?@"strong,":@"weak,")),
+        !(self.hasIVar&&self.retainable)?@"":(self.copies?@"copy,":(self.retains?@"strong,":@"weak,")),
         self.atomic?@"atomic,":@"nonatomic,",
         self.objc_readonly?@"readonly,":(self.readonly?@"readwrite/*(public readonly)*/,":@"readwrite,"),
         [attributes containsObject:@"strong"]?@"strong,":@"",
