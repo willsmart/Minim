@@ -59,39 +59,49 @@ Make a property
 
 (prefer)
 
-`A
-  A a=A.new`
+```
+A
+  A a=A.new
+```
 
 or
 
-`A A a=A.new`
+```
+A A a=A.new
+```
 
 or if you insist
 
-`A {
+```
+A {
 A a=A.new
-}`
+}
+```
 
 Make a getter property
 
-`A A a
-    {return(A.new);}`
+```
+A A a
+    {return(A.new);}
+```
 
 Make a getter/setter property
 
-`A A a
+```
+A A a
     {return([A theMD:self]);}
     -v{[A setTheMD:v for:self];}
-`
+```
     
 Weak initialized ivar property with getter and setter
 (the initializer is placed in an object starter method)
 
-`A 
+```
+A 
     A a=[A new]
         {return(theivar);}
         -v{theivar=v;}  (ivar=theivar, weak)
-`
+```
 
 
 ### Methods
@@ -99,52 +109,59 @@ Make a method
 
 (prefer)
 
-`A
+```
+A
   -(void)fn
     auto_md()
-`
+```
 
 (also good)
 
-`A
+```
+A
   -(void)fn {
     auto_md()
-  }`
+  }
+```
 
 brackets may be required for multi-line selectors:
 
-`A
+```
+A
     -(void)fn:(id)a
         b:(id)b
         {
             make_md(a,b);
-        }`
+        }
+```
         
 Methods and classes are reentrant throughout the codebase, use @integer for ordering (this will likely change I guess, 'til then for int literals use @(1))
 
-`A
+```
+A
     -(void)fn {second();}
     -(void)fn {@-1 first();}
 A
     -(void)fn {@1 third();}
-    `
+```
     
 Protocols will pass their methods on to conforming classes
 
-`<A>
+```
+<A>
     -(void)fn {second();}
     -(void)fn {@-1 first();}
 A<A>
     -(void)fn {@1 third();}
-    `
+```
 
 ### Links
 Links are easy, they can be:
-    * one-to-one ( -- )
-    * one-to-set ( -s< or -< )
-    * one-to-array ( -a< )
-    * one-to-dictionary ( -d< )
-    * set-to-set ( >s< )
+* one-to-one ( -- )
+* one-to-set ( -s< or -< )
+* one-to-array ( -a< )
+* one-to-dictionary ( -d< )
+* set-to-set ( >s< )
 
 The singular form is always used when specifying the name of the property. For the moment, for predictability's sake, the plural form is just that with an 's' afterwards, so if possible use a property name that won't mangle (mental note TODO).
 
@@ -155,8 +172,10 @@ Super minimally to make each A link to a B, so that each A has a property 'b' an
 
 Or more typically in a class defn
 
-`A
-    a -- B b`
+```
+A
+    a -- B b
+```
 
 Links have enforced consistancy, so that if you set mya.b=someb, then someb.a==mya and the old someb.a is set to nil
 
@@ -164,9 +183,11 @@ or in
 
 `A a -d< B b`
 
-Setting mya.bs[@"md"]=someb will make someb.a==mya and if olda is the old someb.a, then olda[@"md"]==nil
-At all times someb.keyInA is its key in the dictionary (i.e. @"md")
-So someb.keyInA=@"md is done" will cause mya.bs[@"md"]==nil and mya.bs[@"md is done"]==someb 
+Setting `mya.bs[@"md"]=someb` will make `someb.a==mya`
+If olda is the old `someb.a`, then also `olda[@"md"]==nil`
+At all times `someb.keyInA` is its key in the dictionary (i.e. `@"md"`)
+This key is writable, so `someb.keyInA=@"md is done"` will do what you'd expect 
+(i.e. `mya.bs[@"md"]==nil` and `mya.bs[@"md is done"]==someb`)
 
 Similarly for arrays with integers as keys, though arrays will need to jostle indexes after insertions/removals, where dictionaries don't have to so much
 In the case of an array, keyInA becomes indexInA
@@ -194,38 +215,44 @@ Also the children can own the parent (which is fantastically useful)
 
 Protocols can also have links, because they should, and it can be very useful:
 
-`<A> a -- B b
-<Node> parent -< <Node> child`
+```
+<A> a -- B b
+
+<Node> parent -< <Node> child
+```
 
 Properties also add convenience/strong-typing methods to the class to make the code readable and safe since id isn't used in the signature:
 
-`A
+```
+A
     toddler ~a< A cake
     -(void)bake {[toddler addCake:Cake.new];}
     -(void)cleanKitchen {[toddler removeAllCakes];}
-`
+```
 
 See the PropXX.wi files in Winterface/Wis/ for implementations.
 
 Indented lines after the link are considered part of the linked class, allowing the top of a file to declare (and implement) most of the data model that the file/app will be dealing with:
 
-`User 
+```
+User 
     user ~< Sock sock
     user ~< Shirt shirt
         shirt ~- Collar collar
     author -d< Book book
         titleFor -- NSString title
         chapterIn -a< BookChapter chapter
-`
+```
 
 
 ### Atomic models
 A property or link may be backed by an atomic model. The syntax is more taxing but the goodies are many
 
-`A
+```
+A
     A fluid >> atomic
         = nil
-`
+```
 
 (the =nil/=0/=NULL initializer will not produce any code but is required to avoid a wi warning, variables should be initialized by people, wi doesn't assume things should all just start as 0)
 
@@ -238,24 +265,28 @@ Importantly, since the atomic property value is immutable, synchronization isn't
 
 For properties:
 
-`<TableModel>
+```
+<TableModel>
     _table>>table   ~a<   <SectionModel> _section>>section
         _section>>section   ~a<   <CellModel> _cell>>cell
-`
+```
 
 makes for a fully consistent model which provides a fluid interface (go on, change _table/_sections/_cells as you like) but which if hooked up to a table library (see wiLibrary for a good one) will update the table at a convenent time and always reflect the actual state of the table in table/sections/cells properties.
 
 i.e. [[mytable sectionAtIndex:1] cellAtIndex:2] will be the actual cell at path 1,2
-writing to an atomic backer will transparently write to the fluid version.
+
+Writing to an atomic backer will transparently write to the fluid version.
 So [mytable removeSectionAtIndex:0] won't affect mytable.sections until the table is actually updated, but mytable._sections will read the change immediately.
 
 
+### System classes
 Adding things to System classes adds them to the WI's category of the class,
 
-`NSObject
+```
+NSObject
     -(void)myDescription
         return([@"my " stringByAppendingString:self.description]);
-`
+```
 
 For the moment you can't add ivars, I'll fix this soon.
 
@@ -264,14 +295,16 @@ For the moment you can't add ivars, I'll fix this soon.
 Often you may want to add code to the output obj-c++ files.
 to do this use
 
-`AnyClass__I_use_Globals
+```
+AnyClass__I_use_Globals
     -
         #define SEVENTEEN_W_TIMEBOMB 17.00001
-`
+```
 
 There are a few variations depending on where you want the code:
 
-`Globals
+```
+Globals
     -iface
         //included everywhere
         extern void g_fn();
@@ -280,25 +313,26 @@ There are a few variations depending on where you want the code:
         //compiled once
         void g_fn() {}
         void *g_vp=(void*)0xbadc0de;
-`
+```
 
 The each version is a special case to be used sparingly, but has the potential to really help in the right situation:
 
-`
+```
     -each
         // compiled into the class with class name/type placeholders substituted
         __Class__ *singleton__ClassName__=nil;
-`
+```
 
 At present the each version inserts obj-c++ code, rather than wi, I'd like to be able to insert wi customized per class some time in the future
 Of course a protocol can declare these too:
 
-`<Model>
+```
+<Model>
     -each
         #define __ClassName__ModelKey @"__ClassName__"
 User<Model>
 Post<Model>
-`
+```
 
 
 tbc
