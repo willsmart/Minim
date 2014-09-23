@@ -64,6 +64,7 @@
     NSMutableArray *propertyContexts,*props,*taskList;
     NSMutableIndexSet *propertyContextBrackets;
     NSMutableArray *propertyContextLineis;
+    NSMutableDictionary *settingsContext;
     WClass *classContext;
     InFiles *logContext;
     int classContextBracket;
@@ -77,6 +78,7 @@
 @property (retain,nonatomic) NSMutableArray *propertyContexts,*props;
 @property (retain,nonatomic) NSMutableIndexSet *propertyContextBrackets;
 @property (retain,nonatomic) NSMutableArray *propertyContextLineis;
+@property (retain,nonatomic) NSMutableDictionary *settingsContext;
 @property (retain,nonatomic) WClass *classContext;
 @property (retain,nonatomic) InFiles *logContext;
 @property int classContextBracket,classContextLinei;

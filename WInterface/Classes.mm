@@ -337,7 +337,7 @@ static NSMutableArray *InFiles_allInFiles=nil;
 
 @implementation WClasses
 @synthesize classes,protocols,skipNewLines;
-@synthesize classContext,logContext,classContextBracket,classContextLinei,propertyContexts,propertyContextBrackets,propertyContextLineis,props,propFiles,taskList,readFNStack,includes,taskFn;
+@synthesize classContext,logContext,classContextBracket,classContextLinei,propertyContexts,settingsContext,propertyContextBrackets,propertyContextLineis,props,propFiles,taskList,readFNStack,includes,taskFn;
 @synthesize ins_first_decl,ins_after_decl_decl,ins_after_structs_decl,ins_after_protocols_decl,ins_after_ifaces_decl,ins_last_decl,incls,ins_after_imports_decl;
 @synthesize ins_first_iface,ins_after_decl_iface,ins_after_structs_iface,ins_after_protocols_iface,ins_after_ifaces_iface,ins_last_iface,ins_after_imports_iface;
 @synthesize ins_first_impl,ins_after_decl_impl,ins_after_structs_impl,ins_after_protocols_impl,ins_after_ifaces_impl,ins_last_impl,ins_after_imports_impl,hasErrors,hasWarnings,finishedParse;
@@ -351,6 +351,7 @@ static NSMutableArray *InFiles_allInFiles=nil;
     self.classContext=nil;
     self.logContext=nil;
     self.propertyContexts=nil;
+    self.settingsContext=nil;
     self.propertyContextBrackets=nil;
     self.propertyContextLineis=nil;
     self.props=nil;
@@ -376,6 +377,7 @@ static NSMutableArray *InFiles_allInFiles=nil;
     self.protocols=[NSMutableDictionary dictionary];
     self.props=[NSMutableArray array];
     self.propertyContexts=[NSMutableArray array];
+    self.settingsContext=NSMutableDictionary.dictionary;
     self.propertyContextBrackets=[NSMutableIndexSet indexSet];
     self.propertyContextLineis=[NSMutableArray array];
     self.taskList=[NSMutableArray array];
@@ -637,6 +639,7 @@ static WClasses *_default=nil;
     [self.classes removeAllObjects];
     [self.protocols removeAllObjects];
     [self.propertyContexts removeAllObjects];
+    [self.settingsContext removeAllObjects];
     [self.props removeAllObjects];
     [self.propertyContextBrackets removeAllIndexes];
     [self.propertyContextLineis removeAllObjects];
@@ -1761,6 +1764,27 @@ static WClasses *_default=nil;
     self.classContextLinei=-1;
     drprnt("Class and children : %s\n",[[r stringWithTokensInRange:NSMakeRange(pos, r.pos-pos)] cStringUsingEncoding:NSASCIIStringEncoding]);
     [self skipSpacesAndSemicolons:r];
+
+    if (c&&self.settingsContext[@"fn"]) {
+        bool hasFn=NO;
+        NSString *deffn=nil;
+        for (NSObject *o in c.varPatterns) if ([o isKindOfClass:NSString.class]) {
+            if ([(NSString*)o hasPrefix:@"fn:"]) {hasFn=YES;break;}
+            if ([(NSString*)o hasPrefix:@"_fn:"]) {deffn=(NSString*)o;break;}
+        }
+        if (!hasFn) {
+            if (deffn&&![deffn isEqualToString:@"_fn:default"]) {
+                NSMutableSet *s=c.varPatterns.mutableCopy;
+                [s removeObject:deffn];
+                [s removeObject:@"_fn:default"];
+                c.varPatterns=s.copy;
+            }
+            if (!deffn) {
+                if (!c.varPatterns) c.varPatterns=NSMutableSet.set;
+                c.varPatterns=[c.varPatterns setByAddingObject:[@"_fn:" stringByAppendingString:self.settingsContext[@"fn"]]];
+            }
+        }
+    }
     return(c);
 }
 
@@ -1889,7 +1913,10 @@ static WClasses *_default=nil;
             name=[NSString stringWithFormat:@"\"%@\"",name];
             if (![self.incls containsObject:name]) [self.incls addObject:name];
         }
-        else {        
+        else if ([name hasPrefix:@"fn:"]) {
+            self.settingsContext[@"fn"]=[name substringFromIndex:3];
+        }
+        else {
             NSString *fn=name;
             if (fn) {
                 printf("Include: %s\n",fn.UTF8String);
@@ -2105,12 +2132,14 @@ static WClasses *_default=nil;
 }
 - (void)read:(WReader *)r logContext:(InFiles*)alogContext {
     WClass *cwas=self.classContext;
+    NSMutableDictionary *settingsWere=self.settingsContext;
     NSMutableArray *pwas=self.propertyContexts;
     NSMutableIndexSet *pbwas=self.propertyContextBrackets;
     NSMutableArray *plwas=self.propertyContextLineis;
     int cbwas=self.classContextBracket;
     int clwas=self.classContextLinei;
 
+    self.settingsContext=NSMutableDictionary.dictionary;
     self.classContext=nil;
     self.classContextBracket=0;
     self.classContextLinei=-1;
@@ -2128,6 +2157,7 @@ static WClasses *_default=nil;
     
     self.logContext=logContextWas;
 
+    self.settingsContext=settingsWere;
     self.classContext=cwas;
     self.propertyContexts=pwas;
     self.propertyContextBrackets=pbwas;
@@ -2739,7 +2769,12 @@ static WClasses *_default=nil;
 
 -(NSString*)filename {
     for (NSString *p in self.varPatterns) {
-        if ([p hasPrefix:@"fn:"]) return([p substringFromIndex:@"fn:".length]);
+        if ([p hasPrefix:@"fn:"]) {
+            return([p substringFromIndex:@"fn:".length]);
+        }
+        if ([p hasPrefix:@"_fn:"]) {
+            return([p substringFromIndex:@"_fn:".length]);
+        }
     }
     return(@"default");
 }
