@@ -1,7 +1,7 @@
 Winterface
 ==========
 
-Winterface language. Simplify all that syntactic drivel and ramp up the power of ios apps
+Winterface language/obj-c-syntactic-sweetner. Simplify all that syntactic drivel and ramp up the power of ios apps
 
 I've been coding for ages, this language is the one I've wanted to code in.
 
