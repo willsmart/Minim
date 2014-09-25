@@ -18,8 +18,8 @@
     if (!fn) {
         return;
     }
-    NSMutableSet *s=[inFilesLocations objectForKey:fn];
-    if (!s) [inFilesLocations setObject:s=[NSMutableSet set] forKey:fn];
+    NSMutableSet *s=inFilesLocations[fn];
+    if (!s) inFilesLocations[fn] = s=[NSMutableSet set];
     [s addObject:[NSValue valueWithRange:NSMakeRange(line,column)]];
 }
 
@@ -40,11 +40,11 @@ static NSMutableDictionary *InFiles_staticInFilesMessages=nil;
     va_list args;va_start(args,format);
     NSString *s=[[NSString alloc] initWithFormat:format arguments:args];
     if (!fn) return;
-    NSMutableDictionary *m=[[InFiles staticInFilesMessages] objectForKey:fn];
-    if (!m) [[InFiles staticInFilesMessages] setObject:m=[NSMutableDictionary dictionary] forKey:fn];
+    NSMutableDictionary *m=[InFiles staticInFilesMessages][fn];
+    if (!m) [InFiles staticInFilesMessages][fn] = m=[NSMutableDictionary dictionary];
     NSValue *v=[NSValue valueWithRange:NSMakeRange(line,column)];
-    NSMutableArray *a=[m objectForKey:v];
-    if (!a) [m setObject:a=[NSMutableArray array] forKey:v];
+    NSMutableArray *a=m[v];
+    if (!a) m[v] = a=[NSMutableArray array];
     [a addObject:s];
 }
 
@@ -61,14 +61,14 @@ static NSMutableArray *InFiles_allInFiles=nil;
     NSMutableDictionary *locations=[[NSMutableDictionary alloc] init];
     NSMutableSet *excessfns=[NSMutableSet set];
     for (NSString *fn in [InFiles staticInFilesMessages]) {
-        NSDictionary *msgd=[[InFiles staticInFilesMessages] objectForKey:fn];
-        NSMutableDictionary *d=[locations objectForKey:fn];
-        if (!d) [locations setObject:d=[NSMutableDictionary dictionary] forKey:fn];
+        NSDictionary *msgd=[InFiles staticInFilesMessages][fn];
+        NSMutableDictionary *d=locations[fn];
+        if (!d) locations[fn] = d=[NSMutableDictionary dictionary];
         for (NSValue *vv in msgd) {
-            NSArray *msgs=[msgd objectForKey:vv];
+            NSArray *msgs=msgd[vv];
             if (!msgs.count) continue;
-            NSMutableArray *a=[d objectForKey:vv];
-            if (!a) [d setObject:a=[NSMutableArray array] forKey:vv];
+            NSMutableArray *a=d[vv];
+            if (!a) d[vv] = a=[NSMutableArray array];
             for (NSString *msg in msgs) {
                 if (![a containsObject:msg]) {
                     [a addObject:msg];
@@ -83,12 +83,12 @@ static NSMutableArray *InFiles_allInFiles=nil;
     for (InFiles *v in inFiles) {
         if (!v.inFilesMessages.count) continue;
         for (NSString *fn in v.inFilesLocations) {
-            NSSet *s=[v.inFilesLocations objectForKey:fn];
-            NSMutableDictionary *d=[locations objectForKey:fn];
-            if (!d) [locations setObject:d=[NSMutableDictionary dictionary] forKey:fn];
+            NSSet *s=(v.inFilesLocations)[fn];
+            NSMutableDictionary *d=locations[fn];
+            if (!d) locations[fn] = d=[NSMutableDictionary dictionary];
             for (NSValue *vv in s) {
-                NSMutableArray *a=[d objectForKey:vv];
-                if (!a) [d setObject:a=[NSMutableArray array] forKey:vv];
+                NSMutableArray *a=d[vv];
+                if (!a) d[vv] = a=[NSMutableArray array];
                 for (NSString *msg in v.inFilesMessages) {
                     if (![a containsObject:msg]) {
                         [a addObject:msg];
@@ -106,11 +106,11 @@ static NSMutableArray *InFiles_allInFiles=nil;
     }
     
     for (NSString *fn in excessfns) {
-        NSMutableDictionary *d=[locations objectForKey:fn];
-        if (!d) [locations setObject:d=[NSMutableDictionary dictionary] forKey:fn];
+        NSMutableDictionary *d=locations[fn];
+        if (!d) locations[fn] = d=[NSMutableDictionary dictionary];
         NSValue *vv=[NSValue valueWithRange:NSMakeRange(0,0)];
-        NSMutableArray *a=[d objectForKey:vv];
-        if (!a) [d setObject:a=[NSMutableArray array] forKey:vv];
+        NSMutableArray *a=d[vv];
+        if (!a) d[vv] = a=[NSMutableArray array];
         for (NSString *msg in excessMsgs) {
             if (![a containsObject:msg]) {
                 [a addObject:msg];
@@ -165,19 +165,19 @@ static NSMutableArray *InFiles_allInFiles=nil;
             continue;
         }
         NSMutableArray *lns=[[NSMutableArray alloc] init];
-        [lns addObject:[NSNumber numberWithInteger:0]];
+        [lns addObject:@0];
         char buf[10000];
         Int offs=0;
         while (YES) {
             Int N=(Int)fread(buf, 1, 10000, fil);
             for (Int offs2=0;offs2<N;offs++,offs2++) {
-                if (buf[offs2]=='\n') [lns addObject:[NSNumber numberWithInteger:offs+1]];
+                if (buf[offs2]=='\n') [lns addObject:@(offs+1)];
             }
             if (feof(fil)||!N) break;
         }
         Int sz=(Int)ftell(fil);
         
-        NSDictionary *msgd=[locations objectForKey:fn];
+        NSDictionary *msgd=locations[fn];
         NSArray *a=[msgd.allKeys sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
                 NSRange r1=((NSValue*)obj1).rangeValue;
                 NSRange r2=((NSValue*)obj2).rangeValue;
@@ -187,8 +187,8 @@ static NSMutableArray *InFiles_allInFiles=nil;
         ];
 
         for (Int i=(Int)a.count-1;i>=0;i--) {
-            NSRange r=((NSValue*)[a objectAtIndex:i]).rangeValue;
-            NSArray *msgs=[msgd objectForKey:[a objectAtIndex:i]];
+            NSRange r=((NSValue*)a[i]).rangeValue;
+            NSArray *msgs=msgd[a[i]];
             if (!msgs.count) continue;
             
             Int ln=(Int)r.location;
@@ -251,7 +251,7 @@ static NSMutableArray *InFiles_allInFiles=nil;
                 }
             }
             if (ln>=lns.count) offs=sz;
-            else offs=((NSNumber*)[lns objectAtIndex:ln]).intValue;
+            else offs=((NSNumber*)lns[ln]).intValue;
             NSData *d=[msg dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
             [InFiles insertData:d intoFile:fil at:offs];
         }
@@ -269,7 +269,7 @@ static NSMutableArray *InFiles_allInFiles=nil;
 +(NSArray*)subsetOfInFiles:(NSArray*)inFiles inFile:(NSString*)fn atLine:(Int)ln column:(Int)col {
     NSMutableArray *ret=[NSMutableArray array];
     for (InFiles *v in inFiles) {
-        if ([(NSSet*)[v.inFilesLocations objectForKey:fn] containsObject:[NSValue valueWithRange:NSMakeRange(ln,col)]]) [ret addObject:v];
+        if ([(NSSet*)(v.inFilesLocations)[fn] containsObject:[NSValue valueWithRange:NSMakeRange(ln,col)]]) [ret addObject:v];
     }
     return(ret);
 }

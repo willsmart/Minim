@@ -159,11 +159,11 @@
                 NSUInteger sti=[inds countOfIndexesInRange:NSMakeRange(0, r.location)]-1;
                 NSUInteger endi=[inds countOfIndexesInRange:NSMakeRange(0, r.location+(r.length?r.length-1:0))]-1;
                 if (sti==endi) {
-                    [(WReaderToken*)[self.tokens objectAtIndex:sti] addNote:@"%@",name];
+                    [(WReaderToken*)(self.tokens)[sti] addNote:@"%@",name];
                 }
                 else {
-                    [(WReaderToken*)[self.tokens objectAtIndex:sti] addNote:@"%d:%@",seq,name];
-                    [(WReaderToken*)[self.tokens objectAtIndex:endi] addNote:@"%d",seq];
+                    [(WReaderToken*)(self.tokens)[sti] addNote:@"%d:%@",seq,name];
+                    [(WReaderToken*)(self.tokens)[endi] addNote:@"%d",seq];
                     seq++;
                 }
             }

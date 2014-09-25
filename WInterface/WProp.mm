@@ -44,10 +44,10 @@
 
 
 -(WType*)myWType {
-    return([WType newWithClass:(myclas.isProtocol?nil:myclas) protocols:(myclas.isProtocol?[NSArray arrayWithObject:myclas]:nil) addObject:NO]);
+    return([WType newWithClass:(myclas.isProtocol?nil:myclas) protocols:(myclas.isProtocol?@[myclas]:nil) addObject:NO]);
 }
 -(WType*)hisWType {
-    return([WType newWithClass:(hisclas.isProtocol?nil:hisclas) protocols:(hisclas.isProtocol?[NSArray arrayWithObject:hisclas]:nil) addObject:NO]);
+    return([WType newWithClass:(hisclas.isProtocol?nil:hisclas) protocols:(hisclas.isProtocol?@[hisclas]:nil) addObject:NO]);
 }
 
 
@@ -200,19 +200,19 @@
 //        }
         WReader *r2=[[WReader alloc] init];
         r2.tokenizer.tokenDelegate=[WClasses getDefault];
-        r2.fileString=[WProp string:[[WClasses getDefault].propFiles objectForKey:[NSString stringWithFormat:@"%c%c",self.myType,self.hisType]] withMyType:self.myWType myName:self.myname iamOwner:self.ownerIsMe myQName:self.myqname hisType:self.hisWType hisName:self.hisname heIsOwner:self.ownerIsHim hisQName:self.hisqname qprop:[NSString stringWithFormat:@"myname %@ WIHisClass hisname",self.type] noPlurals:NO];
+        r2.fileString=[WProp string:([WClasses getDefault].propFiles)[[NSString stringWithFormat:@"%c%c",self.myType,self.hisType]] withMyType:self.myWType myName:self.myname iamOwner:self.ownerIsMe myQName:self.myqname hisType:self.hisWType hisName:self.hisname heIsOwner:self.ownerIsHim hisQName:self.hisqname qprop:[NSString stringWithFormat:@"myname %@ WIHisClass hisname",self.type] noPlurals:NO];
         r2._fileName=[NSString stringWithFormat:@"%@:(%@ :: %@)",r.fileName,[self.myclas.wType wiType],self.hisname];
         [[WClasses getDefault] read:r2 logContext:self];
         r2=[[WReader alloc] init];
         r2.tokenizer.tokenDelegate=[WClasses getDefault];
-        r2.fileString=[WProp string:[[WClasses getDefault].propFiles objectForKey:[NSString stringWithFormat:@"%c%c",self.hisType,self.myType]] withMyType:self.hisWType myName:self.hisname iamOwner:self.ownerIsHim myQName:self.hisqname hisType:self.myWType hisName:self.myname heIsOwner:self.ownerIsMe hisQName:self.myqname qprop:@"" noPlurals:NO];
+        r2.fileString=[WProp string:([WClasses getDefault].propFiles)[[NSString stringWithFormat:@"%c%c",self.hisType,self.myType]] withMyType:self.hisWType myName:self.hisname iamOwner:self.ownerIsHim myQName:self.hisqname hisType:self.myWType hisName:self.myname heIsOwner:self.ownerIsMe hisQName:self.myqname qprop:@"" noPlurals:NO];
         r2._fileName=[NSString stringWithFormat:@"%@:(%@ :: %@)",r.fileName,[self.hisclas.wType wiType],self.myname];
 //        [WClasses note:r2.fileString withReader:r];
         [[WClasses getDefault] read:r2 logContext:self];
         if (hisqname) {
             r2=[[WReader alloc] init];
             r2.tokenizer.tokenDelegate=[WClasses getDefault];
-            r2.fileString=[WProp string:[[WClasses getDefault].propFiles objectForKey:[NSString stringWithFormat:(hisclas.isType?@"T%c":@"NS%c"),self.hisType]] withMyType:self.myWType myName:self.myname iamOwner:self.ownerIsMe myQName:self.myqname hisType:self.hisWType hisName:self.hisname heIsOwner:self.ownerIsHim hisQName:self.hisqname qprop:@"" noPlurals:NO];
+            r2.fileString=[WProp string:([WClasses getDefault].propFiles)[[NSString stringWithFormat:(hisclas.isType?@"T%c":@"NS%c"),self.hisType]] withMyType:self.myWType myName:self.myname iamOwner:self.ownerIsMe myQName:self.myqname hisType:self.hisWType hisName:self.hisname heIsOwner:self.ownerIsHim hisQName:self.hisqname qprop:@"" noPlurals:NO];
             r2._fileName=[NSString stringWithFormat:@"%@:(%@ >> %@)",r.fileName,[self.myclas.wType wiType],self.hisqname];
             [[WClasses getDefault] read:r2 logContext:self];
         }
@@ -222,7 +222,7 @@
             NSString *key=((self.hisType=='A')&&(self.myType=='1')?@"NS1A":
                 ((self.hisType=='D')&&(self.myType=='1')?@"NS1D":
                 [NSString stringWithFormat:(myclas.isType?@"T%c":@"NS%c"),self.myType]));
-            r2.fileString=[WProp string:[[WClasses getDefault].propFiles objectForKey:key] withMyType:self.hisWType myName:self.hisname iamOwner:self.ownerIsHim myQName:self.hisqname hisType:self.myWType hisName:self.myname heIsOwner:self.ownerIsMe hisQName:self.myqname qprop:@"" noPlurals:NO];
+            r2.fileString=[WProp string:([WClasses getDefault].propFiles)[key] withMyType:self.hisWType myName:self.hisname iamOwner:self.ownerIsHim myQName:self.hisqname hisType:self.myWType hisName:self.myname heIsOwner:self.ownerIsMe hisQName:self.myqname qprop:@"" noPlurals:NO];
             r2._fileName=[NSString stringWithFormat:@"%@:(%@ >> %@)",r.fileName,[self.hisclas.wType wiType],self.myqname];
             [[WClasses getDefault] read:r2 logContext:self];
         }
@@ -235,7 +235,7 @@
     WReader *r2=[[WReader alloc] init];
     r2.tokenizer.tokenDelegate=[WClasses getDefault];
 
-    r2.fileString=[WProp string:[[WClasses getDefault].propFiles objectForKey:@"Base"] withMyClass:clas];
+    r2.fileString=[WProp string:([WClasses getDefault].propFiles)[@"Base"] withMyClass:clas];
     r2._fileName=[NSString stringWithFormat:@"%@:PropBase",[clas.wType wiType]];
     [[WClasses getDefault] read:r2 logContext:nil];
 }

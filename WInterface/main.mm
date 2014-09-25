@@ -41,14 +41,14 @@ int main(int argc, const char * argv[])
         NSString *baseDir=fm.currentDirectoryPath;
         
         for (Int i=(argc==1?0:1);i<argc;i++) {
-            NSString *dir=(i?[NSString stringWithCString:argv[i] encoding:NSUTF8StringEncoding]:@".");
+            NSString *dir=(i?@(argv[i]):@".");
             [fm changeCurrentDirectoryPath:baseDir];
             [fm changeCurrentDirectoryPath:dir];
 
             NSDirectoryEnumerator *de=[fm enumeratorAtPath:@"."];
             NSString *fn;
             NSMutableArray *fns=[NSMutableArray array];
-            if (argc>1) [fns addObject:[NSString stringWithCString:argv[1] encoding:NSASCIIStringEncoding]];
+            if (argc>1) [fns addObject:@(argv[1])];
             else while ((fn=de.nextObject)) {
                 BOOL isDir;
                 if ([fn hasSuffix:@".wi"]&&[fm fileExistsAtPath:fn isDirectory:&isDir]&&!isDir) {

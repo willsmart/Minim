@@ -41,8 +41,8 @@
         }
     }
     if (aprotocols&&aprotocols.count) {
-        if (!(self.protocols&&[[aprotocols objectAtIndex:0] isKindOfClass:[NSString class]]&&
-        ([[aprotocols objectAtIndex:0] isEqualToString:@"-"]||[[aprotocols objectAtIndex:0] isEqualToString:@"+"]))) {
+        if (!(self.protocols&&[aprotocols[0] isKindOfClass:[NSString class]]&&
+        ([aprotocols[0] isEqualToString:@"-"]||[aprotocols[0] isEqualToString:@"+"]))) {
             self.protocols=[NSMutableSet set];
         }
         bool adding=YES;

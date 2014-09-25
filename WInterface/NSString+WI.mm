@@ -177,7 +177,7 @@
         if (newEnd<newStart) newEnd=newStart;
         
         NSRange newRange=NSMakeRange(newStart,newEnd-newStart);
-        [ranges replaceObjectAtIndex:index++ withObject:[NSValue valueWithRange:newRange]];
+        ranges[index++] = [NSValue valueWithRange:newRange];
     }
     else if ([v isKindOfClass:NSNumber.class]) {
         switch ([(NSNumber*)v integerValue]) {

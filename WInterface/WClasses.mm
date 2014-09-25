@@ -109,18 +109,18 @@
 static WClasses *_default=nil;
 + (WClasses*)getDefault {
     if (!_default) {
-        NSArray *a=[NSArray arrayWithObjects:@"Base",
-            @"11",@"S1",@"A1",@"D1",@"1S",@"1A",@"1D",@"SS",nil];
+        NSArray *a=@[@"Base",
+            @"11",@"S1",@"A1",@"D1",@"1S",@"1A",@"1D",@"SS"];
         NSMutableDictionary *d=[NSMutableDictionary dictionary];
         for (NSString *s in a) {
             WReader *r=[[WReader alloc] init];
             NSString *fn=[NSString stringWithFormat:@"/Users/Will/Documents/WInterface/WInterface/Wis/Prop%@.wi",s];
             [InFiles clearMarksFromFiles:@[fn]];
             r.fileName=fn;
-            [d setObject:r.fileString forKey:s];
+            d[s] = r.fileString;
         }
-        a=[NSArray arrayWithObjects:@"T1",
-            @"NSM",@"NS1M,NS1",@"NS1",@"NSA",@"NS1A,NS1",@"NSS",nil];
+        a=@[@"T1",
+            @"NSM",@"NS1M,NS1",@"NS1",@"NSA",@"NS1A,NS1",@"NSS"];
         for (NSString *s in a) {
             WReader *r=[[WReader alloc] init];
             if ([s rangeOfString:@","].location!=NSNotFound) {
@@ -132,13 +132,13 @@ static WClasses *_default=nil;
                     r.fileName=fn;
                     [agg appendFormat:@"%@\n",r.fileString];
                 }
-                [d setObject:agg forKey:[ss objectAtIndex:0]];
+                d[ss[0]] = agg;
             }
             else {
                 NSString *fn=[NSString stringWithFormat:@"/Users/Will/Documents/WInterface/WInterface/Wis/Model%@.wi",s];
                 [InFiles clearMarksFromFiles:@[fn]];
                 r.fileName=fn;
-                [d setObject:r.fileString forKey:s];
+                d[s] = r.fileString;
             }
         }
         _default=[[WClasses alloc] init];
@@ -153,7 +153,7 @@ static WClasses *_default=nil;
 
 -(NSSet*)filenames {
     NSMutableSet *ret=[NSMutableSet setWithObjects:@"default",@"inserts", nil];
-    for (NSString *name in self.classes) [ret addObject:((WClass*)[self.classes objectForKey:name]).filename];
+    for (NSString *name in self.classes) [ret addObject:((WClass*)(self.classes)[name]).filename];
     return(ret);
 }
 
@@ -166,33 +166,33 @@ static WClasses *_default=nil;
 
 -(NSString*)html {
     for (NSString *cname in self.classes) {
-        WClass *c=[self.classes objectForKey:cname];
+        WClass *c=(self.classes)[cname];
         c.ownedNum=c.ownsNum=0;
     }
     for (NSString *pname in self.protocols) {
-        WClass *p=[self.protocols objectForKey:pname];
+        WClass *p=(self.protocols)[pname];
         p.ownedNum=p.ownsNum=0;
     }
     for (NSString *cname in self.classes) {
-        WClass *c=[self.classes objectForKey:cname];
+        WClass *c=(self.classes)[cname];
         [c addOwnership];
     }
     for (NSString *pname in self.protocols) {
-        WClass *p=[self.protocols objectForKey:pname];
+        WClass *p=(self.protocols)[pname];
         [p addOwnership];
     }
     NSMutableDictionary *varDict=[NSMutableDictionary dictionary];
     for (NSString *cname in self.classes) {
-        WClass *c=[self.classes objectForKey:cname];
+        WClass *c=(self.classes)[cname];
         [c addjsvars:varDict];
     }
     for (NSString *pname in self.protocols) {
-        WClass *p=[self.protocols objectForKey:pname];
+        WClass *p=(self.protocols)[pname];
         [p addjsvars:varDict];
     }
     
     NSMutableString *ret=[NSMutableString stringWithFormat:@"<!DOCTYPE html><meta charset=\"utf-8\"><title>WI</title><script>var classVars={"];
-    for (NSString *type in varDict) [ret appendFormat:@"\"%@\":\"%@\",\n",[WClasses jsStringForString:type],[WClasses jsStringForString:[varDict objectForKey:type]]];
+    for (NSString *type in varDict) [ret appendFormat:@"\"%@\":\"%@\",\n",[WClasses jsStringForString:type],[WClasses jsStringForString:varDict[type]]];
     
     [ret appendFormat:@"'':''};"
     "function classclick(path,clas,type) {"
@@ -228,9 +228,9 @@ static WClasses *_default=nil;
     //<h1>Protocols</h1>%@<h1>Types and sys</h1>%@</body></html>\n",retclass,retprotocol,rettype];
     
     for (NSString *n in cnames) {
-        WClass *c=[self.classes objectForKey:n];
+        WClass *c=(self.classes)[n];
         if (!(c.isType||c.isSys)) {
-            NSString *s=[varDict objectForKey:[c.tag stringByAppendingString:@"_."]];
+            NSString *s=varDict[[c.tag stringByAppendingString:@"_."]];
             [ret appendFormat:@"<li>%@</li>\n",[s stringByReplacingOccurrencesOfString:@"PATH" withString:c.tag]];
         }
     }
@@ -239,9 +239,9 @@ static WClasses *_default=nil;
     //<h1>Protocols</h1>%@<h1>Types and sys</h1>%@</body></html>\n",retclass,retprotocol,rettype];
     
     for (NSString *n in pnames) {
-        WClass *p=[self.protocols objectForKey:n];
+        WClass *p=(self.protocols)[n];
         if (!(p.isType||p.isSys)) {
-            NSString *s=[varDict objectForKey:[p.tag stringByAppendingString:@"_."]];
+            NSString *s=varDict[[p.tag stringByAppendingString:@"_."]];
             [ret appendFormat:@"<li>%@</li>\n",[s stringByReplacingOccurrencesOfString:@"PATH" withString:p.tag]];
         }
     }
@@ -251,9 +251,9 @@ static WClasses *_default=nil;
     //<h1>Protocols</h1>%@<h1>Types and sys</h1>%@</body></html>\n",retclass,retprotocol,rettype];
     
     for (NSString *n in cnames) {
-        WClass *c=[self.classes objectForKey:n];
+        WClass *c=(self.classes)[n];
         if (c.isType||c.isSys) {
-            NSString *s=[varDict objectForKey:[c.tag stringByAppendingString:@"_."]];
+            NSString *s=varDict[[c.tag stringByAppendingString:@"_."]];
             [ret appendFormat:@"<li>%@</li>\n",[s stringByReplacingOccurrencesOfString:@"PATH" withString:c.tag]];
         }
     }
@@ -640,7 +640,7 @@ static WClasses *_default=nil;
     Int pi,bc;
     for (pi=(Int)self.propertyContextBrackets.count-1,bc=(Int)self.propertyContextBrackets.lastIndex;(bc!=NSNotFound)&&(bc>=r.currentToken.bracketCount);bc=(Int)[self.propertyContextBrackets indexLessThanIndex:bc],pi--);
     
-    if (pi>=0) return((WProp*)[self.propertyContexts objectAtIndex:pi]);
+    if (pi>=0) return((WProp*)(self.propertyContexts)[pi]);
     else return(nil);
 }
 - (WClass*)enclosingClassNoSkip:(WReader*)r {
@@ -1021,7 +1021,7 @@ static WClasses *_default=nil;
         }
         
         [names addObject:aname];
-        [starss addObject:[NSNumber numberWithInteger:stars]];
+        [starss addObject:@(stars)];
         [qnames addObject:aqname?aqname:[NSNull null]];
         
         Int pos2=r.pos;
@@ -1073,7 +1073,7 @@ static WClasses *_default=nil;
                     }
                     else r.pos=pos2;
                 }
-                [defLevels addObject:(def?[NSNumber numberWithInteger:defLevel]:[NSNull null])];
+                [defLevels addObject:(def?@(defLevel):[NSNull null])];
                 [defaultValues addObject:(def?def:[NSNull null])];
                 [getters addObject:(getter?getter:[NSNull null])];
                 [setters addObject:(setter?setter:[NSNull null])];
@@ -1110,7 +1110,7 @@ static WClasses *_default=nil;
             }
             [names addObject:aname];
             [qnames addObject:aqname?aqname:[NSNull null]];
-            [starss addObject:[NSNumber numberWithInteger:stars]];
+            [starss addObject:@(stars)];
             pos2=r.pos;
                     //[WClasses warning:[NSString stringWithFormat:@"here"] withReader:r];
             ch=[self readOpc:r];
@@ -1155,14 +1155,14 @@ static WClasses *_default=nil;
                 [attr addObject:@"imaginary"];
                 [attr addObject:@"nodef"];
                 for (Int i=0;i<names.count;i++) {
-                    [WFn getFnWithSig:[NSString stringWithFormat:@"-(SHAttribute*)%@",[names objectAtIndex:i]] body:[NSString stringWithFormat:@"@999 return([self.program.attributes objectForKey:@\"%@\"]);",[names objectAtIndex:i]] clas:c];
+                    [WFn getFnWithSig:[NSString stringWithFormat:@"-(SHAttribute*)%@",names[i]] body:[NSString stringWithFormat:@"@999 return([self.program.attributes objectForKey:@\"%@\"]);",names[i]] clas:c];
                 }
             }
             if ([attr containsObject:@"uniform"]) {
                 [attr addObject:@"imaginary"];
                 [attr addObject:@"nodef"];
                 for (Int i=0;i<names.count;i++) {
-                    [WFn getFnWithSig:[NSString stringWithFormat:@"-(SHUniform*)%@",[names objectAtIndex:i]] body:[NSString stringWithFormat:@"@999 return([self.program.uniforms objectForKey:@\"%@\"]);",[names objectAtIndex:i]] clas:c];
+                    [WFn getFnWithSig:[NSString stringWithFormat:@"-(SHUniform*)%@",names[i]] body:[NSString stringWithFormat:@"@999 return([self.program.uniforms objectForKey:@\"%@\"]);",names[i]] clas:c];
                 }
             }
             if ([attr containsObject:@"ivargetter"]) {
@@ -1181,15 +1181,15 @@ static WClasses *_default=nil;
             WType *type;
             for (NSString *name in names) {
                 NSMutableSet *attr2=attr;
-                Int stars=((NSNumber*)[starss objectAtIndex:i]).intValue;
-                if ([[getters objectAtIndex:i] isKindOfClass:[NSString class]]&&![[setters objectAtIndex:i] isKindOfClass:[NSString class]]) {
+                Int stars=((NSNumber*)starss[i]).intValue;
+                if ([getters[i] isKindOfClass:[NSString class]]&&![setters[i] isKindOfClass:[NSString class]]) {
                     //attr2=(attr2?attr2.mutableCopy:[NSMutableSet set]);
                     //[attr2 addObject:@"readonly"];
                 }
                 if (!i) {
                     type=[WType newWithPotentialType:ptype];
                 }
-                WVar *v=[WVar getVarWithType:type stars:stars name:name qname:[[qnames objectAtIndex:i] isKindOfClass:[NSString class]]?[qnames objectAtIndex:i]:nil defVal:[[defaultValues objectAtIndex:i] isKindOfClass:[NSNull class]]?nil:[defaultValues objectAtIndex:i] defValLevel:[[defLevels objectAtIndex:i] isKindOfClass:[NSNull class]]?0:((NSNumber*)[defLevels objectAtIndex:i]).intValue attributes:attr2 clas:c];
+                WVar *v=[WVar getVarWithType:type stars:stars name:name qname:[qnames[i] isKindOfClass:[NSString class]]?qnames[i]:nil defVal:[defaultValues[i] isKindOfClass:[NSNull class]]?nil:defaultValues[i] defValLevel:[defLevels[i] isKindOfClass:[NSNull class]]?0:((NSNumber*)defLevels[i]).intValue attributes:attr2 clas:c];
                 [v addInFilename:r.filePath line:linei column:0];
                 [rets addObject:v];
     //            if ([attr containsObject:@"modelretain"]) {
@@ -1199,12 +1199,12 @@ static WClasses *_default=nil;
     //                    [setterVars replaceObjectAtIndex:i withObject:@"v"];
     //                }
     //            }
-                if ([[getters objectAtIndex:i] isKindOfClass:[NSString class]]) {
-                    WFn *fn=[WFn getFnWithSig:[NSString stringWithFormat:@"-(%@)%@",v.objCType,name] body:(NSString*)[getters objectAtIndex:i] clas:c];
+                if ([getters[i] isKindOfClass:[NSString class]]) {
+                    WFn *fn=[WFn getFnWithSig:[NSString stringWithFormat:@"-(%@)%@",v.objCType,name] body:(NSString*)getters[i] clas:c];
                     [fn addInFilename:r.filePath line:linei column:0];
                 }
-                if ([[setters objectAtIndex:i] isKindOfClass:[NSString class]]) {
-                    WFn *fn=[WFn getFnWithSig:[NSString stringWithFormat:@"-(void)set%@:(%@)%@",[WProp upperName:name],v.objCType,[setterVars objectAtIndex:i]] body:(NSString*)[setters objectAtIndex:i] clas:c];
+                if ([setters[i] isKindOfClass:[NSString class]]) {
+                    WFn *fn=[WFn getFnWithSig:[NSString stringWithFormat:@"-(void)set%@:(%@)%@",[WProp upperName:name],v.objCType,setterVars[i]] body:(NSString*)setters[i] clas:c];
                     [fn addInFilename:r.filePath line:linei column:0];
 
                 }
@@ -1287,7 +1287,7 @@ static WClasses *_default=nil;
     }
     
     NSMutableString *origType=[NSMutableString string];
-    for (Int p=tposWas;p<r.pos;p++) [origType appendString:((WReaderToken*)[r.tokenizer.tokens objectAtIndex:p]).str];
+    for (Int p=tposWas;p<r.pos;p++) [origType appendString:((WReaderToken*)(r.tokenizer.tokens)[p]).str];
 
     bool isProtocol=NO;
     if (!(s=[self readWord:r])) {
@@ -1776,7 +1776,7 @@ static WClasses *_default=nil;
     if ((to<0)||(to>r.tokenizer.tokens.count)) to=(Int)r.tokenizer.tokens.count;
     
     for (Int pos=from;pos<to;pos++) {
-        WReaderToken *t=[r.tokenizer.tokens objectAtIndex:pos];
+        WReaderToken *t=(r.tokenizer.tokens)[pos];
         if (t&&(t.type=='c')&&([t.str hasPrefix:@"/*"]||[t.str hasPrefix:@"//"])) {
             NSString *s=[t.str substringWithRange:NSMakeRange(2, t.str.length-2-([t.str hasPrefix:@"/*"]&&[t.str hasSuffix:@"*/"]?2:0))];
             NSString *nameUsed=nil;
@@ -1843,32 +1843,32 @@ static WClasses *_default=nil;
 -(void)makeImportSets {
     if (madeImportSets) return;
     madeImportSets=YES;
-    WClass *p=[self.protocols objectForKey:@"perclassdefn"];
+    WClass *p=(self.protocols)[@"perclassdefn"];
     if (p) {
         for (NSString *fnnm in p.fns) {
-            WFn *fn=[p.fns objectForKey:fnnm];
+            WFn *fn=(p.fns)[fnnm];
             NSString *s=[[fn.sigWithArgs substringFromIndex:1] stringByAppendingString:fn.sortedBody];
             for (NSString *cnm in self.classes) {
-                WClass *c=[self.classes objectForKey:cnm];
+                WClass *c=(self.classes)[cnm];
                 [ins_set_after_decl_decl addObject:[c localizeString:s]];
             }
         }
     }
-    p=[self.protocols objectForKey:@"perprotocoldefn"];
+    p=(self.protocols)[@"perprotocoldefn"];
     if (p) {
         for (NSString *fnnm in p.fns) {
-            WFn *fn=[p.fns objectForKey:fnnm];
+            WFn *fn=(p.fns)[fnnm];
             NSString *s=[[fn.sigWithArgs substringFromIndex:1] stringByAppendingString:fn.sortedBody];
             for (NSString *cnm in self.protocols) {
-                WClass *c=[self.protocols objectForKey:cnm];
+                WClass *c=(self.protocols)[cnm];
                 [ins_set_after_decl_decl addObject:[c localizeString:s]];
             }
         }
     }
     for (NSString *cnm in self.classes) {
-        WClass *c=[self.classes objectForKey:cnm];
+        WClass *c=(self.classes)[cnm];
         for (NSString *fnnm in c.fns) {
-            WFn *fn=[c.fns objectForKey:fnnm];
+            WFn *fn=(c.fns)[fnnm];
             if ([fn.sigWithArgs hasPrefix:@"-"]) {
                 NSString *nameUsed=nil;
                 NSMutableSet *ss=([fn.sigWithArgs isEqualToString:@"-"]?ins_set_after_decl_decl:[self importsSetWithName:[fn.sigWithArgs substringFromIndex:1] nameUsed:&nameUsed]);
@@ -1879,9 +1879,9 @@ static WClasses *_default=nil;
         }
     }
     for (NSString *cnm in self.protocols) {
-        WClass *c=[self.protocols objectForKey:cnm];
+        WClass *c=(self.protocols)[cnm];
         for (NSString *fnnm in c.fns) {
-            WFn *fn=[c.fns objectForKey:fnnm];
+            WFn *fn=(c.fns)[fnnm];
             if ([fn.sigWithArgs hasPrefix:@"+"]) {
                 NSString *nameUsed=nil;
                 NSMutableSet *ss=([fn.sigWithArgs isEqualToString:@"+"]?ins_set_after_decl_decl:[self importsSetWithName:[fn.sigWithArgs substringFromIndex:1] nameUsed:&nameUsed]);
@@ -2223,7 +2223,7 @@ static WClasses *_default=nil;
                 [[WClasses getDefault].taskList addObject:m];
             }
             else {
-                [[WClasses getDefault].taskList replaceObjectAtIndex:match withObject:m];
+                ([WClasses getDefault].taskList)[match] = m;
             }
             if (fn) {
                 [InFiles addInFilename:fn line:t.linei column:0 format:@"%@",n];
@@ -2293,7 +2293,7 @@ static WClasses *_default=nil;
 +(NSString*)processClassString:(NSString*)s class:(WClass*)clas protocols:(NSArray*)protocols {
     if (protocols) {
         for (Int i=protocols.count-1;i>=0;i--) {
-            WClass *p=(WClass*)[protocols objectAtIndex:i];
+            WClass *p=(WClass*)protocols[i];
             if (p) s=[WClasses processClassString:s class:p protocols:nil];
         }
     }

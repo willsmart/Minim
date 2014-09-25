@@ -26,12 +26,12 @@
                 char op=0;
                 if (fromi>=[from count]) op='i';
                 else if (toi>=[to count]) op='d';
-                else if ([[from objectAtIndex:fromi] isEqual:[to objectAtIndex:toi]]) op=0;
+                else if ([from[fromi] isEqual:to[toi]]) op=0;
                 else for (Int j=1;;j++) {
                     if (toi+j>=[to count]) {op='d';break;}
                     else if (fromi+j>=[from count]) {op='i';break;}
-                    else if ([[from objectAtIndex:fromi] isEqual:[to objectAtIndex:toi+j]]) {op='i';break;}
-                    else if ([[from objectAtIndex:fromi+j] isEqual:[to objectAtIndex:toi]]) {op='d';break;}
+                    else if ([from[fromi] isEqual:to[toi+j]]) {op='i';break;}
+                    else if ([from[fromi+j] isEqual:to[toi]]) {op='d';break;}
                 }
                 if (op=='d') {
                     [dels insertObject:@(fromi) atIndex:0];
@@ -91,13 +91,13 @@
         id obj;
         NSMutableSet *changes=nil;
         if (from.count<to.count) {
-            for (id<NSCopying> key in from) if ((obj=[to objectForKey:key])&&![obj isEqual:[from objectForKey:key]]) {
+            for (id<NSCopying> key in from) if ((obj=to[key])&&![obj isEqual:from[key]]) {
                 if (!changes) changes=[[NSMutableSet alloc] init];
                 [changes addObject:key];
             }
         }
         else {
-            for (id<NSCopying> key in to) if ((obj=[from objectForKey:key])&&![obj isEqual:[to objectForKey:key]]) {
+            for (id<NSCopying> key in to) if ((obj=from[key])&&![obj isEqual:to[key]]) {
                 if (!changes) changes=[[NSMutableSet alloc] init];
                 [changes addObject:key];
             }

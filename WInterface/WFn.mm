@@ -38,7 +38,7 @@
     self.sigWithArgs=asig;
     self.sig=(self.imaginary?self.sigWithArgs:NSStringFromSelector(NSSelectorFromString(asig)));
     self.body=abody;
-    [(self.clas=aclas).fns setObject:self forKey:self.sig];
+    ((self.clas=aclas).fns)[self.sig] = self;
     return(self);
 }
 
@@ -54,13 +54,13 @@
 
 #define NONUMBER 0x80000000
 + (Int)tokenMergeNumber:(WReaderTokenizer*)tk pos:(NSUInteger)pos append:(bool*)pappend retNumTokens:(Int*)pnumTokens {
-    if ((tk.tokens.count>=pos+1)&&[((WReaderToken*)[tk.tokens objectAtIndex:pos]).str isEqualToString:@"@"]) {
+    if ((tk.tokens.count>=pos+1)&&[((WReaderToken*)(tk.tokens)[pos]).str isEqualToString:@"@"]) {
         NSUInteger p=pos+1;
-        WReaderToken *t=(WReaderToken*)[tk.tokens objectAtIndex:p];
+        WReaderToken *t=(WReaderToken*)(tk.tokens)[p];
         bool append=([t.str isEqualToString:@"!"]?NO:YES);
-        if (!append) t=(WReaderToken*)[tk.tokens objectAtIndex:++p];
+        if (!append) t=(WReaderToken*)(tk.tokens)[++p];
         Int sgn=([t.str isEqualToString:@"-"]?-1:1);
-        if (sgn==-1) t=(WReaderToken*)[tk.tokens objectAtIndex:++p];
+        if (sgn==-1) t=(WReaderToken*)(tk.tokens)[++p];
         if (t.type=='n') {
             p++;
             Int N=atoi(t.str.UTF8String);
@@ -79,7 +79,7 @@
     NSMutableString *s=nil;
     bool append=YES,ignore=NO;
     for (NSUInteger pos=0;pos<tk.tokens.count;pos++) {
-        WReaderToken *t=[tk.tokens objectAtIndex:pos];
+        WReaderToken *t=(tk.tokens)[pos];
         Int numTokens;
         Int tki=[WFn tokenMergeNumber:tk pos:pos append:&append retNumTokens:&numTokens];
         if (tki!=NONUMBER) {
@@ -88,14 +88,14 @@
             continue;
         }
         else if (sn!=n) {
-            if ([forceIndexes containsObject:[NSNumber numberWithInteger:n]]) ignore=YES;
+            if ([forceIndexes containsObject:@(n)]) ignore=YES;
             else {
                 ignore=NO;
                 sn=n;
                 if (n<0) {
                     Int i=0,j;
                     for (j=(Int)nve.lastIndex;(j!=NSNotFound)&&(-j<n);j=(Int)[nve indexLessThanIndex:j],i++);
-                    if (-j==n) s=[ret objectAtIndex:i];
+                    if (-j==n) s=ret[i];
                     else {
                         [ret insertObject:s=[NSMutableString string] atIndex:i];
                         [nve addIndex:-n];
@@ -104,7 +104,7 @@
                 else {
                     Int i=(Int)nve.count,j;
                     for (j=(Int)pve.firstIndex;(j!=NSNotFound)&&(j<n);j=(Int)[pve indexGreaterThanIndex:j],i++);
-                    if (j==n) s=[ret objectAtIndex:i];
+                    if (j==n) s=ret[i];
                     else {
                         [ret insertObject:s=[NSMutableString string] atIndex:i];
                         [pve addIndex:n];
@@ -114,7 +114,7 @@
         }
         if (!ignore) {
             if (!append) {
-                [forceIndexes addObject:[NSNumber numberWithInteger:sn]];
+                [forceIndexes addObject:@(sn)];
                 append=YES;
                 [s setString:t.str];
             }
@@ -132,13 +132,13 @@
     Int i=0;
     NSMutableString *ret=[NSMutableString string];
     for (Int j=(Int)nve.lastIndex;j!=NSNotFound;j=(Int)[nve indexLessThanIndex:j]) {
-        NSString *s=[ss objectAtIndex:i++];
-        if (s.length) [ret appendFormat:@"@%@%d %@",[force containsObject:[NSNumber numberWithInteger:-j]]?@"!":@"",(int)-j,s];
+        NSString *s=ss[i++];
+        if (s.length) [ret appendFormat:@"@%@%d %@",[force containsObject:@(-j)]?@"!":@"",(int)-j,s];
     }
     for (Int j=(Int)pve.firstIndex;j!=NSNotFound;j=(Int)[pve indexGreaterThanIndex:j]) {
-        NSString *s=[ss objectAtIndex:i++];
+        NSString *s=ss[i++];
         if (s.length) {
-            if (ret.length||j) [ret appendFormat:@"@%@%d %@",[force containsObject:[NSNumber numberWithInteger:j]]?@"!":@"",(int)j,s];
+            if (ret.length||j) [ret appendFormat:@"@%@%d %@",[force containsObject:@(j)]?@"!":@"",(int)j,s];
             else [ret appendFormat:@"%@",s];
         }
     }
@@ -147,12 +147,12 @@
 
 + (WFn*)getExistingFnWithSig:(NSString *)asig clas:(WClass *)aclas {
     NSString *sig=NSStringFromSelector(NSSelectorFromString(asig));
-    return([aclas.fns objectForKey:sig]);
+    return((aclas.fns)[sig]);
 }
 
 + (WFn*)getFnWithSig:(NSString*)asig body:(NSString*)abody clas:(WClass*)aclas {
     NSString *sig=NSStringFromSelector(NSSelectorFromString(asig));
-    WFn *ret=[aclas.fns objectForKey:sig];
+    WFn *ret=(aclas.fns)[sig];
     if (!ret) return([[WFn alloc] initWithSig:asig body:abody clas:aclas]);
 
     ret.sigWithArgs=asig;
@@ -195,7 +195,7 @@
     bool wasnl=YES,wasmk=NO;
     Int level;
     for (Int i=0;i<tkn.tokens.count;i++) {
-        WReaderToken *t=[tkn.tokens objectAtIndex:i];
+        WReaderToken *t=(tkn.tokens)[i];
         Int numTokens;
         if (wasnl) {
             NSMutableString *s=[NSMutableString string];

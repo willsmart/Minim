@@ -22,7 +22,7 @@
     }
     self.vars=[NSMutableDictionary dictionary];
     self.fns=[NSMutableDictionary dictionary];
-    [[WClasses getDefault].classes setObject:self forKey:aname];
+    ([WClasses getDefault].classes)[aname] = self;
     self.isProtocol=NO;
     self.isSys=self.isType=self.isBlock=self.isWIOnly=NO;
     _depth=NSNotFound;
@@ -41,7 +41,7 @@
     //}
     self.vars=[NSMutableDictionary dictionary];
     self.fns=[NSMutableDictionary dictionary];
-    [[WClasses getDefault].protocols setObject:self forKey:aname];
+    ([WClasses getDefault].protocols)[aname] = self;
     self.isProtocol=YES;
     self.isSys=self.isType=self.isBlock=self.isWIOnly=NO;
     _depth=NSNotFound;
@@ -56,7 +56,7 @@
 }
 
 + (WClass*)getClassWithName:(NSString *)aname superClass:(WClass*)superClass protocolList:(NSArray*)protocolList varPatterns:(NSSet *)avarPatterns {
-    WClass *ret=[[WClasses getDefault].classes objectForKey:aname];
+    WClass *ret=([WClasses getDefault].classes)[aname];
     if (ret) {
         [ret.superType addClass:superClass protocols:protocolList];
         if (avarPatterns) {
@@ -73,7 +73,7 @@
 }
 
 + (WClass*)getProtocolWithName:(NSString *)aname superList:(NSArray *)asuperList varPatterns:(NSSet*)avarPatterns {
-    WClass *ret=[[WClasses getDefault].protocols objectForKey:aname];
+    WClass *ret=([WClasses getDefault].protocols)[aname];
     if (ret) {
         if (asuperList) [ret.superType addClass:nil protocols:asuperList];
         if (avarPatterns) {
@@ -193,13 +193,13 @@
 
 - (void)appendWithSelector:(SEL)sel string:(NSMutableString*)s {
     for (NSString *n in self.varNames) {
-        WVar *v=[self.vars objectForKey:n];
+        WVar *v=(self.vars)[n];
         if ([v respondsToSelector:sel]) {
             [v performUnknownSelector:sel withObject:s];
         }
     }    
     for (NSString *n in self.fnNames) {
-        WFn *fn=[self.fns objectForKey:n];
+        WFn *fn=(self.fns)[n];
         if ([fn respondsToSelector:sel]) {
             [fn performUnknownSelector:sel withObject:s];
         }
@@ -347,7 +347,7 @@
                 defValLevel:v.defLevel attributes:attrs clas:forClas];
             v2.useLocationsFrom=v.useLocationsFrom;
             for (NSString *fn in v.inFilesLocations) {
-                for (NSValue *vv in (NSSet*)[v.inFilesLocations objectForKey:fn]) {
+                for (NSValue *vv in (NSSet*)(v.inFilesLocations)[fn]) {
                     [v2 addInFilename:fn line:(Int)vv.rangeValue.location column:(Int)vv.rangeValue.length];
                 }
             }
@@ -363,7 +363,7 @@
                 clas:forClas];
         fn2.useLocationsFrom=fn.useLocationsFrom;
         for (NSString *fname in fn.inFilesLocations) {
-            for (NSValue *vv in (NSSet*)[fn.inFilesLocations objectForKey:fname]) {
+            for (NSValue *vv in (NSSet*)(fn.inFilesLocations)[fname]) {
                 [fn2 addInFilename:fname line:(Int)vv.rangeValue.location column:(Int)vv.rangeValue.length];
             }
         }
@@ -408,14 +408,14 @@
             if (![varPatterns containsObject:@"-Object"]) {
                 WClass *objectClass;
                 if ((!superType.clas)||superType.clas.isType||superType.clas.isSys) {
-                    objectClass=[[WClasses getDefault].protocols objectForKey:@"Object"];
+                    objectClass=([WClasses getDefault].protocols)[@"Object"];
                     if (objectClass) {
                         [objectClass addProtocolToClass:self included:included stack:[NSMutableArray array]];
                         [self.superType.protocols addObject:objectClass];
                     }
                 }
                 else {
-                    objectClass=[[WClasses getDefault].protocols objectForKey:@"DerivedObject"];
+                    objectClass=([WClasses getDefault].protocols)[@"DerivedObject"];
                     if (objectClass) {
                         [objectClass addProtocolToClass:self included:included stack:[NSMutableArray array]];
                         [self.superType.protocols addObject:objectClass];
@@ -423,7 +423,7 @@
                 }
             }
             if (![varPatterns containsObject:@"-Object"]) {
-                WClass *classClass=[[WClasses getDefault].protocols objectForKey:@"ClassObject"];
+                WClass *classClass=([WClasses getDefault].protocols)[@"ClassObject"];
                 if (classClass) {
                     [classClass addProtocolToClass:self included:included stack:[NSMutableArray array]];
                     [self.superType.protocols addObject:classClass];
@@ -435,7 +435,7 @@
 }
 
 -(WType*)wType {
-    return([WType newWithClass:(self.isProtocol?nil:self) protocols:(self.isProtocol?[NSArray arrayWithObject:self]:nil) addObject:NO]);
+    return([WType newWithClass:(self.isProtocol?nil:self) protocols:(self.isProtocol?@[self]:nil) addObject:NO]);
 }
 
 //@synthesize name,superType,varNames,vars,fns,varPatterns,fnNames,isProtocol,isType,isSys,hasDef,isWIOnly;
@@ -463,7 +463,7 @@
 //    val=[NSMutableString stringWithString:@"<ul>"];
     [val appendString:@"<ul>"];
     for (NSString *vn in varNames) {
-        WVar *v=[vars objectForKey:vn];
+        WVar *v=vars[vn];
         if (!(v.type.clas.isSys||!v.retains)) {
             NSString *n=[NSString stringWithFormat:@"own_var_%@",vn];
             [val appendFormat:@"<li><span style='color:blue' onclick=\"classclick('PATH_%@_own','%@','own')\">%@</span> %@",n,v.type.clas.tag,[WClasses htmlStringForString:v.type.clas.wType.wiType],[WClasses htmlStringForString:v.name]];
@@ -498,14 +498,14 @@
         }
     }
     [val appendFormat:@"</ul>\n"];
-    [dict setObject:val forKey:[self.tag stringByAppendingString:@"_own"]];
+    dict[[self.tag stringByAppendingString:@"_own"]] = val;
     //[dict setObject:@"jj" forKey:[self.tag stringByAppendingString:@"_own"]];
     
-    [dict setObject:self.infoStr forKey:[self.tag stringByAppendingString:@"_info"]];
+    dict[[self.tag stringByAppendingString:@"_info"]] = self.infoStr;
 
 
     val=[NSMutableString stringWithFormat:@"<span style='color:blue' onclick=\"classclick('PATH_own','%@','own')\">%@</span><span onclick=\"classclick('PATH_info','%@','info')\">(info)</span><span id='PATH_info'></span><span id='PATH_own'></<span>",self.tag,[WClasses htmlStringForString:self.wType.wiType],self.tag];
-    [dict setObject:val forKey:[self.tag stringByAppendingString:@"_."]];
+    dict[[self.tag stringByAppendingString:@"_."]] = val;
 }
     
 
@@ -515,7 +515,7 @@
     if (varNames.count) {
         [ret appendFormat:@"<ul>"];
         for (NSString *n in varNames) {
-            WVar *v=[vars objectForKey:n];
+            WVar *v=vars[n];
             if (v.type.clas.isSys||!v.retains) {
                 [ret appendFormat:@"<li>%@ %@",[WClasses htmlStringForString:v.type.wiType],v.localizedVarName];
                 if (v.defaultValue) [ret appendFormat:@"=%@",[WClasses htmlStringForString:v.defaultValue]];
@@ -532,7 +532,7 @@
     if (fnNames.count) {
         [ret appendFormat:@"<ul>"];
         for (NSString *n in fnNames) {
-            WFn *fn=[fns objectForKey:n];
+            WFn *fn=fns[n];
             [ret appendFormat:@"<li>%@</li>\n",[WClasses htmlStringForString:fn.sig]];
         }
         [ret appendFormat:@"</ul>\n"];
@@ -543,7 +543,7 @@
     [self getNames];
     ownsNum=0;
     for (NSString *n in varNames) {
-        WVar *v=[vars objectForKey:n];
+        WVar *v=vars[n];
         if ((v.type.clas!=self)&&!(v.type.clas.isSys||!v.retains)) {
             ownsNum++;
             v.type.clas.ownedNum++;
@@ -571,8 +571,8 @@
 
 -(NSString*)html:(NSMutableDictionary*)tags andName:(bool)andName {
     [self getNames];
-    if ([tags objectForKey:[self tag]]) return(andName?[tags objectForKey:[self tag]]:@"");
-    [tags setObject:[NSString stringWithFormat:@"<b>%@</b>",name] forKey:[self tag]];
+    if (tags[[self tag]]) return(andName?tags[[self tag]]:@"");
+    tags[[self tag]] = [NSString stringWithFormat:@"<b>%@</b>",name];
 
     NSMutableString *ret=[NSMutableString string];
     if (andName) [ret appendFormat:@"<span id='class_%@'><b>%@</b>",name,[WClasses htmlStringForString:self.wType.wiType]];
@@ -585,7 +585,7 @@
         [ret appendFormat:@"<li>%@</li>",[p html:tags andName:YES]];
     }
     for (NSString *n in varNames) {
-        WVar *v=[vars objectForKey:n];
+        WVar *v=vars[n];
         if (!(v.type.clas.isSys||!v.retains)) {
             [ret appendFormat:@"<li><b>%@</b> %@",[WClasses htmlStringForString:v.type.wiType],v.localizedVarName];
             if (v.defaultValue) [ret appendFormat:@"=%@",[WClasses htmlStringForString:v.defaultValue]];
@@ -635,7 +635,7 @@
         NSError *err=nil;
         NSMutableString *s=[NSMutableString string];
         for (NSString *k in self.vars) {
-            WVar *v=[self.vars objectForKey:k];
+            WVar *v=(self.vars)[k];
             [s appendFormat:(s.length?@"|%@":@"%@"),[NSRegularExpression escapedPatternForString:v.localizedName]];
         }
         getterSetterRE=[NSRegularExpression regularExpressionWithPattern:[NSString stringWithFormat:@"(?<![\\w\\d_\\.\\s]|->)\\s*(?:%@)(?:$|[^\\w\\d_])",s] options:0 error:&err];

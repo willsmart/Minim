@@ -32,11 +32,11 @@
     self.defaultValue=adefaultValue;
     self.defLevel=adefLevel;
     self.attributes=(aattributes?aattributes.copy:nil);
-    [(self.clas=aclas).vars setObject:self forKey:self.name];
+    ((self.clas=aclas).vars)[self.name] = self;
     return(self);
 }
 + (WVar*)getVarWithType:(WType*)atype stars:(Int)astars name:(NSString *)aname qname:(NSString*)aqname defVal:(NSString *)adefaultValue defValLevel:(Int)adefLevel attributes:(NSSet *)aattributes clas:(WClass *)aclas {
-    WVar *ret=[aclas.vars objectForKey:aname];
+    WVar *ret=(aclas.vars)[aname];
     if (!ret) return([[WVar alloc] initWithType:atype stars:astars name:aname qname:aqname defVal:adefaultValue defValLevel:adefLevel attributes:aattributes clas:aclas]);
     [ret.type addClass:atype.clas protocols:atype.protocols.allObjects];
     if (adefaultValue) ret.defaultValue=adefaultValue;
@@ -49,7 +49,7 @@
 }
 
 + (WVar*)getExistingVarWithName:(NSString *)aname clas:(WClass *)aclas {
-    return([aclas.vars objectForKey:aname]);
+    return((aclas.vars)[aname]);
 }
 
 + (NSString*)escapeCString:(NSString*)s {
@@ -99,7 +99,7 @@
                 bad=0;
                 bool isSetter=NO,isGetter=YES,got=NO;
                 for (Int pos2=pos+1;(pos2<r.tokenizer.tokens.count)&&!got;pos2++) {
-                    WReaderToken *t2=[r.tokenizer.tokens objectAtIndex:pos2];
+                    WReaderToken *t2=(r.tokenizer.tokens)[pos2];
                     switch (t2.type) {
                         case 'o':isSetter=[t2.str isEqualToString:@"="];
                         isGetter=(!isSetter)&&![t2.str isEqualToString:@"("];
@@ -163,35 +163,33 @@
     [self localizedVarName];
     
     if ([attributes containsObject:@"explain"]) {
-        [WClasses note:((NSDictionary*)[NSDictionary dictionaryWithObjectsAndKeys:
-            [NSNumber numberWithBool:imaginary],@"imaginary",
-            [NSNumber numberWithBool:retains],@"retains",
-            [NSNumber numberWithBool:copies],@"copies",
-            [NSNumber numberWithBool:isType],@"isType",
-            [NSNumber numberWithBool:isBlock],@"isBlock",
-            [NSNumber numberWithBool:modelretains],@"modelRetains",
-            [NSNumber numberWithBool:readonly],@"readonly",
-            [NSNumber numberWithBool:atomic],@"atomic",
-            [NSNumber numberWithBool:synthesized],@"synthesized",
-            [NSNumber numberWithBool:objc_readonly],@"objc_readonly",
-            [NSNumber numberWithBool:needsGetter],@"needsGetter",
-            [NSNumber numberWithBool:needsSetter],@"needsSetter",
-            [NSNumber numberWithBool:hasIVar],@"hasIVar",
-            [NSNumber numberWithBool:hasDefaultValue],@"hasDefaultValue",
-            [NSNumber numberWithBool:justivar],@"justivar",
-            [NSNumber numberWithBool:hasGetter!=nil],@"hasGetter",
-            [NSNumber numberWithBool:hasSetter!=nil],@"hasSetter",
-            setterName,@"setterName",
-            getterName,@"getterName",
-            setterSig,@"setterSig",
-            getterSig,@"getterSig",
-            localizedSetterName,@"localizedSetterName",
-            localizedGetterName,@"localizedGetterName",
-            localizedSetterSig,@"localizedSetterSig",
-            localizedGetterSig,@"localizedGetterSig",
-            localizedVarName,@"localizedVarName",
-            [NSNumber numberWithBool:self.tracked],@"tracked",
-        nil]).description withToken:nil context:self];
+        [WClasses note:((NSDictionary*)@{@"imaginary": @(imaginary),
+            @"retains": @(retains),
+            @"copies": @(copies),
+            @"isType": @(isType),
+            @"isBlock": @(isBlock),
+            @"modelRetains": @(modelretains),
+            @"readonly": @(readonly),
+            @"atomic": @(atomic),
+            @"synthesized": @(synthesized),
+            @"objc_readonly": @(objc_readonly),
+            @"needsGetter": @(needsGetter),
+            @"needsSetter": @(needsSetter),
+            @"hasIVar": @(hasIVar),
+            @"hasDefaultValue": @(hasDefaultValue),
+            @"justivar": @(justivar),
+            @"hasGetter": @(hasGetter!=nil),
+            @"hasSetter": @(hasSetter!=nil),
+            @"setterName": setterName,
+            @"getterName": getterName,
+            @"setterSig": setterSig,
+            @"getterSig": getterSig,
+            @"localizedSetterName": localizedSetterName,
+            @"localizedGetterName": localizedGetterName,
+            @"localizedSetterSig": localizedSetterSig,
+            @"localizedGetterSig": localizedGetterSig,
+            @"localizedVarName": localizedVarName,
+            @"tracked": @(self.tracked)}).description withToken:nil context:self];
     }
     attributesCached=YES;
 }
@@ -259,10 +257,10 @@ CACHEVARATTRFN(bool,readonly,
     ret=((![clas.varPatterns containsObject:@"-Object"])&&[attributes containsObject:@"publicreadonly"])||self.objc_readonly;
 )
 CACHEVARATTRFN_retain(WFn*,hasGetter,
-    ret=[clas.fns objectForKey:[self getterSig]];
+    ret=(clas.fns)[[self getterSig]];
 )
 CACHEVARATTRFN_retain(WFn*,hasSetter,
-    ret=[clas.fns objectForKey:[self setterSig]];
+    ret=(clas.fns)[[self setterSig]];
 )
 CACHEVARATTRFN(bool,atomic,
     ret=[attributes containsObject:@"atomic"];
@@ -289,7 +287,7 @@ CACHEVARATTRFN(bool,hasIVar,
             bool pvt=NO;
             for (WClass *sup=self.clas.superType.clas;sup;sup=sup.superType.clas) {
                 for (NSString *k in sup.vars) {
-                    WVar *v=[sup.vars objectForKey:k];
+                    WVar *v=(sup.vars)[k];
                     if (v==self) BPNOW;
                     if (v.hasIVar&&[v.localizedVarName isEqualToString:vv]) {
                         ret=YES;
@@ -314,7 +312,7 @@ CACHEVARATTRFN(bool,hasIVar,
             }
             if (ret) break;
         }
-        if ([self hasSettersAndGettersInBody:((WFn*)[clas.fns objectForKey:[self getterSig]]).body hasSetter:nil hasGetter:nil]||[self hasSettersAndGettersInBody:((WFn*)[clas.fns objectForKey:[self setterSig]]).body hasSetter:nil hasGetter:nil]) {ret=YES;break;}
+        if ([self hasSettersAndGettersInBody:((WFn*)(clas.fns)[[self getterSig]]).body hasSetter:nil hasGetter:nil]||[self hasSettersAndGettersInBody:((WFn*)(clas.fns)[[self setterSig]]).body hasSetter:nil hasGetter:nil]) {ret=YES;break;}
     } while (NO);
 )
 
@@ -324,7 +322,7 @@ CACHEVARATTRFN(bool,superHasIVar,
     if (vv) {
         for (WClass *sup=self.clas.superType.clas;sup;sup=sup.superType.clas) {
             for (NSString *k in sup.vars) {
-                WVar *v=[sup.vars objectForKey:k];
+                WVar *v=(sup.vars)[k];
                 if (v.hasIVar&&[v.localizedVarName isEqualToString:vv]) {
                     ret=YES;
                 }
@@ -355,7 +353,7 @@ CACHEVARATTRFN(bool,justivar,
 
 CACHEVARATTRFN_retain(NSMutableString*,localizedGetterBody,
     if (self.synthesized) {
-        NSMutableString *body=((WFn*)[clas.fns objectForKey:[self getterSig]]).body.mutableCopy;
+        NSMutableString *body=((WFn*)(clas.fns)[[self getterSig]]).body.mutableCopy;
         if (!body) {
             body=(self.hasIVar?
                     ((!self.atomic)||self.isType?
@@ -372,7 +370,7 @@ CACHEVARATTRFN_retain(NSMutableString*,localizedGetterBody,
 
 CACHEVARATTRFN_retain(NSMutableString*,localizedSetterBody,
     if (self.synthesized) {
-        NSMutableString *body=((WFn*)[clas.fns objectForKey:[self setterSig]]).body.mutableCopy;
+        NSMutableString *body=((WFn*)(clas.fns)[[self setterSig]]).body.mutableCopy;
         if (!body) {
             NSString *vv=self.localizedVarName;
             body=(!self.retainable?
@@ -445,7 +443,7 @@ CACHEVARATTRFN_retain(NSString*,localizedVarName,
         r2.tokenizer.tokenDelegate=[WClasses getDefault];
         
         //[WClasses note:[NSString stringWithFormat:@"Add var %@ %@ %c",self.localizedName,self.qname,[self varType]] withReader:r];
-        r2.fileString=[WProp string:[[WClasses getDefault].propFiles objectForKey:[NSString stringWithFormat:(self.localizedType.clas.isType?@"T%c":@"NS%c"),[self varType]]] withMyType:self.clas.wType myName:@"self" iamOwner:NO myQName:@"" hisType:self.localizedType hisName:self.localizedName heIsOwner:YES hisQName:self.qname qprop:@"" noPlurals:YES];
+        r2.fileString=[WProp string:([WClasses getDefault].propFiles)[[NSString stringWithFormat:(self.localizedType.clas.isType?@"T%c":@"NS%c"),[self varType]]] withMyType:self.clas.wType myName:@"self" iamOwner:NO myQName:@"" hisType:self.localizedType hisName:self.localizedName heIsOwner:YES hisQName:self.qname qprop:@"" noPlurals:YES];
         r2._fileName=[NSString stringWithFormat:@"%@:(%@ >> %@)",r.fileName,[self.clas.wType wiType],self.qname];
         
         [[WClasses getDefault] read:r2 logContext:self];
@@ -540,7 +538,7 @@ CACHEVARATTRFN_retain(NSString*,localizedVarName,
         NSMutableString *def=[NSMutableString string];
         if (!def.length) for (NSString *s in attributes) {
             if ([s hasPrefix:@"-"]||[s hasPrefix:@"+"]) {
-                WFn *fn=[clas.fns objectForKey:s];
+                WFn *fn=(clas.fns)[s];
                 if (!fn) [WClasses error:[NSString stringWithFormat:@"Expected function with signature %@ for var %@",s,localizedName] withToken:nil context:self];
                 else {
                     [def appendFormat:@"[NSDictionary dictionaryWithObjectsAndKeys:@\"%@\",@\"signature\",@\"%@\",@\"body\",nil]",s,[WVar escapeCString:[WFn balance:fn.body]]];

@@ -56,7 +56,7 @@
         }
     }
     if (aprotocols&&aprotocols.count) {
-        if (!(self.protocols&&[[aprotocols objectAtIndex:0] isKindOfClass:[NSString class]])) {
+        if (!(self.protocols&&[aprotocols[0] isKindOfClass:[NSString class]])) {
             self.protocols=[NSMutableSet set];
         }
         bool adding=YES;

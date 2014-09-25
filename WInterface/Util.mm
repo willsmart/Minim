@@ -219,7 +219,7 @@ NSString* pathForPath(NSString *path) {
         }
         else if ([match rangeAtIndex:2].location!=NSNotFound) {
             NSString *var=[self substringWithRange:[match rangeAtIndex:2]];
-            NSString *val = [[[NSProcessInfo processInfo]environment]objectForKey:var];
+            NSString *val = [[NSProcessInfo processInfo]environment][var];
             if (val) [ret appendString:val];
             else {
                 if (perror) *perror=[NSError errorWithDomain:

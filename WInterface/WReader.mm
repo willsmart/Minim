@@ -23,7 +23,7 @@
     if (!(self=[super init])) return(nil);
     self._fileName=self._fileString=@"";
     self._filePath=nil;
-    self.lines=[NSArray array];
+    self.lines=@[];
     self.replaces=[NSMutableDictionary dictionary];
     self.tokenizer=[[WReaderTokenizer alloc] initWithReader:self];
     pos=-1;
@@ -38,12 +38,12 @@
 - (WReaderToken*)currentToken {
     if (pos<0) pos=0;
     if (pos>=self.tokenizer.tokens.count) return(nil);
-    return([self.tokenizer.tokens objectAtIndex:pos]);
+    return((self.tokenizer.tokens)[pos]);
 }
 - (NSString*)stringWithTokensInRange:(NSRange)r {
     NSMutableString *s=[NSMutableString string];
     for (Int i=MAX(0,(Int)r.location);i<MIN(self.tokenizer.tokens.count,r.location+r.length);i++) {
-        [s appendString:((WReaderToken*)[self.tokenizer.tokens objectAtIndex:i]).str];
+        [s appendString:((WReaderToken*)(self.tokenizer.tokens)[i]).str];
     }
     return(s);
 }
@@ -72,7 +72,7 @@
 - (void)setFileString:(NSString *)fileString {
     self._fileString=[(fileString?fileString.copy:@"") stringByReplacingOccurrencesOfString:@"\r" withString:@""];
     for (NSString *from in self.replaces.allKeys) {
-        NSString *to=[self.replaces objectForKey:from];
+        NSString *to=(self.replaces)[from];
         self._fileString=[self._fileString stringByReplacingOccurrencesOfString:from withString:to];
     }
     self.lines=[fileString componentsSeparatedByString:@"\n"];
@@ -118,7 +118,7 @@
     for (Int i=MAX(0,pos-range/2);i<=MIN(self.tokenizer.tokens.count-1,pos+(range+1)/2);i++) {
         if (i==pos) [s appendString:@">here>"];
 //        [s appendFormat:@"(%c)%@",((WReaderToken*)[self.tokenizer.tokens objectAtIndex:i]).type,((WReaderToken*)[self.tokenizer.tokens objectAtIndex:i]).str];
-        [s appendString:((WReaderToken*)[self.tokenizer.tokens objectAtIndex:i]).str];
+        [s appendString:((WReaderToken*)(self.tokenizer.tokens)[i]).str];
         if (i==pos) [s appendString:@"<here<"];
     }
     return(s);
