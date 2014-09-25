@@ -1,21 +1,10 @@
-//
-//  WReader.h
-//  WInterface
-//
-//  Created by Will Smart on 3/10/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
-//
-
-@class WReaderToken;
-@class WReaderTokenizer;
-
 @interface WReader : NSObject {
     NSString *_fileString,*_fileName,*_filePath;
     NSArray *lines;
-    int pos;
+    Int pos;
 }
 
-@property int pos;
+@property Int pos;
 
 @property (retain,nonatomic) NSString *fileString,*fileName,*_fileString,*_fileName,*_filePath;
 @property (retain,nonatomic,readonly) NSString *filePath;

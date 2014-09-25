@@ -169,10 +169,10 @@ static NSUInteger s_tokenChangeTime=0,s_peerValidationTime=0,s_utilmark=1;
  Marks all blocks with this block in their subBlocksInOrder as having changed
  @param dcount The change in token count for this block, or NSNotFound to set token count to NSNotFound
  */
--(void)invalidateSuperBlocks:(NSInteger)dcount {
+-(void)invalidateSuperBlocks:(Int)dcount {
     for (CodeBlock *sup in _superBlocks) if (sup->_tokenChangedAt!=s_tokenChangeTime) {
         NSNumber *memberc;
-        NSInteger supdcount=(
+        Int supdcount=(
             (dcount==NSNotFound)||!(dcount&&((memberc=sup.subBlocksMembershipCounts[self.weakSelf])))?
             dcount:
             (memberc.integerValue*dcount)
@@ -201,7 +201,7 @@ static NSUInteger s_tokenChangeTime=0,s_peerValidationTime=0,s_utilmark=1;
     return(_tokensInOrder);
 }
 -(void)addTokensInOrder:(NSMutableArray*)addTo {
-    NSInteger countWas=addTo.count;
+    Int countWas=addTo.count;
     if (_tokensInOrder) [addTo addObjectsFromArray:_tokensInOrder];
     else for (CodeBlock *b in _subBlocksInOrder) [b addTokensInOrder:ret];
     _tokenCount=addTo.count-countWas;
@@ -209,7 +209,7 @@ static NSUInteger s_tokenChangeTime=0,s_peerValidationTime=0,s_utilmark=1;
 -(void)setTokensInOrder:(NSArray*)tokensInOrder {
     s_tokenChangeTime++;
     if (tokensInOrder&&((!_tokensInOrder)||![_tokensInOrder isEqualToArray:tokensInOrder])) {
-        NSInteger dcount;
+        Int dcount;
         if (_subBlocksInOrder.count) {
             NSArray *tokensWere=self.tokensInOrder;
             NSIndexSet *inss=nil,*dels=nil;
@@ -229,15 +229,15 @@ static NSUInteger s_tokenChangeTime=0,s_peerValidationTime=0,s_utilmark=1;
 }
 
 
--(void)removeTokensAtIndexes:(NSIndexSet*)dels offset:(NSInteger*)pdelsOffset insertTokens:(NSArray*)insTokens atIndexes:(NSIndexSet*)inss withOffset:(NSUInteger*)pinssOffset {
+-(void)removeTokensAtIndexes:(NSIndexSet*)dels offset:(Int*)pdelsOffset insertTokens:(NSArray*)insTokens atIndexes:(NSIndexSet*)inss withOffset:(NSUInteger*)pinssOffset {
     
     BOOL deletedFirst=(_tokenCount&&[dels containsIndex:delsOffset]);
     BOOL deletedEnd=[dels containsIndex:delsOffset+_tokenCount];
 
     if (_tokensInOrder||(s_tokenChangeTime==_tokenChangedAt)) {
-        NSInteger inssOffset=*pinssOffset,newInssOffset=inssOffset+_tokenCount,delsOffset=*pdelsOffset,newDelsOffset=delsOffset+_tokenCount;
+        Int inssOffset=*pinssOffset,newInssOffset=inssOffset+_tokenCount,delsOffset=*pdelsOffset,newDelsOffset=delsOffset+_tokenCount;
 
-        NSInteger countWas=_tokenCount;
+        Int countWas=_tokenCount;
         if ([dels containsIndexesInRange:NSMakeRange(delsOffset,_tokenCount)]) {
             NSMutableIndexSet *mdels=dels.mutableCopy;
             if (delsOffset) [mdels shiftIndexesStartingAtIndex:delsOffset by:-delsOffset];
@@ -251,10 +251,10 @@ static NSUInteger s_tokenChangeTime=0,s_peerValidationTime=0,s_utilmark=1;
         }
         if ([inss containsIndexesInRange:NSMakeRange(inssOffset+1-deletedFirst,_tokenCount+(1-deletedEnd)-(1-deletedFirst))]) {
             NSMutableIndexSet *minss=inss.mutableCopy;
-            NSInteger prec=[mins countOfIndexesInRange:NSMakeRange(0, inssOffset)];
+            Int prec=[mins countOfIndexesInRange:NSMakeRange(0, inssOffset)];
             if (inssOffset) [minss shiftIndexesStartingAtIndex:inssOffset by:-inssOffset];
             if (!deletedFirst) [minss removeIndex:0];
-            NSInteger ei=_tokenCount+(1-deletedEnd),insc;
+            Int ei=_tokenCount+(1-deletedEnd),insc;
             for (insc=[inss countOfIndexesInRange:NSMakeRange(0, ei)];insc;ei+=insc,insc=[inss countOfIndexesInRange:NSMakeRange(ei-insc, insc)]);
             [minss removeIndexesInRange:NSMakeRange(ei, NSNotFound-ei)];
             if (s_tokenChangeTime!=_tokenChangedAt) {
@@ -268,10 +268,10 @@ static NSUInteger s_tokenChangeTime=0,s_peerValidationTime=0,s_utilmark=1;
         *pinssOffset=newInssOffset;
     }
     else {
-        NSInteger delc=[dels countOfIndexesInRange:NSMakeRange(delsOffset,_tokenCount)];
+        Int delc=[dels countOfIndexesInRange:NSMakeRange(delsOffset,_tokenCount)];
         if (delc||[inss containsIndexesInRange:NSMakeRange(inssOffset+1-deletedFirst,_tokenCount-delc+(1-deletedEnd)-(1-deletedFirst))]) {
             _tokenChangedAt=s_tokenChangeTime;
-            NSInteger count=0;
+            Int count=0;
             for (CodeBlock *b in _subBlocksInOrder) {
                 [b removeTokensAtIndexes:dels offset:pdelsOffset insertTokens:insTokens atIndexes:inss withOffset:pinssOffset];
                 count+=b->_tokenCount;
@@ -378,7 +378,7 @@ static NSUInteger s_tokenChangeTime=0,s_peerValidationTime=0,s_utilmark=1;
     NSArray *tokensWere=self.tokens;
     if ([Collections getInsertsAndDeletesAsIndexSetWhenChanging:tokensWere to:tokens inss:&ins dels:&dels]) {
         if (_token) {
-            NSInteger index=0;
+            Int index=0;
             NSArray *indSets=@[].mutableCopy;
             for (CodeBlock *sub in _subBlocks) {
                 [indSets addObject:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(index, index+sub.tokens.count)]
@@ -395,7 +395,7 @@ static NSUInteger s_tokenChangeTime=0,s_peerValidationTime=0,s_utilmark=1;
     NSArray *tokensWere=self.tokens;
     if ([Collections getInsertsAndDeletesAsIndexSetWhenChanging:tokensWere to:tokens inss:&ins dels:&dels]) {
         if (_token) {
-            NSInteger index=0;
+            Int index=0;
             NSArray *indSets=@[].mutableCopy;
             for (CodeBlock *sub in _subBlocks) {
                 [indSets addObject:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(index, index+sub.tokens.count)]

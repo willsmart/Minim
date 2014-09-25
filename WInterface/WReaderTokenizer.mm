@@ -1,54 +1,3 @@
-//
-//  WReaderTokenizer.m
-//  WInterface
-//
-//  Created by Will Smart on 8/10/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
-//
-
-
-@implementation WReaderToken : NSObject
-@synthesize type,bracketCount,tokenizer,_str,_notes;
-- (void)dealloc {
-    self.str=nil;
-    self.notes=nil;
-    }
-
-- (id)initWithTokenizer:(WReaderTokenizer*)atokenizer string:(NSString*)astr bracketCount:(int)bc linei:(int)linei type:(char)atype {
-    return([self initWithTokenizer:atokenizer string:astr bracketCount:bc linei:linei type:atype note:nil]);
-}
-
-- (id)initWithTokenizer:(WReaderTokenizer*)atokenizer string:(NSString*)astr bracketCount:(int)bc linei:(int)linei type:(char)atype note:(NSString*)anote {
-    if (!(self=[super init])) return(nil);
-    tokenizer=atokenizer;
-    self.str=astr.copy;
-    self.notes=@"";//[NSString stringWithFormat:@"\a\a%c%p%@",atype,self,[astr stringByReplacingOccurrencesOfString:@"\a" withString:@"a"]];
-    //if (anote.length) [self addNote:@"%@",anote];
-    self.type=atype;
-    self.bracketCount=bc;
-    self.linei=linei;
-    return(self);
-}
-
-- (NSString *)str {
-    if (self.tokenizer.tokenDelegate) return([self.tokenizer.tokenDelegate processedStringForString:self._str inToken:self]);
-    else return(self._str);
-}
--(NSString*)notes {return(self._notes);}
-
-- (void)setStr:(NSString *)v {self._str=v;}
-- (void)setNotes:(NSString *)v {self._notes=v;}
-
-
--(void)addNote:(NSString*)format,... {
-    va_list args;va_start(args,format);
-    self.notes=[self.notes stringByAppendingFormat:@"\a%@",[[[NSString alloc] initWithFormat:format arguments:args] stringByReplacingOccurrencesOfString:@"\a" withString:@"a"]];
-    va_end(args);
-}
-
-@end
-
-
 @implementation WReaderTokenizer : NSObject
 @synthesize tokens,_str,tokenDelegate,reader;
 - (void)dealloc {
@@ -96,12 +45,12 @@
         "F Dc Dc Dc Dc Dc Dc Dc Dc zc Dc Dc Dc Dc Dc",
         "l lc rr lc lc lc lc lc lc lc lc lc lc lc lc"
     };
-    int cols=14;
-    int rows=26;
+    Int cols=14;
+    Int rows=26;
 
-    int colForC[256];
-    for (int _c=0;_c<256;_c++) {
-        int c=(((_c>='a')&&(_c<='z'))||((_c>='A')&&(_c<='Z'))?'w':
+    Int colForC[256];
+    for (Int _c=0;_c<256;_c++) {
+        Int c=(((_c>='a')&&(_c<='z'))||((_c>='A')&&(_c<='Z'))?'w':
                ((_c>='0')&&(_c<='9')?'n':
                 (_c=='\"'?'Q':
                     (_c=='\''?'q':
@@ -109,8 +58,8 @@
         for (colForC[_c]=0;(colForC[_c]<cols-1)&&(mat[0][2+3*colForC[_c]]!=c);colForC[_c]++);
     }
     
-    int rowForC[256];
-    for (int _c=0;_c<256;_c++) {
+    Int rowForC[256];
+    for (Int _c=0;_c<256;_c++) {
         for (rowForC[_c]=0;(rowForC[_c]<rows-1)&&(mat[rowForC[_c]+1][0]!=_c);rowForC[_c]++);
         if (rowForC[_c]==rows) rowForC[_c]=-1;
     }
@@ -123,10 +72,10 @@
     char *types=(char*)[d mutableBytes];
     
     //printf("%s\n",self.reader.fileName.UTF8String);
-    int ci=0;
+    Int ci=0;
     while (ci<csd.length) {
-        int col=colForC[cs[ci]];
-        int row=rowForC[state];
+        Int col=colForC[cs[ci]];
+        Int row=rowForC[state];
         if (row<0) {NSLog(@"Unknown state %c",state);break;}
         types[ci]=mat[row+1][3+3*col];
         state=mat[row+1][2+3*col];
@@ -137,7 +86,7 @@
     }
     
 
-    int typeWas=0,bc=0,linei=0,slinei=0,indent=0,_indent=0;
+    Int typeWas=0,bc=0,linei=0,slinei=0,indent=0,_indent=0;
     [self.tokens removeAllObjects];
     NSMutableString *s=[NSMutableString string];
     for (ci=0;ci<str.length;ci++) {
@@ -198,9 +147,9 @@
     RKEnumerator *en=[str matchEnumeratorWithRegex:re];
 
     NSRange *ranges;
-    int seq=1;
+    Int seq=1;
     while ((ranges=[en nextRanges])) {
-        int ind=-1;
+        Int ind=-1;
         for (NSObject *_name in refs) {ind++;
             if (![_name isKindOfClass:[NSString class]]) continue;
             NSString *name=(NSString*)_name;
@@ -253,7 +202,7 @@
 
     if (err) NSLog(@"%@",err.description);
     
-    for (int pos=0;pos<tokens.count;pos++) {
+    for (Int pos=0;pos<tokens.count;pos++) {
         WReaderToken *t=[tokens objectAtIndex:pos];
         
         char newc=0;

@@ -10,24 +10,24 @@
         bool ret=NO;
         if (from==nil) {
             if (to) {
-                NSInteger i=0;
+                Int i=0;
                 while (i<to.count) [inss addObject:@(i++)];
                 ret=(i>0);
             }
         }
         else if (to==nil) {
-            NSInteger i=0;
+            Int i=0;
             while (i<from.count) [dels addObject:@(i++)];
             ret=(i>0);
         }
         else {
-            NSInteger toi=0,fromi=0;
+            Int toi=0,fromi=0;
             while ((toi<[to count])||(fromi<[from count])) {
                 char op=0;
                 if (fromi>=[from count]) op='i';
                 else if (toi>=[to count]) op='d';
                 else if ([[from objectAtIndex:fromi] isEqual:[to objectAtIndex:toi]]) op=0;
-                else for (NSInteger j=1;;j++) {
+                else for (Int j=1;;j++) {
                     if (toi+j>=[to count]) {op='d';break;}
                     else if (fromi+j>=[from count]) {op='i';break;}
                     else if ([[from objectAtIndex:fromi] isEqual:[to objectAtIndex:toi+j]]) {op='i';break;}
@@ -64,7 +64,7 @@
         return(YES);
     }
 
-    /*+(bool) getInsertsAndDeletesAsIndexPathsInSection:(NSInteger)section whenChanging:(NSArray*)from to:(NSArray*)to inss:(NSArray*__strong*)pinss dels:(NSArray*__strong*)pdels {
+    /*+(bool) getInsertsAndDeletesAsIndexPathsInSection:(Int)section whenChanging:(NSArray*)from to:(NSArray*)to inss:(NSArray*__strong*)pinss dels:(NSArray*__strong*)pdels {
         if (![Util getInsertsAndDeletesWhenChanging:from to:to inss:pinss dels:pdels]) return(NO);
         NSMutableArray *dels=[MutableArray array];
         NSMutableArray *inss=[MutableArray array];

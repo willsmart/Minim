@@ -8,6 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		BE1885B519AAF52D00E2CAD4 /* NSString+WI.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE1885B419AAF52D00E2CAD4 /* NSString+WI.mm */; };
+		BE33A95B19D42E190046BF4A /* InFiles.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE33A94C19D42E190046BF4A /* InFiles.mm */; };
+		BE33A95C19D42E190046BF4A /* WClass.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE33A94E19D42E190046BF4A /* WClass.mm */; };
+		BE33A95D19D42E190046BF4A /* WClasses.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE33A95019D42E190046BF4A /* WClasses.mm */; };
+		BE33A95E19D42E190046BF4A /* WFn.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE33A95219D42E190046BF4A /* WFn.mm */; };
+		BE33A95F19D42E190046BF4A /* WPotentialType.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE33A95419D42E190046BF4A /* WPotentialType.mm */; };
+		BE33A96019D42E190046BF4A /* WProp.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE33A95619D42E190046BF4A /* WProp.mm */; };
+		BE33A96119D42E190046BF4A /* WType.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE33A95819D42E190046BF4A /* WType.mm */; };
+		BE33A96219D42E190046BF4A /* WVar.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE33A95A19D42E190046BF4A /* WVar.mm */; };
+		BE33A96519D4303E0046BF4A /* WReaderToken.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE33A96419D4303E0046BF4A /* WReaderToken.mm */; };
 		BE38E828196C7B6900C95037 /* Parse.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE38E827196C7B6900C95037 /* Parse.mm */; };
 		BE4152E41811B03200E421D7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE99B972161BAE720041B8EA /* Foundation.framework */; };
 		BE4152E71811B03200E421D7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BE4152E61811B03200E421D7 /* main.m */; };
@@ -18,7 +27,6 @@
 		BE99B973161BAE720041B8EA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE99B972161BAE720041B8EA /* Foundation.framework */; };
 		BE99B976161BAE720041B8EA /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE99B975161BAE720041B8EA /* main.mm */; };
 		BE99B97A161BAE720041B8EA /* WInterface.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = BE99B979161BAE720041B8EA /* WInterface.1 */; };
-		BE99B982161BAEBA0041B8EA /* Classes.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE99B981161BAEBA0041B8EA /* Classes.mm */; };
 		BE99B985161BAFD30041B8EA /* WReader.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE99B984161BAFD30041B8EA /* WReader.mm */; };
 		BE9AF96219524F2B00BA6CA0 /* RegexKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BEAC0E89187C168200405862 /* RegexKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		BEAA02991621F7280026192D /* WReaderTokenizer.mm in Sources */ = {isa = PBXBuildFile; fileRef = BEAA02981621F7280026192D /* WReaderTokenizer.mm */; };
@@ -72,6 +80,25 @@
 		BE1885B419AAF52D00E2CAD4 /* NSString+WI.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSString+WI.mm"; sourceTree = "<group>"; };
 		BE19E8A216295CF10013C92B /* TestProp.wi */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = TestProp.wi; path = Test/TestProp.wi; sourceTree = SOURCE_ROOT; };
 		BE19E8A316295D960013C92B /* TestProp.wi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestProp.wi.m; path = Test/TestProp.wi.m; sourceTree = SOURCE_ROOT; };
+		BE33A94B19D42E190046BF4A /* InFiles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InFiles.h; sourceTree = "<group>"; };
+		BE33A94C19D42E190046BF4A /* InFiles.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = InFiles.mm; sourceTree = "<group>"; };
+		BE33A94D19D42E190046BF4A /* WClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WClass.h; sourceTree = "<group>"; };
+		BE33A94E19D42E190046BF4A /* WClass.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WClass.mm; sourceTree = "<group>"; };
+		BE33A94F19D42E190046BF4A /* WClasses.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WClasses.h; sourceTree = "<group>"; };
+		BE33A95019D42E190046BF4A /* WClasses.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WClasses.mm; sourceTree = "<group>"; };
+		BE33A95119D42E190046BF4A /* WFn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WFn.h; sourceTree = "<group>"; };
+		BE33A95219D42E190046BF4A /* WFn.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WFn.mm; sourceTree = "<group>"; };
+		BE33A95319D42E190046BF4A /* WPotentialType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WPotentialType.h; sourceTree = "<group>"; };
+		BE33A95419D42E190046BF4A /* WPotentialType.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WPotentialType.mm; sourceTree = "<group>"; };
+		BE33A95519D42E190046BF4A /* WProp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WProp.h; sourceTree = "<group>"; };
+		BE33A95619D42E190046BF4A /* WProp.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WProp.mm; sourceTree = "<group>"; };
+		BE33A95719D42E190046BF4A /* WType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WType.h; sourceTree = "<group>"; };
+		BE33A95819D42E190046BF4A /* WType.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WType.mm; sourceTree = "<group>"; };
+		BE33A95919D42E190046BF4A /* WVar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WVar.h; sourceTree = "<group>"; };
+		BE33A95A19D42E190046BF4A /* WVar.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WVar.mm; sourceTree = "<group>"; };
+		BE33A96319D4303E0046BF4A /* WReaderToken.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WReaderToken.h; sourceTree = "<group>"; };
+		BE33A96419D4303E0046BF4A /* WReaderToken.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WReaderToken.mm; sourceTree = "<group>"; };
+		BE33A96619D430770046BF4A /* Protocols.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Protocols.h; sourceTree = "<group>"; };
 		BE38E825196C7B6900C95037 /* cParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cParser.h; sourceTree = "<group>"; };
 		BE38E826196C7B6900C95037 /* Parse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Parse.h; sourceTree = "<group>"; };
 		BE38E827196C7B6900C95037 /* Parse.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Parse.mm; sourceTree = "<group>"; };
@@ -113,8 +140,6 @@
 		BE99B975161BAE720041B8EA /* main.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
 		BE99B978161BAE720041B8EA /* WInterface-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WInterface-Prefix.pch"; sourceTree = "<group>"; };
 		BE99B979161BAE720041B8EA /* WInterface.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = WInterface.1; sourceTree = "<group>"; };
-		BE99B980161BAEBA0041B8EA /* Classes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Classes.h; sourceTree = "<group>"; };
-		BE99B981161BAEBA0041B8EA /* Classes.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Classes.mm; sourceTree = "<group>"; };
 		BE99B983161BAFD30041B8EA /* WReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WReader.h; sourceTree = "<group>"; };
 		BE99B984161BAFD30041B8EA /* WReader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WReader.mm; sourceTree = "<group>"; };
 		BEA020A41629505100CA480A /* Prop1A.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = Prop1A.wi; path = Wis/Prop1A.wi; sourceTree = "<group>"; };
@@ -257,7 +282,7 @@
 				BE38E827196C7B6900C95037 /* Parse.mm */,
 			);
 			name = Parser;
-			path = ../../BasicClassesCPP/Parser;
+			path = ../BasicClassesCPP/Parser;
 			sourceTree = "<group>";
 		};
 		BE38E82B196C7C3900C95037 /* Products */ = {
@@ -290,12 +315,28 @@
 		BE5266E3196DC31D00FD10AB /* Sourcefiles */ = {
 			isa = PBXGroup;
 			children = (
+				BE33A96619D430770046BF4A /* Protocols.h */,
+				BE33A96319D4303E0046BF4A /* WReaderToken.h */,
+				BE33A96419D4303E0046BF4A /* WReaderToken.mm */,
+				BE33A94B19D42E190046BF4A /* InFiles.h */,
+				BE33A94C19D42E190046BF4A /* InFiles.mm */,
+				BE33A94D19D42E190046BF4A /* WClass.h */,
+				BE33A94E19D42E190046BF4A /* WClass.mm */,
+				BE33A94F19D42E190046BF4A /* WClasses.h */,
+				BE33A95019D42E190046BF4A /* WClasses.mm */,
+				BE33A95119D42E190046BF4A /* WFn.h */,
+				BE33A95219D42E190046BF4A /* WFn.mm */,
+				BE33A95319D42E190046BF4A /* WPotentialType.h */,
+				BE33A95419D42E190046BF4A /* WPotentialType.mm */,
+				BE33A95519D42E190046BF4A /* WProp.h */,
+				BE33A95619D42E190046BF4A /* WProp.mm */,
+				BE33A95719D42E190046BF4A /* WType.h */,
+				BE33A95819D42E190046BF4A /* WType.mm */,
+				BE33A95919D42E190046BF4A /* WVar.h */,
+				BE33A95A19D42E190046BF4A /* WVar.mm */,
 				BE1885B319AAF52D00E2CAD4 /* NSString+WI.h */,
 				BE1885B419AAF52D00E2CAD4 /* NSString+WI.mm */,
-				BE38E824196C7B6900C95037 /* Parser */,
 				BE99B975161BAE720041B8EA /* main.mm */,
-				BE99B980161BAEBA0041B8EA /* Classes.h */,
-				BE99B981161BAEBA0041B8EA /* Classes.mm */,
 				BE99B983161BAFD30041B8EA /* WReader.h */,
 				BE99B984161BAFD30041B8EA /* WReader.mm */,
 				BEAA02971621F7280026192D /* WReaderTokenizer.h */,
@@ -360,6 +401,7 @@
 				BE6FA91919AAD2E200862360 /* wiLibrary */,
 				BE6FA91819AAD18A00862360 /* BasicClassesCPP */,
 				BE93AD83165E9D9C001BA629 /* WI_iosTests.xcodeproj */,
+				BE38E824196C7B6900C95037 /* Parser */,
 				BE5266E3196DC31D00FD10AB /* Sourcefiles */,
 				BE38E835196C7FD100C95037 /* Files */,
 				BE730AC918108F3B005582C5 /* Sample */,
@@ -717,7 +759,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "echo cp ${TARGET_BUILD_DIR}/${EXECUTABLE_PATH} /Users/Will/WInterface\ncp ${TARGET_BUILD_DIR}/${EXECUTABLE_PATH} /Users/Will/Documents/WInterface/bin/WInterface\n";
+			shellScript = "\ncp ${TARGET_BUILD_DIR}/${EXECUTABLE_PATH} /Users/Will/Documents/WInterface/bin/\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -739,11 +781,19 @@
 				BE99B976161BAE720041B8EA /* main.mm in Sources */,
 				BE38E828196C7B6900C95037 /* Parse.mm in Sources */,
 				BE1885B519AAF52D00E2CAD4 /* NSString+WI.mm in Sources */,
-				BE99B982161BAEBA0041B8EA /* Classes.mm in Sources */,
+				BE33A95F19D42E190046BF4A /* WPotentialType.mm in Sources */,
 				BE99B985161BAFD30041B8EA /* WReader.mm in Sources */,
+				BE33A96519D4303E0046BF4A /* WReaderToken.mm in Sources */,
 				BE681E70196A30F100AA3BE5 /* Util.mm in Sources */,
+				BE33A95C19D42E190046BF4A /* WClass.mm in Sources */,
+				BE33A95B19D42E190046BF4A /* InFiles.mm in Sources */,
 				BEAA02991621F7280026192D /* WReaderTokenizer.mm in Sources */,
+				BE33A96019D42E190046BF4A /* WProp.mm in Sources */,
+				BE33A95E19D42E190046BF4A /* WFn.mm in Sources */,
+				BE33A96119D42E190046BF4A /* WType.mm in Sources */,
 				BE681E73196A31A100AA3BE5 /* Collections.mm in Sources */,
+				BE33A95D19D42E190046BF4A /* WClasses.mm in Sources */,
+				BE33A96219D42E190046BF4A /* WVar.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

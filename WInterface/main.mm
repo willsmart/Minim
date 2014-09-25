@@ -30,7 +30,7 @@ int main(int argc, const char * argv[])
 {
     printf("Winterface 1.1001 (C)2013 Will smart HaND:)\n");
 
-    int ret=0;
+    Int ret=0;
 
     if ((argc>=2)&&!strcmp(argv[1],"parse")) testParse();
 
@@ -40,7 +40,7 @@ int main(int argc, const char * argv[])
 
         NSString *baseDir=fm.currentDirectoryPath;
         
-        for (int i=(argc==1?0:1);i<argc;i++) {
+        for (Int i=(argc==1?0:1);i<argc;i++) {
             NSString *dir=(i?[NSString stringWithCString:argv[i] encoding:NSUTF8StringEncoding]:@".");
             [fm changeCurrentDirectoryPath:baseDir];
             [fm changeCurrentDirectoryPath:dir];
@@ -108,8 +108,8 @@ int main(int argc, const char * argv[])
                             printf("No change to file %s\n",[ofn cStringUsingEncoding:NSASCIIStringEncoding]);
                         }
                         else {
-                            int prefLen=(int)[s commonPrefixWithString:swas options:0].length;
-                            NSString *prefix=(swas?[NSString stringWithFormat:@"Changed from\n    [%d]\"%@\"\nis now\n    [%d]\"%@\"",prefLen,[[swas substringFromIndex:prefLen] substringToIndex:(swas.length-prefLen<50?swas.length-prefLen:50)],prefLen,[[s substringFromIndex:prefLen] substringToIndex:(s.length-prefLen<50?s.length-prefLen:50)]]:@"New");
+                            Int prefLen=(Int)[s commonPrefixWithString:swas options:0].length;
+                            NSString *prefix=(swas?[NSString stringWithFormat:@"Changed from\n    [%d]\"%@\"\nis now\n    [%d]\"%@\"",(int)prefLen,[[swas substringFromIndex:prefLen] substringToIndex:(swas.length-prefLen<50?swas.length-prefLen:50)],(int)prefLen,[[s substringFromIndex:prefLen] substringToIndex:(s.length-prefLen<50?s.length-prefLen:50)]]:@"New");
                             err=nil;
                             [s writeToFile:[wiifieddir stringByAppendingString:ofn] atomically:YES encoding:NSUTF8StringEncoding error:&err];
                             printf("Wrote to file %s -- %s\n",[ofn cStringUsingEncoding:NSASCIIStringEncoding],prefix.UTF8String);
@@ -128,6 +128,6 @@ int main(int argc, const char * argv[])
         printf("\nDone!\n");
         
     }
-    return(ret);
+    return((int)ret);
 }
 

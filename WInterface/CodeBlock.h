@@ -32,7 +32,7 @@ typedef NSUInteger CodeTokenType;
     NSMutableArray *_tokensInOrder;
     NSMutableDictionary *_subBlocksMembershipCounts;
     NSString *_body;
-    NSInteger _utili,_utilmark;
+    Int _utili,_utilmark;
 }
 
 @property (readonly,nonatomic) NSUInteger tokenCount;

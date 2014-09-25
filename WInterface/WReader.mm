@@ -42,7 +42,7 @@
 }
 - (NSString*)stringWithTokensInRange:(NSRange)r {
     NSMutableString *s=[NSMutableString string];
-    for (int i=MAX(0,(int)r.location);i<MIN(self.tokenizer.tokens.count,r.location+r.length);i++) {
+    for (Int i=MAX(0,(Int)r.location);i<MIN(self.tokenizer.tokens.count,r.location+r.length);i++) {
         [s appendString:((WReaderToken*)[self.tokenizer.tokens objectAtIndex:i]).str];
     }
     return(s);
@@ -114,8 +114,8 @@
 
 - (NSString*)localString {
     NSMutableString *s=[NSMutableString string];
-    int range=30;
-    for (int i=MAX(0,pos-range/2);i<=MIN(self.tokenizer.tokens.count-1,pos+(range+1)/2);i++) {
+    Int range=30;
+    for (Int i=MAX(0,pos-range/2);i<=MIN(self.tokenizer.tokens.count-1,pos+(range+1)/2);i++) {
         if (i==pos) [s appendString:@">here>"];
 //        [s appendFormat:@"(%c)%@",((WReaderToken*)[self.tokenizer.tokens objectAtIndex:i]).type,((WReaderToken*)[self.tokenizer.tokens objectAtIndex:i]).str];
         [s appendString:((WReaderToken*)[self.tokenizer.tokens objectAtIndex:i]).str];

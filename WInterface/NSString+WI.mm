@@ -94,7 +94,7 @@
 }
 
 -(NSString*)stringByReplacingOccurrencesOfString:(NSString *)target withString:(NSString *)replacement options:(NSStringCompareOptions)options range:(NSRange)searchRange adjustingRanges:(NSMutableArray*)ranges {
-    NSInteger offsetDueToPreviouslyAdjustedChars=0;
+    Int offsetDueToPreviouslyAdjustedChars=0;
     for (NSRange r=[self rangeOfString:target options:options range:searchRange];r.location!=NSNotFound;r=[self rangeOfString:target options:options range:NSMakeRange(r.location+r.length, (searchRange.location+searchRange.length)-(r.location+r.length))]) {
         // adjust after replacing string
         [self adjustRanges:ranges afterReplacingCharactersInRange:NSMakeRange(r.location+offsetDueToPreviouslyAdjustedChars, r.length) withStringOfLength:replacement.length];
@@ -121,7 +121,7 @@
 
 
 
--(NSRange)potentialRangeOfAdjustedIndex:(NSInteger)index afterReplacingCharactersInRange:(NSRange)removeRange withStringOfLength:(NSUInteger)insertLength {
+-(NSRange)potentialRangeOfAdjustedIndex:(Int)index afterReplacingCharactersInRange:(NSRange)removeRange withStringOfLength:(NSUInteger)insertLength {
     // if all that changed is the chars, then we couldn't make a better new position than just using the old one
     if (removeRange.length==insertLength) return(NSMakeRange(index, 0));
     
@@ -163,15 +163,15 @@
     
     bool expandLower=NO,expandHigher=YES;// if a string is inserted right on the boundary, should I expand?
 
-    NSInteger index=0;
+    Int index=0;
     for (NSValue *v in ranges.copy) if ([v respondsToSelector:@selector(rangeValue)]) {
         NSRange range=v.rangeValue;
         
         NSRange potentialStartRange=[self potentialRangeOfAdjustedIndex:range.location afterReplacingCharactersInRange:removeRange withStringOfLength:insertLength];
         NSRange potentialEndRange=[self potentialRangeOfAdjustedIndex:range.location+range.length afterReplacingCharactersInRange:removeRange withStringOfLength:insertLength];
         
-        NSInteger newStart=potentialStartRange.location+(expandLower?0:potentialStartRange.length);
-        NSInteger newEnd=potentialEndRange.location+(expandHigher?potentialEndRange.length:0);
+        Int newStart=potentialStartRange.location+(expandLower?0:potentialStartRange.length);
+        Int newEnd=potentialEndRange.location+(expandHigher?potentialEndRange.length:0);
         
         // if not expanding either end, default to right side of inserted string
         if (newEnd<newStart) newEnd=newStart;
