@@ -1,0 +1,9 @@
+#!/bin/bash
+fn=$1
+dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+/usr/local/bin/uncrustify -c $dir/uncrustify.cfg -f $fn -o $dir/uncrustify.tmp
+res=$?
+if [ $res ]; then
+    mv -f $dir/uncrustify.tmp $fn
+fi
+exit $res

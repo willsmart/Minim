@@ -39,7 +39,9 @@ int main(int argc, const char * argv[])
         NSFileManager *fm=[NSFileManager defaultManager];
 
         NSString *baseDir=fm.currentDirectoryPath;
-        
+        NSString *appDirectory = [[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent];
+        NSString *uncrustifyPath=[appDirectory stringByAppendingPathComponent:@"uncrustifyfile"];
+
         for (Int i=(argc==1?0:1);i<argc;i++) {
             NSString *dir=(i?@(argv[i]):@".");
             [fm changeCurrentDirectoryPath:baseDir];
@@ -113,6 +115,10 @@ int main(int argc, const char * argv[])
                             err=nil;
                             [s writeToFile:[wiifieddir stringByAppendingString:ofn] atomically:YES encoding:NSUTF8StringEncoding error:&err];
                             printf("Wrote to file %s -- %s\n",[ofn cStringUsingEncoding:NSASCIIStringEncoding],prefix.UTF8String);
+
+                            NSString *sys=[uncrustifyPath stringByAppendingFormat:@" '%@'",[wiifieddir stringByAppendingString:ofn]];
+                            printf("%s\n",[sys cStringUsingEncoding:NSASCIIStringEncoding]);
+                            system([sys cStringUsingEncoding:NSASCIIStringEncoding]);
                         }
                     }
                     
