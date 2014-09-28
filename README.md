@@ -81,14 +81,16 @@ A a=A.new
 Make a getter property
 
 ```
-A A a
+A
+  A a
     {return(A.new);}
 ```
 
 Make a getter/setter property
 
 ```
-A A a
+A
+  A a
     {return([A theMD:self]);}
     -v{[A setTheMD:v for:self];}
 ```
@@ -98,9 +100,9 @@ Weak initialized ivar property with getter and setter
 
 ```
 A 
-    A a=[A new]
-        {return(theivar);}
-        -v{theivar=v;}  (ivar=theivar, weak)
+  A a=[A new]
+    {return(theivar);}
+    -v{theivar=v;}  (ivar=theivar, weak)
 ```
 
 
@@ -128,11 +130,11 @@ brackets may be required for multi-line selectors:
 
 ```
 A
-    -(void)fn:(id)a
-        b:(id)b
-        {
-            make_md(a,b);
-        }
+  -(void)fn:(id)a
+    b:(id)b
+    {
+      make_md(a,b);
+    }
 ```
         
 Methods and classes are reentrant throughout the codebase, use @integer for ordering (this will likely change I guess, 'til then for int literals use @(1))
