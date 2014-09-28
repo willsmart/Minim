@@ -241,9 +241,9 @@ User
     user ~< Sock sock
     user ~< Shirt shirt
         shirt ~- Collar collar
-    author -d< Book book
-        titleFor -- NSString title
-        chapterIn -a< BookChapter chapter
+    author ~d< Book book
+        titleFor ~- NSString title
+        chapterIn ~a< BookChapter chapter
 ```
 
 
@@ -286,7 +286,7 @@ Adding things to System classes adds them to the WI's category of the class,
 
 ```
 NSObject
-    -(void)myDescription
+    -(NSString*)myDescription
         return([@"my " stringByAppendingString:self.description]);
 ```
 
