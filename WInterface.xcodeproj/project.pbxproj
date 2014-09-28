@@ -17,7 +17,7 @@
 		BE33A96119D42E190046BF4A /* WType.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE33A95819D42E190046BF4A /* WType.mm */; };
 		BE33A96219D42E190046BF4A /* WVar.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE33A95A19D42E190046BF4A /* WVar.mm */; };
 		BE33A96519D4303E0046BF4A /* WReaderToken.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE33A96419D4303E0046BF4A /* WReaderToken.mm */; };
-		BE38E828196C7B6900C95037 /* Parse.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE38E827196C7B6900C95037 /* Parse.mm */; };
+		BE340D6619D7DE2A00BEC232 /* Parse.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE340D6519D7DE2A00BEC232 /* Parse.mm */; };
 		BE4152E41811B03200E421D7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE99B972161BAE720041B8EA /* Foundation.framework */; };
 		BE4152E71811B03200E421D7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BE4152E61811B03200E421D7 /* main.m */; };
 		BE4152EB1811B03200E421D7 /* WInterfaceSample.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = BE4152EA1811B03200E421D7 /* WInterfaceSample.1 */; };
@@ -99,9 +99,8 @@
 		BE33A96319D4303E0046BF4A /* WReaderToken.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WReaderToken.h; sourceTree = "<group>"; };
 		BE33A96419D4303E0046BF4A /* WReaderToken.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WReaderToken.mm; sourceTree = "<group>"; };
 		BE33A96619D430770046BF4A /* Protocols.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Protocols.h; sourceTree = "<group>"; };
-		BE38E825196C7B6900C95037 /* cParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cParser.h; sourceTree = "<group>"; };
-		BE38E826196C7B6900C95037 /* Parse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Parse.h; sourceTree = "<group>"; };
-		BE38E827196C7B6900C95037 /* Parse.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Parse.mm; sourceTree = "<group>"; };
+		BE340D6519D7DE2A00BEC232 /* Parse.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = Parse.mm; path = ../BasicClassesCPP/Parser/Parse.mm; sourceTree = "<group>"; };
+		BE340D6719D7DF6C00BEC232 /* Parse */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Parse; sourceTree = "<group>"; };
 		BE38E835196C7FD100C95037 /* Files */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Files; sourceTree = "<group>"; };
 		BE3A169018231A3700B5752A /* wierrors.wi */ = {isa = PBXFileReference; lastKnownFileType = text; name = wierrors.wi; path = Sample/wierrors.wi; sourceTree = "<group>"; };
 		BE3CEBE0164BA18500881540 /* wi.wi */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = wi.wi; sourceTree = SOURCE_ROOT; };
@@ -109,7 +108,6 @@
 		BE4152E61811B03200E421D7 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		BE4152E91811B03200E421D7 /* WInterfaceSample-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WInterfaceSample-Prefix.pch"; sourceTree = "<group>"; };
 		BE4152EA1811B03200E421D7 /* WInterfaceSample.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = WInterfaceSample.1; sourceTree = "<group>"; };
-		BE54764D19B6635700E3F926 /* www */ = {isa = PBXFileReference; lastKnownFileType = folder; name = www; path = ../Test/www; sourceTree = "<group>"; };
 		BE61F57A1627C7CB00614210 /* Test.wi */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Test.wi; path = Test/Test.wi; sourceTree = SOURCE_ROOT; };
 		BE61F57B1627D02300614210 /* Test.wi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Test.wi.m; path = Test/Test.wi.m; sourceTree = SOURCE_ROOT; };
 		BE622A12162CA95A00618E26 /* LinkBase.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = LinkBase.wi; path = Test/LinkBase.wi; sourceTree = SOURCE_ROOT; };
@@ -274,17 +272,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		BE38E824196C7B6900C95037 /* Parser */ = {
-			isa = PBXGroup;
-			children = (
-				BE38E825196C7B6900C95037 /* cParser.h */,
-				BE38E826196C7B6900C95037 /* Parse.h */,
-				BE38E827196C7B6900C95037 /* Parse.mm */,
-			);
-			name = Parser;
-			path = ../BasicClassesCPP/Parser;
-			sourceTree = "<group>";
-		};
 		BE38E82B196C7C3900C95037 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -315,41 +302,41 @@
 		BE5266E3196DC31D00FD10AB /* Sourcefiles */ = {
 			isa = PBXGroup;
 			children = (
-				BE33A96619D430770046BF4A /* Protocols.h */,
-				BE33A96319D4303E0046BF4A /* WReaderToken.h */,
-				BE33A96419D4303E0046BF4A /* WReaderToken.mm */,
-				BE33A94B19D42E190046BF4A /* InFiles.h */,
-				BE33A94C19D42E190046BF4A /* InFiles.mm */,
-				BE33A94D19D42E190046BF4A /* WClass.h */,
-				BE33A94E19D42E190046BF4A /* WClass.mm */,
-				BE33A94F19D42E190046BF4A /* WClasses.h */,
-				BE33A95019D42E190046BF4A /* WClasses.mm */,
-				BE33A95119D42E190046BF4A /* WFn.h */,
-				BE33A95219D42E190046BF4A /* WFn.mm */,
-				BE33A95319D42E190046BF4A /* WPotentialType.h */,
-				BE33A95419D42E190046BF4A /* WPotentialType.mm */,
-				BE33A95519D42E190046BF4A /* WProp.h */,
-				BE33A95619D42E190046BF4A /* WProp.mm */,
-				BE33A95719D42E190046BF4A /* WType.h */,
-				BE33A95819D42E190046BF4A /* WType.mm */,
-				BE33A95919D42E190046BF4A /* WVar.h */,
-				BE33A95A19D42E190046BF4A /* WVar.mm */,
-				BE1885B319AAF52D00E2CAD4 /* NSString+WI.h */,
-				BE1885B419AAF52D00E2CAD4 /* NSString+WI.mm */,
-				BE99B975161BAE720041B8EA /* main.mm */,
-				BE99B983161BAFD30041B8EA /* WReader.h */,
-				BE99B984161BAFD30041B8EA /* WReader.mm */,
-				BEAA02971621F7280026192D /* WReaderTokenizer.h */,
-				BEAA02981621F7280026192D /* WReaderTokenizer.mm */,
 				BE681E66196A28A400AA3BE5 /* CodeBlock.h */,
-				BE681E67196A28A400AA3BE5 /* CodeBlock.m */,
-				BE681E6B196A28DC00AA3BE5 /* SourceFile.h */,
-				BE681E6C196A28DC00AA3BE5 /* SourceFile.m */,
 				BE681E71196A31A100AA3BE5 /* Collections.h */,
-				BE681E72196A31A100AA3BE5 /* Collections.mm */,
+				BE33A94B19D42E190046BF4A /* InFiles.h */,
+				BE1885B319AAF52D00E2CAD4 /* NSString+WI.h */,
+				BE33A96619D430770046BF4A /* Protocols.h */,
+				BE681E6B196A28DC00AA3BE5 /* SourceFile.h */,
 				BE681E6E196A30F100AA3BE5 /* Util.h */,
-				BE681E6F196A30F100AA3BE5 /* Util.mm */,
+				BE33A94D19D42E190046BF4A /* WClass.h */,
+				BE33A94F19D42E190046BF4A /* WClasses.h */,
+				BE33A95119D42E190046BF4A /* WFn.h */,
 				BE6FA91419AAB0FB00862360 /* WInterface.h */,
+				BE33A95319D42E190046BF4A /* WPotentialType.h */,
+				BE33A95519D42E190046BF4A /* WProp.h */,
+				BE99B983161BAFD30041B8EA /* WReader.h */,
+				BE33A96319D4303E0046BF4A /* WReaderToken.h */,
+				BEAA02971621F7280026192D /* WReaderTokenizer.h */,
+				BE33A95719D42E190046BF4A /* WType.h */,
+				BE33A95919D42E190046BF4A /* WVar.h */,
+				BE681E67196A28A400AA3BE5 /* CodeBlock.m */,
+				BE681E6C196A28DC00AA3BE5 /* SourceFile.m */,
+				BE681E72196A31A100AA3BE5 /* Collections.mm */,
+				BE33A94C19D42E190046BF4A /* InFiles.mm */,
+				BE99B975161BAE720041B8EA /* main.mm */,
+				BE1885B419AAF52D00E2CAD4 /* NSString+WI.mm */,
+				BE681E6F196A30F100AA3BE5 /* Util.mm */,
+				BE33A94E19D42E190046BF4A /* WClass.mm */,
+				BE33A95019D42E190046BF4A /* WClasses.mm */,
+				BE33A95219D42E190046BF4A /* WFn.mm */,
+				BE33A95419D42E190046BF4A /* WPotentialType.mm */,
+				BE33A95619D42E190046BF4A /* WProp.mm */,
+				BE99B984161BAFD30041B8EA /* WReader.mm */,
+				BE33A96419D4303E0046BF4A /* WReaderToken.mm */,
+				BEAA02981621F7280026192D /* WReaderTokenizer.mm */,
+				BE33A95819D42E190046BF4A /* WType.mm */,
+				BE33A95A19D42E190046BF4A /* WVar.mm */,
 			);
 			name = Sourcefiles;
 			path = WInterface;
@@ -397,11 +384,11 @@
 		BE99B963161BAE710041B8EA = {
 			isa = PBXGroup;
 			children = (
-				BE54764D19B6635700E3F926 /* www */,
+				BE340D6719D7DF6C00BEC232 /* Parse */,
 				BE6FA91919AAD2E200862360 /* wiLibrary */,
 				BE6FA91819AAD18A00862360 /* BasicClassesCPP */,
 				BE93AD83165E9D9C001BA629 /* WI_iosTests.xcodeproj */,
-				BE38E824196C7B6900C95037 /* Parser */,
+				BE340D6519D7DE2A00BEC232 /* Parse.mm */,
 				BE5266E3196DC31D00FD10AB /* Sourcefiles */,
 				BE38E835196C7FD100C95037 /* Files */,
 				BE730AC918108F3B005582C5 /* Sample */,
@@ -779,7 +766,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				BE99B976161BAE720041B8EA /* main.mm in Sources */,
-				BE38E828196C7B6900C95037 /* Parse.mm in Sources */,
 				BE1885B519AAF52D00E2CAD4 /* NSString+WI.mm in Sources */,
 				BE33A95F19D42E190046BF4A /* WPotentialType.mm in Sources */,
 				BE99B985161BAFD30041B8EA /* WReader.mm in Sources */,
@@ -790,6 +776,7 @@
 				BEAA02991621F7280026192D /* WReaderTokenizer.mm in Sources */,
 				BE33A96019D42E190046BF4A /* WProp.mm in Sources */,
 				BE33A95E19D42E190046BF4A /* WFn.mm in Sources */,
+				BE340D6619D7DE2A00BEC232 /* Parse.mm in Sources */,
 				BE33A96119D42E190046BF4A /* WType.mm in Sources */,
 				BE681E73196A31A100AA3BE5 /* Collections.mm in Sources */,
 				BE33A95D19D42E190046BF4A /* WClasses.mm in Sources */,

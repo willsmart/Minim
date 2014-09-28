@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.node {
+  font: 12px sans-serif;
+}
+
+.node text {
+	-webkit-transform: rotate(40deg);
+    -moz-transform: rotate(40deg);
+  
+}
+
+.link {
+  fill: none;
+  stroke: #333;
+  stroke-width: 1px;
+}
+
+body {
+	background:#fff;
+    overflow:hidden;
+}
+
+svg {
+	background:#fff;
+}
+
+</style>
+<body onclick="location.reload()">
+<script src="http://localhost/d3.v3.min.js"></script>
+<script src="http://localhost/jquery-2.1.1.js"></script>
+<script>
+
+var width = $(window).width()-14,
+    height = $(window).height()-30;
+
+var layout = d3.layout.tree()
+    .size([width-80, height - 80]);
+
+var diagonal = d3.svg.diagonal()
+    .projection(function(d) { return [d.x, height-80-d.y]; });
+var elbow = function (d, i){
+      return "M" + d.source.x + "," + height-80-d.source.y
+             + "V" + height-80-(d.target.y+d.source.y)*0.5
+             + "H" + d.target.x
+             + "V" + height-80-d.target.y
+             ;
+    };
+var connector = elbow;
+
+var prog = d3.select("body").append("text");
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+  .append("g")
+    .attr("transform", "translate(40,40)");
+
+d3.json("ex.wi.json", function(error, root) {
+	prog.text(root.prog.replace(/\n/g, "⏎").replace(/ /g,"␣"))
+      .style("text-anchor", "end")
+      .style("display", "block")
+      .style("overflow-x", "scroll")
+      .style("width", "100%")
+      .style("height", "60px")
+      .style("text-align", "center")
+      .style("font-family", "Lucida Console")
+      .style("font-size", "12px")
+      .style("color", "black")
+      .style("stroke", "black");
+	root=root.graph;
+  var nodes = layout.nodes(root),
+      links = layout.links(nodes);
+
+  var link = svg.selectAll(".link")
+      .data(links)
+      .enter().append("path")
+      .attr("class", "link")
+//	  .attr("d", connector)
+            .attr("d", diagonal)
+      ;
+
+  var node = svg.selectAll(".node")
+      .data(nodes)
+    .enter().append("g")
+      .attr("class", "node")
+      .attr("transform", function(d) { return "translate(" + d.x + "," + (height-80-d.y) + ")"; })
+
+  node.append("circle")
+      .attr("r", 2.5);
+
+  node.append("text")
+      .attr("dx", function(d) { return d.children ? -8 : 8; })
+      .attr("dy", 3)
+      .style("text-anchor", function(d) { return d.children ? "end" : "start"; })
+      .text(function(d) { return d.name; })
+      .attr("font-size", "16px")
+      .attr("fill", function(d) {return(d.colour);})
+      //.attr("stroke", function(d) {return("black");})
+      ;
+});
+
+d3.select(self.frameElement).style("height", height + "px");
+
+</script>

@@ -13,16 +13,15 @@
 NSString *g_swiftStart=@"#ifndef __SWIFT__\n";
 NSString *g_swiftEnd=@"#endif// __SWIFT__\n";
 
-
 void testParse() {
     ((id<ParseClass>)Parse.class).rulesFilename=@"rules.txt";
 
     efil=FOpen("run.txt", "wb");
     NSError *err=nil;
-    NSString *prog=[NSString stringWithContentsOfFile:@"graph.txt" encoding:NSUTF8StringEncoding error:&err];
+    NSString *prog=[NSString stringWithContentsOfFile:@"ex.wi" encoding:NSUTF8StringEncoding error:&err];
     if (!prog) prog=@"File not found";
     NSString *json=[Parse jsonFromTokens:[Parse parse:prog] program:prog];
-    [json writeToFile:@"graph.txt.json" atomically:YES encoding:NSUTF8StringEncoding error:&err];
+    [json writeToFile:@"ex.wi.json" atomically:YES encoding:NSUTF8StringEncoding error:&err];
 
     FClose(efil);
     efil=stderr;

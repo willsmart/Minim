@@ -1,0 +1,52 @@
+ strings
++string:_string[0..1000]|^",END|>>_string[1..1001]
++string:_string[0..1000]|?"|>>string[0..1000]
+!string:x"|O^",END|>>_string[0]
+string:x"|O"|>>string[0]
+
+
+ lines
+lineStart:?\n|>>lineStart
+lineStart:<? |>>lineStart[1]
+!lineStart:lineStart[0..1000]| |>>lineStart[1..1001]
+!lineStart:lineStart[0..1000]|\t|>>lineStart[4..1004]
+!lineStart:x |OlineStart[0..1000]|>>lineStart[0..1000]
+!lineStart:xlineStart|olineStart|>>??
+
+
+ comments
+!lineComment:o/|o/|^lineStart|>>??
+!lineComment:x/|/|>>??
+!commentEnd:rtl:*|/|>>commentEnd
+!comment:rtl:x/|*|commentEnd|>>??
+!comment:rtl:o/|o*|^commentEnd|>>??
+
+
+ words and numbers
++word:rtl:a-z,A-Z,_|word|>>word,wordgroup
++int:0-9|int|>>int,number
++word:rtl:a-z,A-Z,_|>>word,wordgroup
++int:rtl:O0-9|>>int,number
++number:int|.|int|>>number
++wordgroup:wordgroup|number,wordgroup|>>wordgroup
+
+
+ block structure
++block:_block[0..1000]|^},END|>>_block[1..1001]
++block:_block[0..1000]|?}|>>block[0..1000]
+!block:x{|O^},END|>>_block[0]
+block:x{|O}|>>block[0]
+
+ line
+(_body)_body:^lineStart,body,line,parent,siblings,END|^lineStart,body,line,parent,siblings,END|>>_body[0]
+(_body)_body:^lineStart,body,line,parent,siblings,END|>>body[0]
+(_body)body:?xlineStart[0..1000]|Obody|>>line[0..1000]
+!mtline:x^line,parent,siblings,END|>>??
+
+ line structure
+(sibs)parent:rtl:line|>0line|<=0?oline|>>line,parent
+(sibs)parent:rtl:line|>0line|?oEND|>>line,parent
+(sibs)sibs:rtl:line|<=0line|>>line,siblings
+
+!end:xEND|>>??
+
