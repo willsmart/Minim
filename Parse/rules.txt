@@ -33,8 +33,8 @@ lineStart:<? |>>lineStart[1]
 
  block structure
 +block:_block[0..1000]|^},END|>>_block[1..1001]
-+block:_block[0..1000]|?}|>>block[0..1000]
-!block:x{|O^},END|>>_block[0]
+block:_block[0..1000]|?}|>>block[0..1000]
+!block:rtl:x{|O^},END|>>_block[0]
 block:x{|O}|>>block[0]
 
  line
