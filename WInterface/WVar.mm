@@ -1,11 +1,23 @@
 @implementation WVar
-@synthesize clas,type,name,qname,defaultValue,attributes,stars,defLevel,setterArg,localizedType,localizedName;
+@synthesize clas,type,name,qname,defaultValue,attributes,stars,defLevel,setterArg,localizedType,localizedName,ocppCompatible=_ocppCompatible,swiftCompatible=_swiftCompatible;
 - (void)dealloc {
     self.type=nil;
     self.name=self.defaultValue=nil;
     self.attributes=nil;
     self.clas=nil;
     }
+
+-(NSString*)color {return(
+    self.swiftCompatible?
+        (self.ocppCompatible?
+            @"blue":
+            @"green"
+        ):
+        (self.ocppCompatible?
+            @"orange":
+            @"red"
+        )
+);};
 
 
 
@@ -17,6 +29,7 @@
 
 - (id)initWithType:(WType*)atype stars:(Int)astars name:(NSString*)aname qname:(NSString*)aqname defVal:(NSString*)adefaultValue defValLevel:(Int)adefLevel attributes:(NSSet*)aattributes clas:(WClass*)aclas {
     if (!(self=[super init])) return(nil);
+    ocppCompatible=swiftCompatible=YES;
     dprnt("Var : %s:%s\n",aclas.name.UTF8String,aname.UTF8String);
     self.type=[WType newWithClass:atype.clas protocols:atype.protocols.allObjects addObject:NO];
     self.stars=astars>0?astars:(atype.clas.isType?0:1);
@@ -57,6 +70,15 @@
 }
 
 
+
+
+-(void)refreshCompatability {
+    _ocppCompatible=ocppCompatible&&type.ocppCompatible;
+    _swiftCompatible=swiftCompatible&&type.swiftCompatible;
+
+    if (_swiftCompatible&&[attributes containsObject:@"cpp"]) _swiftCompatible=NO;
+    if (_ocppCompatible&&[attributes containsObject:@"swift"]) _ocppCompatible=NO;
+}
 
 
 

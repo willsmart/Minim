@@ -45,7 +45,7 @@
 
 @property (retain,nonatomic) NSMutableDictionary *propFiles;
 
-- (NSString*)appendObjCToString:(NSMutableString*)s iface:(bool)iface impl:(bool)impl classFilename:(NSString*)cfn headerFilename:(NSString*)hfn;
+- (NSString*)appendObjCToString:(NSMutableString*)s iface:(bool)iface impl:(bool)impl classFilename:(NSString*)cfn headerFilename:(NSString*)hfn swift:(bool)swift;
 + (WClasses*)getDefault;
 + (void)clearStaticData;
 - (void)addToFns;

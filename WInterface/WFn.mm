@@ -2,11 +2,24 @@
 
 
 @implementation WFn
-@synthesize sig,body,clas,sigWithArgs;
+@synthesize sig,body,clas,sigWithArgs,ocppCompatible=_ocppCompatible,swiftCompatible=_swiftCompatible;
 - (void)dealloc {
     self.sig=self.sigWithArgs=self.body=nil;
     self.clas=nil;
     }
+
+-(NSString*)color {return(
+    self.swiftCompatible?
+        (self.ocppCompatible?
+            @"blue":
+            @"green"
+        ):
+        (self.ocppCompatible?
+            @"orange":
+            @"red"
+        )
+);};
+
 
 +(NSString*)trimmedReplaceString:(NSString*)s {
     NSRange r=[s rangeOfString:@"__"];
@@ -33,6 +46,7 @@
 
 - (id)initWithSig:(NSString*)asig body:(NSString*)abody clas:(WClass*)aclas {
     if (!(self=[super init])) return(nil);
+    ocppCompatible=swiftCompatible=YES;
     dprnt("Fn : %s:%s\n",aclas.name.UTF8String,asig.UTF8String);
     asig=[asig stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     self.sigWithArgs=asig;
@@ -40,6 +54,55 @@
     self.body=abody;
     ((self.clas=aclas).fns)[self.sig] = self;
     return(self);
+}
+
+
+-(void)refreshCompatability {
+    _ocppCompatible=ocppCompatible;
+    _swiftCompatible=swiftCompatible;
+
+    static NSRegularExpression *re=nil,*tre=nil;
+    NSError *err=nil;
+    if (!re) re=[NSRegularExpression regularExpressionWithPattern:@"\\(\\s*(\\s*([\\w<>,\\s]+)([&*\\s]*))?\\)" options:0 error:&err];
+
+    if (_swiftCompatible) {
+        NSArray *matches=[re matchesInString:sig options:NSRegularExpressionDotMatchesLineSeparators range:NSMakeRange(0,sig.length)];
+        for (NSTextCheckingResult *match in matches) if ([match rangeAtIndex:1].length) {
+            if (![match rangeAtIndex:1].length) {
+                prnt("TODO Couldn't parse selector: %s\n",sig.UTF8String);
+            }
+            else {
+                NSString *ref=[sig substringWithRange:[match rangeAtIndex:3]];
+                if ([ref rangeOfString:@"&"].location!=NSNotFound) {
+                    _swiftCompatible=NO;break;
+                }
+                else {
+                    NSString *typeName=[sig substringWithRange:[match rangeAtIndex:2]];
+                    if (!tre) tre=[NSRegularExpression regularExpressionWithPattern:@"(\\w+)\\s+(?:<([\\w,\\s]+)>)?" options:0 error:&err];
+                    NSTextCheckingResult *m=[tre firstMatchInString:typeName options:0 range:NSMakeRange(0, typeName.length)];
+                    NSString *className=[typeName substringWithRange:[m rangeAtIndex:1]];
+                    WClass *c=WClasses.getDefault.classes[className];
+                    if (c&&!c.swiftCompatible) {_swiftCompatible=NO;break;}
+
+                    NSSet *protocolNames=([m rangeAtIndex:2].location==NSNotFound?nil:
+                        [NSSet setWithArray:
+                            [[typeName substringWithRange:[m rangeAtIndex:2]]
+                                componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@", \t\n\r"]
+                            ]
+                        ]
+                    );
+
+                    if (c.isType&&protocolNames) {_swiftCompatible=NO;break;}
+
+                    for (NSString *protocolName in protocolNames) {
+                        WClass *p=WClasses.getDefault.protocols[protocolName];
+                        if (p&&!p.swiftCompatible) {_swiftCompatible=NO;break;}
+                    }
+                    if (!_swiftCompatible) break;
+                }
+            }
+        }
+    }
 }
 
 - (bool) imaginary {

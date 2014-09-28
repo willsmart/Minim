@@ -5,15 +5,21 @@
     NSArray *fnNames,*varNames;
     bool addedToFns,isProtocol;
     Int _depth;
+    bool ocppCompatible,swiftCompatible,_ocppCompatible,_swiftCompatible,_refreshedCompat;
     NSRegularExpression *getterSetterRE;
 }
 @property (readonly) NSString *filename;
 @property (readonly) Int depth;
 - (Int)depthWithStack:(NSMutableSet*)stack;
 
+-(NSString*)color;
+
 @property (readonly) bool empty;
 @property bool hasDef;
-@property (readonly) bool exists;
+@property (readonly) bool exists,retainable;
+
+-(void)refreshCompatability;
+@property (nonatomic) bool ocppCompatible,swiftCompatible;
 
 @property bool isProtocol,isSys,isType,isBlock,isWIOnly;
 @property (retain,nonatomic) NSString *name;

@@ -975,6 +975,10 @@ static WClasses *_default=nil;
 }
 
 
+-(void)refreshCompatability {
+    for (id<NSCopying> key in classes) [(WClass*)classes[key] refreshCompatability];
+    for (id<NSCopying> key in protocols) [(WClass*)protocols[key] refreshCompatability];
+}
 
 - (NSArray*)readVar:(WReader*)r {
     return([self readVar:r asStrongThisTime:NO]);
@@ -1903,9 +1907,10 @@ static WClasses *_default=nil;
     [WClass getProtocolWithName:@"ClassObject"].hasDef=YES;
     for (WClass *clas in self.classes.allValues) [clas addClassToFns];
     for (WClass *clas in self.protocols.allValues) [clas addProtocolToFns];
+    [self refreshCompatability];
 }
 
-- (NSString*)appendObjCToString:(NSMutableString*)_s iface:(bool)iface impl:(bool)impl classFilename:(NSString*)cfn headerFilename:(NSString*)hfn {
+- (NSString*)appendObjCToString:(NSMutableString*)_s iface:(bool)iface impl:(bool)impl classFilename:(NSString*)cfn headerFilename:(NSString*)hfn swift:(bool)swift {
     finishedParse=YES;
     [self addToFns];
 
@@ -1922,7 +1927,6 @@ static WClasses *_default=nil;
     NSString *ins_each_class=(impl?self.ins_each_impl:@"");
 
     NSMutableString *s=[NSMutableString stringWithString:ins_first];
-
 
 
     NSArray *cs=[self.classes.allValues sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
@@ -1959,7 +1963,7 @@ static WClasses *_default=nil;
                     [s appendString:SPACER];
                 }
 
-                [c appendObjCToString_iface:s];
+                COMPAT(c,[c appendObjCToString_iface:s]);
                 [s appendString:SPACER];
             }
             if (depthWas!=-1) {
@@ -2003,9 +2007,8 @@ static WClasses *_default=nil;
 
     Int classCount=0,typeCount=0;
 
-
-    for (WClass *c in ps) if (iface&&c.exists&&!c.isSys) [s appendFormat:@"@protocol %@;\n",c.name];
-    for (WClass *c in cs) if (iface&&c.exists&&!(c.isType||c.isSys)) [s appendFormat:@"@class %@;\n",c.name];
+    for (WClass *c in ps) if (iface&&c.exists&&!c.isSys) COMPAT(c,[s appendFormat:@"@protocol %@;\n",c.name]);
+    for (WClass *c in cs) if (iface&&c.exists&&!(c.isType||c.isSys)) COMPAT(c,[s appendFormat:@"@class %@;\n",c.name]);
     
 
     for (Int depth=-2;depth<=2;depth++) {
@@ -2026,10 +2029,10 @@ static WClasses *_default=nil;
                             if (match) {
                                 NSRange r=[t rangeOfString:@"__type__"];
                                 if (r.location!=NSNotFound) {
-                                    [s appendFormat:@"typedef %@ %@;\n",[[t substringWithRange:[match rangeAtIndex:1]] stringByReplacingCharactersInRange:r withString:c.name],[t substringWithRange:[match rangeAtIndex:2]]];
+                                    COMPAT(c,[s appendFormat:@"typedef %@ %@;\n",[[t substringWithRange:[match rangeAtIndex:1]] stringByReplacingCharactersInRange:r withString:c.name],[t substringWithRange:[match rangeAtIndex:2]]]);
                                 }
                                 else {
-                                    [s appendFormat:@"typedef %@ %@%@;\n",[t substringWithRange:[match rangeAtIndex:1]],c.name,[t substringWithRange:[match rangeAtIndex:2]]];
+                                    COMPAT(c,[s appendFormat:@"typedef %@ %@%@;\n",[t substringWithRange:[match rangeAtIndex:1]],c.name,[t substringWithRange:[match rangeAtIndex:2]]]);
                                 }
                             }
                             break;
@@ -2057,7 +2060,7 @@ static WClasses *_default=nil;
     if (iface) {
         if (typeCount) {
             [s appendFormat:@"\n\n#pragma mark -\n#pragma mark Structs:\n\n"];
-            for (WClass *c in cs) if (c.isType&&c.vars.count) [c appendObjCToString_struct:s];
+            for (WClass *c in cs) if (c.isType&&c.vars.count) COMPAT(c,[c appendObjCToString_struct:s]);
             [s appendString:SPACER];
         }
     }
@@ -2072,7 +2075,7 @@ static WClasses *_default=nil;
         if (ps.count) {
             [s appendFormat:@"\n\n#pragma mark -\n#pragma mark Protocols:\n\n"];
             for (WClass *c in ps) if (c.exists) {
-                [c appendObjCToString_protocol:s];
+                COMPAT(c,[c appendObjCToString_protocol:s]);
                 [s appendString:SPACER];
             }
             [s appendString:SPACER];

@@ -10,6 +10,9 @@
 #define CPPFILE
 #include "Headers.h"
 
+NSString *g_swiftStart=@"#ifndef __SWIFT__\n";
+NSString *g_swiftEnd=@"#endif// __SWIFT__\n";
+
 
 void testParse() {
     ((id<ParseClass>)Parse.class).rulesFilename=@"rules.txt";
@@ -79,7 +82,7 @@ int main(int argc, const char * argv[])
                     printf("Wrote to file %s\n",[htmlfn cStringUsingEncoding:NSASCIIStringEncoding]);
                     
                     NSMutableString *s=[NSMutableString string];
-                    [cs appendObjCToString:s iface:NO impl:NO classFilename:nil headerFilename:nil];
+                    [cs appendObjCToString:s iface:NO impl:NO classFilename:nil headerFilename:nil swift:NO];
                     err=nil;
                     [fm changeCurrentDirectoryPath:baseDir];
                     NSString *dfn=[NSString stringWithFormat:@"%@.decl.h",r.fileName];
@@ -89,7 +92,7 @@ int main(int argc, const char * argv[])
 
                     NSString *hfn=[NSString stringWithFormat:@"%@.pch",r.fileName];
                     s=[NSMutableString string];
-                    [cs appendObjCToString:s iface:YES impl:NO classFilename:nil headerFilename:dfn];
+                    [cs appendObjCToString:s iface:YES impl:NO classFilename:nil headerFilename:dfn swift:NO];
                     err=nil;
                     [fm changeCurrentDirectoryPath:baseDir];
                     [s writeToFile:[wiifieddir stringByAppendingString:hfn] atomically:YES encoding:NSUTF8StringEncoding error:&err];
@@ -98,7 +101,7 @@ int main(int argc, const char * argv[])
                     NSString *errs=nil;
                     for (NSString *fn in fns) {
                         s=[NSMutableString string];
-                        NSString *errs2=[cs appendObjCToString:s iface:NO impl:YES classFilename:fn headerFilename:nil];
+                        NSString *errs2=[cs appendObjCToString:s iface:NO impl:YES classFilename:fn headerFilename:nil swift:NO];
                         if (!errs) errs=errs2;
                         else errs=[errs stringByAppendingString:errs2];
                         
@@ -117,8 +120,8 @@ int main(int argc, const char * argv[])
                             printf("Wrote to file %s -- %s\n",[ofn cStringUsingEncoding:NSASCIIStringEncoding],prefix.UTF8String);
 
                             NSString *sys=[uncrustifyPath stringByAppendingFormat:@" '%@'",[wiifieddir stringByAppendingString:ofn]];
-                            printf("%s\n",[sys cStringUsingEncoding:NSASCIIStringEncoding]);
                             system([sys cStringUsingEncoding:NSASCIIStringEncoding]);
+                            printf(" -- Uncrustified\n");
                         }
                     }
                     

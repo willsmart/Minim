@@ -1,4 +1,6 @@
-@interface WFn : InFiles
+@interface WFn : InFiles {
+    bool ocppCompatible,swiftCompatible,_ocppCompatible,_swiftCompatible;
+}
 @property (retain,nonatomic) NSString *sig,*sigWithArgs,*body;
 @property (weak,nonatomic) WClass *clas;
 @property (readonly) bool imaginary;
@@ -15,5 +17,10 @@
 + (NSString*)mergedBody:(NSString*)a with:(NSString*)b;
 +(NSString*)balance:(NSString*)s;
 -(NSString*)sortedBody;
+
+-(NSString*)color;
+
+-(void)refreshCompatability;
+@property bool ocppCompatible,swiftCompatible;
 
 @end

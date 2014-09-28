@@ -22,6 +22,11 @@
 
 #include "Headers.h"
 
+extern NSString *g_swiftStart;
+extern NSString *g_swiftEnd;
+#define COMPATSTART(__c) do{if (!(__c).swiftCompatible) [s appendString:g_swiftStart];}while(NO)
+#define COMPATEND(__c) do{if (!(__c).swiftCompatible) [s appendString:g_swiftEnd];}while(NO)
+#define COMPAT(__c,...) do{COMPATSTART(__c);__VA_ARGS__;COMPATEND(__c);}while(NO)
 
 #define debug 0
 typedef NSInteger Int;

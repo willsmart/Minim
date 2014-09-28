@@ -39,23 +39,13 @@ id<NSCopying> ObjectKey(id object) {
 NSError *_IgnoreNSError,*__strong*IgnoreNSError=&_IgnoreNSError;
 
 
-static long s_breakAt=0,s_breakpoint=0;
-//long breakpoint() {
-//    printf(".%ld.",++s_breakpoint);
-//    if (s_breakAt==s_breakpoint) {
-//        printf("\n\n!!BREAK!!\n");
-//    }
-//    return(s_breakpoint);
-//}
-void breaknow() {s_breakAt=s_breakpoint+1;breakPoint();}
-void breakat(long at) {s_breakAt=at;}
 void error(NSString *format,...) {
     va_list args;
     va_start(args, format);
     NSString *error=[[NSString alloc] initWithFormat:format arguments:args];
     va_end(args);
     printf("\n\nERROR: %s\n",error.UTF8String);
-    breaknow();
+    BPNOW;
 }
 
 

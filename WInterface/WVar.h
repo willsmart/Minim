@@ -2,7 +2,8 @@
     bool addedToFns;
     NSRegularExpression *setterRE,*getterRE;
     
-    
+    bool ocppCompatible,swiftCompatible,_ocppCompatible,_swiftCompatible;
+
 
     bool attributesCached,imaginary,retains,copies,isType,isBlock,modelretains,readonly,atomic,synthesized,objc_readonly,needsGetter,needsSetter,hasIVar,superHasIVar,privateIVar,hasDefaultValue,justivar;
     WFn *hasGetter,*hasSetter;
@@ -12,6 +13,7 @@
 }
 
 -(bool)hasSettersAndGettersInBody:(NSString*)body hasSetter:(bool*)phasSetter hasGetter:(bool*)phasGetter;
+-(NSString*)color;
 
 @property (retain,nonatomic) NSString *name,*qname,*defaultValue,*setterArg;
 @property (retain,nonatomic) NSSet *attributes;
@@ -24,6 +26,9 @@
 
 @property (readonly) WType *localizedType;
 @property (readonly) NSString *localizedName;
+
+-(void)refreshCompatability;
+@property bool ocppCompatible,swiftCompatible;
 
 
 - (void)add:(WReader*)r;

@@ -1,10 +1,27 @@
 @implementation WType
-@synthesize clas,protocols,_potentialType;
+@synthesize clas,protocols,_potentialType,ocppCompatible=ocppCompatible,swiftCompatible=swiftCompatible;
 
-- (void)dealloc {
+-(void)dealloc {
     self.clas=nil;
     self.protocols=nil;
-    }
+}
+
+-(bool)ocppCompatible {
+    [self refreshCompatability];
+    return(ocppCompatible);
+}
+
+-(bool)swiftCompatible {
+    [self refreshCompatability];
+    return(swiftCompatible);
+}
+
+-(void)refreshCompatability {
+    ocppCompatible=((!clas)||clas.ocppCompatible);
+    swiftCompatible=((!clas)||clas.swiftCompatible);
+    if (ocppCompatible) for (WClass *c in protocols) if (!c.ocppCompatible) {ocppCompatible=NO;break;}
+    if (swiftCompatible) for (WClass *c in protocols) if (!c.swiftCompatible) {swiftCompatible=NO;break;}
+}
 
 -(WPotentialType*)potentialType {
     if (!self._potentialType) self._potentialType=[WPotentialType newWithType:self];
@@ -17,16 +34,17 @@
     return(nil);
 }
 
-
 +(WType*)newWithPotentialType:(WPotentialType*)pt {
     return([[self alloc] initWithPotentialType:pt]);
 }
+
 +(WType*)newWithClass:(WClass *)aclas protocols:(NSArray *)aprotocols addObject:(bool)addObject {
     return([[self alloc] initWithClass:aclas protocols:aprotocols addObject:addObject]);
 }
 
 -(WType*)initWithPotentialType:(WPotentialType*)pt {
     if (!(self=[super init])) return(nil);
+    ocppCompatible=swiftCompatible=YES;
     dprnt("Type : %s <",pt.clas.UTF8String);
     [pt.protocols enumerateObjectsUsingBlock:^(WClass *obj, BOOL *stop) {
          dprnt(" %s",([obj isKindOfClass:WClass.class]?obj.name:obj.description).UTF8String);
@@ -37,8 +55,10 @@
     if (pt.protocols) for (NSString *s in pt.protocols) [self.protocols addObject:[WClass getProtocolWithName:s]];
     return(self);
 }
+
 -(WType*)initWithClass:(WClass*)aclas protocols:(NSArray*)aprotocols addObject:(bool)addObject {
     if (!(self=[super init])) return(nil);
+    ocppCompatible=swiftCompatible=YES;
     dprnt("Type : %s <",aclas.name.UTF8String);
     [aprotocols enumerateObjectsUsingBlock:^(WClass *obj, NSUInteger idx, BOOL *stop) {
          dprnt(" %s",([obj isKindOfClass:WClass.class]?obj.name:obj.description).UTF8String);
@@ -49,6 +69,7 @@
     [self addClass:aclas protocols:aprotocols];
     return(self);
 }
+
 -(void)addClass:(WClass*)aclas protocols:(NSArray*)aprotocols {
     if (aclas) {
         if ((!self.clas)||[self.clas.name isEqualToString:@"NSObject"]) {

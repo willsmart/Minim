@@ -1,7 +1,7 @@
 
 @implementation WClass
 @synthesize name,superType,varNames,vars,fns,varPatterns,fnNames,isProtocol,isType,isBlock,isSys,hasDef,isWIOnly;
-@synthesize ownedNum,ownsNum;
+@synthesize ownedNum,ownsNum,ocppCompatible=_ocppCompatible,swiftCompatible=_swiftCompatible;
 
 - (void)dealloc {
     self.name=nil;
@@ -9,9 +9,11 @@
     self.varPatterns=nil;
     self.fns=self.vars=nil;
     self.varNames=self.fnNames=nil;
-    }
+}
+
 - (id)initClassWithName:(NSString*)aname superClass:(WClass*)superClass protocolList:(NSArray*)protocolList varPatterns:(NSSet *)avarPatterns {
     if (!(aname&&((self=[super init])))) return(nil);
+    ocppCompatible=swiftCompatible=YES;
     self.name=aname;
     dprnt("Class : %s\n",aname.UTF8String);
     hasDef=NO;
@@ -31,6 +33,7 @@
 
 - (id)initProtocolWithName:(NSString*)aname superList:(NSArray *)asuperList varPatterns:(NSSet*)avarPatterns {
     if (!(self=[super init])) return(nil);
+    ocppCompatible=swiftCompatible=YES;
     self.name=aname;
     dprnt("Protocol : %s\n",aname.UTF8String);
     hasDef=NO;
@@ -53,6 +56,52 @@
 }
 + (WClass*)getProtocolWithName:(NSString *)aname {
     return([WClass getProtocolWithName:aname superList:nil varPatterns:nil]);
+}
+
+-(bool)retainable {
+    return([self.varPatterns containsObject:@"retains"]||[self.varPatterns containsObject:@"copies"]||self.isBlock||!self.isType);
+}
+
+-(bool)ocppCompatible {
+    if (!_refreshedCompat) [self refreshCompatability];
+    return(_ocppCompatible);
+}
+
+-(bool)swiftCompatible {
+    if (!_refreshedCompat) [self refreshCompatability];
+    return(_swiftCompatible);
+}
+
+-(void)refreshCompatability {
+    if (_refreshedCompat) return;
+    _refreshedCompat=YES;
+    _ocppCompatible=ocppCompatible&&superType.ocppCompatible;
+    _swiftCompatible=swiftCompatible&&superType.swiftCompatible;
+    if (_swiftCompatible&&[varPatterns containsObject:@"cpp"]) _swiftCompatible=NO;
+    if (_ocppCompatible&&[varPatterns containsObject:@"swift"]) _ocppCompatible=NO;
+
+    if (_swiftCompatible) for (NSString *p in varPatterns) if ([p hasPrefix:@"typedef"]) {
+        if ([p rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"&"] options:0 range:NSMakeRange(0, p.length)].location!=NSNotFound) {
+            _swiftCompatible=NO;break;
+        }
+        NSRange r=NSMakeRange([p rangeOfString:@":"].location,[p rangeOfString:@"<"].location);
+        if ((r.location!=NSNotFound)&&((r.length==NSNotFound)||(r.length>r.location+1))) {
+            r.location++;
+            bool couldBeTemplate=(r.length!=NSNotFound);
+            if (r.length==NSNotFound) r.length=p.length;
+            r.length-=r.location;
+            NSString *className=[[p substringWithRange:r] stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
+            Int i=[className rangeOfCharacterFromSet:[NSCharacterSet.alphanumericCharacterSet invertedSet] options:NSBackwardsSearch].location;
+            if (i!=NSNotFound) className=[[className substringFromIndex:i+1] stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
+            WClass *clas=WClasses.getDefault.classes[className];
+            if ((couldBeTemplate&&!clas.retainable)||(clas&&!clas.swiftCompatible)) {
+                _swiftCompatible=NO;break;
+            }
+        }
+    }
+
+    for (id<NSCopying> key in vars) [(WVar*)vars[key] refreshCompatability];
+    for (id<NSCopying> key in fns) [(WVar*)fns[key] refreshCompatability];
 }
 
 + (WClass*)getClassWithName:(NSString *)aname superClass:(WClass*)superClass protocolList:(NSArray*)protocolList varPatterns:(NSSet *)avarPatterns {
@@ -195,13 +244,13 @@
     for (NSString *n in self.varNames) {
         WVar *v=(self.vars)[n];
         if ([v respondsToSelector:sel]) {
-            [v performUnknownSelector:sel withObject:s];
+            COMPAT(v,[v performUnknownSelector:sel withObject:s]);
         }
     }    
     for (NSString *n in self.fnNames) {
         WFn *fn=(self.fns)[n];
         if ([fn respondsToSelector:sel]) {
-            [fn performUnknownSelector:sel withObject:s];
+            COMPAT(fn,[fn performUnknownSelector:sel withObject:s]);
         }
     }    
 }
@@ -442,19 +491,30 @@
 
 -(NSString*)tag {return([NSString stringWithFormat:(isProtocol?@"protocol_%@":@"class_%@"),name]);}
 
+-(NSString*)color {return(
+    self.swiftCompatible?
+        (self.ocppCompatible?
+            @"blue":
+            @"green"
+        ):
+        (self.ocppCompatible?
+            @"orange":
+            @"red"
+        )
+);};
 
 -(void)addjsvars:(NSMutableDictionary*)dict {
     NSMutableString *val=[NSMutableString stringWithString:@"<ul>"];
     if (self.superType.clas) {
         NSString *n=[NSString stringWithFormat:@"super_%@",self.superType.clas.tag];
-        [val appendFormat:@"<li><span style='color:blue' onclick=\"classclick('PATH_%@_own','%@','own')\">%@</span>",n,self.superType.clas.tag,[WClasses htmlStringForString:self.superType.clas.wType.wiType]];
-        [val appendFormat:@"<span style='color:blue' onclick=\"classclick('PATH_%@_info','%@','info')\"> -- (info)</span><span id='PATH_%@_info'></span><span id='PATH_%@_own'></<span>",n,self.superType.clas.tag,n,n];
+        [val appendFormat:@"<li><span style='color:%@' onclick=\"classclick('PATH_%@_own','%@','own')\">%@</span>",self.color,n,self.superType.clas.tag,[WClasses htmlStringForString:self.superType.clas.wType.wiType]];
+        [val appendFormat:@"<span style='color:%@' onclick=\"classclick('PATH_%@_info','%@','info')\"> -- (info)</span><span id='PATH_%@_info'></span><span id='PATH_%@_own'></<span>",self.superType.clas.color,n,self.superType.clas.tag,n,n];
         [val appendFormat:@"</li>"];
     }
     for (WClass *p in self.superType.protocols) {
         NSString *n=[NSString stringWithFormat:@"prot_%@",p.tag];
-        [val appendFormat:@"<li><span style='color:blue' onclick=\"classclick('PATH_%@_own','%@','own')\">%@</span>",n,p.tag,[WClasses htmlStringForString:p.wType.wiType]];
-        [val appendFormat:@"<span style='color:blue' onclick=\"classclick('PATH_%@_info','%@','info')\"> -- (info)</span><span id='PATH_%@_info'></span><span id='PATH_%@_own'></<span>",n,p.tag,n,n];
+        [val appendFormat:@"<li><span style='color:%@' onclick=\"classclick('PATH_%@_own','%@','own')\">%@</span>",self.color,n,p.tag,[WClasses htmlStringForString:p.wType.wiType]];
+        [val appendFormat:@"<span style='color:%@' onclick=\"classclick('PATH_%@_info','%@','info')\"> -- (info)</span><span id='PATH_%@_info'></span><span id='PATH_%@_own'></<span>",p.color,n,p.tag,n,n];
         [val appendFormat:@"</li>"];
     }
     [val appendString:@"</ul>"];
@@ -466,14 +526,14 @@
         WVar *v=vars[vn];
         if (!(v.type.clas.isSys||!v.retains)) {
             NSString *n=[NSString stringWithFormat:@"own_var_%@",vn];
-            [val appendFormat:@"<li><span style='color:blue' onclick=\"classclick('PATH_%@_own','%@','own')\">%@</span> %@",n,v.type.clas.tag,[WClasses htmlStringForString:v.type.clas.wType.wiType],[WClasses htmlStringForString:v.name]];
+            [val appendFormat:@"<li><span style='color:%@' onclick=\"classclick('PATH_%@_own','%@','own')\">%@</span> %@",v.color,n,v.type.clas.tag,[WClasses htmlStringForString:v.type.clas.wType.wiType],[WClasses htmlStringForString:v.name]];
             if (v.defaultValue) [val appendFormat:@"=%@",[WClasses htmlStringForString:v.defaultValue]];
             if (v.attributes) {
                 [val appendFormat:@" ("];
                 for (NSString *a in v.attributes) [val appendFormat:@" %@",[WClasses htmlStringForString:a]];
                 [val appendFormat:@" )"];
             }
-            [val appendFormat:@"<span style='color:blue' onclick=\"classclick('PATH_%@_info','%@','info')\"> -- (info)</span><span id='PATH_%@_info'></span><span id='PATH_%@_own'></<span>",n,v.type.clas.tag,n,n];
+            [val appendFormat:@"<span style='color:%@' onclick=\"classclick('PATH_%@_info','%@','info')\"> -- (info)</span><span id='PATH_%@_info'></span><span id='PATH_%@_own'></<span>",v.color,n,v.type.clas.tag,n,n];
             [val appendFormat:@"</li>"];
         }
     }
@@ -482,7 +542,7 @@
             NSString *n=[NSString stringWithFormat:@"myprop_%@",p.hisname];
             [val appendFormat:@"<li>as %@",p.myname];
             if (p.myqname) [val appendFormat:@">>%@",p.myqname];
-            [val appendFormat:@" %@ <span style='color:blue' onclick=\"classclick('PATH_%@_own','%@','own')\">%@</span> %@",[WClasses htmlStringForString:p.origType],n,p.hisclas.tag,[WClasses htmlStringForString:p.hisclas.wType.wiType],p.hisname];
+            [val appendFormat:@" %@ <span style='color:%@' onclick=\"classclick('PATH_%@_own','%@','own')\">%@</span> %@",[WClasses htmlStringForString:p.origType],p.hisclas.color,n,p.hisclas.tag,[WClasses htmlStringForString:p.hisclas.wType.wiType],p.hisname];
             if (p.hisqname) [val appendFormat:@">>%@",p.hisqname];
             [val appendFormat:@"<span onclick=\"classclick('PATH_%@_info','%@','info')\"> -- (info)</span><span id='PATH_%@_info'></span><span id='PATH_%@_own'></<span>",n,p.hisclas.tag,n,n];
             [val appendFormat:@"</li>"];
@@ -491,7 +551,7 @@
             NSString *n=[NSString stringWithFormat:@"hisprop_%@",p.myname];
             [val appendFormat:@"<li>as %@",p.hisname];
             if (p.hisqname) [val appendFormat:@">>%@",p.hisqname];
-            [val appendFormat:@" %@ <span style='color:blue' onclick=\"classclick('PATH_%@_own','%@','own')\">%@</span> %@",[WClasses htmlStringForString:p.origType],n,p.myclas.tag,[WClasses htmlStringForString:p.myclas.wType.wiType],p.myname];
+            [val appendFormat:@" %@ <span style='color:%@' onclick=\"classclick('PATH_%@_own','%@','own')\">%@</span> %@",[WClasses htmlStringForString:p.origType],p.myclas.color,n,p.myclas.tag,[WClasses htmlStringForString:p.myclas.wType.wiType],p.myname];
             if (p.myqname) [val appendFormat:@">>%@",p.myqname];
             [val appendFormat:@"<span onclick=\"classclick('PATH_%@_info','%@','info')\"> -- (info)</span><span id='PATH_%@_info'></span><span id='PATH_%@_own'></<span>",n,p.myclas.tag,n,n];
             [val appendFormat:@"</li>"];
@@ -504,20 +564,20 @@
     dict[[self.tag stringByAppendingString:@"_info"]] = self.infoStr;
 
 
-    val=[NSMutableString stringWithFormat:@"<span style='color:blue' onclick=\"classclick('PATH_own','%@','own')\">%@</span><span onclick=\"classclick('PATH_info','%@','info')\">(info)</span><span id='PATH_info'></span><span id='PATH_own'></<span>",self.tag,[WClasses htmlStringForString:self.wType.wiType],self.tag];
+    val=[NSMutableString stringWithFormat:@"<span style='color:%@' onclick=\"classclick('PATH_own','%@','own')\">%@</span><span onclick=\"classclick('PATH_info','%@','info')\">(info)</span><span id='PATH_info'></span><span id='PATH_own'></<span>",self.color,self.tag,[WClasses htmlStringForString:self.wType.wiType],self.tag];
     dict[[self.tag stringByAppendingString:@"_."]] = val;
 }
     
 
 -(NSString*)infoStr {
-    NSMutableString *ret=[NSMutableString stringWithFormat:@"%@%@%@",isSys?@"sys ":@"",isBlock?@"block ":@"",isType?@"type ":@""];
-    for (NSString *p in varPatterns) [ret appendFormat:@"'%@' ",p];
+    NSMutableString *ret=[NSMutableString stringWithFormat:@"%@%@%@%@%@",self.swiftCompatible?@"":@"(C++) ",self.ocppCompatible?@"":@"(swift) ",isSys?@"sys ":@"",isBlock?@"block ":@"",isType?@"type ":@""];
+    for (NSString *p in varPatterns) [ret appendFormat:@"'%@' ",[WClasses htmlStringForString:p]];
     if (varNames.count) {
         [ret appendFormat:@"<ul>"];
         for (NSString *n in varNames) {
             WVar *v=vars[n];
             if (v.type.clas.isSys||!v.retains) {
-                [ret appendFormat:@"<li>%@ %@",[WClasses htmlStringForString:v.type.wiType],v.localizedVarName];
+                [ret appendFormat:@"<li><span style='color:%@'>%@ %@</span>",v.color,[WClasses htmlStringForString:v.type.wiType],v.localizedVarName];
                 if (v.defaultValue) [ret appendFormat:@"=%@",[WClasses htmlStringForString:v.defaultValue]];
                 if (v.attributes) {
                     [ret appendFormat:@" ("];
@@ -533,7 +593,7 @@
         [ret appendFormat:@"<ul>"];
         for (NSString *n in fnNames) {
             WFn *fn=fns[n];
-            [ret appendFormat:@"<li>%@</li>\n",[WClasses htmlStringForString:fn.sig]];
+            [ret appendFormat:@"<li><span style='color:%@'>%@</span></li>\n",fn.color,[WClasses htmlStringForString:fn.sig]];
         }
         [ret appendFormat:@"</ul>\n"];
     }
@@ -587,7 +647,7 @@
     for (NSString *n in varNames) {
         WVar *v=vars[n];
         if (!(v.type.clas.isSys||!v.retains)) {
-            [ret appendFormat:@"<li><b>%@</b> %@",[WClasses htmlStringForString:v.type.wiType],v.localizedVarName];
+            [ret appendFormat:@"<li><span style='color:%@'>%@ %@</span>",v.color,[WClasses htmlStringForString:v.type.wiType],v.localizedVarName];
             if (v.defaultValue) [ret appendFormat:@"=%@",[WClasses htmlStringForString:v.defaultValue]];
             if (v.attributes) {
                 [ret appendFormat:@" ("];
