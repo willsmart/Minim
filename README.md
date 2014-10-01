@@ -1,25 +1,45 @@
+Warning: Currently this is all pretty damn beta
+
 Winterface
 ==========
 
 Winterface language/obj-c-syntactic-sweetner. Simplify all that syntactic drivel and ramp up the power of ios apps
 
-I've been coding for ages, this language is the one I've wanted to code in.
+####Movitation rant
 
-So far as the language implentation, so sorry, this code is nasty draft code having been tweaked as a scratch pad while designing the language.
-I will rewrite as a clean winterface version. It runs slowly, but outputs correct obj-c++ code.
+I've been coding for ages, this language middle layer is the one I've wanted to code in.
+To clarify, this is not a language really. The good people at apple/etc have done that job to perfection (wi will soon support swift rather than obj-c in methods, currently it happily lives alongside swift files).
+WI just rationalizes all the crap you need to do around the language. It also adds vital things that apple/etc seem to always leave out (eg links, class/method reentry, category method bodies). Having these in the tool kit just makes things easier and better.
+
+For example, the singleton pattern is great.
+So, how should one do that? Many implementations will have static/class-level data which holds the object. This is a bad thing that will hurt you eventually. In wi, you just add a variable to a single shared singleton class.
+
+Say you want to make a category/extension for trees, how do you get the method bodies in there cleanly? You shouldn't have to make a class just to provide methods for attaching objects to trees. You also shouldn't have to settle for constant wrapping/unwrapping of nodes (I guess swift may have solved this, will check)
+
+Say you want to mirror an array with another. That's tricky. In wi it's really not too bad.
+So, let's say you have a table backed by a data model, then the table view can simply be a 'view' on that model (i.e. each model has some number of interested views). Changes to the table model's section/cell arrays will mirror to the table view's section/cell views so that you can just treat the model however you like and know the views will behave themselves and update, right through the app.
+The link concept makes this easy, and atomic backing of the links means that model/view synchronization is handled transparently, and mostly with one generic line of code.
+
+This extends right to union collections (eg the array concatenates a number of supplied arrays, and listens efficiently for updates to them, updating itself in response)
+
+
+So far as the language implentation, so sorry, this code is very nasty draft code having been tweaked as a scratch pad while designing the language. I don't usually care too much about efficiency or cleaness of code that is about to get a full rewrite.
+I will rewrite it in wi soon. 
+
+As of now, it runs slowly, but outputs fairly good runable obj-c++ code.
 
 
 Basic process
 -------------
-Winterface takes .wi files
+Winterface takes .wi files (and swift/obj-c++ files if you like)
 
 The WILibrary project is required (wi files for modules, apps are small), as is the BasicClassesCPP project (cpp files, obj-c is missing a lot of things)
 
-The wi files are turned to obj-c++ files (h/pch/mm) and a html giving an overview of the code
+The wi files are turned to obj-c++ files (h/pch/mm) linked up to any swift files and a html giving an overview of the code classes/fns/properties
 
 Core principles
 ---------------
-As far as possible wi files are unordered, so nothing much will break if you define something long after using it. There are small exceptions
+As far as possible wi files are unordered, so nothing much will break if you define something long after using it.
 
 It follows that all classes and methods are renentrant. The compiler won't complain if you have already defined such-and-such
 
@@ -28,9 +48,9 @@ Protocols can have method bodies and properties like the rest of us.
 Links are a first class thing. Authors don't have posts since then one day you'll end up making posts have authors which will be a pain.
 There are just links between authors and posts.
 
-Syntax is minimal. So long as the input is unambiguous it's all good. WI won't expect you to type many keywords.
+Syntax is minimal. So long as the input is unambiguous it's all good. WI won't expect you to type many keywords like class and func.
 
-That said. WI mostly doesn't care about the bodies of methods. There is currently no obj-c parser, and there will never be a compiler in WI.
+That said. WI mostly doesn't care about the bodies of methods. There is currently no obj-c parser, and there will never be a compiler in WI. Very soon wi will let you write some/all of the code in swift.
 
 Safety doesn't come from restrictions, it comes from providing ways to do things safely.
 Languages are missing key things that I want to use in my apps.
