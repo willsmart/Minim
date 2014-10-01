@@ -1,6 +1,6 @@
  strings
-+string:_string[0..1000]|^",END|>>_string[1..1001]
-+string:_string[0..1000]|?"|>>string[0..1000]
++string:_string[0..]|^",END|>>_string[1..]
++string:_string[0..]|?"|>>string[0..]
 !string:x"|O^",END|>>_string[0]
 string:x"|O"|>>string[0]
 
@@ -8,9 +8,9 @@ string:x"|O"|>>string[0]
  lines
 lineStart:?\n|>>lineStart
 lineStart:<? |>>lineStart[1]
-!lineStart:lineStart[0..1000]| |>>lineStart[1..1001]
-!lineStart:lineStart[0..1000]|\t|>>lineStart[4..1004]
-!lineStart:x |OlineStart[0..1000]|>>lineStart[0..1000]
+!lineStart:lineStart[0..]| |>>lineStart[1..]
+!lineStart:lineStart[0..]|\t|>>lineStart[4..]
+!lineStart:x |OlineStart[0..]|>>lineStart[0..]
 !lineStart:xlineStart|olineStart|>>??
 
 
@@ -23,30 +23,55 @@ lineStart:<? |>>lineStart[1]
 
 
  words and numbers
-+word:rtl:a-z,A-Z,_|word|>>word,wordgroup
++word:rtl:a-z,A-Z,_|word|>>_word,_wordgroup
 +int:0-9|int|>>int,number
-+word:rtl:a-z,A-Z,_|>>word,wordgroup
++word:rtl:a-z,A-Z,_|>>_word,_wordgroup
 +int:rtl:O0-9|>>int,number
 +number:int|.|int|>>number
-+wordgroup:wordgroup|number,wordgroup|>>wordgroup
++wordgroup:_wordgroup|number,_wordgroup|>>_wordgroup
+!word:_word|>>word,wordgroup
+!wordgroup:_wordgroup|>>wordgroup
 
+ clear spaces
+!ws:x ,\t|>>??
+
+ ws
+ !ws:o ,\t,\,,\<,:,=,\>| ,\t|>>??
+ !ws:x ,\t|o\,,\>,\<,:,=|>>??
+
+ protocols
+(protocolList)protocolList:_protocolList|?\>|>>protocolList,class
+(protocolList)protocolList:_protocolList[0..]|?\,|wordgroup|>>_protocolList[1..]
+protocolList:?\<|wordgroup|>>_protocolList[1]
+class:wordgroup|protocolList|>>class
 
  block structure
-+block:_block[0..1000]|^},END|>>_block[1..1001]
-block:_block[0..1000]|?}|>>block[0..1000]
++block:_block[0..]|^},END|>>_block[1..]
+block:_block[0..]|?}|>>block[0..]
 !block:rtl:x{|O^},END|>>_block[0]
 block:x{|O}|>>block[0]
 
+ key val
+keyval:string,word|?:|string,word|>>keyval
+
+ regex
+regex:string,word|?=|?\>|string,word|>>regex
+
  line
-(_body)_body:^lineStart,body,line,parent,siblings,END|^lineStart,body,line,parent,siblings,END|>>_body[0]
-(_body)_body:^lineStart,body,line,parent,siblings,END|>>body[0]
-(_body)body:?xlineStart[0..1000]|Obody|>>line[0..1000]
+!splitLine:?oline[0..]|x ,\t|>>??
+!splitLine:?oline[0..]|O^line,_line,lineStart,parent,siblings,END|>>_line[1000..]
+!breaks:?xlineStart[0..]|Oclass,protocolList|>>line[0..]
+!breaks:o_line[0..]|Oclass,protocolList|>>line[0..]
+(line)line:?xlineStart[0..]|O^lineStart,_line,line,parent,siblings,END|>>_line[0..]
+(line)line:<^lineStart,_line,line,parent,siblings,END|>>_line[0]
+(line)line:_line[0..]|^lineStart,_line,line,parent,siblings,END|>>_line[0..]
+(line)line:_line[0..]|>>line[0..]
 !mtline:x^line,parent,siblings,END|>>??
 
  line structure
-(sibs)parent:rtl:line|>0line|<=0?oline|>>line,parent
-(sibs)parent:rtl:line|>0line|?oEND|>>line,parent
-(sibs)sibs:rtl:line|<=0line|>>line,siblings
+(siblings)parent:rtl:line|>0line|<=0?oline|>>line,parent
+(siblings)parent:rtl:line|>0line|?oEND|>>line,parent
+(siblings)siblings:rtl:?oline|>0Oline|>0line|>>line,siblings
 
 !end:xEND|>>??
 

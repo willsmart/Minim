@@ -13,9 +13,13 @@
 }
 
 .node text {
-	-webkit-transform: rotate(40deg);
-    -moz-transform: rotate(40deg);
-  
+	transform: translate(0px,-10px);
+}
+
+.node circle {
+    fill: orange;
+  stroke: black;
+  stroke-width: 1px;
 }
 
 .link {
@@ -24,9 +28,13 @@
   stroke-width: 1px;
 }
 
+.rootlink,.rootnode {
+    opacity: 0.05
+}
+
 body {
 	background:#fff;
-    overflow:hidden;
+    overflow:scroll;
 }
 
 svg {
@@ -42,16 +50,13 @@ svg {
 var width = $(window).width()-14,
     height = $(window).height()-30;
 
-var layout = d3.layout.tree()
-    .size([width-80, height - 80]);
-
 var diagonal = d3.svg.diagonal()
-    .projection(function(d) { return [d.x, height-80-d.y]; });
+    .projection(function(d) { return [d.y, d.x]; });
 var elbow = function (d, i){
-      return "M" + d.source.x + "," + height-80-d.source.y
-             + "V" + height-80-(d.target.y+d.source.y)*0.5
-             + "H" + d.target.x
-             + "V" + height-80-d.target.y
+      return "M" + d.source.y + "," + d.source.x
+             + "V" + (d.target.x+d.source.x)*0.5
+             + "H" + d.target.y
+             + "V" + d.target.x
              ;
     };
 var connector = elbow;
@@ -60,7 +65,7 @@ var prog = d3.select("body").append("text");
 
 var svg = d3.select("body").append("svg")
     .attr("width", width)
-    .attr("height", height)
+    .attr("height", 10000)
   .append("g")
     .attr("transform", "translate(40,40)");
 
@@ -77,13 +82,24 @@ d3.json("ex.wi.json", function(error, root) {
       .style("color", "black")
       .style("stroke", "black");
 	root=root.graph;
+
+    var nodeCountFn=function(node){var ret=0;for (var i in node.children) ret+=nodeCountFn(node.children[i]);return(Math.max(1,ret));};
+    var nodeCount=nodeCountFn(root);
+
+    var layout = d3.layout.tree()
+        .size([(height-80)*nodeCount/35, width - 80]);
+
+
   var nodes = layout.nodes(root),
       links = layout.links(nodes);
+
 
   var link = svg.selectAll(".link")
       .data(links)
       .enter().append("path")
-      .attr("class", "link")
+      .attr("class", function(d) {
+        return(Math.min(d.source.depth,d.target.depth)==0?"rootlink link":"link");
+        })
 //	  .attr("d", connector)
             .attr("d", diagonal)
       ;
@@ -91,11 +107,15 @@ d3.json("ex.wi.json", function(error, root) {
   var node = svg.selectAll(".node")
       .data(nodes)
     .enter().append("g")
-      .attr("class", "node")
-      .attr("transform", function(d) { return "translate(" + d.x + "," + (height-80-d.y) + ")"; })
+      .attr("class", function(d) {
+        return(d.depth==0?"rootnode node":"node");
+    })
+      .attr("transform", function(d) {
+        return "translate(" + d.y + "," + d.x + ")";
+    })
 
   node.append("circle")
-      .attr("r", 2.5);
+      .attr("r", 5);
 
   node.append("text")
       .attr("dx", function(d) { return d.children ? -8 : 8; })
