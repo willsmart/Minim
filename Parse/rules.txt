@@ -24,11 +24,11 @@ lineStart:<? |>>lineStart[2]
 !lineStart:xlineStart|olineStart|>>??
 
  blocks
-!findbrace:^linestart[0]|o^END[1000..]|>>??[1000]
+!findbrace:^lineStart[0]|o^END[1000..]|>>??[1000]
 !block:O{[1..998]|O^END[1000..]|>>??[@0:2..999]
 !block:x}[3..999]|O^END[1000..]|>>??[@0:2..998]
 !block:x}[2..999]|>>??
-lineStart:?{[2..999]|>>linestart[2..999]
+lineStart:?{[2..999]|>>lineStart[2..999]
 !findbrace:o^END[1..999]|O^END[1000..]|>>??[@0:1..999]
 
 
@@ -41,14 +41,14 @@ lineStart:?{[2..999]|>>linestart[2..999]
 
 
  words and numbers
-+word:rtl:a-z,A-Z,_|word|>>_word,_wordgroup
++word:rtl:a-z,A-Z,_|word|>>_word,_wordGroup
 +int:0-9|int|>>int,number
-+word:rtl:a-z,A-Z,_|>>_word,_wordgroup
++word:rtl:a-z,A-Z,_|>>_word,_wordGroup
 +int:rtl:O0-9|>>int,number
 +number:int|.|int|>>number
-+wordgroup:_wordgroup|number,_wordgroup|>>_wordgroup
-!word:_word|>>word,wordgroup
-!wordgroup:_wordgroup|>>wordgroup
++wordGroup:_wordGroup|number,_wordGroup|>>_wordGroup
+!word:_word|>>word,wordGroup
+!wordGroup:_wordGroup|>>wordGroup
 
  clear spaces
 !ws:x ,\t|>>??
@@ -57,14 +57,26 @@ lineStart:?{[2..999]|>>linestart[2..999]
  !ws:o ,\t,\,,\<,:,=,\>| ,\t|>>??
  !ws:x ,\t|o\,,\>,\<,:,=|>>??
 
-END
+
+ eat lineStarts
+!line:xlineStart[1..]|Oclass,protocol,protocolList[0]|>>??[@0:1..]
 
  protocols
-(protocolList)protocolList:_protocolList|?\>|>>protocolList,class
-(protocolList)protocolList:_protocolList[0..]|?\,|wordgroup|>>_protocolList[1..]
-protocolList:?\<|wordgroup|>>_protocolList[1]
-class:wordgroup,class|protocolList|>>class
-class:wordgroup|protocolList|>>class
+(protocolList)protocolList:?\<|_protocolList|>>protocolList
+protocol:?\<|word,wordGroup|?:|_protocolList|>>protocol
+(protocolList)protocolList:word,wordGroup|?\,|_protocolList|>>_protocolList
+protocolList:word,wordGroup|?\>|>>_protocolList
+
+ classes
+(classList)classList:?oword,wordGroup,protocolList|?o:|Oword,wordGroup,classList|?\,|word,wordGroup|>>classList
+class:word,wordGroup,protocolList|?:|word,wordGroup,classList|>>class,classWithSup
+(class)class:classWithSup,wordGroup|protocolList|>>class
+
+class:?lineStart|wordGroup,word,protocolList|?:|protocolList,classList,word,wordGroup|>>lineStart,class
+class:?lineStart|wordGroup,word,protocolList|?oword,wordGroup,lineStart,protocolList,END|>>lineStart,class
+
+END
+
 
  block structure
 +block:_block[0..]|^},END|>>_block[1..]

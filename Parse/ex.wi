@@ -1,10 +1,12 @@
-"a"
-    b{c
-    {hi}
-}
-        d
-         e
-        d2
-        d3
-    b2
-a2
+"class types:"
+class
+class:sup
+class:sup,sup,sup
+class<superprotocol>
+class<superprotocol,superprotocol,superprotocol>
+class:sup,sup,sup<superprotocol,superprotocol,superprotocol>
+<protocol>
+<protocol:superprotocol>
+<protocol:superprotocol,superprotocol,superprotocol>
+
+
