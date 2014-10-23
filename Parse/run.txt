@@ -163,8 +163,8 @@
     "children" : [
       "\\n"
     ],
-    "result" : "lineStart",
-    "cryptic" : "lineStart:?O\\n[0]|>>xlineStart[1]",
+    "result" : "lineStart,pureLineStart",
+    "cryptic" : "lineStart:?O\\n[0]|>>xlineStart,pureLineStart[1]",
     "name" : "lineStart"
   },
   {
@@ -173,8 +173,8 @@
     "children" : [
       " "
     ],
-    "result" : "lineStart",
-    "cryptic" : "lineStart:<?O |>>xlineStart[2]",
+    "result" : "lineStart,pureLineStart",
+    "cryptic" : "lineStart:<?O |>>xlineStart,pureLineStart[2]",
     "name" : "lineStart"
   },
   {
@@ -186,11 +186,11 @@
     ],
     "ignore" : true,
     "children" : [
-      "lineStart",
+      "pureLineStart",
       " "
     ],
-    "result" : "lineStart",
-    "cryptic" : "!lineStart:OlineStart[1..]|x |>>xlineStart[2..]",
+    "result" : "lineStart,pureLineStart",
+    "cryptic" : "!lineStart:OpureLineStart[1..]|x |>>xlineStart,pureLineStart[2..]",
     "name" : "lineStart"
   },
   {
@@ -202,11 +202,11 @@
     ],
     "ignore" : true,
     "children" : [
-      "lineStart",
+      "pureLineStart",
       "\\t"
     ],
-    "result" : "lineStart",
-    "cryptic" : "!lineStart:OlineStart[1..]|x\\t|>>xlineStart[5..]",
+    "result" : "lineStart,pureLineStart",
+    "cryptic" : "!lineStart:OpureLineStart[1..]|x\\t|>>xlineStart,pureLineStart[5..]",
     "name" : "lineStart"
   },
   {
@@ -220,10 +220,10 @@
     "childDies" : "X-",
     "children" : [
       " ",
-      "lineStart"
+      "pureLineStart"
     ],
-    "result" : "lineStart",
-    "cryptic" : "!lineStart:x |OlineStart[1..]|>>xlineStart[1..]",
+    "result" : "lineStart,pureLineStart",
+    "cryptic" : "!lineStart:x |OpureLineStart[1..]|>>xlineStart,pureLineStart[1..]",
     "name" : "lineStart"
   },
   {
@@ -231,10 +231,10 @@
     "hasResult" : false,
     "childDies" : "X-",
     "children" : [
-      "lineStart",
+      "pureLineStart",
       "lineStart"
     ],
-    "cryptic" : "!lineStart:xlineStart|olineStart|>>?x?",
+    "cryptic" : "!lineStart:xpureLineStart|olineStart|>>?x?",
     "name" : "lineStart"
   },
   {
@@ -248,10 +248,10 @@
     "hasResult" : false,
     "childDies" : "--",
     "children" : [
-      "^lineStart",
+      "^pureLineStart",
       "^END"
     ],
-    "cryptic" : "!findbrace:O^lineStart[0]|o^END[1000..]|>>?x?[1000]",
+    "cryptic" : "!findbrace:O^pureLineStart[0]|o^END[1000..]|>>?x?[1000]",
     "name" : "findbrace"
   },
   {
@@ -321,8 +321,8 @@
     "children" : [
       "{"
     ],
-    "result" : "lineStart",
-    "cryptic" : "lineStart:?O{[2..999]|>>xlineStart[2..999]",
+    "result" : "lineStart,pureLineStart",
+    "cryptic" : "lineStart:?O{[2..999]|>>xlineStart,pureLineStart[2..999]",
     "name" : "lineStart"
   },
   {
@@ -496,23 +496,6 @@
     "name" : "ws"
   },
   {
-    "childIndexes" : [
-      [
-        1
-      ],
-      0
-    ],
-    "ignore" : true,
-    "hasResult" : false,
-    "childDies" : "X-",
-    "children" : [
-      "lineStart",
-      "class,protocol,protocolList"
-    ],
-    "cryptic" : "!line:xlineStart[1..]|Oclass,protocol,protocolList[0]|>>?x?[@0:1..]",
-    "name" : "line"
-  },
-  {
     "childHasResult" : "-C",
     "children" : [
       "\\<",
@@ -562,9 +545,10 @@
     "name" : "protocolList"
   },
   {
-    "childHasResult" : "--C-C",
-    "childDies" : "---XX",
+    "childHasResult" : "---C-C",
+    "childDies" : "----XX",
     "children" : [
+      "lineStart",
       "word,wordGroup,protocolList",
       ":",
       "word,wordGroup,classList",
@@ -575,23 +559,14 @@
       "classList"
     ],
     "result" : "classList",
-    "cryptic" : "(classList)classList:?oword,wordGroup,protocolList|?o:|Oword,wordGroup,classList|?x\\,|xword,wordGroup|>>xclassList",
+    "cryptic" : "(classList)classList:?olineStart|?oword,wordGroup,protocolList|?o:|Oword,wordGroup,classList|?x\\,|xword,wordGroup|>>xclassList",
     "name" : "classList",
-    "childMarks" : "--M--"
+    "childMarks" : "---M--"
   },
   {
-    "childHasResult" : "C-C",
+    "childHasResult" : "-CC",
     "children" : [
-      "word,wordGroup,protocolList",
-      ":",
-      "word,wordGroup,classList"
-    ],
-    "result" : "class,classWithSup",
-    "cryptic" : "class:Oword,wordGroup,protocolList|?x:|xword,wordGroup,classList|>>xclass,classWithSup",
-    "name" : "class"
-  },
-  {
-    "children" : [
+      "lineStart",
       "classWithSup,wordGroup",
       "protocolList"
     ],
@@ -599,8 +574,9 @@
       "class"
     ],
     "result" : "class",
-    "cryptic" : "(class)class:OclassWithSup,wordGroup|xprotocolList|>>xclass",
-    "name" : "class"
+    "cryptic" : "(class)class:?olineStart|xclassWithSup,wordGroup|xprotocolList|>>xclass",
+    "name" : "class",
+    "childMarks" : "---"
   },
   {
     "childHasResult" : "-C-C",
@@ -608,10 +584,22 @@
       "lineStart",
       "wordGroup,word,protocolList",
       ":",
-      "protocolList,classList,word,wordGroup"
+      "classList,word,wordGroup"
+    ],
+    "result" : "lineStart,class,pureClass",
+    "cryptic" : "class:?OlineStart|xwordGroup,word,protocolList|?x:|xclassList,word,wordGroup|>>xlineStart,class,pureClass",
+    "name" : "class"
+  },
+  {
+    "children" : [
+      "pureClass",
+      "protocolList"
+    ],
+    "collapseChildNames" : [
+      "class"
     ],
     "result" : "lineStart,class",
-    "cryptic" : "class:?OlineStart|xwordGroup,word,protocolList|?x:|xprotocolList,classList,word,wordGroup|>>xlineStart,class",
+    "cryptic" : "(class)class:OpureClass|xprotocolList|>>xlineStart,class",
     "name" : "class"
   },
   {
@@ -620,81 +608,266 @@
     "children" : [
       "lineStart",
       "wordGroup,word,protocolList",
-      "word,wordGroup,lineStart,protocolList,END"
+      "word,wordGroup,lineStart,END"
     ],
-    "result" : "lineStart,class",
-    "cryptic" : "class:?OlineStart|xwordGroup,word,protocolList|?oword,wordGroup,lineStart,protocolList,END|>>xlineStart,class",
+    "result" : "lineStart,class,pureClass",
+    "cryptic" : "class:?OlineStart|xwordGroup,word,protocolList|?oword,wordGroup,lineStart,END|>>xlineStart,class,pureClass",
     "name" : "class"
+  },
+  {
+    "childHasResult" : "--C-C",
+    "childDies" : "---XX",
+    "children" : [
+      "var",
+      "(",
+      "type,word,wordGroup",
+      ":",
+      "word,wordGroup"
+    ],
+    "result" : "argDef",
+    "cryptic" : "argDef:?ovar|?o(|Otype,word,wordGroup|?x:|xword,wordGroup|>>xargDef",
+    "name" : "argDef",
+    "childMarks" : "--M--"
+  },
+  {
+    "childHasResult" : "----C-C",
+    "childDies" : "-----XX",
+    "children" : [
+      "var",
+      "(",
+      "argDef,_argList",
+      "\\,",
+      "type,word,wordGroup",
+      ":",
+      "word,wordGroup"
+    ],
+    "result" : "argDef",
+    "cryptic" : "argDef:?ovar|?o(|?oargDef,_argList|?o\\,|Otype,word,wordGroup|?x:|xword,wordGroup|>>xargDef",
+    "name" : "argDef",
+    "childMarks" : "----M--"
+  },
+  {
+    "childHasResult" : "--C-C",
+    "childDies" : "---XX",
+    "children" : [
+      "var",
+      "(",
+      "argDef,_argList",
+      "\\,",
+      "argDef"
+    ],
+    "collapseChildNames" : [
+      "argList"
+    ],
+    "result" : "_argList",
+    "cryptic" : "(argList)argList:?ovar|?o(|OargDef,_argList|?x\\,|xargDef|>>x_argList",
+    "name" : "argList",
+    "childMarks" : "--M--"
+  },
+  {
+    "childHasResult" : "--C-",
+    "childDies" : "--XX",
+    "children" : [
+      "var",
+      "(",
+      "argDef,_argList",
+      ")"
+    ],
+    "collapseChildNames" : [
+      "argList"
+    ],
+    "result" : "argList",
+    "cryptic" : "(argList)argList:?ovar|?O(|xargDef,_argList|?x)|>>xargList",
+    "name" : "argList",
+    "childMarks" : "-M--"
+  },
+  {
+    "children" : [
+      "word,wordGroup",
+      "*,&"
+    ],
+    "result" : "type",
+    "cryptic" : "type:Oword,wordGroup|x*,&|>>xtype",
+    "name" : "type"
+  },
+  {
+    "childHasResult" : "-C-",
+    "children" : [
+      "(",
+      "word,wordGroup,type",
+      ")"
+    ],
+    "collapseChildNames" : [
+      "type"
+    ],
+    "result" : "type,castType",
+    "cryptic" : "(type)cast:?O(|xword,wordGroup,type|?x)|>>xtype,castType",
+    "name" : "cast"
+  },
+  {
+    "childHasResult" : "--CC",
+    "childDies" : "--XX",
+    "children" : [
+      "var",
+      ":",
+      "castType",
+      "word,wordGroup"
+    ],
+    "result" : "selArgDef",
+    "cryptic" : "selArgDef:?ovar|?O:|xcastType|xword,wordGroup|>>xselArgDef",
+    "name" : "selArgDef",
+    "childMarks" : "-M--"
+  },
+  {
+    "childHasResult" : "--C-CC",
+    "childDies" : "---XXX",
+    "children" : [
+      "var",
+      "selArgDef,selArgList",
+      "word,wordGroup",
+      ":",
+      "castType",
+      "word,wordGroup"
+    ],
+    "result" : "selArgDef",
+    "cryptic" : "selArgDef:?ovar|?oselArgDef,selArgList|Oword,wordGroup|?x:|xcastType|xword,wordGroup|>>xselArgDef",
+    "name" : "selArgDef",
+    "childMarks" : "--M---"
+  },
+  {
+    "childHasResult" : "-CC",
+    "childDies" : "--X",
+    "children" : [
+      "var",
+      "selArgDef,selArgList",
+      "selArgDef"
+    ],
+    "collapseChildNames" : [
+      "selArgList"
+    ],
+    "result" : "selArgList",
+    "cryptic" : "(selArgList)selArgList:?ovar|OselArgDef,selArgList|xselArgDef|>>xselArgList",
+    "name" : "selArgList",
+    "childMarks" : "-M-"
+  },
+  {
+    "children" : [
+      "var",
+      "selArgList,selArgDef,argList"
+    ],
+    "result" : "fn",
+    "cryptic" : "fn:Ovar|xselArgList,selArgDef,argList|>>xfn",
+    "name" : "fn"
+  },
+  {
+    "childHasResult" : "-C",
+    "ignore" : true,
+    "childDies" : "--",
+    "children" : [
+      "lineStart",
+      "wordGroup,word"
+    ],
+    "result" : "var",
+    "cryptic" : "!var:?olineStart|OwordGroup,word|>>xvar",
+    "name" : "var"
+  },
+  {
+    "childIndexes" : [
+      [
+        1
+      ],
+      0
+    ],
+    "ignore" : true,
+    "hasResult" : false,
+    "childDies" : "X-",
+    "children" : [
+      "lineStart",
+      "class,protocol,protocolList,fn,var"
+    ],
+    "cryptic" : "!line:xlineStart[1..]|Oclass,protocol,protocolList,fn,var[0]|>>?x?[@0:1..]",
+    "name" : "line"
   }
 ]
 
 dump
 
-stringLen: 272
-numCurrentIndexes: 272
-numAllTokens: 272
+stringLen: 427
+numCurrentIndexes: 427
+numAllTokens: 427
 minOrdinal: 0
 nextOrdinal: 0
 nextRule: 4
-  initialString:   "  c  l  a  s  s     t  y  p  e  s  :  "  |  c  l  a  s  s  |  c  l  a  s  s  :  s  u  p  |  c  l  a  s  s  :  s  u  p  ,  s  u  p  ,  s  u  p  |  c  l  a  s  s  <  s  u  p  e  r  p  r  o  t  o  c  o  l  >  |  c  l  a  s  s  <  s  u  p  e  r  p  r  o  t  o  c  o  l  ,  s  u  p  e  r  p  r  o  t  o  c  o  l  ,  s  u  p  e  r  p  r  o  t  o  c  o  l  >  |  c  l  a  s  s  :  s  u  p  ,  s  u  p  ,  s  u  p  <  s  u  p  e  r  p  r  o  t  o  c  o  l  ,  s  u  p  e  r  p  r  o  t  o  c  o  l  ,  s  u  p  e  r  p  r  o  t  o  c  o  l  >  |  <  p  r  o  t  o  c  o  l  >  |  <  p  r  o  t  o  c  o  l  :  s  u  p  e  r  p  r  o  t  o  c  o  l  >  |  <  p  r  o  t  o  c  o  l  :  s  u  p  e  r  p  r  o  t  o  c  o  l  ,  s  u  p  e  r  p  r  o  t  o  c  o  l  ,  s  u  p  e  r  p  r  o  t  o  c  o  l  >  |  |  |   
-               :                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
-               :  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-    ruleAtIndex:  -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
-               :                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
-               :  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-   indexOffsets:   0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
-               :  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
- currentIndexes:   0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99100101102103104105106107108109110111112113114115116117118119120121122123124125126127128129130131132133134135136137138139140141142143144145146147148149150151152153154155156157158159160161162163164165166167168169170171172173174175176177178179180181182183184185186187188189190191192193194195196197198199200201202203204205206207208209210211212213214215216217218219220221222223224225226227228229230231232233234235236237238239240241242243244245246247248249250251252253254255256257258259260261262263264265266267268269270271
-               :  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+  initialString:   "  c  l  a  s  s     t  y  p  e  s  :  "  |  c  l  a  s  s  |  c  l  a  s  s  :  s  u  p  |  c  l  a  s  s  :  s  u  p  ,  s  u  p  ,  s  u  p  |  c  l  a  s  s  <  s  u  p  e  r  p  r  o  t  o  c  o  l  >  |  c  l  a  s  s  <  s  u  p  e  r  p  r  o  t  o  c  o  l  ,  s  u  p  e  r  p  r  o  t  o  c  o  l  ,  s  u  p  e  r  p  r  o  t  o  c  o  l  >  |  c  l  a  s  s  :  s  u  p  ,  s  u  p  ,  s  u  p  <  s  u  p  e  r  p  r  o  t  o  c  o  l  ,  s  u  p  e  r  p  r  o  t  o  c  o  l  ,  s  u  p  e  r  p  r  o  t  o  c  o  l  >  |  <  p  r  o  t  o  c  o  l  >  |  <  p  r  o  t  o  c  o  l  :  s  u  p  e  r  p  r  o  t  o  c  o  l  >  |  <  p  r  o  t  o  c  o  l  :  s  u  p  e  r  p  r  o  t  o  c  o  l  ,  s  u  p  e  r  p  r  o  t  o  c  o  l  ,  s  u  p  e  r  p  r  o  t  o  c  o  l  >  |  |  |  "  v  a  r     t  y  p  e  s  :  "  |  v  a  r  |  v  a  r  (  )  |  v  a  r  (  t  y  p  e  :  a  r  g  )  |  v  a  r  (  t  y  p  e  :  a  r  g  ,     t  y  p  e  :  a  r  g  ,     t  y  p  e  :  a  r  g  )  |  v  a  r  :  (  t  y  p  e  )  a  r  g  |  v  a  r  :  (  t  y  p  e  )  a  r  g     a  n  d  :  (  t  y  p  e  )  a  r  g  |  v  a  r  :  (  t  y  p  e  )  a  r  g     a  n  d  :  (  t  y  p  e  )  a  r  g     a  n  d  :  (  t  y  p  e  )  a  r  g  |   
+               :                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+               :  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+    ruleAtIndex:  -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+               :                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+               :  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+   indexOffsets:   0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
+               :  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+ currentIndexes:   0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99100101102103104105106107108109110111112113114115116117118119120121122123124125126127128129130131132133134135136137138139140141142143144145146147148149150151152153154155156157158159160161162163164165166167168169170171172173174175176177178179180181182183184185186187188189190191192193194195196197198199200201202203204205206207208209210211212213214215216217218219220221222223224225226227228229230231232233234235236237238239240241242243244245246247248249250251252253254255256257258259260261262263264265266267268269270271272273274275276277278279280281282283284285286287288289290291292293294295296297298299300301302303304305306307308309310311312313314315316317318319320321322323324325326327328329330331332333334335336337338339340341342343344345346347348349350351352353354355356357358359360361362363364365366367368369370371372373374375376377378379380381382383384385386387388389390391392393394395396397398399400401402403404405406407408409410411412413414415416417418419420421422423424425426
+               :  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 ruleFollowsOk, ruleIndexOk:
-           !end:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I ..
-           !end:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .. .. ..
-        +string:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I ..
-        +string:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I ..
-        !string:  *I .I .I .I .I .I .I .I .I .I .I .I .I *I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I ..
-         string:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I ..
-    !clearblock:  .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
-    !clearblock:  .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
-    !clearblock:  *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. .. ..
-    !clearblock:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I ..
-    !clearblock:  .I .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
-      lineStart:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I *I .I .I .I .I .I *I .I .I .I .I .I .I .I .I .I *I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I *I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I *I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I *I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I *I .I .I .I .I .I .I .I .I .I .I *I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I *I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I *I *I *I .I
-      lineStart:  .I .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
-     !lineStart:  .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
-     !lineStart:  .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
-     !lineStart:  .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
-     !lineStart:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I ..
-     !findbrace:  *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. .. ..
-         !block:  .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
-         !block:  .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
-         !block:  .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
-      lineStart:  .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
-     !findbrace:  *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. .. ..
-   !lineComment:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .. ..
-   !lineComment:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I ..
-    !commentEnd:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I ..
-       !comment:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .. ..
-       !comment:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .. ..
-          +word:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I ..
-           +int:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I ..
-          +word:  .I *I *I *I *I *I .I *I *I *I *I *I .I .I .I *I *I *I *I *I .I *I *I *I *I *I .I *I *I *I .I *I *I *I *I *I .I *I *I *I .I *I *I *I .I *I *I *I .I *I *I *I *I *I .I *I *I *I *I *I *I *I *I *I *I *I *I *I .I .I *I *I *I *I *I .I *I *I *I *I *I *I *I *I *I *I *I *I *I .I *I *I *I *I *I *I *I *I *I *I *I *I *I .I *I *I *I *I *I *I *I *I *I *I *I *I *I .I .I *I *I *I *I *I .I *I *I *I .I *I *I *I .I *I *I *I .I *I *I *I *I *I *I *I *I *I *I *I *I *I .I *I *I *I *I *I *I *I *I *I *I *I *I *I .I *I *I *I *I *I *I *I *I *I *I *I *I *I .I .I .I *I *I *I *I *I *I *I *I .I .I .I *I *I *I *I *I *I *I *I .I *I *I *I *I *I *I *I *I *I *I *I *I *I .I .I .I *I *I *I *I *I *I *I *I .I *I *I *I *I *I *I *I *I *I *I *I *I *I .I *I *I *I *I *I *I *I *I *I *I *I *I *I .I *I *I *I *I *I *I *I *I *I *I *I *I *I .I .I .I .I .I
-           +int:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I
-        +number:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .. ..
-     +wordGroup:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I ..
-          !word:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I
-     !wordGroup:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I
-            !ws:  .I .I .I .I .I .I *I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I
-          !line:  .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
-  (protocolList)protocolList:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I ..
-       protocol:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .. .. ..
-  (protocolList)protocolList:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .. ..
-   protocolList:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I ..
-  (classList)classList:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .. .. .. ..
-          class:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .. ..
-   (class)class:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I ..
-          class:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .. .. ..
-          class:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .. ..
-               :  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+           !end:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I ..
+           !end:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .. .. ..
+        +string:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I ..
+        +string:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I ..
+        !string:  *I .I .I .I .I .I .I .I .I .I .I .I .I *I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I *I .I .I .I .I .I .I .I .I .I .I *I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I ..
+         string:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I ..
+    !clearblock:  .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
+    !clearblock:  .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
+    !clearblock:  *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. .. ..
+    !clearblock:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I ..
+    !clearblock:  .I .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
+      lineStart:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I *I .I .I .I .I .I *I .I .I .I .I .I .I .I .I .I *I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I *I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I *I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I *I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I *I .I .I .I .I .I .I .I .I .I .I *I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I *I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I *I *I *I .I .I .I .I .I .I .I .I .I .I .I .I *I .I .I .I *I .I .I .I .I .I *I .I .I .I .I .I .I .I .I .I .I .I .I .I *I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I *I .I .I .I .I .I .I .I .I .I .I .I .I .I *I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I *I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I *I .I
+      lineStart:  .I .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
+     !lineStart:  .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
+     !lineStart:  .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
+     !lineStart:  .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
+     !lineStart:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I ..
+     !findbrace:  *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. .. ..
+         !block:  .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
+         !block:  .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
+         !block:  .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
+      lineStart:  .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
+     !findbrace:  *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. *. .. ..
+   !lineComment:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .. ..
+   !lineComment:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I ..
+    !commentEnd:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I ..
+       !comment:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .. ..
+       !comment:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .. ..
+          +word:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I ..
+           +int:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I ..
+          +word:  .I *I *I *I *I *I .I *I *I *I *I *I .I .I .I *I *I *I *I *I .I *I *I *I *I *I .I *I *I *I .I *I *I *I *I *I .I *I *I *I .I *I *I *I .I *I *I *I .I *I *I *I *I *I .I *I *I *I *I *I *I *I *I *I *I *I *I *I .I .I *I *I *I *I *I .I *I *I *I *I *I *I *I *I *I *I *I *I *I .I *I *I *I *I *I *I *I *I *I *I *I *I *I .I *I *I *I *I *I *I *I *I *I *I *I *I *I .I .I *I *I *I *I *I .I *I *I *I .I *I *I *I .I *I *I *I .I *I *I *I *I *I *I *I *I *I *I *I *I *I .I *I *I *I *I *I *I *I *I *I *I *I *I *I .I *I *I *I *I *I *I *I *I *I *I *I *I *I .I .I .I *I *I *I *I *I *I *I *I .I .I .I *I *I *I *I *I *I *I *I .I *I *I *I *I *I *I *I *I *I *I *I *I *I .I .I .I *I *I *I *I *I *I *I *I .I *I *I *I *I *I *I *I *I *I *I *I *I *I .I *I *I *I *I *I *I *I *I *I *I *I *I *I .I *I *I *I *I *I *I *I *I *I *I *I *I *I .I .I .I .I .I *I *I *I .I *I *I *I *I *I .I .I .I *I *I *I .I *I *I *I .I .I .I *I *I *I .I *I *I *I *I .I *I *I *I .I .I *I *I *I .I *I *I *I *I .I *I *I *I .I .I *I *I *I *I .I *I *I *I .I .I *I *I *I *I .I *I *I *I .I .I *I *I *I .I .I *I *I *I *I .I *I *I *I .I *I *I *I .I .I *I *I *I *I .I *I *I *I .I *I *I *I .I .I *I *I *I *I .I *I *I *I .I *I *I *I .I .I *I *I *I *I .I *I *I *I .I *I *I *I .I .I *I *I *I *I .I *I *I *I .I *I *I *I .I .I *I *I *I *I .I *I *I *I .I .I
+           +int:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I
+        +number:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .. ..
+     +wordGroup:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I ..
+          !word:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I
+     !wordGroup:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I
+            !ws:  .I .I .I .I .I .I *I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I *I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I *I .I .I .I .I .I .I .I .I .I *I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I *I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I *I .I .I .I .I .I .I .I .I .I .I .I .I .I *I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I
+  (protocolList)protocolList:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I ..
+       protocol:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .. .. ..
+  (protocolList)protocolList:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .. ..
+   protocolList:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I ..
+  (classList)classList:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .. .. .. .. ..
+   (class)class:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .. ..
+          class:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .. .. ..
+   (class)class:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I ..
+          class:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .. ..
+         argDef:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .. .. .. ..
+         argDef:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .. .. .. .. .. ..
+  (argList)argList:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .. .. .. ..
+  (argList)argList:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .. .. ..
+           type:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I ..
+     (type)cast:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .. ..
+      selArgDef:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .. .. ..
+      selArgDef:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .. .. .. .. ..
+  (selArgList)selArgList:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .. ..
+             fn:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I ..
+           !var:  .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I .I ..
+          !line:  .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
+               :  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 ARules | ZRules | applicableRule:
            !end: . | . |..2345678
            !end: . | . |....45678
@@ -733,29 +906,40 @@ ARules | ZRules | applicableRule:
           !word: . | . |.12345678
      !wordGroup: . | . |.12345678
             !ws: . | . |.12345678
-          !line: . | . |..2345678
   (protocolList)protocolList: . | . |..2345678
        protocol: . | . |....45678
   (protocolList)protocolList: . | . |...345678
    protocolList: . | . |..2345678
-  (classList)classList: . | . |.....5678
-          class: . | . |...345678
-   (class)class: . | . |..2345678
+  (classList)classList: . | . |......678
+   (class)class: . | . |...345678
           class: . | . |....45678
+   (class)class: . | . |..2345678
           class: . | . |...345678
+         argDef: . | . |.....5678
+         argDef: . | . |.......78
+  (argList)argList: . | . |.....5678
+  (argList)argList: . | . |....45678
+           type: . | . |..2345678
+     (type)cast: . | . |...345678
+      selArgDef: . | . |....45678
+      selArgDef: . | . |......678
+  (selArgList)selArgList: . | . |...345678
+             fn: . | . |..2345678
+           !var: . | . |..2345678
+          !line: . | . |..2345678
 nextRules:
            !end: 0
            !end: 0
         +string: 0
         +string: 0
-        !string: 2
+        !string: 4
          string: 0
     !clearblock: 0
     !clearblock: 0
     !clearblock: 0
     !clearblock: 0
     !clearblock: 0
-      lineStart: 12
+      lineStart: 20
       lineStart: 0
      !lineStart: 0
      !lineStart: 0
@@ -774,23 +958,34 @@ nextRules:
        !comment: 0
           +word: 0
            +int: 0
-          +word: 228
+          +word: 336
            +int: 0
         +number: 0
      +wordGroup: 0
           !word: 0
      !wordGroup: 0
-            !ws: 1
-          !line: 0
+            !ws: 7
   (protocolList)protocolList: 0
        protocol: 0
   (protocolList)protocolList: 0
    protocolList: 0
   (classList)classList: 0
+   (class)class: 0
           class: 0
    (class)class: 0
           class: 0
-          class: 0
+         argDef: 0
+         argDef: 0
+  (argList)argList: 0
+  (argList)argList: 0
+           type: 0
+     (type)cast: 0
+      selArgDef: 0
+      selArgDef: 0
+  (selArgList)selArgList: 0
+             fn: 0
+           !var: 0
+          !line: 0
 
 
 
@@ -830,27 +1025,38 @@ CHILD +string -> base
 Kill token base
 .bp13.CHILD +string -> +string
 Kill token base
-.bp14..bp15..bp16..bp17..bp18..bp19..bp20..bp21..bp22..bp23..bp24..bp25..bp26.Kill token lineStart
-.bp27.Kill token lineStart
-.bp28.CHILD +word -> base
-.bp29.CHILD +word -> base
-.bp30.CHILD +word -> base
-.bp31.CHILD +word -> base
-.bp32.CHILD +word -> base
-.bp33.CHILD +word -> base
-.bp34.CHILD +word -> base
-.bp35.CHILD +word -> base
-.bp36.CHILD +word -> base
-.bp37.CHILD +word -> base
-.bp38.CHILD +word -> base
-.bp39.CHILD +word -> base
-.bp40.CHILD +word -> base
-.bp41.CHILD +word -> base
-.bp42.CHILD +word -> base
-.bp43.CHILD +word -> base
-.bp44.CHILD +word -> base
-.bp45.CHILD +word -> base
-.bp46.CHILD +word -> base
+.bp14.Kill token base
+.bp15.CHILD +string -> base
+CHILD +string -> base
+Kill token base
+.bp16.CHILD +string -> +string
+CHILD +string -> base
+Kill token base
+.bp17.CHILD +string -> +string
+CHILD +string -> base
+Kill token base
+.bp18.CHILD +string -> +string
+CHILD +string -> base
+Kill token base
+.bp19.CHILD +string -> +string
+CHILD +string -> base
+Kill token base
+.bp20.CHILD +string -> +string
+CHILD +string -> base
+Kill token base
+.bp21.CHILD +string -> +string
+CHILD +string -> base
+Kill token base
+.bp22.CHILD +string -> +string
+CHILD +string -> base
+Kill token base
+.bp23.CHILD +string -> +string
+CHILD +string -> base
+Kill token base
+.bp24.CHILD +string -> +string
+Kill token base
+.bp25..bp26..bp27..bp28..bp29..bp30..bp31..bp32..bp33..bp34..bp35..bp36..bp37..bp38..bp39..bp40..bp41..bp42..bp43..bp44..bp45.Kill token lineStart
+.bp46.Kill token lineStart
 .bp47.CHILD +word -> base
 .bp48.CHILD +word -> base
 .bp49.CHILD +word -> base
@@ -1050,364 +1256,126 @@ Kill token base
 .bp243.CHILD +word -> base
 .bp244.CHILD +word -> base
 .bp245.CHILD +word -> base
-.bp246.CHILD +wordGroup -> +word
-CHILD +wordGroup -> +word
-Kill token +word
-.bp247.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp248.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp249.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp250.CHILD +wordGroup -> +word
-CHILD +wordGroup -> +word
-Kill token +word
-.bp251.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp252.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp253.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp254.CHILD +wordGroup -> +word
-CHILD +wordGroup -> +word
-Kill token +word
-.bp255.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp256.CHILD +wordGroup -> +word
-CHILD +wordGroup -> +word
-Kill token +word
-.bp257.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp258.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp259.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp260.CHILD +wordGroup -> +word
-CHILD +wordGroup -> +word
-Kill token +word
-.bp261.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp262.CHILD +wordGroup -> +word
-CHILD +wordGroup -> +word
-Kill token +word
-.bp263.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp264.CHILD +wordGroup -> +word
-CHILD +wordGroup -> +word
-Kill token +word
-.bp265.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp266.CHILD +wordGroup -> +word
-CHILD +wordGroup -> +word
-Kill token +word
-.bp267.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp268.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp269.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp270.CHILD +wordGroup -> +word
-CHILD +wordGroup -> +word
-Kill token +word
-.bp271.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp272.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp273.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp274.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp275.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp276.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp277.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp278.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp279.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp280.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp281.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp282.CHILD +wordGroup -> +word
-CHILD +wordGroup -> +word
-Kill token +word
-.bp283.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp284.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp285.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp286.CHILD +wordGroup -> +word
-CHILD +wordGroup -> +word
-Kill token +word
-.bp287.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp288.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp289.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp290.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp291.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp292.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp293.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp294.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp295.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp296.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp297.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp298.CHILD +wordGroup -> +word
-CHILD +wordGroup -> +word
-Kill token +word
-.bp299.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp300.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp301.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp302.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp303.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp304.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp305.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp306.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp307.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp308.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp309.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp310.CHILD +wordGroup -> +word
-CHILD +wordGroup -> +word
-Kill token +word
-.bp311.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp312.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp313.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp314.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp315.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp316.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp317.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp318.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp319.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp320.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp321.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp322.CHILD +wordGroup -> +word
-CHILD +wordGroup -> +word
-Kill token +word
-.bp323.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp324.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp325.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp326.CHILD +wordGroup -> +word
-CHILD +wordGroup -> +word
-Kill token +word
-.bp327.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp328.CHILD +wordGroup -> +word
-CHILD +wordGroup -> +word
-Kill token +word
-.bp329.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp330.CHILD +wordGroup -> +word
-CHILD +wordGroup -> +word
-Kill token +word
-.bp331.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp332.CHILD +wordGroup -> +word
-CHILD +wordGroup -> +word
-Kill token +word
-.bp333.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp334.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp335.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp336.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp337.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp338.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp339.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp340.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp341.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp342.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp343.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp344.CHILD +wordGroup -> +word
-CHILD +wordGroup -> +word
-Kill token +word
-.bp345.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp346.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp347.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp348.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp349.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp350.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp351.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp352.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp353.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp354.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp355.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp356.CHILD +wordGroup -> +word
-CHILD +wordGroup -> +word
-Kill token +word
-.bp357.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp358.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp359.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp360.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp361.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp362.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp363.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp364.CHILD +wordGroup -> +wordGroup
-CHILD +wordGroup -> +word
-Kill token +word
-.bp365.CHILD +wordGroup -> +wordGroup
+.bp246.CHILD +word -> base
+.bp247.CHILD +word -> base
+.bp248.CHILD +word -> base
+.bp249.CHILD +word -> base
+.bp250.CHILD +word -> base
+.bp251.CHILD +word -> base
+.bp252.CHILD +word -> base
+.bp253.CHILD +word -> base
+.bp254.CHILD +word -> base
+.bp255.CHILD +word -> base
+.bp256.CHILD +word -> base
+.bp257.CHILD +word -> base
+.bp258.CHILD +word -> base
+.bp259.CHILD +word -> base
+.bp260.CHILD +word -> base
+.bp261.CHILD +word -> base
+.bp262.CHILD +word -> base
+.bp263.CHILD +word -> base
+.bp264.CHILD +word -> base
+.bp265.CHILD +word -> base
+.bp266.CHILD +word -> base
+.bp267.CHILD +word -> base
+.bp268.CHILD +word -> base
+.bp269.CHILD +word -> base
+.bp270.CHILD +word -> base
+.bp271.CHILD +word -> base
+.bp272.CHILD +word -> base
+.bp273.CHILD +word -> base
+.bp274.CHILD +word -> base
+.bp275.CHILD +word -> base
+.bp276.CHILD +word -> base
+.bp277.CHILD +word -> base
+.bp278.CHILD +word -> base
+.bp279.CHILD +word -> base
+.bp280.CHILD +word -> base
+.bp281.CHILD +word -> base
+.bp282.CHILD +word -> base
+.bp283.CHILD +word -> base
+.bp284.CHILD +word -> base
+.bp285.CHILD +word -> base
+.bp286.CHILD +word -> base
+.bp287.CHILD +word -> base
+.bp288.CHILD +word -> base
+.bp289.CHILD +word -> base
+.bp290.CHILD +word -> base
+.bp291.CHILD +word -> base
+.bp292.CHILD +word -> base
+.bp293.CHILD +word -> base
+.bp294.CHILD +word -> base
+.bp295.CHILD +word -> base
+.bp296.CHILD +word -> base
+.bp297.CHILD +word -> base
+.bp298.CHILD +word -> base
+.bp299.CHILD +word -> base
+.bp300.CHILD +word -> base
+.bp301.CHILD +word -> base
+.bp302.CHILD +word -> base
+.bp303.CHILD +word -> base
+.bp304.CHILD +word -> base
+.bp305.CHILD +word -> base
+.bp306.CHILD +word -> base
+.bp307.CHILD +word -> base
+.bp308.CHILD +word -> base
+.bp309.CHILD +word -> base
+.bp310.CHILD +word -> base
+.bp311.CHILD +word -> base
+.bp312.CHILD +word -> base
+.bp313.CHILD +word -> base
+.bp314.CHILD +word -> base
+.bp315.CHILD +word -> base
+.bp316.CHILD +word -> base
+.bp317.CHILD +word -> base
+.bp318.CHILD +word -> base
+.bp319.CHILD +word -> base
+.bp320.CHILD +word -> base
+.bp321.CHILD +word -> base
+.bp322.CHILD +word -> base
+.bp323.CHILD +word -> base
+.bp324.CHILD +word -> base
+.bp325.CHILD +word -> base
+.bp326.CHILD +word -> base
+.bp327.CHILD +word -> base
+.bp328.CHILD +word -> base
+.bp329.CHILD +word -> base
+.bp330.CHILD +word -> base
+.bp331.CHILD +word -> base
+.bp332.CHILD +word -> base
+.bp333.CHILD +word -> base
+.bp334.CHILD +word -> base
+.bp335.CHILD +word -> base
+.bp336.CHILD +word -> base
+.bp337.CHILD +word -> base
+.bp338.CHILD +word -> base
+.bp339.CHILD +word -> base
+.bp340.CHILD +word -> base
+.bp341.CHILD +word -> base
+.bp342.CHILD +word -> base
+.bp343.CHILD +word -> base
+.bp344.CHILD +word -> base
+.bp345.CHILD +word -> base
+.bp346.CHILD +word -> base
+.bp347.CHILD +word -> base
+.bp348.CHILD +word -> base
+.bp349.CHILD +word -> base
+.bp350.CHILD +word -> base
+.bp351.CHILD +word -> base
+.bp352.CHILD +word -> base
+.bp353.CHILD +word -> base
+.bp354.CHILD +word -> base
+.bp355.CHILD +word -> base
+.bp356.CHILD +word -> base
+.bp357.CHILD +word -> base
+.bp358.CHILD +word -> base
+.bp359.CHILD +word -> base
+.bp360.CHILD +word -> base
+.bp361.CHILD +word -> base
+.bp362.CHILD +word -> base
+.bp363.CHILD +word -> base
+.bp364.CHILD +word -> base
+.bp365.CHILD +wordGroup -> +word
 CHILD +wordGroup -> +word
 Kill token +word
 .bp366.CHILD +wordGroup -> +wordGroup
@@ -1416,10 +1384,10 @@ Kill token +word
 .bp367.CHILD +wordGroup -> +wordGroup
 CHILD +wordGroup -> +word
 Kill token +word
-.bp368.CHILD +wordGroup -> +word
+.bp368.CHILD +wordGroup -> +wordGroup
 CHILD +wordGroup -> +word
 Kill token +word
-.bp369.CHILD +wordGroup -> +wordGroup
+.bp369.CHILD +wordGroup -> +word
 CHILD +wordGroup -> +word
 Kill token +word
 .bp370.CHILD +wordGroup -> +wordGroup
@@ -1431,7 +1399,7 @@ Kill token +word
 .bp372.CHILD +wordGroup -> +wordGroup
 CHILD +wordGroup -> +word
 Kill token +word
-.bp373.CHILD +wordGroup -> +wordGroup
+.bp373.CHILD +wordGroup -> +word
 CHILD +wordGroup -> +word
 Kill token +word
 .bp374.CHILD +wordGroup -> +wordGroup
@@ -1449,25 +1417,25 @@ Kill token +word
 .bp378.CHILD +wordGroup -> +wordGroup
 CHILD +wordGroup -> +word
 Kill token +word
-.bp379.CHILD +wordGroup -> +wordGroup
+.bp379.CHILD +wordGroup -> +word
 CHILD +wordGroup -> +word
 Kill token +word
 .bp380.CHILD +wordGroup -> +wordGroup
 CHILD +wordGroup -> +word
 Kill token +word
-.bp381.CHILD +wordGroup -> +wordGroup
+.bp381.CHILD +wordGroup -> +word
 CHILD +wordGroup -> +word
 Kill token +word
-.bp382.CHILD +wordGroup -> +word
+.bp382.CHILD +wordGroup -> +wordGroup
 CHILD +wordGroup -> +word
 Kill token +word
-.bp383.CHILD +wordGroup -> +wordGroup
+.bp383.CHILD +wordGroup -> +word
 CHILD +wordGroup -> +word
 Kill token +word
 .bp384.CHILD +wordGroup -> +wordGroup
 CHILD +wordGroup -> +word
 Kill token +word
-.bp385.CHILD +wordGroup -> +wordGroup
+.bp385.CHILD +wordGroup -> +word
 CHILD +wordGroup -> +word
 Kill token +word
 .bp386.CHILD +wordGroup -> +wordGroup
@@ -1479,7 +1447,7 @@ Kill token +word
 .bp388.CHILD +wordGroup -> +wordGroup
 CHILD +wordGroup -> +word
 Kill token +word
-.bp389.CHILD +wordGroup -> +wordGroup
+.bp389.CHILD +wordGroup -> +word
 CHILD +wordGroup -> +word
 Kill token +word
 .bp390.CHILD +wordGroup -> +wordGroup
@@ -1494,7 +1462,7 @@ Kill token +word
 .bp393.CHILD +wordGroup -> +wordGroup
 CHILD +wordGroup -> +word
 Kill token +word
-.bp394.CHILD +wordGroup -> +word
+.bp394.CHILD +wordGroup -> +wordGroup
 CHILD +wordGroup -> +word
 Kill token +word
 .bp395.CHILD +wordGroup -> +wordGroup
@@ -1527,7 +1495,7 @@ Kill token +word
 .bp404.CHILD +wordGroup -> +wordGroup
 CHILD +wordGroup -> +word
 Kill token +word
-.bp405.CHILD +wordGroup -> +wordGroup
+.bp405.CHILD +wordGroup -> +word
 CHILD +wordGroup -> +word
 Kill token +word
 .bp406.CHILD +wordGroup -> +wordGroup
@@ -1551,7 +1519,7 @@ Kill token +word
 .bp412.CHILD +wordGroup -> +wordGroup
 CHILD +wordGroup -> +word
 Kill token +word
-.bp413.CHILD +wordGroup -> +word
+.bp413.CHILD +wordGroup -> +wordGroup
 CHILD +wordGroup -> +word
 Kill token +word
 .bp414.CHILD +wordGroup -> +wordGroup
@@ -1563,7 +1531,7 @@ Kill token +word
 .bp416.CHILD +wordGroup -> +wordGroup
 CHILD +wordGroup -> +word
 Kill token +word
-.bp417.CHILD +wordGroup -> +wordGroup
+.bp417.CHILD +wordGroup -> +word
 CHILD +wordGroup -> +word
 Kill token +word
 .bp418.CHILD +wordGroup -> +wordGroup
@@ -1587,7 +1555,7 @@ Kill token +word
 .bp424.CHILD +wordGroup -> +wordGroup
 CHILD +wordGroup -> +word
 Kill token +word
-.bp425.CHILD +wordGroup -> +word
+.bp425.CHILD +wordGroup -> +wordGroup
 CHILD +wordGroup -> +word
 Kill token +word
 .bp426.CHILD +wordGroup -> +wordGroup
@@ -1599,7 +1567,7 @@ Kill token +word
 .bp428.CHILD +wordGroup -> +wordGroup
 CHILD +wordGroup -> +word
 Kill token +word
-.bp429.CHILD +wordGroup -> +wordGroup
+.bp429.CHILD +wordGroup -> +word
 CHILD +wordGroup -> +word
 Kill token +word
 .bp430.CHILD +wordGroup -> +wordGroup
@@ -1623,102 +1591,789 @@ Kill token +word
 .bp436.CHILD +wordGroup -> +wordGroup
 CHILD +wordGroup -> +word
 Kill token +word
-.bp437..bp438..bp439..bp440..bp441..bp442..bp443..bp444..bp445..bp446..bp447..bp448..bp449..bp450..bp451..bp452..bp453..bp454..bp455..bp456..bp457..bp458..bp459..bp460..bp461..bp462..bp463..bp464.CHILD protocolList -> +wordGroup
+.bp437.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp438.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp439.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp440.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp441.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp442.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp443.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp444.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp445.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp446.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp447.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp448.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp449.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp450.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp451.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp452.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp453.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp454.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp455.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp456.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp457.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp458.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp459.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp460.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp461.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp462.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp463.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp464.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp465.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp466.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp467.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp468.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp469.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp470.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp471.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp472.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp473.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp474.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp475.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp476.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp477.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp478.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp479.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp480.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp481.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp482.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp483.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp484.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp485.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp486.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp487.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp488.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp489.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp490.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp491.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp492.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp493.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp494.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp495.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp496.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp497.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp498.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp499.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp500.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp501.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp502.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp503.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp504.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp505.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp506.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp507.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp508.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp509.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp510.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp511.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp512.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp513.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp514.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp515.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp516.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp517.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp518.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp519.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp520.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp521.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp522.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp523.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp524.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp525.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp526.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp527.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp528.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp529.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp530.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp531.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp532.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp533.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp534.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp535.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp536.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp537.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp538.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp539.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp540.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp541.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp542.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp543.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp544.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp545.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp546.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp547.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp548.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp549.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp550.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp551.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp552.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp553.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp554.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp555.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp556.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp557.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp558.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp559.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp560.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp561.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp562.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp563.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp564.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp565.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp566.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp567.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp568.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp569.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp570.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp571.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp572.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp573.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp574.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp575.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp576.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp577.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp578.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp579.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp580.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp581.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp582.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp583.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp584.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp585.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp586.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp587.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp588.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp589.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp590.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp591.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp592.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp593.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp594.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp595.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp596.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp597.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp598.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp599.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp600.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp601.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp602.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp603.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp604.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp605.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp606.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp607.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp608.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp609.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp610.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp611.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp612.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp613.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp614.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp615.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp616.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp617.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp618.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp619.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp620.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp621.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp622.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp623.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp624.CHILD +wordGroup -> +word
+CHILD +wordGroup -> +word
+Kill token +word
+.bp625.CHILD +wordGroup -> +wordGroup
+CHILD +wordGroup -> +word
+Kill token +word
+.bp626..bp627..bp628..bp629..bp630..bp631..bp632..bp633..bp634..bp635..bp636..bp637..bp638..bp639..bp640..bp641..bp642..bp643..bp644..bp645..bp646..bp647..bp648..bp649..bp650..bp651..bp652..bp653..bp654..bp655..bp656..bp657..bp658..bp659..bp660..bp661..bp662..bp663..bp664..bp665..bp666..bp667..bp668..bp669..bp670..bp671..bp672..bp673..bp674..bp675..bp676..bp677..bp678..bp679..bp680..bp681..bp682..bp683.Kill token base
+.bp684.Kill token base
+.bp685.Kill token base
+.bp686.Kill token base
+.bp687.Kill token base
+.bp688.CHILD protocolList -> +wordGroup
 Kill token base
-.bp465.CHILD (protocolList)protocolList -> protocolList
+.bp689.CHILD (protocolList)protocolList -> protocolList
 Kill token protocolList
-.bp466.CHILD protocolList -> +wordGroup
+.bp690.CHILD protocolList -> +wordGroup
 Kill token base
-.bp467.CHILD (protocolList)protocolList -> +wordGroup
+.bp691.CHILD (protocolList)protocolList -> +wordGroup
 CHILD (protocolList)protocolList -> protocolList
 Kill token protocolList
 Kill token base
-.bp468.CHILD (protocolList)protocolList -> +wordGroup
+.bp692.CHILD (protocolList)protocolList -> +wordGroup
 CHILD (protocolList)protocolList -> (protocolList)protocolList
 Kill token (protocolList)protocolList
 Kill token base
-.bp469.CHILD (protocolList)protocolList -> (protocolList)protocolList
+.bp693.CHILD (protocolList)protocolList -> (protocolList)protocolList
 Kill token (protocolList)protocolList
-.bp470.CHILD protocolList -> +wordGroup
+.bp694.CHILD protocolList -> +wordGroup
 Kill token base
-.bp471.CHILD (protocolList)protocolList -> +wordGroup
+.bp695.CHILD (protocolList)protocolList -> +wordGroup
 CHILD (protocolList)protocolList -> protocolList
 Kill token protocolList
 Kill token base
-.bp472.CHILD (protocolList)protocolList -> +wordGroup
+.bp696.CHILD (protocolList)protocolList -> +wordGroup
 CHILD (protocolList)protocolList -> (protocolList)protocolList
 Kill token (protocolList)protocolList
 Kill token base
-.bp473.CHILD (protocolList)protocolList -> (protocolList)protocolList
+.bp697.CHILD (protocolList)protocolList -> (protocolList)protocolList
 Kill token (protocolList)protocolList
-.bp474.CHILD protocolList -> +wordGroup
+.bp698.CHILD protocolList -> +wordGroup
 Kill token base
-.bp475.CHILD (protocolList)protocolList -> protocolList
+.bp699.CHILD (protocolList)protocolList -> protocolList
 Kill token protocolList
-.bp476.Kill token lineStart
-.bp477.CHILD protocolList -> +wordGroup
+.bp700.CHILD protocolList -> +wordGroup
 Kill token base
-.bp478.CHILD protocol -> +wordGroup
+.bp701.CHILD protocol -> +wordGroup
 CHILD protocol -> protocolList
 Kill token protocolList
 Kill token base
 Kill token +wordGroup
-.bp479.Kill token lineStart
-.bp480.CHILD protocolList -> +wordGroup
+.bp702.CHILD protocolList -> +wordGroup
 Kill token base
-.bp481.CHILD (protocolList)protocolList -> +wordGroup
+.bp703.CHILD (protocolList)protocolList -> +wordGroup
 CHILD (protocolList)protocolList -> protocolList
 Kill token protocolList
 Kill token base
-.bp482.CHILD (protocolList)protocolList -> +wordGroup
+.bp704.CHILD (protocolList)protocolList -> +wordGroup
 CHILD (protocolList)protocolList -> (protocolList)protocolList
 Kill token (protocolList)protocolList
 Kill token base
-.bp483.CHILD protocol -> +wordGroup
+.bp705.CHILD protocol -> +wordGroup
 CHILD protocol -> (protocolList)protocolList
 Kill token (protocolList)protocolList
 Kill token base
 Kill token +wordGroup
-.bp484.Kill token lineStart
-.bp485.CHILD (classList)classList -> +wordGroup
+.bp706.CHILD (classList)classList -> +wordGroup
 CHILD (classList)classList -> +wordGroup
 Kill token +wordGroup
 Kill token base
-.bp486.CHILD (classList)classList -> (classList)classList
+.bp707.CHILD (classList)classList -> (classList)classList
 CHILD (classList)classList -> +wordGroup
 Kill token +wordGroup
 Kill token base
-.bp487.CHILD (classList)classList -> +wordGroup
+.bp708.CHILD (classList)classList -> +wordGroup
 CHILD (classList)classList -> +wordGroup
 Kill token +wordGroup
 Kill token base
-.bp488.CHILD (classList)classList -> (classList)classList
+.bp709.CHILD (classList)classList -> (classList)classList
 CHILD (classList)classList -> +wordGroup
 Kill token +wordGroup
 Kill token base
-.bp489.CHILD class -> +wordGroup
+.bp710.CHILD (class)class -> +wordGroup
+CHILD (class)class -> (protocolList)protocolList
+Kill token (protocolList)protocolList
+Kill token +wordGroup
+.bp711.Kill token lineStart
+.bp712.CHILD (class)class -> +wordGroup
+CHILD (class)class -> (protocolList)protocolList
+Kill token (protocolList)protocolList
+Kill token +wordGroup
+.bp713.Kill token lineStart
+.bp714.CHILD class -> +wordGroup
 CHILD class -> +wordGroup
 Kill token +wordGroup
 Kill token base
-.bp490.Kill token lineStart
-.bp491.CHILD class -> +wordGroup
+Kill token +wordGroup
+.bp715.CHILD class -> +wordGroup
 CHILD class -> (classList)classList
 Kill token (classList)classList
 Kill token base
-.bp492.Kill token lineStart
-.bp493.CHILD class -> +wordGroup
+Kill token +wordGroup
+.bp716.CHILD class -> +wordGroup
 CHILD class -> (classList)classList
 Kill token (classList)classList
 Kill token base
-.bp494.Kill token lineStart
-.bp495.CHILD (class)class -> +wordGroup
+Kill token +wordGroup
+.bp717.CHILD (class)class -> class
 CHILD (class)class -> (protocolList)protocolList
 Kill token (protocolList)protocolList
-.bp496.Kill token lineStart
-.bp497.CHILD (class)class -> +wordGroup
-CHILD (class)class -> (protocolList)protocolList
+.bp718.CHILD class -> +wordGroup
+Kill token +wordGroup
+.bp719.CHILD class -> (protocolList)protocolList
 Kill token (protocolList)protocolList
-.bp498.Kill token lineStart
-.bp499.CHILD (class)class -> class
-CHILD (class)class -> (protocolList)protocolList
-Kill token (protocolList)protocolList
+.bp720.CHILD class -> +wordGroup
+Kill token +wordGroup
+.bp721.CHILD (type)cast -> +wordGroup
+Kill token base
+Kill token +wordGroup
+.bp722.CHILD (type)cast -> +wordGroup
+Kill token base
+Kill token +wordGroup
+.bp723.CHILD (type)cast -> +wordGroup
+Kill token base
+Kill token +wordGroup
+.bp724.CHILD (type)cast -> +wordGroup
+Kill token base
+Kill token +wordGroup
+.bp725.CHILD (type)cast -> +wordGroup
+Kill token base
+Kill token +wordGroup
+.bp726.CHILD (type)cast -> +wordGroup
+Kill token base
+Kill token +wordGroup
+.bp727..bp728..bp729.CHILD argDef -> +wordGroup
+CHILD argDef -> +wordGroup
+Kill token +wordGroup
+Kill token base
+.bp730.CHILD (argList)argList -> argDef
+Kill token base
+Kill token argDef
+.bp731.CHILD fn -> +wordGroup
+CHILD fn -> (argList)argList
+Kill token (argList)argList
+.bp732..bp733.CHILD argDef -> +wordGroup
+CHILD argDef -> +wordGroup
+Kill token +wordGroup
+Kill token base
+.bp734.CHILD argDef -> +wordGroup
+CHILD argDef -> +wordGroup
+Kill token +wordGroup
+Kill token base
+.bp735.CHILD (argList)argList -> argDef
+CHILD (argList)argList -> argDef
+Kill token argDef
+Kill token base
+.bp736.CHILD argDef -> +wordGroup
+CHILD argDef -> +wordGroup
+Kill token +wordGroup
+Kill token base
+.bp737.CHILD (argList)argList -> (argList)argList
+CHILD (argList)argList -> argDef
+Kill token argDef
+Kill token base
+.bp738.CHILD (argList)argList -> (argList)argList
+Kill token base
+Kill token (argList)argList
+.bp739.CHILD fn -> +wordGroup
+CHILD fn -> (argList)argList
+Kill token (argList)argList
+.bp740..bp741.CHILD selArgDef -> (type)cast
+CHILD selArgDef -> +wordGroup
+Kill token +wordGroup
+Kill token (type)cast
+.bp742.CHILD fn -> +wordGroup
+CHILD fn -> selArgDef
+Kill token selArgDef
+.bp743..bp744.CHILD selArgDef -> (type)cast
+CHILD selArgDef -> +wordGroup
+Kill token +wordGroup
+Kill token (type)cast
+.bp745.CHILD selArgDef -> +wordGroup
+CHILD selArgDef -> (type)cast
+CHILD selArgDef -> +wordGroup
+Kill token +wordGroup
+Kill token (type)cast
+Kill token base
+.bp746.CHILD (selArgList)selArgList -> selArgDef
+CHILD (selArgList)selArgList -> selArgDef
+Kill token selArgDef
+.bp747.CHILD fn -> +wordGroup
+CHILD fn -> (selArgList)selArgList
+Kill token (selArgList)selArgList
+.bp748..bp749.CHILD selArgDef -> (type)cast
+CHILD selArgDef -> +wordGroup
+Kill token +wordGroup
+Kill token (type)cast
+.bp750.CHILD selArgDef -> +wordGroup
+CHILD selArgDef -> (type)cast
+CHILD selArgDef -> +wordGroup
+Kill token +wordGroup
+Kill token (type)cast
+Kill token base
+.bp751.CHILD (selArgList)selArgList -> selArgDef
+CHILD (selArgList)selArgList -> selArgDef
+Kill token selArgDef
+.bp752.CHILD selArgDef -> +wordGroup
+CHILD selArgDef -> (type)cast
+CHILD selArgDef -> +wordGroup
+Kill token +wordGroup
+Kill token (type)cast
+Kill token base
+.bp753.CHILD (selArgList)selArgList -> (selArgList)selArgList
+CHILD (selArgList)selArgList -> selArgDef
+Kill token selArgDef
+.bp754.CHILD fn -> +wordGroup
+CHILD fn -> (selArgList)selArgList
+Kill token (selArgList)selArgList
+.bp755.Kill token lineStart
+.bp756.Kill token lineStart
+.bp757.Kill token lineStart
+.bp758.Kill token lineStart
+.bp759.Kill token lineStart
+.bp760.Kill token lineStart
+.bp761.Kill token lineStart
+.bp762.Kill token lineStart

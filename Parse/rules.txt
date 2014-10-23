@@ -16,19 +16,19 @@ string:x"|O"|>>string[0]
 !clearblock:<{[0]|>>??[1000]
 
  lines
-lineStart:?\n[0]|>>lineStart[1]
-lineStart:<? |>>lineStart[2]
-!lineStart:lineStart[1..]| |>>lineStart[2..]
-!lineStart:lineStart[1..]|\t|>>lineStart[5..]
-!lineStart:x |OlineStart[1..]|>>lineStart[1..]
-!lineStart:xlineStart|olineStart|>>??
+lineStart:?\n[0]|>>lineStart,pureLineStart[1]
+lineStart:<? |>>lineStart,pureLineStart[2]
+!lineStart:pureLineStart[1..]| |>>lineStart,pureLineStart[2..]
+!lineStart:pureLineStart[1..]|\t|>>lineStart,pureLineStart[5..]
+!lineStart:x |OpureLineStart[1..]|>>lineStart,pureLineStart[1..]
+!lineStart:xpureLineStart|olineStart|>>??
 
  blocks
-!findbrace:^lineStart[0]|o^END[1000..]|>>??[1000]
+!findbrace:^pureLineStart[0]|o^END[1000..]|>>??[1000]
 !block:O{[1..998]|O^END[1000..]|>>??[@0:2..999]
 !block:x}[3..999]|O^END[1000..]|>>??[@0:2..998]
 !block:x}[2..999]|>>??
-lineStart:?{[2..999]|>>lineStart[2..999]
+lineStart:?{[2..999]|>>lineStart,pureLineStart[2..999]
 !findbrace:o^END[1..999]|O^END[1000..]|>>??[@0:1..999]
 
 
@@ -58,9 +58,6 @@ lineStart:?{[2..999]|>>lineStart[2..999]
  !ws:x ,\t|o\,,\>,\<,:,=|>>??
 
 
- eat lineStarts
-!line:xlineStart[1..]|Oclass,protocol,protocolList[0]|>>??[@0:1..]
-
  protocols
 (protocolList)protocolList:?\<|_protocolList|>>protocolList
 protocol:?\<|word,wordGroup|?:|_protocolList|>>protocol
@@ -68,21 +65,62 @@ protocol:?\<|word,wordGroup|?:|_protocolList|>>protocol
 protocolList:word,wordGroup|?\>|>>_protocolList
 
  classes
-(classList)classList:?oword,wordGroup,protocolList|?o:|Oword,wordGroup,classList|?\,|word,wordGroup|>>classList
-class:word,wordGroup,protocolList|?:|word,wordGroup,classList|>>class,classWithSup
-(class)class:classWithSup,wordGroup|protocolList|>>class
+(classList)classList:?olineStart|?oword,wordGroup,protocolList|?o:|Oword,wordGroup,classList|?\,|word,wordGroup|>>classList
+(class)class:?olineStart|classWithSup,wordGroup|protocolList|>>class
 
-class:?lineStart|wordGroup,word,protocolList|?:|protocolList,classList,word,wordGroup|>>lineStart,class
-class:?lineStart|wordGroup,word,protocolList|?oword,wordGroup,lineStart,protocolList,END|>>lineStart,class
+class:?lineStart|wordGroup,word,protocolList|?:|classList,word,wordGroup|>>lineStart,class,pureClass
+(class)class:pureClass|protocolList|>>lineStart,class
+class:?lineStart|wordGroup,word,protocolList|?oword,wordGroup,lineStart,END|>>lineStart,class,pureClass
+
+
+
+ arg lists
+argDef:?ovar|?o(|Otype,word,wordGroup|?:|word,wordGroup|>>argDef
+argDef:?ovar|?o(|?oargDef,_argList|?o\,|Otype,word,wordGroup|?:|word,wordGroup|>>argDef
+(argList)argList:?ovar|?o(|OargDef,_argList|?\,|argDef|>>_argList
+(argList)argList:?ovar|?O(|argDef,_argList|?)|>>argList
+
+ type
+type:word,wordGroup|*,&|>>type
+(type)cast:?(|word,wordGroup,type|?)|>>type,castType
+
+ selector arg lists
+selArgDef:?ovar|?O:|castType|word,wordGroup|>>selArgDef
+selArgDef:?ovar|?oselArgDef,selArgList|Oword,wordGroup|?:|castType|word,wordGroup|>>selArgDef
+(selArgList)selArgList:?ovar|OselArgDef,selArgList|selArgDef|>>selArgList
+
+fn:var|selArgList,selArgDef,argList|>>fn
+
+
+!var:?olineStart|OwordGroup,word|>>var
+
+
+ eat lineStarts
+!line:xlineStart[1..]|Oclass,protocol,protocolList,fn,var[0]|>>??[@0:1..]
+
 
 END
 
+!type:word,wordGroup|>>type
 
- block structure
-+block:_block[0..]|^},END|>>_block[1..]
-block:_block[0..]|?}|>>block[0..]
-!block:rtl:x{|O^},END|>>_block[0]
-block:x{|O}|>>block[0]
+(argList)argList:argDef|?\,|_argList|>>_argList
+argList:argDef|?)|>>_argList
+
+ selectors
+(selArgList)selArgList:?(|_selArgList|>>selArgList
+(selArgList)selArgList:argDef|?\,|_selArgList|>>_selArgList
+selArgList:argDef|?)|>>_selArgList
+
+ vars
+var:word,wordGroup|argList|>>var
+
+ args
+argDef:type,|?:|word,wordGroup|>>argDef
+selArgDef:?:|?(|type|?)|word,wordGroup|>>selArgDef
+
+
+ selArgs
+
 
  key val
 keyval:string,word|?:|string,word|>>keyval
