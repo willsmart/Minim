@@ -1,22 +1,10 @@
-"sound.wi"
-"key":"value"
-"regex"=>"replace"
-class<protocol,protocol>
-    type name=10
-        {getter}
-        -v{setter}
-        "setting"
-        "key":"value"
-        "regex"=>"replace"
-    type name() body
-    type name(type:arg) body
-    type +name()
-        body
-    type +name(type:arg) {
-        body
-    }
-    type nameWith:arg
-        body
-    type nameWith:(type)arg and:(Type*)arg=10
-        {getter}
-        -v{setter}
+"a"
+    b{c
+    {hi}
+}
+        d
+         e
+        d2
+        d3
+    b2
+a2

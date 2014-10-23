@@ -87,7 +87,7 @@ d3.json("ex.wi.json", function(error, root) {
     var nodeCount=nodeCountFn(root);
 
     var layout = d3.layout.tree()
-        .size([(height-80)*nodeCount/35, width - 80]);
+        .size([(height-80)*nodeCount/35, width*0.8 - 80]);
 
 
   var nodes = layout.nodes(root),

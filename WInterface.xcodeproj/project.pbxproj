@@ -24,6 +24,7 @@
 		BE4152FC1811B04200E421D7 /* sample.wi.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE730AD61810A4FB005582C5 /* sample.wi.mm */; };
 		BE681E70196A30F100AA3BE5 /* Util.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE681E6F196A30F100AA3BE5 /* Util.mm */; };
 		BE681E73196A31A100AA3BE5 /* Collections.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE681E72196A31A100AA3BE5 /* Collections.mm */; };
+		BE87AC6319F6455600C5E23A /* ParseRule.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE87AC6219F6455600C5E23A /* ParseRule.mm */; };
 		BE99B973161BAE720041B8EA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE99B972161BAE720041B8EA /* Foundation.framework */; };
 		BE99B976161BAE720041B8EA /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE99B975161BAE720041B8EA /* main.mm */; };
 		BE99B97A161BAE720041B8EA /* WInterface.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = BE99B979161BAE720041B8EA /* WInterface.1 */; };
@@ -131,6 +132,7 @@
 		BE730AD41810A4FB005582C5 /* sample.wi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sample.wi.h; path = Sample/sample.wi.h; sourceTree = "<group>"; };
 		BE730AD51810A4FB005582C5 /* sample.wi.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = sample.wi.html; path = Sample/sample.wi.html; sourceTree = "<group>"; };
 		BE730AD61810A4FB005582C5 /* sample.wi.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = sample.wi.mm; path = Sample/sample.wi.mm; sourceTree = "<group>"; };
+		BE87AC6219F6455600C5E23A /* ParseRule.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = ParseRule.mm; path = ../BasicClassesCPP/Parser/ParseRule.mm; sourceTree = "<group>"; };
 		BE93AD83165E9D9C001BA629 /* WI_iosTests.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = WI_iosTests.xcodeproj; path = WInterface/WI_iosTests/WI_iosTests.xcodeproj; sourceTree = "<group>"; };
 		BE93AD8D165E9E3B001BA629 /* wi.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = wi.sh; sourceTree = SOURCE_ROOT; };
 		BE99B96E161BAE720041B8EA /* WInterface */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = WInterface; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -389,6 +391,7 @@
 				BE6FA91819AAD18A00862360 /* BasicClassesCPP */,
 				BE93AD83165E9D9C001BA629 /* WI_iosTests.xcodeproj */,
 				BE340D6519D7DE2A00BEC232 /* Parse.mm */,
+				BE87AC6219F6455600C5E23A /* ParseRule.mm */,
 				BE5266E3196DC31D00FD10AB /* Sourcefiles */,
 				BE38E835196C7FD100C95037 /* Files */,
 				BE730AC918108F3B005582C5 /* Sample */,
@@ -780,6 +783,7 @@
 				BE33A96119D42E190046BF4A /* WType.mm in Sources */,
 				BE681E73196A31A100AA3BE5 /* Collections.mm in Sources */,
 				BE33A95D19D42E190046BF4A /* WClasses.mm in Sources */,
+				BE87AC6319F6455600C5E23A /* ParseRule.mm in Sources */,
 				BE33A96219D42E190046BF4A /* WVar.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
