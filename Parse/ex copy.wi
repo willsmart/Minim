@@ -1,7 +1,5 @@
-"class types:"
-class
-class:sup
-class:sup,sup,sup
+s
+"class types:":1
 class<superprotocol>
 class<superprotocol,superprotocol,superprotocol>
 class:sup,sup,sup<superprotocol,superprotocol,superprotocol>
@@ -9,14 +7,14 @@ class:sup,sup,sup<superprotocol,superprotocol,superprotocol>
 <protocol:superprotocol>
 <protocol:superprotocol,superprotocol,superprotocol>
 
-"var types:"
-var
-var()
-var(type:arg)
-var(type:arg, type:arg, type:arg)
-var:(type)arg
-var:(type)arg and:(type)arg
-var:(type)arg and:(type)arg and:(type)arg
+varTypes<v>
+    var
+    var()
+    var(type:arg)
+    var(type:arg, type:arg, type:arg)
+    var:(type)arg
+    var:(type)arg and:(type)arg
+    var:(type)arg and:(type)arg and:(type)arg
 
 "key/val types:"
 key:"value"
@@ -49,63 +47,3 @@ line
 }
 ="hello"
 =@"hello"
-
-"getter types (also natural indent):"
-{
-line
-line
-}
-:
-    line
-    line
--{
-line
-line
-}
-
-int a
-    hello
-int a=0
-    <-hello
-    v -> _a=v
-
-"setter types:"
--variable
-    line
-    line
--variable{
-    line
-    line
-}
-
-"setting types:"
-"setting"
-
-"rel types:"
---
-~-
--~
--<
-~<
--a<
-~a<
--a~<
--s<
-~s<
--s~<
--d<
-~d<
--d~<
->-
->~
->a-
->a~
->~a-
->s-
->s~
->~s-
->d-
->d~
->~d-
-
-

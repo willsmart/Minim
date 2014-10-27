@@ -2,6 +2,8 @@
 !end:oEND|^blah|>>??
 !end:\n|E|N|D|>>END
 
+!start:<^file[0]|>>file[1]
+
  strings
 +string:_string[0..]|^",END|>>_string[0..]
 +string:_string[0..]|?"|>>string[0..]
@@ -15,22 +17,25 @@ string:x"|O"|>>string[0]
 !clearblock:o^END[0]|O{[0]|>>??[1000]
 !clearblock:<{[0]|>>??[1000]
 
+
+par:rtl:par,file|>0ln|<=0?oln,END|>>??
+(sib)sib:rtl:?opar,file|>=2Oln|>=0ln|>>??
+
  lines
-lineStart:?\n[0]|>>lineStart,pureLineStart[1]
-lineStart:<? |>>lineStart,pureLineStart[2]
-!lineStart:pureLineStart[1..]| |>>lineStart,pureLineStart[2..]
-!lineStart:pureLineStart[1..]|\t|>>lineStart,pureLineStart[5..]
-!lineStart:x |OpureLineStart[1..]|>>lineStart,pureLineStart[1..]
-!lineStart:xpureLineStart|olineStart|>>??
+lineStart:?\n[0]|>>lineStart,br[2]
+!lineStart:lineStart[2..]| |>>lineStart,br[3..]
+!lineStart:lineStart[2..]|\t|>>lineStart,br[6..]
+!lineStart:x |OlineStart[2..]|>>lineStart,br[2..]
+!lineStart:xlineStart|olineStart|>>??
 
  blocks
-!findbrace:^pureLineStart[0]|o^END[1000..]|>>??[1000]
-!block:O{[1..998]|O^END[1000..]|>>??[@0:2..999]
-!block:x}[3..999]|O^END[1000..]|>>??[@0:2..998]
-!block:x}[2..999]|>>??
-lineStart:?{[2..999]|>>lineStart,pureLineStart[2..999]
-!findbrace:o^END[1..999]|O^END[1000..]|>>??[@0:1..999]
-
+!findbrace:^lineStart[0]|o^END[1000..]|>>??[1000]
+!block:O{[2..998]|O^END[1000..]|>>??[@0:3..999]
+!block:x}[4..999]|O^END[1000..]|>>??[@0:3..998]
+!block:x}[3..999]|>>??
+lineStart:?{[3..999]|>>lineStart,lineStart[4..999]
+!findbrace:o^END[2..999]|O^END[1000..]|>>??[@0:2..999]
+!findbrace:o^END[2..]|O^END[0]|>>??[@0:2..]
 
  comments
 !lineComment:o/|o/|^lineStart|>>??
@@ -59,47 +64,59 @@ lineStart:?{[2..999]|>>lineStart,pureLineStart[2..999]
 
 
  protocols
-(protocolList)protocolList:?\<|_protocolList|>>protocolList
-protocol:?\<|word,wordGroup|?:|_protocolList|>>protocol
+(protocolList)protocolList:?\<|_protocolList|>>protocolList,protocol,class,par,ln
+protocol:?\<|word,wordGroup|?:|_protocolList|>>protocol,class,par,ln
 (protocolList)protocolList:word,wordGroup|?\,|_protocolList|>>_protocolList
 protocolList:word,wordGroup|?\>|>>_protocolList
 
  classes
-(classList)classList:?olineStart|?oword,wordGroup,protocolList|?o:|Oword,wordGroup,classList|?\,|word,wordGroup|>>classList
-(class)class:?olineStart|classWithSup,wordGroup|protocolList|>>class
-
-class:?lineStart|wordGroup,word,protocolList|?:|classList,word,wordGroup|>>lineStart,class,pureClass
-(class)class:pureClass|protocolList|>>lineStart,class
-class:?lineStart|wordGroup,word,protocolList|?oword,wordGroup,lineStart,END|>>lineStart,class,pureClass
+(classList)classList:?oclass,file,rel|>0?oword,wordGroup,protocolList|?o:|Oword,wordGroup,classList|?\,|word,wordGroup|>>classList
+class:?oclass,file,rel|>0OwordGroup,word,protocolList|?:|classList,word,wordGroup|protocolList|>>class,par,ln
+class:?oclass,file,rel|>0OwordGroup,word,protocolList|?:|classList,word,wordGroup|?oln|>>class,par,ln
+(class)classDecl:?oclass,file,rel|>0OwordGroup|protocolList|>>classDecl,class,par,ln
 
 
 
  arg lists
-argDef:?ovar|?o(|Otype,word,wordGroup|?:|word,wordGroup|>>argDef
-argDef:?ovar|?o(|?oargDef,_argList|?o\,|Otype,word,wordGroup|?:|word,wordGroup|>>argDef
-(argList)argList:?ovar|?o(|OargDef,_argList|?\,|argDef|>>_argList
-(argList)argList:?ovar|?O(|argDef,_argList|?)|>>argList
+argDef:?oclass|>0?owordGroup|?o(|Otype,word,wordGroup|?:|word,wordGroup|>>argDef
+argDef:?oclass|>0?owordGroup|?o(|?oargDef,_argList|?o\,|Otype,word,wordGroup|?:|word,wordGroup|>>argDef
+(argList)argList:?oclass|>0?owordGroup|?o(|OargDef,_argList|?\,|argDef|>>_argList
+(argList)argList:?oclass|>0?owordGroup|?O(|argDef,_argList|?)|>>argList
 
  type
 type:word,wordGroup|*,&|>>type
 (type)cast:?(|word,wordGroup,type|?)|>>type,castType
 
  selector arg lists
-selArgDef:?ovar|?O:|castType|word,wordGroup|>>selArgDef
-selArgDef:?ovar|?oselArgDef,selArgList|Oword,wordGroup|?:|castType|word,wordGroup|>>selArgDef
-(selArgList)selArgList:?ovar|OselArgDef,selArgList|selArgDef|>>selArgList
+selArgDef:?oclass|>0?owordGroup|?O:|castType|word,wordGroup|>>selArgDef
+selArgDef:?oclass|>0?owordGroup|?oselArgDef,selArgList|Oword,wordGroup|?:|castType|word,wordGroup|>>selArgDef
+(selArgList)selArgList:?oclass|>0?owordGroup|OselArgDef,selArgList|selArgDef|>>selArgList
 
-fn:var|selArgList,selArgDef,argList|>>fn
+fn:?oclass|>0OwordGroup|selArgList,argList|>>var,ln,par
+var:?oclass|>0OwordGroup|?obr|>>var,par,ln
 
 
-!var:?olineStart|OwordGroup,word|>>var
 
+
+ key:val
+keyval:?oclass,file,var|>0Ostring,wordGroup|?:|string,number,wordGroup|>>keyval,ln,par
+
+ regex
+keyval:?oclass,file,var|>0Ostring,wordGroup|?=|?\>|string,number,wordGroup|>>regex,ln,par
 
  eat lineStarts
-!line:xlineStart[1..]|Oclass,protocol,protocolList,fn,var[0]|>>??[@0:1..]
-
+!line:xlineStart[2..]|O^END|>>??[@0:2..]
+!line:xlineStart[2..]|oEND|>>??
 
 END
+
+
+ initializers
+init:?ovar|>0?O=|>>init,par,br
+(initBlock)initBlock:init[2..]|>0^END|>>[@0:2..]init,br
+
+
+
 
 !type:word,wordGroup|>>type
 
