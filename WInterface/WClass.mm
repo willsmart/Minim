@@ -147,6 +147,9 @@
             return([p substringFromIndex:@"_fn:".length]);
         }
     }
+    if (self.inFilesLocations.count==1) {
+        return(((NSString*)self.inFilesLocations.allKeys.firstObject).lastPathComponent);
+    }
     return(@"default");
 }
 

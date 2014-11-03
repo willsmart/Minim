@@ -44,7 +44,7 @@ void error(NSString *format,...) {
     va_start(args, format);
     NSString *error=[[NSString alloc] initWithFormat:format arguments:args];
     va_end(args);
-    printf("\n\nERROR: %s\n",error.UTF8String);
+    prnt("\n\nERROR: %s\n",error.UTF8String);
     BPNOW;
 }
 

@@ -137,7 +137,7 @@
     return(ret.copy);
 }
 
-
+/*
 -(void)applyRegex:(NSString*)regex {
     NSString *str=self.tokenStr;
     NSIndexSet *inds=self.tokenIndexSet;
@@ -171,19 +171,19 @@
     }
 }
 
-
-
+*/
+/*
 -(void)addBracketTokens {
     [self applyRegex:@"(?'paran'\a\ao\\((?:(?>[^\(]*)|(?-2))*\a\ao\\))"];
     [self applyRegex:@"(?'squ'\a\ao\\[(?:(?>[^\(]*)|(?-2))*\a\ao\\])"];
     [self applyRegex:@"(?'curl'\a\ao\\{(?:(?>[^\(]*)|(?-2))*\a\ao\\})"];
 }
+*/
 
-
-
+/*
 
 -(void)addSelectorTokens {
-/*
+/ *
     if (addedSelectorTokens) return(NO);
     addedSelectorTokens=YES;
     [self addBracketTokens];
@@ -258,7 +258,7 @@
     }
     if (changed) [tokens setArray:newTokens];
     return(changed);
-    */
+    * /
 }
-
+*/
 @end

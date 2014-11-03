@@ -10,10 +10,10 @@
 @property (readonly) NSString *tokenStr;
 @property (readonly) NSIndexSet *tokenIndexSet;
 
--(void)applyRegex:(NSString*)regex;
+//-(void)applyRegex:(NSString*)regex;
 
 - (id)initWithReader:(WReader*)areader;
--(void)addBracketTokens;
--(void)addSelectorTokens;
+//-(void)addBracketTokens;
+//-(void)addSelectorTokens;
 
 @end

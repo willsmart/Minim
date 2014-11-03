@@ -563,7 +563,7 @@ CACHEVARATTRFN_retain(NSString*,localizedVarName,
                 WFn *fn=(clas.fns)[s];
                 if (!fn) [WClasses error:[NSString stringWithFormat:@"Expected function with signature %@ for var %@",s,localizedName] withToken:nil context:self];
                 else {
-                    [def appendFormat:@"[NSDictionary dictionaryWithObjectsAndKeys:@\"%@\",@\"signature\",@\"%@\",@\"body\",nil]",s,[WVar escapeCString:[WFn balance:fn.body]]];
+                    [def appendFormat:@"[NSDictionary dictionaryWithObjectsAndKeys:@\"%@\",@\"signature\",@\"%@\",@\"body\",nil]",s,[WVar escapeCString:[WFn balance:fn.sortedBody]]];
                 }
                 break;
             }

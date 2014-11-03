@@ -3,7 +3,7 @@ fn=$1
 dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 date > $dir/uncrustify.out.txt
-/usr/local/bin/uncrustify -c $dir/uncrustify.cfg -f $fn -o $dir/uncrustify.tmp >>&2 $dir/uncrustify.out.txt
+/usr/local/bin/uncrustify -c $dir/uncrustify.cfg -f $fn -o $dir/uncrustify.tmp >> $dir/uncrustify.out.txt 2>&1
 res=$?
 if [ $res ]; then
     mv -f $dir/uncrustify.tmp $fn

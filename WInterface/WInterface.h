@@ -17,7 +17,7 @@
 #define UIBezierPath NSBezierPath
 #import <objc/runtime.h>
 
-#import <RegexKit/RegexKit.h>
+//#import <RegexKit/RegexKit.h>
 
 
 #include "Headers.h"

@@ -30,7 +30,7 @@ void testParse() {
 
 int main(int argc, const char * argv[])
 {
-    printf("Winterface 1.1001 (C)2013 Will smart HaND:)\n");
+    prnt("Winterface 1.1001 (C)2013 Will smart HaND:)\n");
 
     Int ret=0;
 
@@ -41,7 +41,7 @@ int main(int argc, const char * argv[])
         NSFileManager *fm=[NSFileManager defaultManager];
 
         NSString *baseDir=fm.currentDirectoryPath;
-        NSString *appDirectory = [[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent];
+        NSString *appDirectory = [[NSBundle mainBundle] bundlePath];
         NSString *uncrustifyPath=[appDirectory stringByAppendingPathComponent:@"uncrustifyfile"];
 
         for (Int i=(argc==1?0:1);i<argc;i++) {
@@ -61,7 +61,7 @@ int main(int argc, const char * argv[])
             }
             WClasses *cs=[WClasses getDefault];
             for (NSString *fn in fns) {
-                fprintf(stderr,"\n>>%s -- ",fn.UTF8String);
+                prnt("\n>>%s -- ",fn.UTF8String);
                 @autoreleasepool {
 
                     [cs clear];
@@ -78,7 +78,7 @@ int main(int argc, const char * argv[])
                     NSError *err=nil;
                     NSString *html=cs.html,*htmlfn=[NSString stringWithFormat:@"%@.html",r.fileName];
                     [html writeToFile:[wiifieddir stringByAppendingString:htmlfn] atomically:YES encoding:NSUTF8StringEncoding error:&err];
-                    printf("Wrote to file %s\n",[htmlfn cStringUsingEncoding:NSASCIIStringEncoding]);
+                    prnt("Wrote to file %s\n",[htmlfn cStringUsingEncoding:NSASCIIStringEncoding]);
                     
                     NSMutableString *s=[NSMutableString string];
                     [cs appendObjCToString:s iface:NO impl:NO classFilename:nil headerFilename:nil swift:NO];
@@ -86,7 +86,7 @@ int main(int argc, const char * argv[])
                     [fm changeCurrentDirectoryPath:baseDir];
                     NSString *dfn=[NSString stringWithFormat:@"%@.decl.h",r.fileName];
                     [s writeToFile:[wiifieddir stringByAppendingString:dfn] atomically:YES encoding:NSUTF8StringEncoding error:&err];
-                    printf("Wrote to file %s\n",[dfn cStringUsingEncoding:NSASCIIStringEncoding]);
+                    prnt("Wrote to file %s\n",[dfn cStringUsingEncoding:NSASCIIStringEncoding]);
                     
 
                     NSString *hfn=[NSString stringWithFormat:@"%@.pch",r.fileName];
@@ -95,7 +95,7 @@ int main(int argc, const char * argv[])
                     err=nil;
                     [fm changeCurrentDirectoryPath:baseDir];
                     [s writeToFile:[wiifieddir stringByAppendingString:hfn] atomically:YES encoding:NSUTF8StringEncoding error:&err];
-                    printf("Wrote to file %s\n",[hfn cStringUsingEncoding:NSASCIIStringEncoding]);
+                    prnt("Wrote to file %s\n",[hfn cStringUsingEncoding:NSASCIIStringEncoding]);
 
                     NSString *errs=nil;
                     for (NSString *fn in fns) {
@@ -109,31 +109,31 @@ int main(int argc, const char * argv[])
                         NSString *ofn=[NSString stringWithFormat:@"%@.mm",fn];
                         NSString *swas=[NSString stringWithContentsOfFile:ofn encoding:NSUTF8StringEncoding error:&err];
                         if (swas&&[swas isEqualToString:s]) {
-                            printf("No change to file %s\n",[ofn cStringUsingEncoding:NSASCIIStringEncoding]);
+                            prnt("No change to file %s\n",[ofn cStringUsingEncoding:NSASCIIStringEncoding]);
                         }
                         else {
                             Int prefLen=(Int)[s commonPrefixWithString:swas options:0].length;
                             NSString *prefix=(swas?[NSString stringWithFormat:@"Changed from\n    [%d]\"%@\"\nis now\n    [%d]\"%@\"",(int)prefLen,[[swas substringFromIndex:prefLen] substringToIndex:(swas.length-prefLen<50?swas.length-prefLen:50)],(int)prefLen,[[s substringFromIndex:prefLen] substringToIndex:(s.length-prefLen<50?s.length-prefLen:50)]]:@"New");
                             err=nil;
                             [s writeToFile:[wiifieddir stringByAppendingString:ofn] atomically:YES encoding:NSUTF8StringEncoding error:&err];
-                            printf("Wrote to file %s -- %s\n",[ofn cStringUsingEncoding:NSASCIIStringEncoding],prefix.UTF8String);
+                            prnt("Wrote to file %s -- %s\n",[ofn cStringUsingEncoding:NSASCIIStringEncoding],prefix.UTF8String);
 
                             NSString *sys=[uncrustifyPath stringByAppendingFormat:@" '%@'",[wiifieddir stringByAppendingString:ofn]];
                             system([sys cStringUsingEncoding:NSASCIIStringEncoding]);
-                            printf(" -- Uncrustified\n");
+                            prnt(" -- Uncrustified\n");
                         }
                     }
                     
                     if (errs) {
                         ret=1;
-                        printf("\nFinished with errors:\n%s",errs.UTF8String);
+                        prnt("\nFinished with errors:\n%s",errs.UTF8String);
                     }
-                    else printf("\nFinished with no errors");
+                    else prnt("\nFinished with no errors");
                 }
             }
         }
         [InFiles markFiles];
-        printf("\nDone!\n");
+        prnt("\nDone!\n");
         
     }
     return((int)ret);

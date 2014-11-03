@@ -1594,7 +1594,7 @@ static WClasses *_default=nil;
         else {
             NSString *fn=name;
             if (fn) {
-                printf("Include: %s\n",fn.UTF8String);
+                prnt("Include: %s\n",fn.UTF8String);
                 if ([self.readFNStack containsObject:fn]) {
                     [WClasses error:@"File already included" withToken:r.currentToken context:nil];
                 }
