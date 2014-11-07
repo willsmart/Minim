@@ -4,7 +4,7 @@
 
 
 WIMyClass
-    WIHisClass previousHisqname=nil (dealloc,publicreadonly,ivar=previousHisqname)
+    WIHisClass previousHisqname=nil (publicreadonly,ivar=previousHisqname)
     WIHisClass hisqname=
         {return(hisqname);}
         -v{
@@ -14,7 +14,7 @@ WIMyClass
                     [((NSObject<Commitable>*)self) markDirty];
                 }
             }
-        }=nil (modeldealloc,ivar=hisqname)
+        }=nil (modelivar=hisqname)
 
     -(Int)commitProperties:(Int)substageIndex {@-3 
         previousHisqname=hisqname;
@@ -69,10 +69,10 @@ JustMyClassOverride<+Commitable>
 
     -(init)init{}
 
-    WIHisClass previousHisqname=nil (dealloc,publicreadonly,ivar=previousHisqname)
+    WIHisClass previousHisqname=nil (publicreadonly,ivar=previousHisqname)
     WIHisClass hisqname=
         {return(useMyHisqname&&hisqname?hisqname:self.baseWithHisqname.hisqname);}
-        -v{hisqname=v;useMyHisqname=YES;[self markDirty];}=nil (dealloc,ivar=hisqname)
+        -v{hisqname=v;useMyHisqname=YES;[self markDirty];}=nil (ivar=hisqname)
 
     -(Int)commitProperties:(Int)substageIndex {
         previousHisqname=hisqname;

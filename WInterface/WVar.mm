@@ -450,7 +450,8 @@ CACHEVARATTRFN_retain(NSString*,localizedVarName,
         }
     }
     if (!ret) {
-        if (!self.retainable) ret=localizedName;
+        bool readonly2=[attributes containsObject:@"readonly"]||[attributes containsObject:@"readonly!"]||(([clas.varPatterns containsObject:@"-Object"])&&self.hasGetter&&!self.hasSetter);
+        if (!(self.retainable||readonly2)) ret=localizedName;
         else ret=[NSString stringWithFormat:@"v_%@",localizedName];
     }
 )

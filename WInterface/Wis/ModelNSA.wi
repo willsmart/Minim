@@ -29,7 +29,7 @@ WIMyClass
         {
             [self _commitHisqnameProperties];
             return(previousHisqnames);
-        }=nil (dealloc,ivar=previousHisqnames)
+        }=nil (ivar=previousHisqnames)
         
     AtomiclyMutableArray hisqnames=
         {
@@ -38,7 +38,7 @@ WIMyClass
         }
         -v{
             [self.hisnames setArray:v];
-        }=nil (dealloc,ivar=hisqnames)
+        }=nil (ivar=hisqnames)
 
     -(void)_commitHisqnameProperties {
         previousHisqnamesVersion=hisqnames.version;
@@ -93,7 +93,7 @@ previousHisqnames=nil;
         {
             [self indexesOfHisqnamesThatWereRemoved];
             return(indexesOfHisqnamesThatWereAdded);
-        }=nil (dealloc,ivar=indexesOfHisqnamesThatWereAdded)
+        }=nil (ivar=indexesOfHisqnamesThatWereAdded)
         
     NSIndexSet indexesOfHisqnamesThatWereRemoved=
         {
@@ -104,7 +104,7 @@ previousHisqnames=nil;
                 }
             }
             return(indexesOfHisqnamesThatWereRemoved);
-        }=nil (dealloc,ivar=indexesOfHisqnamesThatWereRemoved)
+        }=nil (ivar=indexesOfHisqnamesThatWereRemoved)
     
     -(void)cleanupCommit {
         indexesOfHisqnamesThatWereAdded=nil;
@@ -170,12 +170,12 @@ JustMyClassOverride<+Commitable>
 
     -(init)init{}
 
-    NSArray previousHisqnames=nil (dealloc,readonly,ivar=previousHisqnames)
+    NSArray previousHisqnames=nil (readonly)
     AtomiclyMutableArray hisqnames=
         {
             [self.baseWithHisqnames _commitHisqnameProperties];
             return(hisqnames?hisqnames:self.baseWithHisqnames.hisqnames);
-        }=nil (dealloc,ivar=hisqnames)
+        }=nil (ivar=hisqnames)
     -(void)overrideWithArray:(NSArray*)v {
         if (!hisqnames) {
             hisqnames=[[AtomiclyMutableArray alloc] init];
@@ -207,7 +207,7 @@ previousHisqnames=nil;
         {
             [self indexesOfHisqnamesThatWereRemoved];
             return(indexesOfHisqnamesThatWereAdded);
-        }=nil (dealloc,ivar=indexesOfHisqnamesThatWereAdded)
+        }=nil (ivar=indexesOfHisqnamesThatWereAdded)
         
     NSIndexSet indexesOfHisqnamesThatWereRemoved=
         {
@@ -218,7 +218,7 @@ previousHisqnames=nil;
                 }
             }
             return(indexesOfHisqnamesThatWereRemoved);
-        }=nil (dealloc,ivar=indexesOfHisqnamesThatWereRemoved)
+        }=nil (ivar=indexesOfHisqnamesThatWereRemoved)
     
     -(void)cleanupCommit {
         indexesOfHisqnamesThatWereAdded=nil;

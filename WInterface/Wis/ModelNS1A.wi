@@ -4,8 +4,8 @@
 
 
 WIMyClass
-    NSIndexSet previousIndexesInHisqname=nil (dealloc,readonly,ivar=previousIndexesInHisqname)
-    NSIndexSet indexesInHisqname=nil (dealloc,readonly,ivar=indexesInHisqname)
+    NSIndexSet previousIndexesInHisqname=nil (readonly)
+    NSIndexSet indexesInHisqname=nil (readonly)
     Unsigned indexInHisqname={return(self.indexesInHisqname.firstIndex);}
 
     -(Int)commitProperties:(Int)substageIndex {/*-3*/
@@ -18,7 +18,7 @@ WIMyClass
     }
     
     -(void)cleanupCommit {
-previousIndexesInHisqname=nil;
+        previousIndexesInHisqname=nil;
     }
 
 
@@ -47,9 +47,9 @@ previousIndexesInHisqname=nil;
 JustMyClassOverride
     -(init)init{}
 
-    NSIndexSet previousIndexesInHisqname=nil (dealloc,readonly,ivar=previousIndexesInHisqname)
+    NSIndexSet previousIndexesInHisqname=nil (readonly)
     NSIndexSet indexesInHisqname=
-        {return(useMyHisqname&&indexesInHisqname?indexesInHisqname:self.baseWithHisqname.indexesInHisqname);}=nil (dealloc,ivar=indexesInHisqname)
+        {return(useMyHisqname&&indexesInHisqname?indexesInHisqname:self.baseWithHisqname.indexesInHisqname);}=nil (ivar=indexesInHisqname)
     Unsigned indexInHisqname={return(self.indexesInHisqname.firstIndex);}
 
     -(void)setHisqname:(NSHisClass)v {/*-1000*/ERR("__Class__ Please set indexes");}
@@ -67,7 +67,7 @@ JustMyClassOverride
     }
     
     -(void)cleanupCommit {
-previousIndexesInHisqname=nil;
+        previousIndexesInHisqname=nil;
     }
 
 

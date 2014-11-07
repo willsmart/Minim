@@ -29,7 +29,7 @@ WIMyClass
         {
             [self _commitHisqnameProperties];
             return(previousHisqnames);
-        }=nil (dealloc,ivar=previousHisqnames)
+        }=nil (ivar=previousHisqnames)
         
     AtomiclyMutableSet hisqnames=
         {
@@ -38,7 +38,7 @@ WIMyClass
         }
         -v{
             [self.hisnames setSet:v];
-        }=nil (dealloc,ivar=hisqnames)
+        }=nil (ivar=hisqnames)
 
     -(void)_commitHisqnameProperties {
         previousHisqnamesVersion=hisqnames.version;
@@ -93,7 +93,7 @@ previousHisqnames=nil;
         {
             [self hisqnamesThatWereRemoved];
             return(hisqnamesThatWereAdded);
-        }=nil (dealloc,ivar=hisqnamesThatWereAdded)
+        }=nil (ivar=hisqnamesThatWereAdded)
         
     NSSet hisqnamesThatWereRemoved=
         {
@@ -104,7 +104,7 @@ previousHisqnames=nil;
                 }
             }
             return(hisqnamesThatWereRemoved);
-        }=nil (dealloc,ivar=hisqnamesThatWereRemoved)
+        }=nil (ivar=hisqnamesThatWereRemoved)
     
     -(void)cleanupCommit {
         hisqnamesThatWereAdded=nil;
@@ -177,12 +177,12 @@ JustMyClassOverride<+Commitable>
 
     -(init)init{}
 
-    NSSet previousHisqnames=nil (dealloc,readonly,ivar=previousHisqnames)
+    NSSet previousHisqnames=nil (readonly)
     AtomiclyMutableSet hisqnames=
         {
             [self.baseWithHisqnames _commitHisqnameProperties];
             return(hisqnames?hisqnames:self.baseWithHisqnames.hisqnames);
-        }=nil (dealloc,ivar=hisqnames)
+        }=nil (ivar=hisqnames)
     -(void)overrideWithSet:(NSSet*)v {
         if (!hisqnames) {
             hisqnames=[[AtomiclyMutableSet alloc] init];
@@ -214,7 +214,7 @@ previousHisqnames=nil;
         {
             [self hisqnamesThatWereRemoved];
             return(hisqnamesThatWereAdded);
-        }=nil (dealloc,ivar=hisqnamesThatWereAdded)
+        }=nil (ivar=hisqnamesThatWereAdded)
         
     NSSet hisqnamesThatWereRemoved=
         {
@@ -225,7 +225,7 @@ previousHisqnames=nil;
                 }
             }
             return(hisqnamesThatWereRemoved);
-        }=nil (dealloc,ivar=hisqnamesThatWereRemoved)
+        }=nil (ivar=hisqnamesThatWereRemoved)
     
     -(void)cleanupCommit {
         hisqnamesThatWereAdded=nil;
