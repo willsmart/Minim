@@ -1,0 +1,214 @@
+Class=>class,classpar,varpar,kvpar,repar,settingpar,par,ln
+Var=>var,kvpar,repar,relpar,initpar,getterpar,setterpar,settingpar,par,ln
+Keyval=>kv,ln
+Regex=>re,ln
+Include=>include,ln
+Rel=>rel,classpar,varpar,par,ln
+Init=>init,ln
+Getter=>getter,ln
+Setter=>setter,ln
+Setting=>setting,ln
+
+ end
+!end:oEND|^blah|>>??
+!end:\n|E|N|D|>>END,ln
+
+!start:<^file[0]|>>file,ln,par,classpar,kvpar,repar[10]
+
+ strings
++string:_string[0..]|^",END|>>_string[0..]
++string:_string[0..]|?"|>>string[0..]
+!string:x"|O^",END|>>_string[0]
+string:x"|O"|>>string[0]
+
+ clear for block
+!clearblock:o{[1000..]|O^END[0]|>>??[@0:1010..]
+!clearblock:o}[1020..]|O^END[0]|>>??[@0:1010..]
+!clearblock:o^END,},{[1010..]|O^END[0]|>>??[@0:1010..]
+!clearblock:o^END[0]|O{[0]|>>??[1000]
+!clearblock:<{[0]|>>??[1000]
+
+ lines
+lineStart:?\n[0]|>>lineStart,br[20]
+!lineStart:lineStart[20..]| |>>lineStart,br[30..]
+!lineStart:lineStart[20..]|\t|>>lineStart,br[60..]
+!lineStart:x |OlineStart[20..]|>>lineStart,br[20..]
+!lineStart:xlineStart|olineStart|>>??
+
+ blocks
+!findbrace:^lineStart[0]|o^END[1000..]|>>??[1000]
+!block:O{[20..980]|O^END[1000..]|>>??[@0:30..990]
+!block:x}[40..990]|O^END[1000..]|>>??[@0:30..980]
+!block:x}[30..990]|>>??
+lineStart:?{[30..980]|>>lineStart[40..990]
+!findbrace:o^END[20..990]|O^END[1000..]|>>??[@0:20..990]
+!findbrace:o^END[20..]|O^END[0]|>>??[@0:20..]
+
+ comments
+!lineComment:o/|o/|^lineStart|>>??
+!lineComment:x/|/|>>??
+!commentEnd:rtl:*|/|>>commentEnd
+!comment:rtl:x/|*|commentEnd|>>??
+!comment:rtl:o/|o*|^commentEnd|>>??
+
+===
+
+!zero:o^END|O^lineStart,br[1..]|>>??[0]
+
+===
+
+ words and numbers
++word:rtl:a-z,A-Z,_|word|>>_word,_wordGroup
++int:0-9|int|>>int,number
++word:rtl:a-z,A-Z,_|>>_word,_wordGroup
++int:rtl:O0-9|>>int,number
++number:int|.|int|>>number
++wordGroup:_wordGroup|number,_wordGroup|>>_wordGroup
+!word:_word|>>word,wordGroup
+!wordGroup:_wordGroup|>>wordGroup
+
+ clear spaces
+!ws:x ,\t|>>??
+
+ ws
+ !ws:o ,\t,\,,\<,:,=,\>| ,\t|>>??
+ !ws:x ,\t|o\,,\>,\<,:,=|>>??
+
+ eat lineStarts
+!passon:xlineStart[1..]|O^lineStart[0]|>>??[@0:1..]
+!eat:xlineStart|>>??
+
+===
+
+
+par:rtl:par|>0ln|<=0?oln,END|>>??
+(sib)sib:rtl:?opar|>=2Oln|>=0ln|>>??
+!follow:oln[1..]|O^ln[0]|>>??[@0:1..]
+
+ protocols
+(protList)protList:?\<|_protList|>>protList,protocol
+protocol:?\<|word,wordGroup|?:|_protList|>>protocol
+(protList)protList:word,wordGroup|?\,|_protList|>>_protList
+protList:word,wordGroup|?\>|>>_protList
+
+ classes
+(classList)classList:?oclasspar|>0?oword,wordGroup,protList|?o:|Oword,wordGroup,classList|?\,|word,wordGroup|>>classList
+(classList)classList:?oclasspar|>=2?oln|>0?oword,wordGroup,protList|?o:|Oword,wordGroup,classList|?\,|word,wordGroup|>>classList
+  w:w<p>, w:w<p,p>
+class:?oclasspar|>0OwordGroup,word,protList|?:|classList,word,wordGroup|protList|>>Class
+class:?oclasspar|>=2?oln|>0OwordGroup,word,protList|?:|classList,word,wordGroup|protList|>>Class
+
+  w:w, w:<p>, w:cl, w:c1,c2, <p>:w, <p>:<p>
+class:?oclasspar|>0OwordGroup,word,protList|?:|classList,word,wordGroup|?oln|>>Class
+class:?oclasspar|>=2?oln|>0OwordGroup,word,protList|?:|classList,word,wordGroup|?oln|>>Class
+
+  w<p>
+(class)classDecl:?oclasspar|>0OwordGroup|protList|>>classDecl,Class
+(class)classDecl:?oclasspar|>=2?oln|>0OwordGroup|protList|>>classDecl,Class
+
+  <p>
+(class)classDecl:?oclasspar|>0Oprotocol|>>classDecl,Class
+(class)classDecl:?oclasspar|>=2?oln|>0Oprotocol|>>classDecl,Class
+
+
+ type
+type:word,wordGroup,type|*,&|>>type
+    (int), (int&), (int*), (int**)
+(type)cast:?(|word,wordGroup,type|?)|>>type,castType
+
+ arg lists
+argDef:?ovarpar|>0?owordGroup|?o(|Otype,word,wordGroup|?:|word,wordGroup|>>argDef
+argDef:?ovarpar|>=2?oln|>0?owordGroup|?o(|Otype,word,wordGroup|?:|word,wordGroup|>>argDef
+
+argDef:?oargDef,_argList|?\,|Otype,word,wordGroup|?:|word,wordGroup|>>argDef
+(argList)argList:argDef,_argList|argDef|>>_argList
+ (in class) (int:w), (int:w, int:w), (int*:w)
+(argList)argList:?O(|argDef,_argList|?)|>>argList
+
+ selector arg lists
+selArgDef:?ovarpar|>0?owordGroup|?O:|castType|word,wordGroup|>>selArgDef
+selArgDef:?ovarpar|>=2?oln|>0?owordGroup|?O:|castType|word,wordGroup|>>selArgDef
+selArgDef:?oselArgDef,selArgList|Oword,wordGroup[0]|?:|castType|word,wordGroup|>>selArgDef
+ (in class .. wd) :(int)w, :(int*)w, :(int)w arg:(int)w
+(selArgList)selArgList:OselArgDef,selArgList|selArgDef|>>selArgList
+
+ (in class) w:(int)w, w(int:w)
+fn:wordGroup|selArgList,selArgDef,argList|>>Var
+ (in class) w()
+fn:?ovarpar|>0OwordGroup|?(|?)|>>Var
+fn:?ovarpar|>=2?oln|>0OwordGroup|?(|?)|>>Var
+ (in class)
+ var:?ovarpar|>0OwordGroup|?obr|>>Var
+
+
+
+
+ key:val
+ (in class) w:w, w:1, w:"s", "s":w, "s":1, "s":"s"
+keyval:?okvpar|>0Ostring,wordGroup|?:|string,number,wordGroup|>>Keyval
+keyval:?okvpar|>=2?oln|>0Ostring,wordGroup|?:|string,number,wordGroup|>>Keyval
+
+ regex
+ (in class) w=>w, w=>1, w=>"s", "s"=>w, "s"=>1, "s"=>"s"
+keyval:?orepar|>0Ostring,wordGroup|?=|?\>|string,number,wordGroup|>>Regex
+keyval:?orepar|>=2?oln|>0Ostring,wordGroup|?=|?\>|string,number,wordGroup|>>Regex
+
+ (in class)
+var:?ovarpar|>0OwordGroup|>>Var
+var:?ovarpar|>=2?oln|>0OwordGroup|>>Var
+
+END
+
+
+ initializers
+init:?ovar|>0?O=|>>Init,br
+(initBlock)initBlock:init[2..]|>0^END|>>[@0:2..]init,br
+
+
+
+
+!type:word,wordGroup|>>type
+
+(argList)argList:argDef|?\,|_argList|>>_argList
+argList:argDef|?)|>>_argList
+
+ selectors
+(selArgList)selArgList:?(|_selArgList|>>selArgList
+(selArgList)selArgList:argDef|?\,|_selArgList|>>_selArgList
+selArgList:argDef|?)|>>_selArgList
+
+ vars
+var:word,wordGroup|argList|>>var
+
+ args
+argDef:type,|?:|word,wordGroup|>>argDef
+selArgDef:?:|?(|type|?)|word,wordGroup|>>selArgDef
+
+
+ selArgs
+
+
+ key val
+keyval:string,word|?:|string,word|>>keyval
+
+ regex
+regex:string,word|?=|?\>|string,word|>>regex
+
+ line
+!splitLine:?oline[0..]|x ,\t|>>??
+!splitLine:?oline[0..]|O^line,_line,lineStart,parent,siblings,END|>>_line[1000..]
+!breaks:?xlineStart[0..]|Oclass,protList|>>line[0..]
+!breaks:o_line[0..]|Oclass,protList|>>line[0..]
+(line)line:?xlineStart[0..]|O^lineStart,_line,line,parent,siblings,END|>>_line[0..]
+(line)line:<^lineStart,_line,line,parent,siblings,END|>>_line[0]
+(line)line:_line[0..]|^lineStart,_line,line,parent,siblings,END|>>_line[0..]
+(line)line:_line[0..]|>>line[0..]
+!mtline:x^line,parent,siblings,END|>>??
+
+ line structure
+(siblings)parent:rtl:line|>0line|<=0?oline|>>line,parent
+(siblings)parent:rtl:line|>0line|?oEND|>>line,parent
+(siblings)siblings:rtl:?oline|>0Oline|>0line|>>line,siblings
+
+!end:xEND|>>??
+

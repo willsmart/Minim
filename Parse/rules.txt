@@ -122,7 +122,7 @@ fn:?ovarpar|>0OwordGroup|(|)|>>var,ln,par
 
  key:val
  (in class) w:w, w:1, w:"s", "s":w, "s":1, "s":"s"
-keyval:?okvpar|>0Ostring,wordGroup|?:|string,number,wordGroup|>>keyval,ln,par
+keyval:?^END|>0Ostring,wordGroup|?:|string,number,wordGroup|>>keyval,ln,par
 keyval:?okvpar|>=2?oln|>0Ostring,wordGroup|?:|string,number,wordGroup|>>keyval,ln,par
 
  regex

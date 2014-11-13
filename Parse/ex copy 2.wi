@@ -1,0 +1,60 @@
+_
+init:
+    a=1
+    b=a*1
+{a,b}*{c,d}
+{a*c,b*c,a*d,b*d}
+
+*
+    a
+        b
+    ,
+        c
+        d
+
+translate:x
+main
+    &
+        z
+        1-z
+        diskXY 1
+
+        1
+        x,y,z
+        +
+        -
+        *
+        /
+        sin
+        asin
+        cos
+        acos
+        sqrt
+        sqr
+        _,floor
+        frac
+        rec
+        -
+        a?b:c
+        abs, |a|
+        min
+        max
+        rand
+        ln
+        log
+        exp
+        pow
+
+        x,y,z
+        T,Tx,Ty,Tz,Txy,Txz,Tyz
+        Rx,Ry,Rz
+        S,Sx,Sy,Sz,Sxy,Sxz,Syz
+        setscale
+        inch,inches,cm,mm,m,thou,deg,rad,grad,cycle,cycles
+        |
+        &
+        #,#1
+        deb
+        :
+        "obj"
+
