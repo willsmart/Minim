@@ -1,8 +1,9 @@
 All=>Class,ClassWithProtocol,Protocol,Var,Regex,Include,Rel,Init,Getter,Setter,Atomic,Setting,Block
 WS=> ,\t,br
 
-Class=>class,classnoprotocol,classpar,classparnotfile,varpar,repar,settingpar,par,ln
-ClassWithProtocol=>class,classwithprotocol,classpar,classparnotfile,varpar,repar,settingpar,par,ln
+Class=>class,classnoprotocol,classpar,modpar,classparnotfile,varpar,repar,settingpar,par,ln
+ClassWithProtocol=>class,classpar,modpar,classparnotfile,varpar,repar,settingpar,par,ln
+Mod=>class,classpar,classparnotfile,varpar,repar,settingpar,par,ln
 Protocol=>protocol,classpar,classparnotfile,varpar,repar,settingpar,par,ln
 
 Var=>var,blockpar,repar,linkpar,initpar,getterpar,setterpar,settingpar,atomicpar,par,ln
@@ -15,8 +16,7 @@ Getter=>getter,blockpar,par,ln
 Setter=>setter,blockpar,par,ln
 Setting=>setting,settingpar,blockpar,par,ln
 Block=>block,blockpar,par,ln
-File=>file,ln,par,classpar,includepar,repar
-
+File=>file,ln,par,classpar,includepar,repar,settingpar
  end
 !end:oEND|^blah|>>??
 !end:\n|E|N|D|\n|>>END
@@ -55,7 +55,7 @@ lineStart:?{[30..980]|>>lineStart[40..990]
 !findbrace:o^END[20..]|O^END[0]|>>??[@0:20..]
 
  comments
-!lineComment:o/|o/|^lineStart|>>??
+!lineComment:o/|o/|^lineStart,br|>>??
 !lineComment:x/|/|>>??
 !commentEnd:rtl:*|/|>>commentEnd
 !comment:rtl:x/|*|commentEnd|>>??
@@ -130,11 +130,6 @@ class:?oclasspar|>0OwordGroup,word|?:|classList,word,wordGroup|>>Class
 class:?oclasspar|>=2?oln|>0OwordGroup,word|?:|classList,word,wordGroup|>>Class
 
 
- type
-type:word,wordGroup,type|*,&|>>type
-    (int), (int&), (int*), (int**)
-(type)cast:?(|word,wordGroup,type|?)|>>type,castType
-
  arg lists
 argDef:?ovarpar|>0?owordGroup|?o(|Otype,word,wordGroup|?:|word,wordGroup|>>argDef
 argDef:?ovarpar|>=2?oln|>0?owordGroup|?o(|Otype,word,wordGroup|?:|word,wordGroup|>>argDef
@@ -156,8 +151,6 @@ fn:wordGroup|selArgList,selArgDef,argList|>>Var
  (in class) w()
 fn:?ovarpar|>0OwordGroup|?(|?)|>>Var
 fn:?ovarpar|>=2?oln|>0OwordGroup|?(|?)|>>Var
- (in class)
- var:?ovarpar|>0OwordGroup|?obr|>>Var
 
 
 
@@ -178,6 +171,11 @@ link:?olinkpar|>=2?oln|>0OlinkType|>>Link
  atomic (i.e var>>atomiccopy)
 atomic:?oatomicpar|>0?O>|?\>|>>Atomic
 atomic:?oatomicpar|>=2?oln|>0?O>|?\>|>>Atomic
+
+ mod (i.e. the * in class*)
+(_mod)_mod:?omodpar|>0O*,&,+|>>_mod
+(_mod)_mod:?omodpar|O_mod|*,&,+|>>_mod
+(_mod)mod:?omodpar|O_mod|>>Mod
 
  (in class that's in a class) var
 var:?oclassparnotfile|>0?oclasspar|>1OwordGroup|>>Var
@@ -209,10 +207,15 @@ class:?oclasspar|>=2?oln|>0OwordGroup|>>Class
 include:?oincludepar|>0Ostring|>>Include
 include:?oincludepar|>=2?oln|>0Ostring|>>Include
 
-(_block)_block:?oblockpar|>0O^All,END|^END[0]|>>??
-(_block)_block:?oblockpar|>=2?oln|>0O^All,END|^END[0]|>>??
-(_block)block:?oblockpar|>0O^All,END|>>Block
-(_block)block:?oblockpar|>=2?oln|>0O^All,END|>>Block
+ type
+(type)cast:?o(|Oword,wordGroup,type|word,wordGroup|>>type
+(type)cast:?(|word,wordGroup,type|?)|>>type,castType
+
++block:?oblockpar|>0O^All,END|^END[0]|>>??
++block:?oblockpar|>=2?oln|>0O^All,END|^END[0]|>>??
++block:?oblockpar|>0O^All,END|>>Block
++block:?oblockpar|>=2?oln|>0O^All,END|>>Block
+
 
 par:rtl:par[20..]|>0ln|<=0?o^NIL|>>??
 (sib)sib:rtl:?opar|>=2Oln|>0ln,^END|>>??

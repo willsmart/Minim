@@ -18,7 +18,8 @@ void testParse() {
 
     efil=FOpen("run.txt", "wb");
     NSError *err=nil;
-    NSString *prog=[NSString stringWithContentsOfFile:@"ex.wi" encoding:NSUTF8StringEncoding error:&err];
+    NSString *ifn=@"/Users/Will/Documents/wiLibrary/General/Matrix44.wi";
+    NSString *prog=[NSString stringWithContentsOfFile:ifn encoding:NSUTF8StringEncoding error:&err];
     if (!prog) prog=@"File not found";
     NSString *json=[Parse jsonFromTokens:[Parse parse:prog] program:prog];
     [json writeToFile:@"ex.wi.json" atomically:YES encoding:NSUTF8StringEncoding error:&err];
