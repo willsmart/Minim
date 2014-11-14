@@ -1,13 +1,17 @@
 s
-"c ts:":1
-c<P>
-c<P,P,P>
-c:sup,sup,sup<P,P,P>
-<p>
-<p:P>
-<p:P,P,P>
 
-vTypes<v>
+"Include"
+
+Classes
+    c
+    c<P>
+    c<P,P,P>
+    c:sup,sup,sup<P,P,P>
+    <p>
+    <p:P>
+    <p:P,P,P>
+
+Variables Class
     v
     v()
     v(t:a)
@@ -15,35 +19,86 @@ vTypes<v>
     v:(t)a
     v:(t)a a:(t)a
     v:(t)a a:(t)a a:(t)a
+        Getters
+        ->setter
 
-"kv ts:"
-k:"v"
-k:1
-k:1.0
-"k":"v"
-"k":1
-"k":1.0
+KeyVals
+    k:"v"
+    k:1
+    k:1.0
+    "k":"v"
+    "k":1
+    "k":1.0
 
-"r ts:"
-r=>m
-"r"=>"m"
-r=>"m"
-"r"=>m
-r=>1
-"r"=>1
-r=>1.0
-"r"=>1.0
+Regexes
+    r=>m
+    "r"=>"m"
+    r=>"m"
+    "r"=>m
+    r=>1
+    "r"=>1
+    r=>1.0
+    "r"=>1.0
 
-"inits:"
-=1
-=1.0
-=nil
-=
-    l
-    l
-={
-l
-l
-}
-="h"
-=@"h"
+Initializers Class Var
+    =1
+    =1.0
+    =
+        a:1
+        b:2
+    =nil
+    =
+        l
+        l
+    ={
+        l
+        l
+    }
+    ="h"
+    =@"h"
+
+Links Var
+    -- Class Var
+    -~ Class Var
+    ~- Class Var
+    >d- Class Var
+    >s- Class Var
+    >a- Class Var
+    >~a- Class Var
+    >a~ Class Var
+    -a< Class Var
+    -a~< Class Var
+    ~a< Class Var
+    >- Class Var
+    -< Class Var
+    ~< Class Var
+    >~ Class Var
+    >< Class Var
+    >--< Class Var
+    >~-< Class Var
+    >-~< Class Var
+
+Getters Class var
+    {block}
+    block
+
+Setters Class var
+    -> block
+    ->
+        block
+    ->{block}
+    v-> block
+    v->
+        block
+    v->{block}
+
+Misc Class Var
+    "readonly"
+    "setter"
+        hello
+    "key":
+        key:
+            key:1
+            key:hello
+
+

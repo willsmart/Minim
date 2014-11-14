@@ -1,19 +1,23 @@
-Class=>class,classpar,varpar,kvpar,repar,settingpar,par,ln
-Var=>var,kvpar,repar,relpar,initpar,getterpar,setterpar,settingpar,par,ln
-Keyval=>kv,ln
+All=>Class,Var,Keyval,Regex,Include,Rel,Init,Getter,Setter,Setting,Block
+WS=> ,\t,br
+
+Class=>class,classpar,classparnotfile,varpar,kvpar,repar,settingpar,par,ln
+Var=>var,blockpar,kvpar,repar,linkpar,initpar,getterpar,setterpar,settingpar,par,ln
+Keyval=>kv,kvpar,settingpar,par,ln
 Regex=>re,ln
 Include=>include,ln
-Rel=>rel,classpar,varpar,par,ln
-Init=>init,ln
-Getter=>getter,ln
-Setter=>setter,ln
-Setting=>setting,ln
-
+Link=>link,classpar,classparnotfile,par,ln
+Init=>init,blockpar,settingpar,par,ln
+Getter=>getter,blockpar,par,ln
+Setter=>setter,blockpar,par,ln
+Setting=>setting,settingpar,blockpar,kvpar,par,ln
+Block=>block,blockpar,par,ln
  end
 !end:oEND|^blah|>>??
-!end:\n|E|N|D|>>END,ln
+!end:\n|E|N|D|>>END
+!end:END[0]|>>END,ln[1]
 
-!start:<^file[0]|>>file,ln,par,classpar,kvpar,repar[10]
+!start:<^file[0]|>>file,ln,par,classpar,includepar,kvpar,repar[10]
 
  strings
 +string:_string[0..]|^",END|>>_string[0..]
@@ -51,9 +55,23 @@ lineStart:?{[30..980]|>>lineStart[40..990]
 !comment:rtl:x/|*|commentEnd|>>??
 !comment:rtl:o/|o*|^commentEnd|>>??
 
+ links (all must be surrounded by whitespace)
+ ~-, -~, --, >-, >~, -<, ~<, >< (also ~~)
++linkType:?oWS|O-,\~,>|-,\~,<|?oWS|>>linkType
+ >~-<, >--<, >-~<, (also >~~<)
++linkType:?oWS|O\>|-,\~|-,\~|\<|?oWS|>>linkType
+ ~d<, -d<, ~s<, -s<, ~a<, -a<
++linkType:?oWS|O\~,-|d,s,a|\<|?oWS|>>linkType
+ >d~, >d-, >s~, >s-, >a~, >a-
++linkType:?oWS|O\>|d,s,a|\~,-|?oWS|>>linkType
+ >~d-, >~s-, >~a-
++linkType:?oWS|O\>|\~|d,s,a|-|?oWS|>>linkType
+ -d~<, -s~<, -a~<
++linkType:?oWS|O-|d,s,a|\~|\<|?oWS|>>linkType
+
 ===
 
-!zero:o^END|O^lineStart,br[1..]|>>??[0]
+!zero:o^END|O^lineStart,br,END,ln[1..]|>>??[0]
 
 ===
 
@@ -75,15 +93,13 @@ lineStart:?{[30..980]|>>lineStart[40..990]
  !ws:x ,\t|o\,,\>,\<,:,=|>>??
 
  eat lineStarts
-!passon:xlineStart[1..]|O^lineStart[0]|>>??[@0:1..]
+!passon:xlineStart[1..]|O^lineStart,END,ln[0]|>>??[@0:1..]
 !eat:xlineStart|>>??
 
 ===
 
 
-par:rtl:par|>0ln|<=0?oln,END|>>??
-(sib)sib:rtl:?opar|>=2Oln|>=0ln|>>??
-!follow:oln[1..]|O^ln[0]|>>??[@0:1..]
+!follow:oln[1..]|O^ln[0]|>>??[@0:2..]
 
  protocols
 (protList)protList:?\<|_protList|>>protList,protocol
@@ -143,72 +159,55 @@ fn:?ovarpar|>=2?oln|>0OwordGroup|?(|?)|>>Var
 
 
 
- key:val
- (in class) w:w, w:1, w:"s", "s":w, "s":1, "s":"s"
-keyval:?okvpar|>0Ostring,wordGroup|?:|string,number,wordGroup|>>Keyval
-keyval:?okvpar|>=2?oln|>0Ostring,wordGroup|?:|string,number,wordGroup|>>Keyval
-
  regex
  (in class) w=>w, w=>1, w=>"s", "s"=>w, "s"=>1, "s"=>"s"
-keyval:?orepar|>0Ostring,wordGroup|?=|?\>|string,number,wordGroup|>>Regex
-keyval:?orepar|>=2?oln|>0Ostring,wordGroup|?=|?\>|string,number,wordGroup|>>Regex
-
- (in class)
-var:?ovarpar|>0OwordGroup|>>Var
-var:?ovarpar|>=2?oln|>0OwordGroup|>>Var
-
-END
-
+regex:?orepar|>0Ostring,wordGroup|?=|?\>|string,number,wordGroup|>>Regex
+regex:?orepar|>=2?oln|>0Ostring,wordGroup|?=|?\>|string,number,wordGroup|>>Regex
 
  initializers
-init:?ovar|>0?O=|>>Init,br
-(initBlock)initBlock:init[2..]|>0^END|>>[@0:2..]init,br
+init:?oinitpar|>0?O=|>>Init
+init:?oinitpar|>=2?oln|>0?O=|>>Init
 
+ links
+link:?olinkpar|>0OlinkType|>>Link
+link:?olinkpar|>=2?oln|>0OlinkType|>>Link
 
+ (in class that's in a class) var
+var:?oclassparnotfile|>0?oclasspar|>1OwordGroup|>>Var
+var:?oclassparnotfile|>=2?oln|>0?oclasspar|>2OwordGroup|>>Var
+var:?oclassparnotfile|>0?oclasspar|>=3?oln|>1OwordGroup|>>Var
+var:?oclassparnotfile|>=2?oln|>0?oclasspar|>=4?oln|>2OwordGroup|>>Var
 
+ (in class) var >~-<
+var:?oclasspar|>0OwordGroup|?olinkType|>>Var
+var:?oclasspar|>=2?oln|>0OwordGroup|?olinkType|>>Var
 
-!type:word,wordGroup|>>type
+ (in class) "readonly"
+setting:?osettingpar|>0OwordGroup,string|?:|>>Setting
+setting:?osettingpar|>=2?oln|>0OwordGroup,string|?:|>>Setting
+setting:?osettingpar|>0Ostring|>>Setting
+setting:?osettingpar|>=2?oln|>0Ostring|>>Setting
 
-(argList)argList:argDef|?\,|_argList|>>_argList
-argList:argDef|?)|>>_argList
+ (in var) ->
+setter:?osetterpar|>0?O-|?\>|>>Setter
+setter:?osetterpar|>=2?oln|>0?O-|?\>|>>Setter
+setter:?osetterpar|>0OwordGroup|?-[0]|?\>|>>Setter
+setter:?osetterpar|>=2?oln|>0OwordGroup|?-[0]|?\>|>>Setter
 
- selectors
-(selArgList)selArgList:?(|_selArgList|>>selArgList
-(selArgList)selArgList:argDef|?\,|_selArgList|>>_selArgList
-selArgList:argDef|?)|>>_selArgList
+ (in class) class
+class:?oclasspar|>0OwordGroup|>>Class
+class:?oclasspar|>=2?oln|>0OwordGroup|>>Class
 
- vars
-var:word,wordGroup|argList|>>var
+ (in file scope) "include.wi"
+include:?oincludepar|>0Ostring|>>Include
+include:?oincludepar|>=2?oln|>0Ostring|>>Include
 
- args
-argDef:type,|?:|word,wordGroup|>>argDef
-selArgDef:?:|?(|type|?)|word,wordGroup|>>selArgDef
+(_block)_block:?oblockpar|>0O^All,END|^END[0]|>>??
+(_block)_block:?oblockpar|>=2?oln|>0O^All,END|^END[0]|>>??
+(_block)block:?oblockpar|>0O^All,END|>>Block
+(_block)block:?oblockpar|>=2?oln|>0O^All,END|>>Block
 
+par:rtl:par|>0ln|<=0?o^END|>>??
+(sib)sib:rtl:?opar|>=2Oln|>0ln,^END|>>??
 
- selArgs
-
-
- key val
-keyval:string,word|?:|string,word|>>keyval
-
- regex
-regex:string,word|?=|?\>|string,word|>>regex
-
- line
-!splitLine:?oline[0..]|x ,\t|>>??
-!splitLine:?oline[0..]|O^line,_line,lineStart,parent,siblings,END|>>_line[1000..]
-!breaks:?xlineStart[0..]|Oclass,protList|>>line[0..]
-!breaks:o_line[0..]|Oclass,protList|>>line[0..]
-(line)line:?xlineStart[0..]|O^lineStart,_line,line,parent,siblings,END|>>_line[0..]
-(line)line:<^lineStart,_line,line,parent,siblings,END|>>_line[0]
-(line)line:_line[0..]|^lineStart,_line,line,parent,siblings,END|>>_line[0..]
-(line)line:_line[0..]|>>line[0..]
-!mtline:x^line,parent,siblings,END|>>??
-
- line structure
-(siblings)parent:rtl:line|>0line|<=0?oline|>>line,parent
-(siblings)parent:rtl:line|>0line|?oEND|>>line,parent
-(siblings)siblings:rtl:?oline|>0Oline|>0line|>>line,siblings
-
-!end:xEND|>>??
-
+END
