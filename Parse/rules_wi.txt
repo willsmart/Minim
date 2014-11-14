@@ -1,23 +1,29 @@
-All=>Class,Var,Keyval,Regex,Include,Rel,Init,Getter,Setter,Setting,Block
+All=>Class,ClassWithProtocol,Protocol,Var,Regex,Include,Rel,Init,Getter,Setter,Atomic,Setting,Block
 WS=> ,\t,br
 
-Class=>class,classpar,classparnotfile,varpar,kvpar,repar,settingpar,par,ln
-Var=>var,blockpar,kvpar,repar,linkpar,initpar,getterpar,setterpar,settingpar,par,ln
-Keyval=>kv,kvpar,settingpar,par,ln
+Class=>class,classnoprotocol,classpar,classparnotfile,varpar,repar,settingpar,par,ln
+ClassWithProtocol=>class,classwithprotocol,classpar,classparnotfile,varpar,repar,settingpar,par,ln
+Protocol=>protocol,classpar,classparnotfile,varpar,repar,settingpar,par,ln
+
+Var=>var,blockpar,repar,linkpar,initpar,getterpar,setterpar,settingpar,atomicpar,par,ln
 Regex=>re,ln
 Include=>include,ln
 Link=>link,classpar,classparnotfile,par,ln
+Atomic=>atomic,varpar,repar,settingpar,par,ln
 Init=>init,blockpar,settingpar,par,ln
 Getter=>getter,blockpar,par,ln
 Setter=>setter,blockpar,par,ln
-Setting=>setting,settingpar,blockpar,kvpar,par,ln
+Setting=>setting,settingpar,blockpar,par,ln
 Block=>block,blockpar,par,ln
+File=>file,ln,par,classpar,includepar,repar
+
  end
 !end:oEND|^blah|>>??
-!end:\n|E|N|D|>>END
-!end:END[0]|>>END,ln[1]
+!end:\n|E|N|D|\n|>>END
+!end:END[0]|>>END,ln[10]
 
-!start:<^file[0]|>>file,ln,par,classpar,includepar,kvpar,repar[10]
+!start:\n|S|T|A|R|T|\n|>>START
+!start:START[0]|>>START,File[10]
 
  strings
 +string:_string[0..]|^",END|>>_string[0..]
@@ -30,7 +36,7 @@ string:x"|O"|>>string[0]
 !clearblock:o}[1020..]|O^END[0]|>>??[@0:1010..]
 !clearblock:o^END,},{[1010..]|O^END[0]|>>??[@0:1010..]
 !clearblock:o^END[0]|O{[0]|>>??[1000]
-!clearblock:<{[0]|>>??[1000]
+!clearblock:?oSTART|O{[0]|>>??[1000]
 
  lines
 lineStart:?\n[0]|>>lineStart,br[20]
@@ -71,7 +77,7 @@ lineStart:?{[30..980]|>>lineStart[40..990]
 
 ===
 
-!zero:o^END|O^lineStart,br,END,ln[1..]|>>??[0]
+!zero:o^END|O^lineStart,br,END,START,File,ln[1..]|>>??[0]
 
 ===
 
@@ -93,6 +99,7 @@ lineStart:?{[30..980]|>>lineStart[40..990]
  !ws:x ,\t|o\,,\>,\<,:,=|>>??
 
  eat lineStarts
+!passon:oSTART[10..]|O^lineStart,END,ln[0]|>>??[@0:20..]
 !passon:xlineStart[1..]|O^lineStart,END,ln[0]|>>??[@0:1..]
 !eat:xlineStart|>>??
 
@@ -102,29 +109,25 @@ lineStart:?{[30..980]|>>lineStart[40..990]
 !follow:oln[1..]|O^ln[0]|>>??[@0:2..]
 
  protocols
-(protList)protList:?\<|_protList|>>protList,protocol
-protocol:?\<|word,wordGroup|?:|_protList|>>protocol
-(protList)protList:word,wordGroup|?\,|_protList|>>_protList
-protList:word,wordGroup|?\>|>>_protList
+(protList)protocol:_protList|?>|>>Protocol
+(protList)protList:?oclasspar|>0?<|Oword,wordGroup|>>_protList
+(protList)protList:?oclasspar|>=2?oln|>0?<|Oword,wordGroup|>>_protList
+(protList)protList:_protList|?\,|word,wordGroup|>>_protList
+ <protocol:protocol>
+(protList)protList:?o_protList|?o:|Oword,wordGroup|>>_protList
+(protList)protocol:_protList|?:|?o_protList|>>Protocol
+ <protocol>
+
+ class with protocol
+class:classnoprotocol|protocol[0]|>>ClassWithProtocol
 
  classes
-(classList)classList:?oclasspar|>0?oword,wordGroup,protList|?o:|Oword,wordGroup,classList|?\,|word,wordGroup|>>classList
-(classList)classList:?oclasspar|>=2?oln|>0?oword,wordGroup,protList|?o:|Oword,wordGroup,classList|?\,|word,wordGroup|>>classList
-  w:w<p>, w:w<p,p>
-class:?oclasspar|>0OwordGroup,word,protList|?:|classList,word,wordGroup|protList|>>Class
-class:?oclasspar|>=2?oln|>0OwordGroup,word,protList|?:|classList,word,wordGroup|protList|>>Class
+(classList)classList:?oclasspar|>0?oword,wordGroup|?o:|Oword,wordGroup,classList|?\,|word,wordGroup|>>classList
+(classList)classList:?oclasspar|>=2?oln|>0?oword,wordGroup|?o:|Oword,wordGroup,classList|?\,|word,wordGroup|>>classList
 
-  w:w, w:<p>, w:cl, w:c1,c2, <p>:w, <p>:<p>
-class:?oclasspar|>0OwordGroup,word,protList|?:|classList,word,wordGroup|?oln|>>Class
-class:?oclasspar|>=2?oln|>0OwordGroup,word,protList|?:|classList,word,wordGroup|?oln|>>Class
-
-  w<p>
-(class)classDecl:?oclasspar|>0OwordGroup|protList|>>classDecl,Class
-(class)classDecl:?oclasspar|>=2?oln|>0OwordGroup|protList|>>classDecl,Class
-
-  <p>
-(class)classDecl:?oclasspar|>0Oprotocol|>>classDecl,Class
-(class)classDecl:?oclasspar|>=2?oln|>0Oprotocol|>>classDecl,Class
+  w:w, w:c1,c2
+class:?oclasspar|>0OwordGroup,word|?:|classList,word,wordGroup|>>Class
+class:?oclasspar|>=2?oln|>0OwordGroup,word|?:|classList,word,wordGroup|>>Class
 
 
  type
@@ -172,6 +175,10 @@ init:?oinitpar|>=2?oln|>0?O=|>>Init
 link:?olinkpar|>0OlinkType|>>Link
 link:?olinkpar|>=2?oln|>0OlinkType|>>Link
 
+ atomic (i.e var>>atomiccopy)
+atomic:?oatomicpar|>0?O>|?\>|>>Atomic
+atomic:?oatomicpar|>=2?oln|>0?O>|?\>|>>Atomic
+
  (in class that's in a class) var
 var:?oclassparnotfile|>0?oclasspar|>1OwordGroup|>>Var
 var:?oclassparnotfile|>=2?oln|>0?oclasspar|>2OwordGroup|>>Var
@@ -207,7 +214,12 @@ include:?oincludepar|>=2?oln|>0Ostring|>>Include
 (_block)block:?oblockpar|>0O^All,END|>>Block
 (_block)block:?oblockpar|>=2?oln|>0O^All,END|>>Block
 
-par:rtl:par|>0ln|<=0?o^END|>>??
+par:rtl:par[20..]|>0ln|<=0?o^NIL|>>??
 (sib)sib:rtl:?opar|>=2Oln|>0ln,^END|>>??
+
+===
+ cleanup
+
+!ends:xSTART,END|>>??
 
 END
