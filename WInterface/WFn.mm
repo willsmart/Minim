@@ -175,10 +175,9 @@
                 }
             }
         }
-        if (!ignore) {
-            if (!append) {
+        if (((![forceIndexes containsObject:@(sn)])||!append)&&!ignore) {
+            if (!(append||[forceIndexes containsObject:@(sn)])) {
                 [forceIndexes addObject:@(sn)];
-                append=YES;
                 [s setString:t.str];
             }
             else [s appendString:t.str];
@@ -190,6 +189,8 @@
     NSMutableArray *ss=[NSMutableArray array];
     NSMutableIndexSet *pve=[NSMutableIndexSet indexSet],*nve=[NSMutableIndexSet indexSet];
     NSMutableSet *force=[NSMutableSet set];
+    if ([a containsString:@"set isEqualToString:@\"strong\""]||[b containsString:@"set isEqualToString:@\"strong\""]) {
+    }
     [WFn getFnBlocksFromString:a ret:ss pveIndexes:pve nveIndexes:nve forceIndexes:force];
     [WFn getFnBlocksFromString:b ret:ss pveIndexes:pve nveIndexes:nve forceIndexes:force];
     Int i=0;

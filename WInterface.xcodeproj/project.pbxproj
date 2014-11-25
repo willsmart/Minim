@@ -98,7 +98,7 @@
 		BE33A96419D4303E0046BF4A /* WReaderToken.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WReaderToken.mm; sourceTree = "<group>"; };
 		BE33A96619D430770046BF4A /* Protocols.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Protocols.h; sourceTree = "<group>"; };
 		BE340D6519D7DE2A00BEC232 /* Parse.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = Parse.mm; path = ../BasicClassesCPP/Parser/Parse.mm; sourceTree = "<group>"; };
-		BE340D6719D7DF6C00BEC232 /* Parse */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Parse; sourceTree = "<group>"; };
+		BE340D6719D7DF6C00BEC232 /* Parse */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Parse; path = ../WInterface/Parse; sourceTree = "<group>"; };
 		BE38E835196C7FD100C95037 /* Files */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Files; sourceTree = "<group>"; };
 		BE3A169018231A3700B5752A /* wierrors.wi */ = {isa = PBXFileReference; lastKnownFileType = text; name = wierrors.wi; path = Sample/wierrors.wi; sourceTree = "<group>"; };
 		BE3CEBE0164BA18500881540 /* wi.wi */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = wi.wi; sourceTree = SOURCE_ROOT; };

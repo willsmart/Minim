@@ -20,7 +20,7 @@ void testParse() {
     NSError *err=nil;
     NSString *prog=[NSString stringWithContentsOfFile:@"ex.wi" encoding:NSUTF8StringEncoding error:&err];
     if (!prog) prog=@"File not found";
-    NSString *json=[Parse jsonFromTokens:[Parse parse:prog] program:prog];
+    NSString *json=[Parse jsonFromTokens:[Parse parse:prog options:ParseOptions_fromFile] program:prog];
     [json writeToFile:@"ex.wi.json" atomically:YES encoding:NSUTF8StringEncoding error:&err];
 
     FClose(efil);
@@ -76,7 +76,7 @@ int main(int argc, const char * argv[])
                     NSString *wiifieddir=@"wied/";
                     
                     NSError *err=nil;
-                    NSString *html=cs.html,*htmlfn=[NSString stringWithFormat:@"%@.html",r.fileName];
+                    NSString *html=cs.html,*htmlfn=[NSString stringWithFormat:@"%@.html",r.fileName.lastPathComponent];
                     [html writeToFile:[wiifieddir stringByAppendingString:htmlfn] atomically:YES encoding:NSUTF8StringEncoding error:&err];
                     prnt("Wrote to file %s\n",[htmlfn cStringUsingEncoding:NSASCIIStringEncoding]);
                     
@@ -84,12 +84,12 @@ int main(int argc, const char * argv[])
                     [cs appendObjCToString:s iface:NO impl:NO classFilename:nil headerFilename:nil swift:NO];
                     err=nil;
                     [fm changeCurrentDirectoryPath:baseDir];
-                    NSString *dfn=[NSString stringWithFormat:@"%@.decl.h",r.fileName];
+                    NSString *dfn=[NSString stringWithFormat:@"%@.decl.h",r.fileName.lastPathComponent];
                     [s writeToFile:[wiifieddir stringByAppendingString:dfn] atomically:YES encoding:NSUTF8StringEncoding error:&err];
                     prnt("Wrote to file %s\n",[dfn cStringUsingEncoding:NSASCIIStringEncoding]);
                     
 
-                    NSString *hfn=[NSString stringWithFormat:@"%@.pch",r.fileName];
+                    NSString *hfn=[NSString stringWithFormat:@"%@.pch",r.fileName.lastPathComponent];
                     s=[NSMutableString string];
                     [cs appendObjCToString:s iface:YES impl:NO classFilename:nil headerFilename:dfn swift:NO];
                     err=nil;
