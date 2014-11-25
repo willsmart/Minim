@@ -1,0 +1,34 @@
+//
+//  AppDelegate.m
+//
+//  Created by Will Smart on 28/11/12.
+//  Copyright (c) 2012 Will Smart. All rights reserved.
+//
+
+Singletons
+    NSString homeURLPrefix=@$"http://{MYIP}/"
+    NSString styleName=@"Synesthete"
+    bool online=YES
+    
+"wierrors.wi" // look here for errors from winterface
+
+Globals
+    -interfaces
+        #undef MSGSTART
+        #define _MSGSTART(fn) //if (strstr(fn,"meta")||strstr(fn,"Meta")) prnt("MSG:%p -- %s\n",(__bridge void*)self,fn);
+        //#define LONGLIVEZOMBIES
+        //#define MSGSTART(fn) CHECKZOMBIE(fn) ADDTRACE(fn) _MSGSTART(fn)
+        #define MSGSTART(fn) CHECKZOMBIE(fn) _MSGSTART(fn)
+        //#define MSGSTART(fn) _MSGSTART(fn)
+        #define CALLWITHOWNER(__self,__fn,__owner) [__self __fn##WithOwner:__owner]
+
+    -interfaces:impl
+        int main(int argc, char *argv[]) {
+            if (argc==2) {
+                [Singletons._.files fileWithPath:[NSString stringWithFormat:@"%s",argv[1]]];
+            }
+        }
+
+
+<URLResource>
+    +(NSString*)urlScheme {return(@"tst://");}

@@ -69,7 +69,9 @@ var svg = d3.select("body").append("svg")
   .append("g")
     .attr("transform", "translate(40,40)");
 
-d3.json("ex.wi.json", function(error, root) {
+var jsondata="JSONDATA";
+
+var callback=function(error, root) {
 	prog.text(root.prog.replace(/\n/g, "⏎").replace(/ /g,"␣"))
       .style("text-anchor", "end")
       .style("display", "block")
@@ -126,7 +128,12 @@ d3.json("ex.wi.json", function(error, root) {
       .attr("fill", function(d) {return(d.colour);})
       //.attr("stroke", function(d) {return("black");})
       ;
-});
+}
+
+if (jsondata==="JSON"+"DATA") {
+    d3.json("ex.wi.json",callback);
+}
+else callback(null,jsondata);
 
 d3.select(self.frameElement).style("height", height + "px");
 

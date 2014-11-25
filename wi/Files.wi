@@ -1,0 +1,165 @@
+"Parse.h"
+
+
+NSString
+    -(NSString*)replaceEnvironmentVariables_error:(NSError*__strong*)perror
+        if (perror) *perror=nil;
+        NSError *err=nil;
+        NSRegularExpression *regex=[NSRegularExpression regularExpressionWithPattern:@"(?<=^|\\})([^\\{]*+)(?=$|\\{)|(?<=\\{)([^\\}]*+)(?=$|\\})" options:0 error:&err];
+        NSArray *matches=[regex matchesInString:self options:0 range:NSMakeRange(0, self.length)];
+        NSMutableString *ret=NSMutableString.string;
+
+        for (NSTextCheckingResult *match in matches) {
+            if ([match rangeAtIndex:1].location!=NSNotFound) {
+                [ret appendString:[self substringWithRange:[match rangeAtIndex:1]]];
+            }
+            else if ([match rangeAtIndex:2].location!=NSNotFound) {
+                NSString *var=[self substringWithRange:[match rangeAtIndex:2]];
+                NSString *val = [[NSProcessInfo processInfo]environment][var];
+                if (val) [ret appendString:val];
+                else {
+                    if (perror) *perror=[NSError errorWithDomain:
+                        [NSString stringWithFormat:@"Couldn't find environment variable \"%@\" to expand string \"%@\"",var,self]
+                        code:0 userInfo:nil
+                    ];
+                    return(nil);
+                }
+            }
+        }
+        return(ret);
+
+
+Singletons
+    Files files=0
+        {
+            return !files?files=[Files new]:files;
+        }
+    WIParse wiParse=0
+        {
+            return !wiParse?wiParse=[WIParse new]:wiParse;
+        }
+
+Files
+    NSMutableDictionary files=0 (readonly)
+
+    -(init)init
+
+    NSString basePath=[[NSFileManager defaultManager] currentDirectoryPath]
+        -v
+            v=[v stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
+            if (!v.isAbsolutePath) {
+                NSFileManager *fm=NSFileManager.defaultManager;
+                v=(v?[fm.currentDirectoryPath stringByAppendingPathComponent:v]:fm.currentDirectoryPath);
+            }
+            v_basePath=v;
+
+    -(NSString*)pathForPath:(NSString*)path
+        if (!path.isAbsolutePath) path=[self.basePath stringByAppendingPathComponent:path];
+        return(path);//[[NSURL URLWithString:path relativeToURL:NSBundle.mainBundle.bundleURL] absoluteString]);
+
+    -(File*)fileWithPath:(NSString*)path
+        path=[self pathForPath:path];
+        if (!files) files=@{}.mutableCopy;
+        return files[path]?
+            files[path]:
+            ((files[path]=[File newFileWithPath:path inParent:nil]));
+
+
+File
+// MARK:WI:  Note: Please think about making property "initialParent" publicreadonly
+    File initialParent=0 (readonly)
+    parent >s< File children
+
+    NSString path=0 (readonly)
+
+    +(instancetype)newFileWithPath:(NSString*)apath inParent:(File*)aparent
+        return [[self alloc] initFileWithPath:apath inParent:aparent];
+
+    -(init[super init])initFileWithPath:(NSString*)apath inParent:(File*)aparent
+        initialParent=aparent;
+        path=aparent?
+            [aparent childPathForPath:apath]:
+            [Singletons._.files pathForPath:apath];
+        prnt("%s\n",path.UTF8String);
+
+    -(NSString*)childPathForPath:(NSString*)childPath
+        return childPath.isAbsolutePath?
+            childPath:
+            [path.stringByDeletingLastPathComponent stringByAppendingPathComponent:childPath];
+
+    -(__Class__*)childWithPath:(NSString*)childPath
+        childPath=[self childPathForPath:childPath];
+        File *ret=Singletons._.files.files[childPath];
+        if (ret) [ret addParent:self];
+        else ret=[File newFileWithPath:childPath inParent:self];
+        return(ret);
+
+    -(init)
+        if (initialParent) [self addParent:initialParent];
+        [self includeChildren];
+
+    NSArray tokens=0
+        {
+            if (path&&!tokens) tokens=[Singletons._.wiParse tokensFromFile:path];
+            return(tokens);
+        }
+
+    -(void)includeChildren
+        for (Token *token in [self tokens]) [self includeChildren:token];
+
+    -(void)includeChildren:(Token*)token
+        if ([token.ruleName isEqualToString:@"include"]) {
+            NSString *childPath=[token.children.firstObject contents];
+            if ([childPath hasSuffix:@".wi"]) {
+                [self childWithPath:childPath];
+            }
+        }
+
+WIParse
+    -(init)init
+
+    -(init)
+        [Singletons._ files];
+
+        ((id<ParseClass>)Parse.class).rulesFilename=@$"{WIBASE}/WInterface/Parse/rules_wi.txt";
+
+    -(NSMutableArray*)tokensFromFile:(NSString*)path
+        path=[Singletons._.files pathForPath:path];
+        NSError *err=nil;
+        NSString *body=[NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&err];
+        NSMutableArray *ret=nil;
+        if (body) {
+            ret=[Parse parse:body options:0].mutableCopy;
+            bool hasError=!((ret.count==1)&&[[ret[0] ruleName] isEqualToString:@"par"]&&[[[(Token*)ret[0] children][0] ruleName] isEqualToString:@"file"]);
+
+            if (!hasError) ret=[(Token*)ret[0] children];
+
+            [__Class__ substituteStrings:ret];
+            NSString *htmlfn=[path stringByAppendingString:@".parse.html"];
+            [[NSFileManager defaultManager] removeItemAtPath:htmlfn error:&err];
+
+            if (hasError) {
+                NSLog(@"%@: %@",path,ret.description);
+                NSString *json=[Parse jsonFromTokens:ret program:body];
+                NSString *html=[NSString stringWithContentsOfFile:@$"{WIBASE}/WInterface/Parse/index.html" encoding:NSUTF8StringEncoding error:&err];
+                html=[html stringByReplacingOccurrencesOfString:@"\"JSONDATA\"" withString:json];
+                [html writeToFile:htmlfn atomically:YES encoding:NSUTF8StringEncoding error:&err];
+            }
+        }
+        return ret;
+
+    +(void)substituteStrings:(NSMutableArray*)tokens
+        NSMutableArray *ret=nil;
+        NSInteger index=0;
+        for (Token *token in tokens) {
+            if ([token.ruleName isEqualToString:@"substituteString"]) {
+                NSError *err=nil;
+                NSString *contents=[token.contents replaceEnvironmentVariables_error:&err];
+                if (!err) {
+                    token.contents=contents;
+                    token.ruleName=@"string";
+                    [token.children removeAllObjects];
+                }
+            }
+            [self substituteStrings:token.children];
+        }
