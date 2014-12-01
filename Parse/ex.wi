@@ -1,3 +1,103 @@
-p
- c i={g}->{s},k=0
+"Include"
+
+Classes
+    c
+    c<P>
+    c<P,P,P>
+    c:sup,sup,sup<P,P,P>
+    <p>
+    <p:P>
+    <p:P,P,P>
+
+Variables Class
+    v
+    v>>atomic
+    v()
+    v(t:a)
+    v(t:a, t:a, t:a)
+    v:(t)a
+    v:(t)a a:(t)a
+    v:(t)a a:(t)a a:(t)a
+        Getters
+        ->setter
+
+KeyVals
+    k:"v"
+    k:1
+    k:1.0
+    "k":"v"
+    "k":1
+    "k":1.0
+
+Regexes
+    r=>m
+    "r"=>"m"
+    r=>"m"
+    "r"=>m
+    r=>1
+    "r"=>1
+    r=>1.0
+    "r"=>1.0
+
+Initializers Class Var
+    =1
+    =1.0
+    =
+        a:1
+        b:2
+    =nil
+    =
+        l
+        l
+    ={
+        l
+        l
+    }
+    ="h"
+    =@"h"
+
+Links Var
+    -- Class Var
+    -~ Class Var
+    ~- Class Var
+    >d- Class Var
+    >s- Class Var
+    >a- Class Var
+    >~a- Class Var
+    >a~ Class Var
+    -a< Class Var
+    -a~< Class Var
+    ~a< Class Var
+    >- Class Var
+    -< Class Var
+    ~< Class Var
+    >~ Class Var
+    >< Class Var
+    >--< Class Var
+    >~-< Class Var
+    >-~< Class Var
+
+Getters Class var
+    {block}
+    block
+
+Setters Class var
+    -> block
+    ->
+        block
+    ->{block}
+    v-> block
+    v->
+        block
+    v->{block}
+
+Misc Class Var
+    "readonly"
+    "setter"
+        hello
+    "key":
+        key:
+            key:1
+            key:hello
+
 

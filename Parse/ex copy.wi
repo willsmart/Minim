@@ -1,99 +1,103 @@
-s
-"c ts:":1
-c<P>
-c<P,P,P>
-c:sup,sup,sup<P,P,P>
-<p>
-<p:P>
-<p:P,P,P>
+"Include"
 
-vTypes<v>
+Classes
+    c
+    c<P>
+    c<P,P,P>
+    c:sup,sup,sup<P,P,P>
+    <p>
+    <p:P>
+    <p:P,P,P>
+
+Variables Class
     v
+    v>>atomic
     v()
     v(t:a)
     v(t:a, t:a, t:a)
     v:(t)a
     v:(t)a a:(t)a
     v:(t)a a:(t)a a:(t)a
+        Getters
+        ->setter
 
-"kv ts:"
-k:"v"
-k:1
-k:1.0
-"k":"v"
-"k":1
-"k":1.0
+KeyVals
+    k:"v"
+    k:1
+    k:1.0
+    "k":"v"
+    "k":1
+    "k":1.0
 
-"r ts:"
-r=>m
-"r"=>"m"
-r=>"m"
-"r"=>m
-r=>1
-"r"=>1
-r=>1.0
-"r"=>1.0
+Regexes
+    r=>m
+    "r"=>"m"
+    r=>"m"
+    "r"=>m
+    r=>1
+    "r"=>1
+    r=>1.0
+    "r"=>1.0
 
-"inits:"
-=1
-=1.0
-=nil
-=
-    l
-    l
-={
-l
-l
-}
-="h"
-=@"h"
+Initializers Class Var
+    =1
+    =1.0
+    =
+        a:1
+        b:2
+    =nil
+    =
+        l
+        l
+    ={
+        l
+        l
+    }
+    ="h"
+    =@"h"
 
-s
-"class types:":1
-class<superprotocol>
-class<superprotocol,superprotocol,superprotocol>
-class:sup,sup,sup<superprotocol,superprotocol,superprotocol>
-<protocol>
-<protocol:superprotocol>
-<protocol:superprotocol,superprotocol,superprotocol>
+Links Var
+    -- Class Var
+    -~ Class Var
+    ~- Class Var
+    >d- Class Var
+    >s- Class Var
+    >a- Class Var
+    >~a- Class Var
+    >a~ Class Var
+    -a< Class Var
+    -a~< Class Var
+    ~a< Class Var
+    >- Class Var
+    -< Class Var
+    ~< Class Var
+    >~ Class Var
+    >< Class Var
+    >--< Class Var
+    >~-< Class Var
+    >-~< Class Var
 
-varTypes<v>
-    var
-    var()
-    var(type:arg)
-    var(type:arg, type:arg, type:arg)
-    var:(type)arg
-    var:(type)arg and:(type)arg
-    var:(type)arg and:(type)arg and:(type)arg
+Getters Class var
+    {block}
+    block
 
-"key/val types:"
-key:"value"
-key:1
-key:1.0
-"key":"value"
-"key":1
-"key":1.0
+Setters Class var
+    -> block
+    ->
+        block
+    ->{block}
+    v-> block
+    v->
+        block
+    v->{block}
 
-"regex types:"
-regex=>replacement
-"regex"=>"replacement"
-regex=>"replacement"
-"regex"=>replacement
-regex=>1
-"regex"=>1
-regex=>1.0
-"regex"=>1.0
+Misc Class Var
+    "readonly"
+    "setter"
+        hello
+    "key":
+        key:
+            key:1
+            key:hello
 
-"initializer types:"
-=1
-=1.0
-=nil
-=
-    line
-    line
-={
-line
-line
-}
-="hello"
-=@"hello"
+
