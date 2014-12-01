@@ -85,6 +85,7 @@
 #include "WInterface.wi.decl.h"
         #ifndef __SWIFT__
         //#include <iostream>
+        #define USEPROFILER
         #include "/Users/Will/Documents/BasicClassesCPP/Headers.h"
         #endif
 

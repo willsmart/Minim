@@ -2539,7 +2539,6 @@
 
 
 
-
         __mutableDictionary = nil;
 
         dictionaryDelegate = nil;
@@ -3200,7 +3199,9 @@
 
 
 
-        /*i100*/ [self markDirty]; [dictionaryDelegate stateOK];
+
+        /*i100*/ [dictionaryDelegate stateOK];
+        [self markDirty];
     }
     - (id)valueForKey:(NSString *)key {
         MSGSTART("CommitableMutableDictionary:-(id)valueForKey:(NSString*)key")
@@ -6853,6 +6854,8 @@
         }
         memset( array_objects.ids + array_count,0,sizeof(array_objects.ids[0]) * (100 - array_count) );
         array_count = __array.count;
+
+
 
         /*i100*/ [arrayDelegate stateOK];
     }
@@ -10628,6 +10631,8 @@
         }
         memset( array_objects.ids + array_count,0,sizeof(array_objects.ids[0]) * (100 - array_count) );
         array_count = __array.count;
+
+
 
         /*i100*/ [arrayDelegate stateOK];
     }

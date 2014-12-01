@@ -1575,8 +1575,6 @@
 
 
 
-
-
         array_count = 0;
         for (id o in __array) {
             array_objects.ids[array_count++] = (__bridge void *)o;
@@ -1584,6 +1582,8 @@
         }
         memset( array_objects.ids + array_count,0,sizeof(array_objects.ids[0]) * (100 - array_count) );
         array_count = __array.count;
+
+
 
         /*i100*/ [arrayDelegate stateOK];
     }
@@ -2840,8 +2840,6 @@
 
 
 
-
-
         array_count = 0;
         for (id o in __array) {
             array_objects.ids[array_count++] = (__bridge void *)o;
@@ -2849,6 +2847,8 @@
         }
         memset( array_objects.ids + array_count,0,sizeof(array_objects.ids[0]) * (100 - array_count) );
         array_count = __array.count;
+
+
 
         /*i100*/ [arrayDelegate stateOK];
     }

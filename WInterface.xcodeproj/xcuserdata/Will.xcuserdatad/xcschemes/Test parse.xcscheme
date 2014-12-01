@@ -60,7 +60,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "parse"
+            argument = "ex.wi"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

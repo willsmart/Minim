@@ -13,9 +13,7 @@
 }
 
 .node text {
-    -ms-transform: translate(0px,-0px) rotate(30deg);
-    -webkit-transform: translate(0px,-0px) rotate(30deg);
-    transform: translate(0px,-0px) rotate(30deg);
+	transform: translate(0px,-10px);
 }
 
 .node circle {
@@ -67,11 +65,11 @@ var prog = d3.select("body").append("text");
 
 var svg = d3.select("body").append("svg")
     .attr("width", width)
-    .attr("height", 50000)
+    .attr("height", 10000)
   .append("g")
     .attr("transform", "translate(40,40)");
 
-var jsondata="JSONDATA";
+var jsondata={"prog":"p\n    c fn:(d(^)(c a))v\n","graph":{"name":"","children":[{"name":"file[10]","size":660,"colour":"green"},{"name":"sib[10]","colour":"green","children":[{"name":"par[20]","colour":"green","children":[{"name":"class[10]","colour":"green","children":[{"name":"p","size":82,"colour":"black"}]},{"name":"par[60]","colour":"green","children":[{"name":"class[20]","colour":"green","children":[{"name":"c","size":82,"colour":"black"}]},{"name":"var[20]","colour":"green","children":[{"name":"fn","size":165,"colour":"black"}]}]}]},{"name":":","size":82,"colour":"black"}]},{"name":"block[21]","colour":"green","children":[{"name":"class[20]","colour":"green","children":[{"name":"d","size":82,"colour":"black"}]},{"name":"argDef[20]","colour":"green","children":[{"name":"class[20]","colour":"green","children":[{"name":"c","size":82,"colour":"black"}]},{"name":"a","size":82,"colour":"black"}]}]},{"name":"v","size":82,"colour":"black"}]}};
 
 var callback=function(error, root) {
 	prog.text(root.prog.replace(/\n/g, "⏎").replace(/ /g,"␣"))

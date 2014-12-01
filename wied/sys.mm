@@ -57,6 +57,7 @@
         - (NSString *)stringByEncodingHTMLEntities;
         - (NSString *)stringByReplacingPairs:(NSObject *)firstNeedle,...;
         + (NSString *)stringWithContentsOfURL:(NSURL *)aurl encoding:(NSStringEncoding)encoding error:(NSError *__strong *)aerr timeoutInterval:(float)timeout;
+        - (unichar *)unicharCString;
         - (NSString *)urlEncodeUsingEncoding:(NSStringEncoding)encoding;
 
         @end
@@ -341,6 +342,18 @@
         NSData *data = [NSURLConnection sendSynchronousRequest:req returningResponse:&response error:&error];
         aerr = &error;
         return [[NSString alloc] initWithData:data encoding:encoding];
+    }
+    - (unichar *)unicharCString {
+        MSGSTART("NSString:-(unichar*)unicharCString")
+
+        NSMutableData * data = [NSMutableData dataWithLength:(self.length + 1) * sizeof(unichar)];
+        objc_setAssociatedObject(self, @selector(unicharCString), data, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        unichar *ret = (unichar *)data.mutableBytes;
+        for (int i = 0; i < self.length; i++) {
+            ret[i] = [self characterAtIndex:i];
+        }
+        ret[self.length] = 0;
+        return ret;
     }
     - (NSString *)urlEncodeUsingEncoding:(NSStringEncoding)encoding {
         MSGSTART("NSString:-(NSString*)urlEncodeUsingEncoding:(NSStringEncoding)encoding")

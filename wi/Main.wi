@@ -25,6 +25,7 @@ Globals
     -interfaces:impl
         int main(int argc, char *argv[]) {
             if (argc==2) {
+                //PrflFn::spawnProfiler();
                 [Singletons._.files fileWithPath:[NSString stringWithFormat:@"%s",argv[1]]];
             }
         }

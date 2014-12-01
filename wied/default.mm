@@ -397,7 +397,8 @@
     - (NSData *)sendAsBodyOfPOSTRequestWithURL:(NSURL *)url returningResponse:(NSURLResponse *__strong *)retresponse error:(NSError *__strong *)reterr {
         MSGSTART("NSData:-(NSData*)sendAsBodyOfPOSTRequestWithURL:(NSURL*)url returningResponse:(NSURLResponse*__strong*)retresponse error:(NSError*__strong*)reterr")
 
-        NSError * err = nil;
+        NSError * err
+            = nil;
         NSURLResponse *response = nil;
         if (reterr) *reterr = nil;
         if (retresponse) retresponse = nil;

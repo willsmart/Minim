@@ -1306,13 +1306,13 @@
     - (void)allObjectsMoved {
         MSGSTART("EndpointA:-(void)allObjectsMoved")
 
+
+
         [__arrayObjectIndexes removeAllObjects];
         Unsigned index = 0;
         for (NSObject *object in __array) {
             [self doAddIndex:index++ forObject:object];
         }
-
-
 
         /*i100*/ [arrayDelegate allObjectsMoved];
     }
@@ -1410,11 +1410,11 @@
 
         owner = nil;
 
-        __arrayObjectIndexes = nil;
+        __array = nil;
 
         __mutableArray = nil;
 
-        __array = nil;
+        __arrayObjectIndexes = nil;
 
         arrayDelegate = nil;
 /*i998*/ deallocFn(self,objectIDInTotal,objectIDInClass);
@@ -1885,18 +1885,20 @@
     - (void)objectsMovedFromRange:(NSRange)fromRange toLocation:(Unsigned)toLocation {
         MSGSTART("EndpointA:-(void)objectsMovedFromRange:(NSRange)fromRange toLocation:(Unsigned)toLocation")
 
+
+
         for (Unsigned i = 0; i < fromRange.length; i++) {
             Unsigned j = (toLocation > fromRange.location ? fromRange.length - 1 - i : i);
             NSObject *object = [__array objectAtIndex:toLocation + j];
             [self doChangeIndex:fromRange.location + j toIndex:toLocation + j forObject:object];
         }
 
-
-
         /*i100*/ [arrayDelegate objectsMovedFromRange:fromRange toLocation:toLocation];
     }
     - (void)objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex {
         MSGSTART("EndpointA:-(void)objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex")
+
+
 
         NSObject * object1 = [__array objectAtIndex:toIndex];
         NSObject *object2 = [__array objectAtIndex:fromIndex];
@@ -1904,8 +1906,6 @@
             [self doChangeIndex:fromIndex toIndex:toIndex forObject:object1];
             [self doChangeIndex:toIndex toIndex:fromIndex forObject:object2];
         }
-
-
 
         /*i100*/ [arrayDelegate objectsSwappedWithIndex:fromIndex andIndex:toIndex];
     }
@@ -2073,7 +2073,6 @@
 
             /*i0*/ if ( (!__restrictRef) && [self unacceptable:object] ) ret = NO;
 
-
             /*i100*/ if (ret && arrayDelegate) ret = [arrayDelegate shouldAddObject:object makeWeak:weak];
 
             /*i999*/ return ret;
@@ -2160,6 +2159,8 @@
         }
         memset( array_objects.ids + array_count,0,sizeof(array_objects.ids[0]) * (100 - array_count) );
         array_count = __array.count;
+
+
 
         /*i100*/ [arrayDelegate stateOK];
     }

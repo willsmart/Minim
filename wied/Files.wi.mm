@@ -290,6 +290,9 @@
             if ([childPath hasSuffix:@".wi"])
                 [self childWithPath:childPath];
         }
+        for (Token *child in token.children) {
+            [self includeChildren:child];
+        }
     }
     - (File *)initFileWithPath:(NSString *)apath inParent:(File *)aparent {
         MSGSTART("File:-(File*)initFileWithPath:(NSString*)apath inParent:(File*)aparent")
@@ -647,21 +650,23 @@
         NSMutableArray *ret = nil;
         if (body) {
             ret = [Parse parse:body options:0].mutableCopy;
-            bool hasError = !( (ret.count == 1) && [[ret[0] ruleName] isEqualToString:@"par"] && [[[(Token *)ret[0] children][0] ruleName] isEqualToString:@"file"] );
+            bool isEmpty = ( (ret.count == 1) && [[ret[0] ruleName] isEqualToString:@"file"] );
+            bool hasError = !( isEmpty || ( (ret.count == 1) && [[ret[0] ruleName] isEqualToString:@"par"] && [[[(Token *)ret[0] children][0] ruleName] isEqualToString:@"file"] ) );
 
-            if (!hasError) ret = [(Token*)[(Token *)ret[0] children][1] children];
+            if (!hasError) ret = [(Token *)ret[0] children];
 
             [WIParse substituteStrings:ret];
             NSString *htmlfn = [path stringByAppendingString:@".parse.html"];
             [[NSFileManager defaultManager] removeItemAtPath:htmlfn error:&err];
 
-            if (hasError) {
+            if (hasError)
                 NSLog(@"%@: %@",path,ret.description);
-                NSString *json = [Parse jsonFromTokens:ret program:body];
-                NSString *html = [NSString stringWithContentsOfFile:@"/Users/Will/Documents/WInterface/Parse/index.html" encoding:NSUTF8StringEncoding error:&err];
-                html = [html stringByReplacingOccurrencesOfString:@"\"JSONDATA\"" withString:json];
-                [html writeToFile:htmlfn atomically:YES encoding:NSUTF8StringEncoding error:&err];
-            }
+            // if (hasError) {
+            NSString *json = [Parse jsonFromTokens:ret program:body];
+            NSString *html = [NSString stringWithContentsOfFile:@"/Users/Will/Documents/WInterface/Parse/index.html" encoding:NSUTF8StringEncoding error:&err];
+            html = [html stringByReplacingOccurrencesOfString:@"\"JSONDATA\"" withString:json];
+            [html writeToFile:htmlfn atomically:YES encoding:NSUTF8StringEncoding error:&err];
+            // }
         }
         return ret;
     }

@@ -1,9 +1,9 @@
 //
-//  WI_iosTestsTests.h
-//  WI_iosTestsTests
+// WI_iosTestsTests.h
+// WI_iosTestsTests
 //
-//  Created by Will Smart on 23/11/12.
-//  Copyright (c) 2012 Will Smart. All rights reserved.
+// Created by Will Smart on 23/11/12.
+// Copyright (c) 2012 Will Smart. All rights reserved.
 //
 
 #import <SenTestingKit/SenTestingKit.h>

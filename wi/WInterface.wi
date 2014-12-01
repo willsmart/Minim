@@ -1,4 +1,5 @@
 $"{WIBASE}/wiLibrary_v1/wi.wi"
+"<pthread.h>"
 
 "wi/Main.wi"
 "wi/Files.wi"

@@ -114,6 +114,7 @@ File
                 [self childWithPath:childPath];
             }
         }
+        for (Token *child in token.children) [self includeChildren:child];
 
 WIParse
     -(init)init
@@ -130,7 +131,8 @@ WIParse
         NSMutableArray *ret=nil;
         if (body) {
             ret=[Parse parse:body options:0].mutableCopy;
-            bool hasError=!((ret.count==1)&&[[ret[0] ruleName] isEqualToString:@"par"]&&[[[(Token*)ret[0] children][0] ruleName] isEqualToString:@"file"]);
+            bool isEmpty=((ret.count==1)&&[[ret[0] ruleName] isEqualToString:@"file"]);
+            bool hasError=!(isEmpty||((ret.count==1)&&[[ret[0] ruleName] isEqualToString:@"par"]&&[[[(Token*)ret[0] children][0] ruleName] isEqualToString:@"file"]));
 
             if (!hasError) ret=[(Token*)ret[0] children];
 
@@ -140,17 +142,17 @@ WIParse
 
             if (hasError) {
                 NSLog(@"%@: %@",path,ret.description);
+            }
+            //if (hasError) {
                 NSString *json=[Parse jsonFromTokens:ret program:body];
                 NSString *html=[NSString stringWithContentsOfFile:@$"{WIBASE}/WInterface/Parse/index.html" encoding:NSUTF8StringEncoding error:&err];
                 html=[html stringByReplacingOccurrencesOfString:@"\"JSONDATA\"" withString:json];
                 [html writeToFile:htmlfn atomically:YES encoding:NSUTF8StringEncoding error:&err];
-            }
+            //}
         }
         return ret;
 
     +(void)substituteStrings:(NSMutableArray*)tokens
-        NSMutableArray *ret=nil;
-        NSInteger index=0;
         for (Token *token in tokens) {
             if ([token.ruleName isEqualToString:@"substituteString"]) {
                 NSError *err=nil;
