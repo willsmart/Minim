@@ -18,7 +18,7 @@ Variables Class
     v:(t)a
     v:(t)a a:(t)a
     v:(t)a a:(t)a a:(t)a
-        Getters
+            Getters
         ->setter
 
 KeyVals
@@ -78,6 +78,10 @@ Links Var
     >-~< Class Var
 
 Getters Class var
+    <- block
+    <-
+        block
+    <-{block}
     {block}
     block
 

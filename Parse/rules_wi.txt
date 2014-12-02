@@ -1,9 +1,8 @@
 All=>Class,ClasWithProt,Mod,Protocol,Var,Regex,Include,Link,Atomic,Init,Getter,Setter,Setting,Block
 WS=> ,\t,br
 Noblock=>classpar,classdefpar,classvarpar,_selArgDef,_ln
-LL=>0
-BB=>00
-PP=>000
+LL=>01
+BB=>0010
 
 Class=>class,classnoprotocol,classpar,classdefpar,classvarpar,modpar,classparnotfile,varpar,repar,settingpar,par,ln
 ClasWithProt=>class,classwithprotocol,classpar,classdefpar,classvarpar,modpar,classparnotfile,varpar,repar,settingpar,par,ln
@@ -115,6 +114,7 @@ substituteString:?x$|OplainString|>>string,substituteString
     find braces
 !openbrace:x{[1LL0..]|O^END[0]|>>??[@0:1BB0..]
     close braces
+!closebrace:o^END[1BB0..2BB0]|x}[0]|O\n[0]|>>linestart,br[2LL0]
 !closebrace:o^END[1BB0..]|x}[0]|O^END[0]|>>??[@0:1LL0..]
     between braces
 !betweenbrace:o^END[1BB0..]|O^END[0]|>>??[@0:1BB0..]
@@ -130,7 +130,7 @@ substituteString:?x$|OplainString|>>string,substituteString
 !emptyline:xlinestart|olinestart|>>??
 
     char incrementation
-!charinc:o^END[1LL0..1BB0]|O^\n,END[0]|>>??[@0:1LL1..]
+!charinc:o^\n[1LL0..1BB0]|O^\n,END[0]|>>??[@0:1LL1..]
 
     char incrementation betweenbraces
 !charinc:o^END[1BB0..]|=0O^END|>>??[@0:1BB1..]
@@ -201,8 +201,8 @@ link:?olinkpar|>0OlinkType|>>Link
 link:?olinkpar|>=2?oln|>0OlinkType|>>Link
 
  atomic (i.e var>>atomiccopy)
-atomic:?oatomicpar|>0?O>|?\>|>>Atomic
-atomic:?oatomicpar|>=2?oln|>0?O>|?\>|>>Atomic
+atomic:?oatomicpar|>0?O>|=1+1?\>|>>Atomic
+atomic:?oatomicpar|>=2?oln|>0?O>|=2+1?\>|>>Atomic
 
  mod (i.e. the * in class*)
 (mod)mod:modpar|*,&,+|>>??
@@ -246,14 +246,15 @@ argDef:?ovarpar|>=2?oln|>0?owordGroup|?o(|Otype,word,wordGroup|?:|word,wordGroup
 !selArgDef:oclass|>=2oln|>0owordGroup|O:|(|>>priclasspar,classpar,_selArgDef,_ln[20]
  (in class .. wd) :(int)w, :(int*)w, :(int)w arg:(int)w
 (selArgList)selArgList:OselArgDef,selArgList|selArgDef|>>selArgList,ln
-selArgDef:wordGroup|?_selArgDef|class,protocol|?)|word,wordGroup|>>selArgDef,ln
+selArgDef:?oselArgDef,selArgList|OwordGroup|?_selArgDef|class,protocol|?)|word,wordGroup|>>selArgDef,ln
+selArgDef:?owordGroup|?_selArgDef|Oclass,protocol|?)|word,wordGroup|>>selArgDef,ln
 
  (in class .. wd) :(class)var
 (selArg)selArg:var|selArgDef,selArgList|>>Var
 
 
  (in class) w:(int)w, w(int:w)
-fn:selArgList,selArgDef|>>Var
+fn:wordGroup|selArgList,selArgDef|>>Var
 
 
  (in class) class
@@ -265,6 +266,12 @@ class:rtl:?opriclasspar|>=2?oln|>0OwordGroup|>>Class
 regex:?orepar|>0Ostring,wordGroup|?=|?\>|string,number,wordGroup|>>Regex
 regex:?orepar|>=2?oln|>0Ostring,wordGroup|?=|?\>|string,number,wordGroup|>>Regex
 
+ (in class) "readonly"
+setting:?osettingpar|>0OwordGroup,string|?:|>>Setting
+setting:?osettingpar|>=2?oln|>0OwordGroup,string|?:|>>Setting
+setting:?osettingpar|>0Ostring|>>Setting
+setting:?osettingpar|>=2?oln|>0Ostring|>>Setting
+
  (in class that's in a class) var
 var:?oclassparnotfile|>0?oclassvarpar|>1[1..]OwordGroup|>>Var[@1:0?1..]
 var:?oclassparnotfile|>=2?oln|>0?oclassvarpar|>2[1..]OwordGroup|>>Var[@2:0?1..]
@@ -275,21 +282,19 @@ var:?oclassparnotfile|>=2?oln|>0?oclassvarpar|>=4?oln|>2[1..]OwordGroup|>>Var[@2
 var:?oclassvarpar|>0OwordGroup|?olinkType|>>Var
 var:?oclassvarpar|>=2?oln|>0OwordGroup|?olinkType|>>Var
 
- (in class) "readonly"
-setting:?osettingpar|>0OwordGroup,string|?:|>>Setting
-setting:?osettingpar|>=2?oln|>0OwordGroup,string|?:|>>Setting
-setting:?osettingpar|>0Ostring|>>Setting
-setting:?osettingpar|>=2?oln|>0Ostring|>>Setting
-
  (in file scope) "include.wi"
 include:?oincludepar|>0Ostring|>>Include
 include:?oincludepar|>=2?oln|>0Ostring|>>Include
 
  (in var) ->
-setter:?osetterpar|>0?O-|?\>|>>Setter
-setter:?osetterpar|>=2?oln|>0?O-|?\>|>>Setter
-setter:?osetterpar|>0OwordGroup|?-|?\>|>>Setter
-setter:?osetterpar|>=2?oln|>0OwordGroup|?-|?\>|>>Setter
+setter:?osetterpar|>0?O-|=1+1?\>|>>Setter
+setter:?osetterpar|>=2?oln|>0?O-|=2+1?\>|>>Setter
+setter:?osetterpar|>0OwordGroup|=1+1?-|=1+2?\>|>>Setter
+setter:?osetterpar|>=2?oln|>0OwordGroup|=2+1?-|=2+2?\>|>>Setter
+
+ (in var) ->
+getter:?osetterpar|>0?O\<|=1+1?-|>>Getter
+getter:?osetterpar|>=2?oln|>0?O\<|=2+1?-|>>Getter
 
  (in class) class
 class:rtl:?oclasspar|>0OwordGroup|>>Class
