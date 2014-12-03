@@ -1,8 +1,14 @@
 All=>Class,ClasWithProt,Mod,Protocol,Var,Regex,Include,Link,Atomic,Init,Getter,Setter,Setting,Block
 WS=> ,\t,br
 Noblock=>classpar,classdefpar,classvarpar,_selArgDef,_ln
-LL=>00000
-LB=>00100
+Startblock=>wordgroup,string,number,\[,\]
+
+ LL=>00000
+ LB=>00100
+ BB=>00
+LL=>00
+LB=>10
+BB=>0
 
 Class=>class,classnoprotocol,classpar,classdefpar,classvarpar,modpar,classparnotfile,varpar,repar,settingpar,par,ln
 ClasWithProt=>class,classwithprotocol,classpar,classdefpar,classvarpar,modpar,classparnotfile,varpar,repar,settingpar,par,ln
@@ -88,14 +94,14 @@ substituteString:?x$|OplainString|>>string,substituteString
 ===
 
  words and numbers
-&word:rtl:a-z,A-Z,_|word|>>_word,_wordGroup
+&word:rtl:a-z,A-Z,_|word|>>_word,_wordgroup
 &int:0-9|int|>>int,number
-&word:rtl:a-z,A-Z,_|>>_word,_wordGroup
+&word:rtl:a-z,A-Z,_|>>_word,_wordgroup
 &int:rtl:O0-9|>>int,number
 &number:int|.|int|>>number
-&wordGroup:_wordGroup|number,_wordGroup|>>_wordGroup
-!word:_word|>>word,wordGroup
-!wordGroup:_wordGroup|>>wordGroup
+&wordgroup:_wordgroup|number,_wordgroup|>>_wordgroup
+!word:_word|>>word,wordgroup
+!wordgroup:_wordgroup|>>wordgroup
 
  clear spaces
 !ws:o^ ,\t,\n,linestart,br|x ,\t|>>??
@@ -133,9 +139,9 @@ substituteString:?x$|OplainString|>>string,substituteString
 
 ===
 
-!varcomma:ovarpar|>0oln|>0\,|>2owordGroup|>>??
+!varcomma:ovarpar|>0oln|>0\,|>2owordgroup|>>??
 
-!classwprotocol:classnoprotocol|=0+1o<|=0+2oword,wordGroup|>>ClasWithProt,justclass
+!classwprotocol:classnoprotocol|=0+1o<|=0+2oword,wordgroup|>>ClasWithProt,justclass
 
  !paranBody:lparan[10]|^OEND[10..]|o)|>>??[0]
  !paranFollow:oln,_ln[1..]|Olparan[10]|^oEND[0]|o)|>>??[@0:2..]
@@ -143,53 +149,60 @@ substituteString:?x$|OplainString|>>string,substituteString
  &block:?oblock|>0Oblock|^END[0]|>>??
  !follow:oln,_ln[1..]|O^\,,ln[0]|>>??[@0:2..]
 
-setting:?osettingpar|>0OwordGroup,string|?:|?owordGroup,string|?o:|>>Setting
-setting:?osettingpar|>=2?oln|>0OwordGroup,string|?:|?owordGroup,string|?o:|>>Setting
+setting:?osettingpar|>0Owordgroup,string|?:|?owordgroup,string|?o:|>>Setting
+setting:?osettingpar|>=2?oln|>0Owordgroup,string|?:|?owordgroup,string|?o:|>>Setting
+setting:?osettingpar|>0>=2-1BB0?oln|>0Owordgroup,string|?:|?owordgroup,string|?o:|>>Setting[@1:0..]
 
  protocols
  <P:P>
 (protList)protocol:_protList|?:|_protList|?>|>>Protocol
  <P>
 (protList)protocol:_protList|?>|>>Protocol
-(protList)protList:?oclasspar|>0?<[0..]|Oword,wordGroup|>>_protList[@1:0..]
-(protList)protList:?oclasspar|>=2?oln|>0?<[0..]|Oword,wordGroup|>>_protList[@2:0..]
-addprotocol:?o_protList|?o\,,:|?O\+|word,wordGroup|>>modProt
-(protList)protList:_protList|?\,|word,wordGroup,modProt|>>_protList
+(protList)protList:?oclasspar|>0?<[0..]|Oword,wordgroup|>>_protList[@1:0..]
+(protList)protList:?oclasspar|>0>=2-1BB0?oln|>0?<[0..]|Oword,wordgroup|>>_protList[@2:0..]
+addprotocol:?o_protList|?o\,,:|?O\+|word,wordgroup|>>modProt
+(protList)protList:_protList|?\,|word,wordgroup,modProt|>>_protList
  <protocol:protocol>
-!protList:?o_protList|?o:|Oword,wordGroup,modProt|>>_protList
+!protList:?o_protList|?o:|Oword,wordgroup,modProt|>>_protList
  <protocol>
 
  class with protocol
 classwprotocol:classwithprotocol,justclass|protocol|>>ClasWithProt
 
  classes
-(classList)classList:?oclassdefpar|>0?oword,wordGroup|?o:|Oword,wordGroup,classList|?\,|word,wordGroup|>>classList
-(classList)classList:?oclassdefpar|>=2?oln|>0?oword,wordGroup|?o:|Oword,wordGroup,classList|?\,|word,wordGroup|>>classList
+(classList)classList:?oclassdefpar|>0?oword,wordgroup|?o:|Oword,wordgroup,classList|?\,|word,wordgroup|>>classList
+(classList)classList:?oclassdefpar|>=2?oln|>0?oword,wordgroup|?o:|Oword,wordgroup,classList|?\,|word,wordgroup|>>classList
+(classList)classList:?oclassdefpar|>0>=2-1BB0?oln|>0?oword,wordgroup|?o:|Oword,wordgroup,classList|?\,|word,wordgroup|>>classList[@1:0..]
 
   w:w, w:c1,c2
-class:?oclassdefpar|>0OwordGroup,word|?:|classList,word,wordGroup|>>Class
-class:?oclassdefpar|>=2?oln|>0OwordGroup,word|?:|classList,word,wordGroup|>>Class
+class:?oclassdefpar|>0Owordgroup,word|?:|classList,word,wordgroup|>>Class
+class:?oclassdefpar|>=2?oln|>0Owordgroup,word|?:|classList,word,wordgroup|>>Class
+class:?oclassdefpar|>0>=2-1BB0?oln|>0Owordgroup,word|?:|classList,word,wordgroup|>>Class[@1:0..]
 
   c(^)(
-!class:oclasspar|>0owordGroup,word|o(|o\^,*|o)|O(|>>_argDef,priclasspar,classpar,_ln[20]
-!class:oclasspar|>=2oln|>0owordGroup,word|o(|o\^,*|o)|O(|>>_argDef,priclasspar,classpar,_ln[20]
-class:?oclasspar|>0OwordGroup,word|?o(|?o\^,*|?o)|?o_argDef|>>Class
-class:?oclasspar|>=2?oln|>0OwordGroup,word|?o(|?o\^,*|?o)|?o_argDef|>>Class
+!class:oclasspar|>0owordgroup,word|o(|o\^,*|o)|O(|>>_argDef,priclasspar,classpar,_ln[20]
+!class:oclasspar|>0>=2-1BB0oln|>0owordgroup,word|o(|o\^,*|o)|O(|>>_argDef,priclasspar,classpar,_ln[20]
+class:?oclasspar|>0Owordgroup,word|?o(|?o\^,*|?o)|?o_argDef|>>Class
+class:?oclasspar|>=2?oln|>0Owordgroup,word|?o(|?o\^,*|?o)|?o_argDef|>>Class
+class:?oclasspar|>0>=2-1BB0?oln|>0Owordgroup,word|?o(|?o\^,*|?o)|?o_argDef|>>Class[@1:0..]
 
  (in sel arg) class
-class:?o_selArgDef|>0OwordGroup|>>Class
+class:?o_selArgDef|>0Owordgroup|>>Class
 
  initializers
 init:?oinitpar|>0?O=|>>Init
 init:?oinitpar|>=2?oln|>0?O=|>>Init
+init:?oinitpar|>0>=2-1BB0?oln|>0?O=|>>Init[@1:0..]
 
  links
 link:?olinkpar|>0OlinkType|>>Link
 link:?olinkpar|>=2?oln|>0OlinkType|>>Link
+link:?olinkpar|>0>=2-1BB0?oln|>0OlinkType|>>Link[@1:0..]
 
  atomic (i.e var>>atomiccopy)
 atomic:?oatomicpar|>0?O>|=1+1?\>|>>Atomic
 atomic:?oatomicpar|>=2?oln|>0?O>|=2+1?\>|>>Atomic
+atomic:?oatomicpar|>0>=2-1BB0?oln|>0?O>|=2+1?\>|>>Atomic[@1:0..]
 
  mod (i.e. the * in class*)
 (mod)mod:modpar|*,&,+|>>??
@@ -202,113 +215,132 @@ atomic:?oatomicpar|>=2?oln|>0?O>|=2+1?\>|>>Atomic
  arg lists
 
  fn(int i, int j)
-(argList)fn:?ovarpar|>0OwordGroup|argList|>>Var
-(argList)fn:?ovarpar|>=2?oln|>0OwordGroup|argList|>>Var
+(argList)fn:?ovarpar|>0Owordgroup|argList|>>Var
+(argList)fn:?ovarpar|>=2?oln|>0Owordgroup|argList|>>Var
+(argList)fn:?ovarpar|>0>=2-1BB0?oln|>0Owordgroup|argList|>>Var[@1:0..]
 
-!argDef:ovarpar|>0owordGroup|O(|>>priclasspar,classpar,_argDef,_ln[20]
-!argDef:ovarpar|>=2oln|>0owordGroup|?O(|>>priclasspar,classpar,_argDef,_ln[20]
+!argDef:ovarpar|>0owordgroup|O(|>>priclasspar,classpar,_argDef,_ln[20]
+!argDef:ovarpar|>0>=2-1BB0oln|>0owordgroup|?O(|>>priclasspar,classpar,_argDef,_ln[20]
 
 (argDfs)argList:?_argDef|?)|>>argList
 (argDfs)argList:?_argDef|argDef|?)|>>argList
 (argDfs)argDfs:?o_argDef|OargDef|argDef|>>argDef
-argDef:?o_argDef|?oargDef|?sepArgs|Oclass,protocol|wordGroup|>>argDef
-argDef:?o_argDef|?oargDef|?sepArgs|Oclass,protocol|?:|wordGroup|>>argDef
+argDef:?o_argDef|?oargDef|?sepArgs|Oclass,protocol|wordgroup|>>argDef
+argDef:?o_argDef|?oargDef|?sepArgs|Oclass,protocol|?:|wordgroup|>>argDef
 argDef:?o_argDef|?oargDef|?sepArgs|Oclass,protocol|>>argDef
 !argDef:o_argDef|oargDef|O\,|>>priclasspar,classpar,_argDef,_ln,sepArgs[20]
-argDef:?o_argDef|Oclass,protocol|wordGroup|>>argDef
-argDef:?o_argDef|Oclass,protocol|?:|wordGroup|>>argDef
+argDef:?o_argDef|Oclass,protocol|wordgroup|>>argDef
+argDef:?o_argDef|Oclass,protocol|?:|wordgroup|>>argDef
 argDef:?o_argDef|Oclass,protocol|>>argDef
 
 
-argDef:?ovarpar|>0?owordGroup|?o(|Otype,word,wordGroup|?:|word,wordGroup|>>argDef
-argDef:?ovarpar|>=2?oln|>0?owordGroup|?o(|Otype,word,wordGroup|?:|word,wordGroup|>>argDef
+argDef:?ovarpar|>0?owordgroup|?o(|Otype,word,wordgroup|?:|word,wordgroup|>>argDef
+argDef:?ovarpar|>=2?oln|>0?owordgroup|?o(|Otype,word,wordgroup|?:|word,wordgroup|>>argDef
+argDef:?ovarpar|>0>=2-1BB0?oln|>0?owordgroup|?o(|Otype,word,wordgroup|?:|word,wordgroup|>>argDef[@1:0..]
 
- argDef:?oargDef,_argList|?\,|Otype,word,wordGroup|?:|word,wordGroup|>>argDef
+ argDef:?oargDef,_argList|?\,|Otype,word,wordgroup|?:|word,wordgroup|>>argDef
 (argList)argList:argDef,_argList|argDef|>>_argList
  (in class) (int:w), (int:w, int:w), (int*:w)
 (argList)argList:?O(|argDef,_argList|?)|>>argList
 
  selector arg lists
-!selArgDef:oclass,selArgDef|>0owordGroup|O:|(|>>priclasspar,classpar,_selArgDef,_ln[20]
-!selArgDef:oclass|>=2oln|>0owordGroup|O:|(|>>priclasspar,classpar,_selArgDef,_ln[20]
+!selArgDef:oclass,selArgDef|>0owordgroup|O:|(|>>priclasspar,classpar,_selArgDef,_ln[20]
+!selArgDef:oclass|>0>=2-1BB0oln|>0owordgroup|O:|(|>>priclasspar,classpar,_selArgDef,_ln[20]
  (in class .. wd) :(int)w, :(int*)w, :(int)w arg:(int)w
 (selArgList)selArgList:OselArgDef,selArgList|selArgDef|>>selArgList,ln
-selArgDef:?oselArgDef,selArgList|OwordGroup|?_selArgDef|class,protocol|?)|word,wordGroup|>>selArgDef,ln
-selArgDef:?owordGroup|?_selArgDef|Oclass,protocol|?)|word,wordGroup|>>selArgDef,ln
+selArgDef:?oselArgDef,selArgList|Owordgroup|?_selArgDef|class,protocol|?)|word,wordgroup|>>selArgDef,ln
+selArgDef:?owordgroup|?_selArgDef|Oclass,protocol|?)|word,wordgroup|>>selArgDef,ln
 
  (in class .. wd) :(class)var
 (selArg)selArg:var|selArgDef,selArgList|>>Var
 
 
  (in class) w:(int)w, w(int:w)
-fn:wordGroup|selArgList,selArgDef|>>Var
+fn:wordgroup|selArgList,selArgDef|>>Var
 
 
  (in class) class
-class:rtl:?opriclasspar|>0OwordGroup|>>Class
-class:rtl:?opriclasspar|>=2?oln|>0OwordGroup|>>Class
+class:rtl:?opriclasspar|>0Owordgroup|>>Class
+class:rtl:?opriclasspar|>=2?oln|>0Owordgroup|>>Class
+class:rtl:?opriclasspar|>0>=2-1BB0?oln|>0Owordgroup|>>Class[@1:0..]
 
  regex
  (in class) w=>w, w=>1, w=>"s", "s"=>w, "s"=>1, "s"=>"s"
-regex:?orepar|>0Ostring,wordGroup|?=|?\>|string,number,wordGroup|>>Regex
-regex:?orepar|>=2?oln|>0Ostring,wordGroup|?=|?\>|string,number,wordGroup|>>Regex
+regex:?orepar|>0Ostring,wordgroup|?=|?\>|string,number,wordgroup|>>Regex
+regex:?orepar|>=2?oln|>0Ostring,wordgroup|?=|?\>|string,number,wordgroup|>>Regex
+regex:?orepar|>0>=2-1BB0?oln|>0Ostring,wordgroup|?=|?\>|string,number,wordgroup|>>Regex[@1:0..]
 
  (in class) "readonly"
-setting:?osettingpar|>0OwordGroup,string|?:|>>Setting
-setting:?osettingpar|>=2?oln|>0OwordGroup,string|?:|>>Setting
+setting:?osettingpar|>0Owordgroup,string|?:|>>Setting
+setting:?osettingpar|>=2?oln|>0Owordgroup,string|?:|>>Setting
+setting:?osettingpar|>0>=2-1BB0?oln|>0Owordgroup,string|?:|>>Setting[@1:0..]
 setting:?osettingpar|>0Ostring|>>Setting
 setting:?osettingpar|>=2?oln|>0Ostring|>>Setting
+setting:?osettingpar|>0>=2-1BB0?oln|>0Ostring|>>Setting[@1:0..]
 
  (in class that's in a class) var
-var:?oclassparnotfile|>0?oclassvarpar|>1[1..]OwordGroup|>>Var[@1:0?1..]
-var:?oclassparnotfile|>=2?oln|>0?oclassvarpar|>2[1..]OwordGroup|>>Var[@2:0?1..]
-var:?oclassparnotfile|>0?oclassvarpar|>=3?oln|>1[1..]OwordGroup|>>Var[@1:0?1..]
-var:?oclassparnotfile|>=2?oln|>0?oclassvarpar|>=4?oln|>2[1..]OwordGroup|>>Var[@2:0?1..]
+var:?oclassparnotfile|>0?oclassvarpar|>1[1..]Owordgroup|>>Var
+var:?oclassparnotfile|>=2?oln|>0?oclassvarpar|>2[1..]Owordgroup|>>Var
+var:?oclassparnotfile|>0?oclassvarpar|>=3?oln|>1[1..]Owordgroup|>>Var
+var:?oclassparnotfile|>=2?oln|>0?oclassvarpar|>=4?oln|>2[1..]Owordgroup|>>Var
+var:?oclassparnotfile|>0?oclassvarpar|>1>=3-1BB0?oln|>1[1..]Owordgroup|>>Var[@2:0..]
+var:?oclassparnotfile|>=2?oln|>0?oclassvarpar|>2>=4-1BB0?oln|>2[1..]Owordgroup|>>Var[@3:0..]
 
  (in class) var >~-<
-var:?oclassvarpar|>0OwordGroup|?olinkType|>>Var
-var:?oclassvarpar|>=2?oln|>0OwordGroup|?olinkType|>>Var
+var:?oclassvarpar|>0Owordgroup|?olinkType|>>Var
+var:?oclassvarpar|>=2?oln|>0Owordgroup|?olinkType|>>Var
+var:?oclassvarpar|>0>=2-1BB0?oln|>0Owordgroup|?olinkType|>>Var[@1:0..]
 
  (in file scope) "include.wi"
 include:?oincludepar|>0Ostring|>>Include
 include:?oincludepar|>=2?oln|>0Ostring|>>Include
+include:?oincludepar|>0>=2-1BB0?oln|>0Ostring|>>Include[@1:0..]
 
  (in var) ->
 setter:?osetterpar|>0?O-|=1+1?\>|>>Setter
 setter:?osetterpar|>=2?oln|>0?O-|=2+1?\>|>>Setter
-setter:?osetterpar|>0OwordGroup|=1+1?-|=1+2?\>|>>Setter
-setter:?osetterpar|>=2?oln|>0OwordGroup|=2+1?-|=2+2?\>|>>Setter
+setter:?osetterpar|>0>=2-1BB0?oln|>0?O-|=2+1?\>|>>Setter[@1:0..]
+setter:?osetterpar|>0Owordgroup|=1+1?-|=1+2?\>|>>Setter
+setter:?osetterpar|>=2?oln|>0Owordgroup|=2+1?-|=2+2?\>|>>Setter
+setter:?osetterpar|>0>=2-1BB0?oln|>0Owordgroup|=2+1?-|=2+2?\>|>>Setter[@1:0..]
 
  (in var) ->
 getter:?osetterpar|>0?O\<|=1+1?-|>>Getter
 getter:?osetterpar|>=2?oln|>0?O\<|=2+1?-|>>Getter
+getter:?osetterpar|>0>=2-1BB0?oln|>0?O\<|=2+1?-|>>Getter[@1:0..]
 
  (in class) class
-class:rtl:?oclasspar|>0OwordGroup|>>Class
-class:rtl:?oclasspar|>=2?oln|>0OwordGroup|>>Class
+class:rtl:?oclasspar|>0Owordgroup|>>Class
+class:rtl:?oclasspar|>=2?oln|>0Owordgroup|>>Class
+class:rtl:?oclasspar|>0>=2-1BB0?oln|>0Owordgroup|>>Class[@1:0..]
 
  (in atomic etc) var
-var:?ovarpar|>0OwordGroup|>>Var
-var:?ovarpar|>=2?oln|>0OwordGroup|>>Var
+var:?ovarpar|>0Owordgroup|>>Var
+var:?ovarpar|>=2?oln|>0Owordgroup|>>Var
+var:?ovarpar|>0>=2-1BB0?oln|>0Owordgroup|>>Var[@1:0..]
 
  type
- (type)cast:?o(|Oword,wordGroup,type|word,wordGroup|>>type
- (type)cast:?(|word,wordGroup,type|?)|>>type,castType
+ (type)cast:?o(|Oword,wordgroup,type|word,wordgroup|>>type
+ (type)cast:?(|word,wordgroup,type|?)|>>type,castType
 
     block can grab comma only if indented
-&block:?oblockpar|>=0+1LL0O_block|>=1\,|>>??
+&block:?oblockpar|>=0+1BB0O_block|>=1\,|>>??
     block grabs any chars at same or greater indent (other than special case for ,)
 &block:?oblockpar|O_block|>=1^\,,All,Noblock,END|>>??
-&block:?oblockpar|>=0+1LL0O\,|>>_block
-&block:?oblockpar|>=2?oAll,^Block|>0+1LL0O\,|>>_block
-&block:?oblockpar|>0O^\,,All,Noblock,_block,END|>>_block
-&block:?oblockpar|>=2?oAll,^Block|>0O^\,,All,Noblock,_block,END|>>_block
+
+    block can start on anything if indented
+&block:?oblockpar|>=0+1BB0O^_block,END,Block,All|>>_block
+&block:?oblockpar|>=2?oAll,^Block|>0+1BB0O^_block,END,Block,All|>>_block
+
+    block only starts on some things if not indented
+&block:?oblockpar|>0OStartblock|>>_block
+&block:?oblockpar|>=2?oAll,^Block|>0+1BB0OStartblock|>>_block
 block:_block|>>Block
 
-!presib:opar|>0oln[0..]|>1O^All|>>??[@1:0..]
 par:rtl:par[10..]|>0ln,_ln|?o^All|>>??
 par:rtl:par[10..]|>0ln,_ln|?o<=0ln|>>??
 (sib)sib:rtl:?opar|>=2Oln|>0ln,_ln,^END|>>??
+(sib)sib:rtl:?opar|>0>=2-1BB0Oln|>0ln,_ln,^END|>>??[@1:0..]
 
 file:?START|>>File[1LL0]
 
