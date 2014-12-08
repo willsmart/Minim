@@ -285,7 +285,7 @@
     }
     - (void)includeChildren:(Token *)token {
         MSGSTART("File:-(void)includeChildren:(Token*)token")
-        if ([token.ruleName isEqualToString:@"include"]) {
+        if ([token.ruleName isEqualToString:@"setting"]) {
             NSString *childPath = [token.children.firstObject contents];
             if ([childPath hasSuffix:@".wi"])
                 [self childWithPath:childPath];
@@ -646,10 +646,9 @@
         MSGSTART("WIParse:-(NSMutableArray*)tokensFromFile:(NSString*)path")
         path = [Singletons._.files pathForPath:path];
         NSError *err = nil;
-        NSString *body = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&err];
-        NSMutableArray *ret = nil;
-        if (body) {
-            ret = [Parse parse:body options:0].mutableCopy;
+        NSString *body=nil;
+        NSMutableArray *ret=[Parse getTokensForFile:path options:0 retForString:&body].mutableCopy;
+        if (ret) {
             bool isEmpty = ( (ret.count == 1) && [[ret[0] ruleName] isEqualToString:@"file"] );
             bool hasError = !( isEmpty || ( (ret.count == 1) && [[ret[0] ruleName] isEqualToString:@"par"] && [[[(Token *)ret[0] children][0] ruleName] isEqualToString:@"file"] ) );
 
