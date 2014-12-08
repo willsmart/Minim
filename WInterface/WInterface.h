@@ -16,10 +16,11 @@
 #define UIFont NSFont
 #define UIBezierPath NSBezierPath
 #import <objc/runtime.h>
+#import <pthread.h>
 
 //#import <RegexKit/RegexKit.h>
 
-
+#define USEPROFILER
 #include "Headers.h"
 
 extern NSString *g_swiftStart;

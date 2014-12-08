@@ -14,6 +14,8 @@ NSString *g_swiftStart=@"#ifndef __SWIFT__\n";
 NSString *g_swiftEnd=@"#endif// __SWIFT__\n";
 
 void testParse() {
+    PrflFn::spawnProfiler();
+    
     ((id<ParseClass>)Parse.class).rulesFilename=@"rules_wi.txt";
 
     efil=FOpen("run.txt", "wb");

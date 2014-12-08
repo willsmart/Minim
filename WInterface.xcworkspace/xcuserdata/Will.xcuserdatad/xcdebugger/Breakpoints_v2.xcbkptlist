@@ -122,11 +122,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../BasicClassesCPP/Parser/cParser.h"
-            timestampString = "438047014.100309"
+            timestampString = "439284959.841813"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "575"
-            endingLineNumber = "575"
+            startingLineNumber = "708"
+            endingLineNumber = "708"
             landmarkName = "_construct(const unichar *str)"
             landmarkType = "5">
          </BreakpointContent>
@@ -138,11 +138,27 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../BasicClassesCPP/Parser/cParser.h"
-            timestampString = "438047054.507867"
+            timestampString = "438823845.704411"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "379"
-            endingLineNumber = "379"
+            startingLineNumber = "466"
+            endingLineNumber = "466"
+            landmarkName = "charSetForName(const char *name,int fromi=0,int toi=0,int Nreserve=1)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../BasicClassesCPP/Parser/cParser.h"
+            timestampString = "439284959.841813"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "680"
+            endingLineNumber = "680"
             landmarkName = "_construct(const unichar *str)"
             landmarkType = "5">
          </BreakpointContent>
@@ -154,11 +170,27 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../BasicClassesCPP/Parser/cParser.h"
-            timestampString = "438047074.523886"
+            timestampString = "438823845.704411"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "547"
-            endingLineNumber = "547"
+            startingLineNumber = "473"
+            endingLineNumber = "473"
+            landmarkName = "initForRuleSet()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../BasicClassesCPP/Parser/cParser.h"
+            timestampString = "439284959.841813"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "689"
+            endingLineNumber = "689"
             landmarkName = "_construct(const unichar *str)"
             landmarkType = "5">
          </BreakpointContent>
@@ -170,11 +202,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../BasicClassesCPP/Parser/cParser.h"
-            timestampString = "438047099.171134"
+            timestampString = "439284959.841813"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "386"
-            endingLineNumber = "386"
+            startingLineNumber = "709"
+            endingLineNumber = "709"
             landmarkName = "_construct(const unichar *str)"
             landmarkType = "5">
          </BreakpointContent>
@@ -186,11 +218,59 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../BasicClassesCPP/Parser/cParser.h"
-            timestampString = "438047185.684334"
+            timestampString = "439284959.841813"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "556"
-            endingLineNumber = "556"
+            startingLineNumber = "1430"
+            endingLineNumber = "1430"
+            landmarkName = "applyNextRule()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../BasicClassesCPP/Parser/cParser.h"
+            timestampString = "439284959.841813"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1488"
+            endingLineNumber = "1488"
+            landmarkName = "applyNextRule()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../BasicClassesCPP/Parser/cParser.h"
+            timestampString = "439284959.841813"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1421"
+            endingLineNumber = "1421"
+            landmarkName = "applyNextRule()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../BasicClassesCPP/Parser/cParser.h"
+            timestampString = "439284959.841813"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "632"
+            endingLineNumber = "632"
             landmarkName = "_construct(const unichar *str)"
             landmarkType = "5">
          </BreakpointContent>
@@ -202,11 +282,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../BasicClassesCPP/Parser/cParser.h"
-            timestampString = "438047259.442324"
+            timestampString = "439284959.841813"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "576"
-            endingLineNumber = "576"
+            startingLineNumber = "631"
+            endingLineNumber = "631"
             landmarkName = "_construct(const unichar *str)"
             landmarkType = "5">
          </BreakpointContent>
