@@ -5,7 +5,7 @@
 
 
 me="$1"
-wifile="$1.wi"
+wifile="wi/$1.wi"
 
 arg=$2
 
@@ -39,7 +39,7 @@ if [ "$ok" = "1" ]; then
     pwd
     echo "$wifile" >> /Users/Will/Documents/wi.out.txt
 
-    /Users/Will/WInterface "wi/$wifile" >> /Users/Will/Documents/wi.out.txt 2>&1
+    /Users/Will/WInterface "$wifile" >> /Users/Will/Documents/wi.out.txt 2>&1
     if [ "$?" = "1" ]; then
         sound="Basso"
         ok=0

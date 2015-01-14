@@ -27,6 +27,11 @@ Globals
             if (argc==2) {
                 //PrflFn::spawnProfiler();
                 [Singletons._.files fileWithPath:[NSString stringWithFormat:@"%s",argv[1]]];
+
+                NSError *err=nil;
+                [[NSString stringWithFormat:@"<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>WI parse error output</title>\n</head>\n<body>\n%@\n</body>\n</html>",Singletons._.htmlParseOutput]
+                    writeToFile:@"wied/wi.html" atomically:YES encoding:NSUTF8StringEncoding error:&err
+                ];
             }
         }
 

@@ -98,6 +98,132 @@
         - (void)addWeakObject:(id)anObject;
 
         @end
+
+
+
+
+
+        @interface WIBody : NSObject<Object, ClassObject> {
+            LL __owner_context;
+            @private ULL __private_access_thread_mask_in_WIBody; @protected
+            bool debugAutorelease;
+            Endpoint1 *v_defaultValueForVar_endpoint;
+            Endpoint1 *v_getterForVar_endpoint;
+            bool isZombie;
+            LL objectIDInClass;
+            LL objectIDInTotal;
+            Endpoint1 *v_setterForVar_endpoint;
+        }
+
+        @property (nonatomic,readwrite) LL __owner_context;
+        @property (nonatomic,readonly) constchar *cdescription;
+        @property (nonatomic,readonly) constchar *cobjectName;
+        @property (nonatomic,readwrite) bool debugAutorelease;
+        @property (nonatomic,readwrite) WIVar *defaultValueForVar;
+        @property (strong,nonatomic,readwrite  /*(public readonly)*/) Endpoint1 *defaultValueForVar_endpoint;
+        @property (nonatomic,readonly) NSString *description;
+        @property (nonatomic,readwrite) WIVar *getterForVar;
+        @property (strong,nonatomic,readwrite  /*(public readonly)*/) Endpoint1 *getterForVar_endpoint;
+        @property (nonatomic,readonly) bool isZombie;
+        @property (nonatomic,readwrite) kid keyInSetterForVar;
+        @property (nonatomic,readwrite) NSSet *keysInSetterForVar;
+        @property (nonatomic,readonly) LL objectIDInClass;
+        @property (nonatomic,readonly) LL objectIDInTotal;
+        @property (nonatomic,readonly) NSMutableString *objectName;
+        @property (nonatomic,readwrite) WIVar *setterForVar;
+        @property (strong,nonatomic,readwrite  /*(public readonly)*/) Endpoint1 *setterForVar_endpoint;
+        - (void)_startObjectOfClassWIBody;
+        - (constchar *)cdescription;
+        - (constchar *)cobjectName;
+        - (void)dealloc;
+        - (WIVar *)defaultValueForVar;
+        - (Endpoint1 *)defaultValueForVar_endpoint;
+        - (NSObject<LinkEndpoint> *)defaultValueForVarToEndpoint:(id)adefaultValueForVar;
+        - (NSString *)description;
+        - (void)die;
+        - (WIVar *)getterForVar;
+        - (Endpoint1 *)getterForVar_endpoint;
+        - (NSObject<LinkEndpoint> *)getterForVarToEndpoint:(id)agetterForVar;
+        - (NSNumber *)isAcceptableDefaultValueForVar:(id)adefaultValueForVar;
+        - (NSNumber *)isAcceptableGetterForVar:(id)agetterForVar;
+        - (NSNumber *)isAcceptableSetterForVar:(id)asetterForVar;
+        - (kid)keyInSetterForVar;
+        - (NSSet *)keysInSetterForVar;
+        - (NSMutableString *)objectName;
+        - (void)retract;
+        - (void)setDefaultValueForVar:(WIVar *)v;
+        - (void)setDefaultValueForVar_endpoint:(Endpoint1 *)v;
+        - (void)setGetterForVar:(WIVar *)v;
+        - (void)setGetterForVar_endpoint:(Endpoint1 *)v;
+        - (void)setKeyInSetterForVar:(kid)v;
+        - (void)setKeysInSetterForVar:(NSSet *)v;
+        - (void)setSetterForVar:(WIVar *)v;
+        - (void)setSetterForVar_endpoint:(Endpoint1 *)v;
+        - (WIVar *)setterForVar;
+        - (Endpoint1 *)setterForVar_endpoint;
+        - (NSObject<LinkEndpoint> *)setterForVarToEndpoint:(id)asetterForVar;
+
+        @end
+
+
+
+
+
+        @interface WIVarArg : NSObject<Object, ClassObject> {
+            LL __owner_context;
+            @private ULL __private_access_thread_mask_in_WIVarArg; @protected
+            NSString *v_arg;
+            bool debugAutorelease;
+            bool isZombie;
+            NSString *v_name;
+            LL objectIDInClass;
+            LL objectIDInTotal;
+            WIType *v_type;
+            Endpoint1 *v_var_endpoint;
+        }
+
+        @property (nonatomic,readwrite) LL __owner_context;
+        @property (strong,nonatomic,readwrite) NSString *arg;
+        @property (nonatomic,readonly) constchar *cdescription;
+        @property (nonatomic,readonly) constchar *cobjectName;
+        @property (nonatomic,readwrite) bool debugAutorelease;
+        @property (nonatomic,readonly) NSString *description;
+        @property (nonatomic,readwrite) NSIndexSet *indexesInVar;
+        @property (nonatomic,readwrite) Unsigned indexInVar;
+        @property (nonatomic,readonly) bool isZombie;
+        @property (strong,nonatomic,readwrite) NSString *name;
+        @property (nonatomic,readonly) LL objectIDInClass;
+        @property (nonatomic,readonly) LL objectIDInTotal;
+        @property (nonatomic,readonly) NSMutableString *objectName;
+        @property (strong,nonatomic,readwrite) WIType *type;
+        @property (nonatomic,readwrite) WIVar *var;
+        @property (strong,nonatomic,readwrite  /*(public readonly)*/) Endpoint1 *var_endpoint;
+        - (void)_startObjectOfClassWIVarArg;
+        - (NSString *)arg;
+        - (constchar *)cdescription;
+        - (constchar *)cobjectName;
+        - (void)dealloc;
+        - (NSString *)description;
+        - (void)die;
+        - (NSIndexSet *)indexesInVar;
+        - (Unsigned)indexInVar;
+        - (NSNumber *)isAcceptableVar:(id)avar;
+        - (NSString *)name;
+        - (NSMutableString *)objectName;
+        - (void)retract;
+        - (void)setArg:(NSString *)v;
+        - (void)setIndexesInVar:(NSIndexSet *)v;
+        - (void)setIndexInVar:(Unsigned)v;
+        - (void)setName:(NSString *)v;
+        - (void)setType:(WIType *)v;
+        - (void)setVar:(WIVar *)v;
+        - (void)setVar_endpoint:(Endpoint1 *)v;
+        - (WIType *)type;
+        - (WIVar *)var;
+        - (Endpoint1 *)var_endpoint;
+        - (NSObject<LinkEndpoint> *)varToEndpoint:(id)avar;
+
+        @end
     #endif // INCLUDE_IFACE_D0
 
     #ifdef INCLUDE_IFACE_D1
@@ -816,6 +942,455 @@
 
             case CollectionIsStrong: return self.asStrong;
         }
+    }
+
+    @end
+    #undef _ClassName_
+    #undef _WIClass_
+    #undef _className_
+    #undef _Class_
+
+
+
+
+
+// !!!: Implementations: w
+
+
+
+
+
+    #ifdef _PrivateAccessMask_
+        #undef _PrivateAccessMask_
+    #endif
+    #define _PrivateAccessMask_ __private_access_thread_mask_in_Globals
+
+    #define _ClassName_         WIBody
+    #define _WIClass_           WIBody__
+    #define _className_         wIBody
+    #define _Class_             WIBody__
+    @implementation WIBody
+
+    @synthesize __owner_context = __owner_context;
+    @synthesize debugAutorelease = debugAutorelease;
+    @synthesize isZombie = isZombie;
+    @synthesize objectIDInClass = objectIDInClass;
+    @synthesize objectIDInTotal = objectIDInTotal;
+    - (void)_startObjectOfClassWIBody {
+        MSGSTART("WIBody:-(void)_startObjectOfClassWIBody")
+
+        /*i-996*/ debugAutorelease = YES;
+        /*i-995*/ objInitFn(self,objectIDInTotal,objectIDInClass);
+
+        /*i-500*//*ivar*/ v_setterForVar_endpoint = ([[Endpoint1 alloc] initWithOwner:self retains:NO acceptableSel:@selector(isAcceptableSetterForVar:) otherEndObjectToEndpoint:@selector(setterForVarToEndpoint:)]);  ADDOWNER(v_setterForVar_endpoint,self);
+        /*ivar*/ v_defaultValueForVar_endpoint = ([[Endpoint1 alloc] initWithOwner:self retains:NO acceptableSel:@selector(isAcceptableDefaultValueForVar:) otherEndObjectToEndpoint:@selector(defaultValueForVarToEndpoint:)]);  ADDOWNER(v_defaultValueForVar_endpoint,self);
+        /*ivar*/ v_getterForVar_endpoint = ([[Endpoint1 alloc] initWithOwner:self retains:NO acceptableSel:@selector(isAcceptableGetterForVar:) otherEndObjectToEndpoint:@selector(getterForVarToEndpoint:)]);  ADDOWNER(v_getterForVar_endpoint,self);
+
+        /*i0*/}
+    - (constchar *)cdescription {
+        MSGSTART("WIBody:-(constchar*)cdescription")
+        return [self.description cStringUsingEncoding:NSASCIIStringEncoding];
+    }
+    - (constchar *)cobjectName {
+        MSGSTART("WIBody:-(constchar*)cobjectName")
+        return [self.objectName cStringUsingEncoding:NSASCIIStringEncoding];
+    }
+    - (void)dealloc {
+        MSGSTART("WIBody:-(void)dealloc")
+
+        /*i-151*/[self die];
+/*i0*/ REMOVEOWNER(v_setterForVar_endpoint,self); v_setterForVar_endpoint = nil;
+
+        REMOVEOWNER(v_defaultValueForVar_endpoint,self); v_defaultValueForVar_endpoint = nil;
+
+        REMOVEOWNER(v_getterForVar_endpoint,self); v_getterForVar_endpoint = nil;
+/*i998*/ deallocFn(self,objectIDInTotal,objectIDInClass);
+        isZombie = YES;
+    #if defined (LONGLIVEZOMBIES) || defined (LONGLIVEZOMBIES___WI_CLASS__)
+            if (YES) return;
+    #endif
+
+/*i999*/}
+    - (WIVar *)defaultValueForVar {
+        MSGSTART("WIBody:-(WIVar*)defaultValueForVar")
+        return (WIVar *)v_defaultValueForVar_endpoint.value;
+    }
+    - (Endpoint1 *)defaultValueForVar_endpoint {
+        MSGSTART("WIBody:-(Endpoint1*)defaultValueForVar_endpoint")
+
+        /*i-999*/ Endpoint1 * ret = v_defaultValueForVar_endpoint;
+        /*i999*/ return ret;
+    }
+    - (NSObject<LinkEndpoint> *)defaultValueForVarToEndpoint:(id)adefaultValueForVar {
+        MSGSTART("WIBody:-(NSObject<LinkEndpoint>*)defaultValueForVarToEndpoint:(id)adefaultValueForVar")
+        return [adefaultValueForVar performSelector:@selector(defaultValues)];
+    }
+    - (NSString *)description {
+        MSGSTART("WIBody:-(NSString*)description")
+
+        /*i-999*/ NSMutableString * ret = self.objectName;
+
+        /*i999*/ return ret;
+    }
+    - (void)die {
+        MSGSTART("WIBody:-(void)die")
+        self.getterForVar = nil;
+        self.defaultValueForVar = nil;
+        self.setterForVar = nil;
+
+        /*i900*/}
+    - (WIVar *)getterForVar {
+        MSGSTART("WIBody:-(WIVar*)getterForVar")
+        return (WIVar *)v_getterForVar_endpoint.value;
+    }
+    - (Endpoint1 *)getterForVar_endpoint {
+        MSGSTART("WIBody:-(Endpoint1*)getterForVar_endpoint")
+
+        /*i-999*/ Endpoint1 * ret = v_getterForVar_endpoint;
+        /*i999*/ return ret;
+    }
+    - (NSObject<LinkEndpoint> *)getterForVarToEndpoint:(id)agetterForVar {
+        MSGSTART("WIBody:-(NSObject<LinkEndpoint>*)getterForVarToEndpoint:(id)agetterForVar")
+        return [agetterForVar performSelector:@selector(getters)];
+    }
+    - (NSNumber *)isAcceptableDefaultValueForVar:(id)adefaultValueForVar {
+        MSGSTART("WIBody:-(NSNumber*)isAcceptableDefaultValueForVar:(id)adefaultValueForVar")
+        return [adefaultValueForVar isKindOfClass:[WIVar class]] ? @YES : nil;
+    }
+    - (NSNumber *)isAcceptableGetterForVar:(id)agetterForVar {
+        MSGSTART("WIBody:-(NSNumber*)isAcceptableGetterForVar:(id)agetterForVar")
+        return [agetterForVar isKindOfClass:[WIVar class]] ? @YES : nil;
+    }
+    - (NSNumber *)isAcceptableSetterForVar:(id)asetterForVar {
+        MSGSTART("WIBody:-(NSNumber*)isAcceptableSetterForVar:(id)asetterForVar")
+        return [asetterForVar isKindOfClass:[WIVar class]] ? @YES : nil;
+    }
+    - (kid)keyInSetterForVar {
+        MSGSTART("WIBody:-(kid)keyInSetterForVar")
+
+        for (id<NSCopying> key in self.keysInSetterForVar) {
+            return key;
+        }
+        return nil;
+    }
+    - (NSSet *)keysInSetterForVar {
+        MSGSTART("WIBody:-(NSSet*)keysInSetterForVar")
+
+        if (!v_setterForVar_endpoint.value) return [NSSet set];
+
+        NSMutableDictionary<DictionaryLinkEndpoint> *setterForVar_ep = (NSMutableDictionary<DictionaryLinkEndpoint> *)[self setterForVarToEndpoint : v_setterForVar_endpoint.value];
+        return (NSSet *)[setterForVar_ep.__dictionaryObjectKeys objectForKey:self];
+    }
+    - (NSMutableString *)objectName {
+        MSGSTART("WIBody:-(NSMutableString*)objectName")
+
+        /*i-999*/ NSMutableString * ret = nil;
+
+        /*i-100*/ ret = [NSMutableString stringWithFormat:@"[%qu:%p]%s#%qu",objectIDInTotal,self,__Derived_CClass__,objectIDInClass];
+
+        /*i999*/ return ret;
+    }
+    - (void)retract {
+        MSGSTART("WIBody:-(void)retract")
+        self.getterForVar = nil;
+        self.defaultValueForVar = nil;
+        self.setterForVar = nil;
+    }
+    - (void)setDefaultValueForVar:(WIVar *)v {
+        MSGSTART("WIBody:-(void)setDefaultValueForVar:(WIVar*)v")
+        [v_defaultValueForVar_endpoint setValue : v];
+    }
+    - (void)setDefaultValueForVar_endpoint:(Endpoint1 *)v {
+        MSGSTART("WIBody:-(void)setDefaultValueForVar_endpoint:(Endpoint1*)v")
+
+        /*i-1999*/ if ( !authorized_thread(__private_access_thread_mask_in_WIBody) ) ERR("Attempt to set public-readonly property in unauthorized thread (please try something like privateaccess(defaultValueForVar_endpoint=\"blah\") to set the property)");
+
+        /*i-905*/ if (v_defaultValueForVar_endpoint == v) return;
+
+        /*i-900*/ {
+            v_defaultValueForVar_endpoint = (id)v;
+        }
+/*i-850*/ REMOVEOWNER(v_defaultValueForVar_endpoint,self); ADDOWNER(v,self);
+    }
+    - (void)setGetterForVar:(WIVar *)v {
+        MSGSTART("WIBody:-(void)setGetterForVar:(WIVar*)v")
+        [v_getterForVar_endpoint setValue : v];
+    }
+    - (void)setGetterForVar_endpoint:(Endpoint1 *)v {
+        MSGSTART("WIBody:-(void)setGetterForVar_endpoint:(Endpoint1*)v")
+
+        /*i-1999*/ if ( !authorized_thread(__private_access_thread_mask_in_WIBody) ) ERR("Attempt to set public-readonly property in unauthorized thread (please try something like privateaccess(getterForVar_endpoint=\"blah\") to set the property)");
+
+        /*i-905*/ if (v_getterForVar_endpoint == v) return;
+
+        /*i-900*/ {
+            v_getterForVar_endpoint = (id)v;
+        }
+/*i-850*/ REMOVEOWNER(v_getterForVar_endpoint,self); ADDOWNER(v,self);
+    }
+    - (void)setKeyInSetterForVar:(kid)v {
+        MSGSTART("WIBody:-(void)setKeyInSetterForVar:(kid)v")
+
+        self.keysInSetterForVar = [NSSet setWithObject:v];
+    }
+    - (void)setKeysInSetterForVar:(NSSet *)v {
+        MSGSTART("WIBody:-(void)setKeysInSetterForVar:(NSSet*)v")
+
+        NSMutableDictionary<DictionaryLinkEndpoint> *setterForVar_ep = (NSMutableDictionary<DictionaryLinkEndpoint> *)[self setterForVarToEndpoint : v_setterForVar_endpoint.value];
+        NSSet *setterForVar_keys_were = self.keysInSetterForVar,*setterForVar_inss,*setterForVar_dels;
+        if ([Util getInsertsAndDeletesForSetWhenChanging:setterForVar_keys_were to:v inss:&setterForVar_inss dels:&setterForVar_dels]) {
+            for (id<NSCopying> key in setterForVar_dels) {
+                [setterForVar_ep removeObjectForKey:key];
+            }
+            for (id<NSCopying> key in setterForVar_inss) {
+                [setterForVar_ep setObject:self forKey:key];
+            }
+        }
+    }
+    - (void)setSetterForVar:(WIVar *)v {
+        MSGSTART("WIBody:-(void)setSetterForVar:(WIVar*)v")
+        [v_setterForVar_endpoint setValue : v];
+    }
+    - (void)setSetterForVar_endpoint:(Endpoint1 *)v {
+        MSGSTART("WIBody:-(void)setSetterForVar_endpoint:(Endpoint1*)v")
+
+        /*i-1999*/ if ( !authorized_thread(__private_access_thread_mask_in_WIBody) ) ERR("Attempt to set public-readonly property in unauthorized thread (please try something like privateaccess(setterForVar_endpoint=\"blah\") to set the property)");
+
+        /*i-905*/ if (v_setterForVar_endpoint == v) return;
+
+        /*i-900*/ {
+            v_setterForVar_endpoint = (id)v;
+        }
+/*i-850*/ REMOVEOWNER(v_setterForVar_endpoint,self); ADDOWNER(v,self);
+    }
+    - (WIVar *)setterForVar {
+        MSGSTART("WIBody:-(WIVar*)setterForVar")
+        return (WIVar *)v_setterForVar_endpoint.value;
+    }
+    - (Endpoint1 *)setterForVar_endpoint {
+        MSGSTART("WIBody:-(Endpoint1*)setterForVar_endpoint")
+
+        /*i-999*/ Endpoint1 * ret = v_setterForVar_endpoint;
+        /*i999*/ return ret;
+    }
+    - (NSObject<LinkEndpoint> *)setterForVarToEndpoint:(id)asetterForVar {
+        MSGSTART("WIBody:-(NSObject<LinkEndpoint>*)setterForVarToEndpoint:(id)asetterForVar")
+        return [asetterForVar performSelector:@selector(setters)];
+    }
+
+    @end
+    #undef _ClassName_
+    #undef _WIClass_
+    #undef _className_
+    #undef _Class_
+
+
+
+
+
+    #ifdef _PrivateAccessMask_
+        #undef _PrivateAccessMask_
+    #endif
+    #define _PrivateAccessMask_ __private_access_thread_mask_in_Globals
+
+    #define _ClassName_         WIVarArg
+    #define _WIClass_           WIVarArg__
+    #define _className_         wIVarArg
+    #define _Class_             WIVarArg__
+    @implementation WIVarArg
+
+    @synthesize __owner_context = __owner_context;
+    @synthesize debugAutorelease = debugAutorelease;
+    @synthesize isZombie = isZombie;
+    @synthesize objectIDInClass = objectIDInClass;
+    @synthesize objectIDInTotal = objectIDInTotal;
+    - (void)_startObjectOfClassWIVarArg {
+        MSGSTART("WIVarArg:-(void)_startObjectOfClassWIVarArg")
+
+        /*i-996*/ debugAutorelease = YES;
+        /*i-995*/ objInitFn(self,objectIDInTotal,objectIDInClass);
+
+        /*i-500*//*ivar*/ v_var_endpoint = ([[Endpoint1 alloc] initWithOwner:self retains:NO acceptableSel:@selector(isAcceptableVar:) otherEndObjectToEndpoint:@selector(varToEndpoint:)]);  ADDOWNER(v_var_endpoint,self);
+
+        /*i0*/}
+    - (NSString *)arg {
+        MSGSTART("WIVarArg:-(NSString*)arg")
+
+        /*i-999*/ NSString * ret = v_arg;
+        /*i999*/ return ret;
+    }
+    - (constchar *)cdescription {
+        MSGSTART("WIVarArg:-(constchar*)cdescription")
+        return [self.description cStringUsingEncoding:NSASCIIStringEncoding];
+    }
+    - (constchar *)cobjectName {
+        MSGSTART("WIVarArg:-(constchar*)cobjectName")
+        return [self.objectName cStringUsingEncoding:NSASCIIStringEncoding];
+    }
+    - (void)dealloc {
+        MSGSTART("WIVarArg:-(void)dealloc")
+
+        /*i-151*/[self die];
+/*i0*/ REMOVEOWNER(v_var_endpoint,self); v_var_endpoint = nil;
+
+        v_arg = nil;
+
+        REMOVEOWNER(v_type,self); v_type = nil;
+
+        v_name = nil;
+/*i998*/ deallocFn(self,objectIDInTotal,objectIDInClass);
+        isZombie = YES;
+    #if defined (LONGLIVEZOMBIES) || defined (LONGLIVEZOMBIES___WI_CLASS__)
+            if (YES) return;
+    #endif
+
+/*i999*/}
+    - (NSString *)description {
+        MSGSTART("WIVarArg:-(NSString*)description")
+
+        /*i-999*/ NSMutableString * ret = self.objectName;
+
+        /*i999*/ return ret;
+    }
+    - (void)die {
+        MSGSTART("WIVarArg:-(void)die")
+        self.var = nil;
+
+        /*i900*/}
+    - (NSIndexSet *)indexesInVar {
+        MSGSTART("WIVarArg:-(NSIndexSet*)indexesInVar")
+
+        if (!v_var_endpoint.value) return [NSIndexSet indexSet];
+
+        NSMutableArray<ArrayLinkEndpoint> *var_ep = (NSMutableArray<ArrayLinkEndpoint> *)[self varToEndpoint : v_var_endpoint.value];
+        return (NSIndexSet *)[var_ep.__arrayObjectIndexes objectForKey:self];
+    }
+    - (Unsigned)indexInVar {
+        MSGSTART("WIVarArg:-(Unsigned)indexInVar")
+
+        return self.indexesInVar.firstIndex;
+    }
+    - (NSNumber *)isAcceptableVar:(id)avar {
+        MSGSTART("WIVarArg:-(NSNumber*)isAcceptableVar:(id)avar")
+        return [avar isKindOfClass:[WIVar class]] ? @YES : nil;
+    }
+    - (NSString *)name {
+        MSGSTART("WIVarArg:-(NSString*)name")
+
+        /*i-999*/ NSString * ret = v_name;
+        /*i999*/ return ret;
+    }
+    - (NSMutableString *)objectName {
+        MSGSTART("WIVarArg:-(NSMutableString*)objectName")
+
+        /*i-999*/ NSMutableString * ret = nil;
+
+        /*i-100*/ ret = [NSMutableString stringWithFormat:@"[%qu:%p]%s#%qu",objectIDInTotal,self,__Derived_CClass__,objectIDInClass];
+
+        /*i999*/ return ret;
+    }
+    - (void)retract {
+        MSGSTART("WIVarArg:-(void)retract")
+        self.var = nil;
+    }
+    - (void)setArg:(NSString *)v {
+        MSGSTART("WIVarArg:-(void)setArg:(NSString*)v")
+
+        /*i-905*/ if (v_arg == v) return;
+
+        /*i-900*/ {
+            v_arg = (id)v;
+        }
+    }
+    - (void)setIndexesInVar:(NSIndexSet *)v {
+        MSGSTART("WIVarArg:-(void)setIndexesInVar:(NSIndexSet*)v")
+
+        NSMutableArray<ArrayLinkEndpoint> *var_ep = (NSMutableArray<ArrayLinkEndpoint> *)[self varToEndpoint : v_var_endpoint.value];
+        NSIndexSet *var_indexes_were = self.indexesInVar.copy;
+        v = v.copy;
+        Unsigned var_vi = v.firstIndex,var_wi = var_indexes_were.firstIndex;
+        while ( (var_vi != NSNotFound) && (var_wi != NSNotFound) ) {
+            if (var_vi == var_wi) {
+                var_vi = [v indexGreaterThanIndex:var_vi];
+                var_wi = [var_indexes_were indexGreaterThanIndex:var_wi];
+            }
+            else if (var_vi < var_wi) {
+                [var_ep insertObject:self atIndex:var_vi];
+                var_vi = [v indexGreaterThanIndex:var_vi];
+            }
+            else {
+                [var_ep removeObjectAtIndex:var_wi];
+                var_wi = [var_indexes_were indexGreaterThanIndex:var_wi];
+            }
+        }
+        while (var_vi != NSNotFound) {
+            [var_ep insertObject:self atIndex:var_vi];
+            var_vi = [v indexGreaterThanIndex:var_vi];
+        }
+        while (var_wi != NSNotFound) {
+            [var_ep removeObjectAtIndex:var_wi];
+            var_wi = [var_indexes_were indexGreaterThanIndex:var_wi];
+        }
+    }
+    - (void)setIndexInVar:(Unsigned)v {
+        MSGSTART("WIVarArg:-(void)setIndexInVar:(Unsigned)v")
+
+        self.indexesInVar = (v == NSNotFound ? [NSIndexSet indexSet] : [NSIndexSet indexSetWithIndex:v]);
+    }
+    - (void)setName:(NSString *)v {
+        MSGSTART("WIVarArg:-(void)setName:(NSString*)v")
+
+        /*i-905*/ if (v_name == v) return;
+
+        /*i-900*/ {
+            v_name = (id)v;
+        }
+    }
+    - (void)setType:(WIType *)v {
+        MSGSTART("WIVarArg:-(void)setType:(WIType*)v")
+
+        /*i-905*/ if (v_type == v) return;
+
+        /*i-900*/ {
+            v_type = (id)v;
+        }
+/*i-850*/ REMOVEOWNER(v_type,self); ADDOWNER(v,self);
+    }
+    - (void)setVar:(WIVar *)v {
+        MSGSTART("WIVarArg:-(void)setVar:(WIVar*)v")
+        [v_var_endpoint setValue : v];
+    }
+    - (void)setVar_endpoint:(Endpoint1 *)v {
+        MSGSTART("WIVarArg:-(void)setVar_endpoint:(Endpoint1*)v")
+
+        /*i-1999*/ if ( !authorized_thread(__private_access_thread_mask_in_WIVarArg) ) ERR("Attempt to set public-readonly property in unauthorized thread (please try something like privateaccess(var_endpoint=\"blah\") to set the property)");
+
+        /*i-905*/ if (v_var_endpoint == v) return;
+
+        /*i-900*/ {
+            v_var_endpoint = (id)v;
+        }
+/*i-850*/ REMOVEOWNER(v_var_endpoint,self); ADDOWNER(v,self);
+    }
+    - (WIType *)type {
+        MSGSTART("WIVarArg:-(WIType*)type")
+
+        /*i-999*/ WIType * ret = v_type;
+        /*i999*/ return ret;
+    }
+    - (WIVar *)var {
+        MSGSTART("WIVarArg:-(WIVar*)var")
+        return (WIVar *)v_var_endpoint.value;
+    }
+    - (Endpoint1 *)var_endpoint {
+        MSGSTART("WIVarArg:-(Endpoint1*)var_endpoint")
+
+        /*i-999*/ Endpoint1 * ret = v_var_endpoint;
+        /*i999*/ return ret;
+    }
+    - (NSObject<LinkEndpoint> *)varToEndpoint:(id)avar {
+        MSGSTART("WIVarArg:-(NSObject<LinkEndpoint>*)varToEndpoint:(id)avar")
+        return [avar performSelector:@selector(args)];
     }
 
     @end

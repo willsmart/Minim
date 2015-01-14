@@ -18,6 +18,7 @@
 		BE91AD041A1A7303009751BB /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE91AD031A1A7303009751BB /* QuartzCore.framework */; };
 		BE99B973161BAE720041B8EA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE99B972161BAE720041B8EA /* Foundation.framework */; };
 		BE99B97A161BAE720041B8EA /* WInterface.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = BE99B979161BAE720041B8EA /* WInterface.1 */; };
+		BE9A3BAB1A37A2470038DF8D /* Code.wi.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE9A3BAA1A37A2470038DF8D /* Code.wi.mm */; };
 		BEC8A51B18296AA50090BBAD /* inserts.mm in Sources */ = {isa = PBXBuildFile; fileRef = BEC8A51A18296AA50090BBAD /* inserts.mm */; };
 		BEDEBF821A19DA1900D0200D /* base.wi.mm in Sources */ = {isa = PBXBuildFile; fileRef = BEDEBF6A1A19DA1900D0200D /* base.wi.mm */; };
 		BEDEBF831A19DA1900D0200D /* collectionArray.wi.mm in Sources */ = {isa = PBXBuildFile; fileRef = BEDEBF6B1A19DA1900D0200D /* collectionArray.wi.mm */; };
@@ -100,12 +101,14 @@
 		BE99B972161BAE720041B8EA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		BE99B978161BAE720041B8EA /* WInterface-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WInterface-Prefix.pch"; sourceTree = "<group>"; };
 		BE99B979161BAE720041B8EA /* WInterface.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = WInterface.1; sourceTree = "<group>"; };
+		BE9A3BAA1A37A2470038DF8D /* Code.wi.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = Code.wi.mm; path = wied/Code.wi.mm; sourceTree = SOURCE_ROOT; };
 		BEA020A41629505100CA480A /* Prop1A.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = Prop1A.wi; path = Wis/Prop1A.wi; sourceTree = "<group>"; };
 		BEA020A81629505100CA480A /* Prop1S.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = Prop1S.wi; path = Wis/Prop1S.wi; sourceTree = "<group>"; };
 		BEA020AC1629505100CA480A /* Prop11.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = Prop11.wi; path = Wis/Prop11.wi; sourceTree = "<group>"; };
 		BEA020B01629505100CA480A /* PropA1.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = PropA1.wi; path = Wis/PropA1.wi; sourceTree = "<group>"; };
 		BEA020B41629505100CA480A /* PropS1.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = PropS1.wi; path = Wis/PropS1.wi; sourceTree = "<group>"; };
 		BEA020B8162951B100CA480A /* PropBase.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = PropBase.wi; path = Wis/PropBase.wi; sourceTree = "<group>"; };
+		BEB3E1C11A61C93600291844 /* wi.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = wi.sh; path = ../wi.sh; sourceTree = "<group>"; };
 		BEC3EDAE162B2999001BA99B /* ModelNS1.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = ModelNS1.wi; path = Wis/ModelNS1.wi; sourceTree = "<group>"; };
 		BEC3EDAF162B299A001BA99B /* ModelNSA.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = ModelNSA.wi; path = Wis/ModelNSA.wi; sourceTree = "<group>"; };
 		BEC3EDB0162B299A001BA99B /* ModelNSS.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = ModelNSS.wi; path = Wis/ModelNSS.wi; sourceTree = "<group>"; };
@@ -187,6 +190,7 @@
 		BE5266E3196DC31D00FD10AB /* Sourcefiles */ = {
 			isa = PBXGroup;
 			children = (
+				BE9A3BAA1A37A2470038DF8D /* Code.wi.mm */,
 				BE91ACFD1A1A6D0D009751BB /* Files.wi.mm */,
 				BEDEBF6A1A19DA1900D0200D /* base.wi.mm */,
 				BEDEBF6B1A19DA1900D0200D /* collectionArray.wi.mm */,
@@ -261,6 +265,7 @@
 				BE91ACFF1A1A72CB009751BB /* CoreGraphics.framework */,
 				BEDEBF681A19D97F00D0200D /* wi.out.txt */,
 				BE93AD8D165E9E3B001BA629 /* wi.sh */,
+				BEB3E1C11A61C93600291844 /* wi.sh */,
 				BE91ACFA1A1A6601009751BB /* wied */,
 				BE91ACF91A1A65F1009751BB /* wi */,
 				BEDEBF9B1A19DB9600D0200D /* WILibrary_v1 */,
@@ -421,6 +426,7 @@
 				BE340D6619D7DE2A00BEC232 /* Parse.mm in Sources */,
 				BEDEBF8E1A19DA1900D0200D /* model.mm in Sources */,
 				BEDEBFA01A1A59A100D0200D /* WInterface.swift in Sources */,
+				BE9A3BAB1A37A2470038DF8D /* Code.wi.mm in Sources */,
 				BEDEBF901A19DA1900D0200D /* OID.wi.mm in Sources */,
 				BEDEBF8D1A19DA1900D0200D /* linkBase.wi.mm in Sources */,
 				BEDEBF951A19DA1900D0200D /* util.mm in Sources */,

@@ -1,0 +1,31 @@
+
+WICtxt
+    MutableDictionary regexes=[MutableDictionary dictionary]
+    ctxt >s- WIClass claz
+
+WIType
+    type >d- WIClass claz
+
+WIVar
+    NSString name=0
+    var >s- WICtxt ctxt
+    var >s- WIType type
+    var -a< WIVarArg arg
+        NSString name=0,arg=0
+        WIType type=0
+    getterForVar -s< WIBody getter
+    defaultValueForVar -s< WIBody defaultValue
+    setterForVar -d< WIBody setter
+    MutableDictionary settings=[MutableDictionary dictionary]
+    WIVar boundTo=0
+    NSString bindingType=0
+
+WIClass
+    MutableDictionary settings=[MutableDictionary dictionary]
+    subclaz >s- WIClass superclaz
+    subprotocol >s< WIClass superprotocol
+
+WIFile
+    MutableArray includes=[MutableArray array]
+    file -a< WICtxt ctxt
+

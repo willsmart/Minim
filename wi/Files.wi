@@ -38,6 +38,10 @@ Singletons
         {
             return !wiParse?wiParse=[WIParse new]:wiParse;
         }
+    NSMutableString htmlParseOutput=0
+        {
+            return !htmlParseOutput?htmlParseOutput=[NSMutableString new]:htmlParseOutput;
+        }
 
 Files
     NSMutableDictionary files=0 (readonly)
@@ -45,7 +49,7 @@ Files
     -(init)init
 
     NSString basePath=[[NSFileManager defaultManager] currentDirectoryPath]
-        -v
+        <-
             v=[v stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
             if (!v.isAbsolutePath) {
                 NSFileManager *fm=NSFileManager.defaultManager;
@@ -128,7 +132,7 @@ WIParse
         path=[Singletons._.files pathForPath:path];
         NSError *err = nil;
         NSString *body=nil;
-        NSMutableArray *ret=[Parse getTokensForFile:path options:0 retForString:&body].mutableCopy;
+        NSMutableArray *ret=[Parse getTokensForFile:path options:ParseOptions_none retForString:&body].mutableCopy;
         if (ret) {
             bool isEmpty=((ret.count==1)&&[[ret[0] ruleName] isEqualToString:@"file"]);
             bool hasError=!(isEmpty||((ret.count==1)&&[[ret[0] ruleName] isEqualToString:@"par"]&&[[[(Token*)ret[0] children][0] ruleName] isEqualToString:@"file"]));
@@ -147,6 +151,7 @@ WIParse
                 NSString *html=[NSString stringWithContentsOfFile:@$"{WIBASE}/WInterface/Parse/index.html" encoding:NSUTF8StringEncoding error:&err];
                 html=[html stringByReplacingOccurrencesOfString:@"\"JSONDATA\"" withString:json];
                 [html writeToFile:htmlfn atomically:YES encoding:NSUTF8StringEncoding error:&err];
+                [Singletons._.htmlParseOutput appendFormat:@"<a href='file:%@'>%@</a><br/>",htmlfn,path];
             //}
         }
         return ret;

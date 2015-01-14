@@ -52,6 +52,7 @@
         #endif  // __SWIFT__
             Files *files;
             NSString *v_homeURLPrefix;
+            NSMutableString *htmlParseOutput;
             bool inTick;
             Log *log;
             ObjectGraph *objectGraph;
@@ -73,6 +74,7 @@
         @property (nonatomic,readonly) NSString *description;
         @property (strong,nonatomic,readonly) Files *files;
         @property (strong,nonatomic,readwrite) NSString *homeURLPrefix;
+        @property (strong,nonatomic,readonly) NSMutableString *htmlParseOutput;
         @property (nonatomic,readonly) bool inTick;
         @property (strong,nonatomic,readonly) Log *log;
         @property (strong,nonatomic,readonly) ObjectGraph *objectGraph;
@@ -91,6 +93,7 @@
         - (Files *)files;
         + (Singletons *)getDefault;
         - (NSString *)homeURLPrefix;
+        - (NSMutableString *)htmlParseOutput;
         - (Singletons *)init;
         - (Log *)log;
         - (ObjectGraph *)objectGraph;
@@ -369,6 +372,8 @@
 
         REMOVEOWNER(files,self); files = nil;
 
+        htmlParseOutput = nil;
+
         v_typeCountHistory = nil;
 /*i999*/}
     - (NSString *)description {
@@ -418,6 +423,11 @@
 
         /*i-999*/ NSString * ret = v_homeURLPrefix;
         /*i999*/ return ret;
+    }
+    - (NSMutableString *)htmlParseOutput {
+        MSGSTART("Singletons:-(NSMutableString*)htmlParseOutput")
+
+        return !htmlParseOutput ? htmlParseOutput = [NSMutableString new] : htmlParseOutput;
     }
     - (Singletons *)init {
         MSGSTART("Singletons:-(Singletons*)init")

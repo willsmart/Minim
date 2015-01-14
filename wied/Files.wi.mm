@@ -627,8 +627,6 @@
     }
     + (void)substituteStrings:(NSMutableArray *)tokens {
         MSGSTART("WIParse:+(void)substituteStrings:(NSMutableArray*)tokens")
-        NSMutableArray * ret = nil;
-        NSInteger index = 0;
         for (Token *token in tokens) {
             if ([token.ruleName isEqualToString:@"substituteString"]) {
                 NSError *err = nil;
@@ -646,8 +644,8 @@
         MSGSTART("WIParse:-(NSMutableArray*)tokensFromFile:(NSString*)path")
         path = [Singletons._.files pathForPath:path];
         NSError *err = nil;
-        NSString *body=nil;
-        NSMutableArray *ret=[Parse getTokensForFile:path options:0 retForString:&body].mutableCopy;
+        NSString *body = nil;
+        NSMutableArray *ret = [Parse getTokensForFile:path options:ParseOptions_none retForString:&body].mutableCopy;
         if (ret) {
             bool isEmpty = ( (ret.count == 1) && [[ret[0] ruleName] isEqualToString:@"file"] );
             bool hasError = !( isEmpty || ( (ret.count == 1) && [[ret[0] ruleName] isEqualToString:@"par"] && [[[(Token *)ret[0] children][0] ruleName] isEqualToString:@"file"] ) );
@@ -665,6 +663,7 @@
             NSString *html = [NSString stringWithContentsOfFile:@"/Users/Will/Documents/WInterface/Parse/index.html" encoding:NSUTF8StringEncoding error:&err];
             html = [html stringByReplacingOccurrencesOfString:@"\"JSONDATA\"" withString:json];
             [html writeToFile:htmlfn atomically:YES encoding:NSUTF8StringEncoding error:&err];
+            [Singletons._.htmlParseOutput appendFormat:@"<a href='file:%@'>%@</a><br/>",htmlfn,path];
             // }
         }
         return ret;

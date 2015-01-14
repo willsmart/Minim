@@ -2539,6 +2539,7 @@
 
 
 
+
         __mutableDictionary = nil;
 
         dictionaryDelegate = nil;
@@ -3199,9 +3200,7 @@
 
 
 
-
-        /*i100*/ [dictionaryDelegate stateOK];
-        [self markDirty];
+        /*i100*/ [self markDirty]; [dictionaryDelegate stateOK];
     }
     - (id)valueForKey:(NSString *)key {
         MSGSTART("CommitableMutableDictionary:-(id)valueForKey:(NSString*)key")
