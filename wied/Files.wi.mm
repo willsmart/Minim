@@ -450,9 +450,7 @@
         /*i0*/}
     - (NSString *)basePath {
         MSGSTART("Files:-(NSString*)basePath")
-
-        /*i-999*/ NSString * ret = v_basePath;
-        /*i999*/ return ret;
+        return v_basePath;
     }
     - (constchar *)cdescription {
         MSGSTART("Files:-(constchar*)cdescription")
@@ -528,11 +526,12 @@
     - (void)setBasePath:(NSString *)v {
         MSGSTART("Files:-(void)setBasePath:(NSString*)v")
 
-        /*i-905*/ if (v_basePath == v) return;
-
-        /*i-900*/ {
-            v_basePath = (id)v;
+        v = [v stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
+        if (!v.isAbsolutePath) {
+            NSFileManager *fm = NSFileManager.defaultManager;
+            v = (v ? [fm.currentDirectoryPath stringByAppendingPathComponent:v] : fm.currentDirectoryPath);
         }
+        v_basePath = v;
     }
 
     @end

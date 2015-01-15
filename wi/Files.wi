@@ -48,15 +48,17 @@ Files
 
     -(init)init
 
-    NSString basePath=[[NSFileManager defaultManager] currentDirectoryPath]
-        <-
+    NSString basePath=
+        {return(v_basePath);}
+        -v{
             v=[v stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
             if (!v.isAbsolutePath) {
                 NSFileManager *fm=NSFileManager.defaultManager;
                 v=(v?[fm.currentDirectoryPath stringByAppendingPathComponent:v]:fm.currentDirectoryPath);
             }
             v_basePath=v;
-
+        }=[[NSFileManager defaultManager] currentDirectoryPath] (ivar)
+        
     -(NSString*)pathForPath:(NSString*)path
         if (!path.isAbsolutePath) path=[self.basePath stringByAppendingPathComponent:path];
         return(path);//[[NSURL URLWithString:path relativeToURL:NSBundle.mainBundle.bundleURL] absoluteString]);

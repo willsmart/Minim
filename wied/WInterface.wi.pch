@@ -196,11 +196,13 @@
 @class IntCarrier;
 @class JsonParser;
 @class MemMonitor;
+@class TokenHelper;
 @class ULLCarrier;
 @class URLHandlerRegistry;
 @class Util;
 @class WeakSelf;
 @class WIBody;
+@class WIBodySnippet;
 @class WIClass;
 @class WICtxt;
 @class WIFile;
@@ -208,6 +210,7 @@
 @class WIType;
 @class WIVar;
 @class WIVarArg;
+@class WIVarContext;
 @class WReaderToken;
 @class DirtyObjectDictionaryDelegate;
 @class DirtyObjectIndexArrayDelegate;

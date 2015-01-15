@@ -697,8 +697,6 @@
     - (bool)_addReferrer:(NSObject<LinkEndpoint> *)ep {
         MSGSTART("Endpoint1:-(bool)_addReferrer:(NSObject<LinkEndpoint>*)ep")
 
-
-
         id v = ep.owner;
         if (!v) return NO;
 
@@ -714,8 +712,6 @@
     }
     - (void)_removeReferrer:(NSObject<LinkEndpoint> *)ep {
         MSGSTART("Endpoint1:-(void)_removeReferrer:(NSObject<LinkEndpoint>*)ep")
-
-
 
         id v = ep.owner;
         if ( v && (v == v_value) ) {
@@ -1054,8 +1050,6 @@
     - (bool)_addReferrer:(NSObject<LinkEndpoint> *)ep {
         MSGSTART("EndpointA:-(bool)_addReferrer:(NSObject<LinkEndpoint>*)ep")
 
-
-
         id v = ep.owner;
         if (!v) return NO;
 
@@ -1216,8 +1210,6 @@
     - (void)_removeReferrer:(NSObject<LinkEndpoint> *)ep {
         MSGSTART("EndpointA:-(void)_removeReferrer:(NSObject<LinkEndpoint>*)ep")
 
-
-
         id v = ep.owner;
         if (v) {
             bool r = __restrictRef;
@@ -1306,13 +1298,13 @@
     - (void)allObjectsMoved {
         MSGSTART("EndpointA:-(void)allObjectsMoved")
 
+
+
         [__arrayObjectIndexes removeAllObjects];
         Unsigned index = 0;
         for (NSObject *object in __array) {
             [self doAddIndex:index++ forObject:object];
         }
-
-
 
         /*i100*/ [arrayDelegate allObjectsMoved];
     }
@@ -1410,9 +1402,9 @@
 
         owner = nil;
 
-        __arrayObjectIndexes = nil;
-
         __mutableArray = nil;
+
+        __arrayObjectIndexes = nil;
 
         __array = nil;
 
@@ -1770,12 +1762,12 @@
 
         /*i-10001*/ if ( !(self = [super init]) ) return nil;
 
-        /*i-900*/ owner = aowner;
+        /*i-900*/ __array = __mutableArray = [[MutableArray alloc] init];
+
+        owner = aowner;
         retains = aretains;
         acceptableSel = aacceptableSel;
         otherEndObjectToEndpoint = aotherEndObjectToEndpoint;
-
-        __array = __mutableArray = [[MutableArray alloc] init];
 
         /*i11*/ [self _startObjectOfClassEndpointA];
 
@@ -1885,18 +1877,20 @@
     - (void)objectsMovedFromRange:(NSRange)fromRange toLocation:(Unsigned)toLocation {
         MSGSTART("EndpointA:-(void)objectsMovedFromRange:(NSRange)fromRange toLocation:(Unsigned)toLocation")
 
+
+
         for (Unsigned i = 0; i < fromRange.length; i++) {
             Unsigned j = (toLocation > fromRange.location ? fromRange.length - 1 - i : i);
             NSObject *object = [__array objectAtIndex:toLocation + j];
             [self doChangeIndex:fromRange.location + j toIndex:toLocation + j forObject:object];
         }
 
-
-
         /*i100*/ [arrayDelegate objectsMovedFromRange:fromRange toLocation:toLocation];
     }
     - (void)objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex {
         MSGSTART("EndpointA:-(void)objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex")
+
+
 
         NSObject * object1 = [__array objectAtIndex:toIndex];
         NSObject *object2 = [__array objectAtIndex:fromIndex];
@@ -1904,8 +1898,6 @@
             [self doChangeIndex:fromIndex toIndex:toIndex forObject:object1];
             [self doChangeIndex:toIndex toIndex:fromIndex forObject:object2];
         }
-
-
 
         /*i100*/ [arrayDelegate objectsSwappedWithIndex:fromIndex andIndex:toIndex];
     }
@@ -2072,7 +2064,6 @@
             /*i-999*/ bool ret = YES;
 
             /*i0*/ if ( (!__restrictRef) && [self unacceptable:object] ) ret = NO;
-
 
             /*i100*/ if (ret && arrayDelegate) ret = [arrayDelegate shouldAddObject:object makeWeak:weak];
 
@@ -2309,8 +2300,6 @@
     - (bool)_addReferrer:(NSObject<LinkEndpoint> *)ep {
         MSGSTART("EndpointD:-(bool)_addReferrer:(NSObject<LinkEndpoint>*)ep")
 
-
-
         id v = ep.owner;
         if (!v) return NO;
 
@@ -2359,8 +2348,6 @@
     }
     - (void)_removeReferrer:(NSObject<LinkEndpoint> *)ep {
         MSGSTART("EndpointD:-(void)_removeReferrer:(NSObject<LinkEndpoint>*)ep")
-
-
 
         id v = ep.owner;
         if (v) {
@@ -2832,12 +2819,12 @@
 
         /*i-10001*/ if ( !(self = [super init]) ) return nil;
 
-        /*i-900*/ owner = aowner;
+        /*i-900*/ __dictionary = __mutableDictionary = [[MutableDictionary alloc] init];
+
+        owner = aowner;
         retains = aretains;
         acceptableSel = aacceptableSel;
         otherEndObjectToEndpoint = aotherEndObjectToEndpoint;
-
-        __dictionary = __mutableDictionary = [[MutableDictionary alloc] init];
 
         /*i11*/ [self _startObjectOfClassEndpointD];
 
@@ -3058,8 +3045,6 @@
         memset( dictionary_objects.keyvals + dictionary_count,0,sizeof(dictionary_objects.keyvals[0]) * (100 - dictionary_count) );
         dictionary_count = __dictionary.count;
 
-
-
         /*i100*/ [dictionaryDelegate stateOK];
     }
     - (bool)unacceptable:(id)obj {
@@ -3191,8 +3176,6 @@
     - (bool)_addReferrer:(NSObject<LinkEndpoint> *)ep {
         MSGSTART("EndpointS:-(bool)_addReferrer:(NSObject<LinkEndpoint>*)ep")
 
-
-
         id v = ep.owner;
         if (!v) return NO;
 
@@ -3273,8 +3256,6 @@
     }
     - (void)_removeReferrer:(NSObject<LinkEndpoint> *)ep {
         MSGSTART("EndpointS:-(void)_removeReferrer:(NSObject<LinkEndpoint>*)ep")
-
-
 
         id v = ep.owner;
         if (v) {
@@ -3556,12 +3537,12 @@
 
         /*i-10001*/ if ( !(self = [super init]) ) return nil;
 
-        /*i-900*/ owner = aowner;
+        /*i-900*/ __set = __mutableSet = [[MutableSet alloc] init];
+
+        owner = aowner;
         retains = aretains;
         acceptableSel = aacceptableSel;
         otherEndObjectToEndpoint = aotherEndObjectToEndpoint;
-
-        __set = __mutableSet = [[MutableSet alloc] init];
 
         /*i11*/ [self _startObjectOfClassEndpointS];
 

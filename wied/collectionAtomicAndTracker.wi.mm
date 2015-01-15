@@ -2841,7 +2841,6 @@
 
 
 
-
         trackerSet = nil;
 
         REMOVEOWNER(v_sourceCommitters,self); v_sourceCommitters = nil;

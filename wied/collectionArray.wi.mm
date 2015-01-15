@@ -756,13 +756,13 @@
     - (void)allObjectsMoved {
         MSGSTART("MutableArrayMirrorTesterImpl:-(void)allObjectsMoved")
 
-
-
         [__arrayObjectIndexes removeAllObjects];
         Unsigned index = 0;
         for (NSObject *object in __array) {
             [self doAddIndex:index++ forObject:object];
         }
+
+
 
         /*i100*/ [arrayDelegate allObjectsMoved];
     }
@@ -1310,20 +1310,18 @@
     - (void)objectsMovedFromRange:(NSRange)fromRange toLocation:(Unsigned)toLocation {
         MSGSTART("MutableArrayMirrorTesterImpl:-(void)objectsMovedFromRange:(NSRange)fromRange toLocation:(Unsigned)toLocation")
 
-
-
         for (Unsigned i = 0; i < fromRange.length; i++) {
             Unsigned j = (toLocation > fromRange.location ? fromRange.length - 1 - i : i);
             NSObject *object = [__array objectAtIndex:toLocation + j];
             [self doChangeIndex:fromRange.location + j toIndex:toLocation + j forObject:object];
         }
 
+
+
         /*i100*/ [arrayDelegate objectsMovedFromRange:fromRange toLocation:toLocation];
     }
     - (void)objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex {
         MSGSTART("MutableArrayMirrorTesterImpl:-(void)objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex")
-
-
 
         NSObject * object1 = [__array objectAtIndex:toIndex];
         NSObject *object2 = [__array objectAtIndex:fromIndex];
@@ -1331,6 +1329,8 @@
             [self doChangeIndex:fromIndex toIndex:toIndex forObject:object1];
             [self doChangeIndex:toIndex toIndex:fromIndex forObject:object2];
         }
+
+
 
         /*i100*/ [arrayDelegate objectsSwappedWithIndex:fromIndex andIndex:toIndex];
     }
@@ -2021,13 +2021,13 @@
     - (void)allObjectsMoved {
         MSGSTART("WeakMutableArrayMirrorTesterImpl:-(void)allObjectsMoved")
 
-
-
         [__arrayObjectIndexes removeAllObjects];
         Unsigned index = 0;
         for (NSObject *object in __array) {
             [self doAddIndex:index++ forObject:object];
         }
+
+
 
         /*i100*/ [arrayDelegate allObjectsMoved];
     }
@@ -2575,20 +2575,18 @@
     - (void)objectsMovedFromRange:(NSRange)fromRange toLocation:(Unsigned)toLocation {
         MSGSTART("WeakMutableArrayMirrorTesterImpl:-(void)objectsMovedFromRange:(NSRange)fromRange toLocation:(Unsigned)toLocation")
 
-
-
         for (Unsigned i = 0; i < fromRange.length; i++) {
             Unsigned j = (toLocation > fromRange.location ? fromRange.length - 1 - i : i);
             NSObject *object = [__array objectAtIndex:toLocation + j];
             [self doChangeIndex:fromRange.location + j toIndex:toLocation + j forObject:object];
         }
 
+
+
         /*i100*/ [arrayDelegate objectsMovedFromRange:fromRange toLocation:toLocation];
     }
     - (void)objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex {
         MSGSTART("WeakMutableArrayMirrorTesterImpl:-(void)objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex")
-
-
 
         NSObject * object1 = [__array objectAtIndex:toIndex];
         NSObject *object2 = [__array objectAtIndex:fromIndex];
@@ -2596,6 +2594,8 @@
             [self doChangeIndex:fromIndex toIndex:toIndex forObject:object1];
             [self doChangeIndex:toIndex toIndex:fromIndex forObject:object2];
         }
+
+
 
         /*i100*/ [arrayDelegate objectsSwappedWithIndex:fromIndex andIndex:toIndex];
     }
