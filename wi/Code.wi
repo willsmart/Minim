@@ -99,6 +99,223 @@ TokenHelper
     }
 
 
+<Treeable>
+    NSSet treePropertyNames={@-999 static NSSet *retSet=nil;@-100 if (!retSet) {NSArray *ret=nil;@100 retSet=[NSSet setWithArray:ret?ret:@[]];}@999 return(retSet);}
+    NSDictionary treeNodeData={@-999 NSDictionary *ret=nil;@999 return(ret?ret:@{});}
+    NSDictionary seenTreeNodeData={@-999 NSDictionary *ret=nil;@999 return(ret?ret:self.treeNodeData);}
+    NSDictionary asTree={return([self asTree:NSMutableSet.set]);}
+    -(NSDictionary*)asTree:(NSMutableSet*)seen {
+        NSMutableDictionary *ret=NSMutableDictionary.dictionary;
+
+        if ([seen containsObject:self]) {
+            [ret setObject:self.seenTreeNodeData forKey:@"nodedata"];
+        }
+        else {
+            [seen addObject:self];
+            [ret setObject:self.treeNodeData forKey:@"nodedata"];
+
+            for (NSString *name in self.treePropertyNames) {
+                id res=[self performUnknownSelector:NSSelectorFromString(name)];
+                if ([res isKindOfClass:NSSet.class]||[res isKindOfClass:NSArray.class]) {
+                    NSMutableArray *chs=NSMutableArray.array;
+                    for (NSObject *ch in (NSSet*)res) if ([ch conformsToProtocol:@protocol(Treeable)]) {
+                        [chs addObject:[(id<Treeable>)ch asTree:seen]];
+                    }
+                    [ret setObject:chs forKey:name];
+                }
+                else if ([res isKindOfClass:NSDictionary.class]) {
+                    NSMutableDictionary *chs=NSMutableDictionary.dictionary;
+                    for (NSObject<NSCopying> *key in (NSDictionary*)res) {
+                        NSObject *ch=((NSDictionary*)res)[key];
+                        if ([ch conformsToProtocol:@protocol(Treeable)]) {
+                            [chs setObject:[(id<Treeable>)ch asTree:seen] forKey:key];
+                        }
+                    }
+                    [ret setObject:chs forKey:name];
+                }
+                else if ([res conformsToProtocol:@protocol(Treeable)]) {
+                    [ret setObject:[(id<Treeable>)res asTree:seen] forKey:name];
+                }
+            }
+        }
+        return(ret);
+    }
+
+    NSString asD3TreeJSON={
+        NSError *err=nil;
+        return([[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:self.asD3Tree options:0 error:&err] encoding:NSUTF8StringEncoding]);
+    }
+
+    NSDictionary asD3Tree={return([Treeable asD3Tree:self.asTree]);}
+    +(NSMutableDictionary*)asD3Tree:(NSObject*)dictOrArray {
+        NSMutableArray *chs=@[].mutableCopy;
+        NSMutableDictionary *ret=@{
+            @"name":@"",
+            @"linkname":@"",
+            @"color":@"black"
+        }.mutableCopy;
+        bool term=YES;
+
+
+        if ([dictOrArray isKindOfClass:NSArray.class]) {
+            term=NO;
+            for (NSDictionary *d in (NSArray*)dictOrArray) {
+                [chs addObject:[self asD3Tree:d]];
+                [chs2 addObject:ch];
+            }
+            ret[@"color"]=@"green";
+        }
+        else {
+            NSDictionary *dict=(NSDictionary*)dictOrArray;
+            for (NSString *name in dict) if (!([name isEqualToString:@"nodedata"])) {
+                term=NO;
+                NSMutableDictionary *ch=[self asD3Tree:dict[name]];
+                ch[@"linkname"]=name;
+                [chs addObject:ch];
+            }
+            else {
+                NSDictionary *data=dict[name];
+                if (data[@"name"]) ret[@"name"]=data[@"name"];
+                if (data[@"color"]) ret[@"color"]=data[@"color"];
+                for (NSString *key in data) if (!([key isEqualToString:@"name"]||[key isEqualToString:@"color"])) {
+                    NSObject *o=data[key];
+                    term=NO;
+                    if ([o isKindOfClass:NSArray.class]||[o isKindOfClass:NSDictionary.class]) {
+                        NSMutableDictionary *ch=[self asD3Tree:o];
+                        ch[@"linkname"]=key;
+                        [chs addObject:ch];
+                    }
+                    else {
+                        [chs addObject:@{
+                            @"name":o.description,
+                            @"linkname":key,
+                            @"size":@(743*o.description.length/9),
+                            @"color":@"orange"
+                        }];
+                    }
+                }
+            }
+        }
+        if (!term) ret[@"children"]=chs;
+        ret[@"size"]=@(743*ret[@"name"].length/9),
+        return(ret);
+    }
+
+
+
+WIFile<Treeable>
+    NSSet treePropertyNames={ret=@[@"includes",@"ctxts"];}
+    NSDictionary treeNodeData={ret=@{@"type":@"File"};}
+
+WICtxt<Treeable>
+    NSSet treePropertyNames={ret=@[@"clazzs",@"protocols"];}
+    NSDictionary treeNodeData={ret=@{@"type":@"Context",@"name":[(id)self.keyInFile description]};}
+
+WIClass<Treeable>
+    NSSet treePropertyNames={ret=@[@"superclasss",@"conformedProtocols",@"superprotocols",@"varCtxts",@"types"];}
+    NSDictionary treeNodeData={ret=@{
+        @"type":@"Class",
+        @"name":([(NSDictionary*)self.keyInClazz count]?
+            [NSString stringWithFormat:@"%@{%@}",self.name,self.settings.description]:
+            [NSString stringWithFormat:@"%@",self.name]
+        )
+    };}
+    NSDictionary seenTreeNodeData={ret=@{@"type":@"Class",@"name":self.descriptiveName};}
+    NSString descriptiveName={
+        return([(NSDictionary*)self.context.keyInFile count]?
+            self.settings.count?
+                [NSString stringWithFormat:@"%@{%@} =>(%@)",self.name,self.settings.description,[(id)self.context.keyInFile description]]:
+                [NSString stringWithFormat:@"%@ =>(%@)",self.name,[(id)self.context.keyInFile description]]
+            ):
+            ([(NSDictionary*)self.keyInClazz count]?
+                [NSString stringWithFormat:@"%@{%@}",self.name,self.settings.description]:
+                [NSString stringWithFormat:@"%@",self.name]
+            )
+        );
+    }
+
+WIVarContext<Treeable>
+    NSSet treePropertyNames={ret=@[@"vars"];}
+    NSDictionary treeNodeData={ret=@{@"type":@"VarContext",@"name":self.keyInClazz};}// TODO json
+    NSDictionary seenTreeNodeData={ret=@{@"type":@"VarContext",@"name":self.descriptiveName};}
+    NSString descriptiveName={
+        return([(NSDictionary*)self.clazz.context.keyInFile count]?
+            ([(NSDictionary*)self.keyInClazz count]?
+                [NSString stringWithFormat:@"%@{%@} =>(%@)",self.clazz.name,[(id)self.keyInClazz description],[(id)self.clazz.context.keyInFile description]]:
+                [NSString stringWithFormat:@"%@ =>(%@)",self.clazz.name,[(id)self.clazz.context.keyInFile description]]
+            ):
+            ([(NSDictionary*)self.keyInClazz count]?
+                [NSString stringWithFormat:@"%@{%@}",self.clazz.name,[(id)self.keyInClazz description]]:
+                [NSString stringWithFormat:@"%@",self.clazz.name]
+            )
+        );
+    }
+
+WIType<Treeable>
+    NSSet treePropertyNames={ret=@[@"vars"];}
+    NSDictionary treeNodeData={ret=@{@"type":@"Type",@"name":self.keyInClazz};}// TODO json
+    NSDictionary seenTreeNodeData={ret=@{@"type":@"Type",@"name":self.descriptiveName};}
+    NSString descriptiveName={
+        return([(NSDictionary*)self.clazz.context.keyInFile count]?
+            ([(NSArray*)self.keyInClazz count]?
+                [NSString stringWithFormat:@"%@ %@ =>(%@)",self.clazz.name,[(id)self.keyInClazz description],[(id)self.clazz.context.keyInFile description]]:
+                [NSString stringWithFormat:@"%@ =>(%@)",self.clazz.name,[(id)self.clazz.context.keyInFile description]]
+            ):
+            ([(NSArray*)self.keyInClazz count]?
+                [NSString stringWithFormat:@"%@ %@",self.clazz.name,[(id)self.keyInClazz description]]:
+                [NSString stringWithFormat:@"%@",self.clazz.name]
+            )
+        );
+    }
+
+
+WIVar<Treeable>
+    NSSet treePropertyNames={ret=@[@"getter",@"setter",@"defaultValue",@"atomicVars"];}
+    NSDictionary treeNodeData={ret=@{
+        @"type":@"Var",
+        @"name":[([(NSDictionary*)self.keyInClazz count]?
+            [NSString stringWithFormat:@"%@{%@}",self.name,self.settings.description]:
+            [NSString stringWithFormat:@"%@",self.name]
+        )
+        stringByAppendingFormat:self.boundTo?@" %@ %@":@"",
+            self.bindingType,self.boundTo.descriptiveName]
+    };}
+    NSDictionary seenTreeNodeData={
+        ret=@{@"type":@"Var",
+            @"name":self.descriptiveName
+        };
+    }
+    NSString descriptiveName={return([NSString stringWithFormat:@"%@::%@",self.context.descriptiveName,self.selectorString]);}
+    NSString selectorString={
+        NSMutableString *ret=[NSMutableString stringWithFormat:@"(%@)%@",self.type.descriptiveName,self.name];
+        for (WIVarArg *arg in self.args) {
+            [ret appendFormat:@"%@:(%@)%@",
+                arg.arg?[@" " stringByAppendingString:arg.arg]:
+                (arg.indexInVar?
+                    @" ?":
+                    @""
+                ),
+                arg.type.descriptiveName,
+                arg.name?arg.name:@"?"
+            ];
+        }
+        return(ret);
+    }
+
+WIBody<Treeable>
+    NSSet treePropertyNames={ret=@[@"snippets"];}
+    NSDictionary treeNodeData={ret=@{@"type":@"Body"};}
+
+WIBodySnippet<Treeable>
+    NSDictionary treeNodeData={
+        ret=@{
+            @"type":@"Snippet",
+            @"name":[NSString stringWithFormat@"@%@: %@",[(id)self.keyInBody description],self.strings.description]
+        };
+    }
+
+
+
 
 
 
