@@ -326,7 +326,7 @@
         g_classCountht = classCountht = NEWCONSb( QuickHashTableOfClassCounts,(ci,nil,2048) );
         g_classCountArray = classCountArray = NEWCONSb( ArrayOfClassCounts,() );
 
-        /*i-500*//*ivar*/ v_homeURLPrefix = (@"http://192.168.2.2/");
+        /*i-500*//*ivar*/ v_homeURLPrefix = (@"http://192.168.1.3/");
         /*ivar*/ v_styleName = (@"Synesthete");
         /*ivar*/ online = (YES);
         /*ivar*/ v_typeCountHistory = ([NSMutableArray array]);

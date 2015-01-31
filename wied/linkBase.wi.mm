@@ -3773,6 +3773,7 @@
 
             /*i0*/ if ( (!__restrictRef) && ([self containsObject:object] || [self unacceptable:object]) ) ret = NO;
 
+
             /*i100*/ if (ret && setDelegate) ret = [setDelegate shouldAddObject:object makeWeak:weak];
 
             /*i999*/ return ret;

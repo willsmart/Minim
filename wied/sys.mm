@@ -19,7 +19,11 @@
         @interface NSObject (winterface)
 
 
+        @property (nonatomic,readonly) NSObject *asValidJsonObject;
+        @property (nonatomic,readonly) NSString *jsonString;
+        - (NSObject *)asValidJsonObject;
         - (bool)isWeakSelf;
+        - (NSString *)jsonString;
         - (id)performUnknownSelector:(SEL)aSelector;
         - (void)performUnknownSelector:(SEL)aSelector onThread:(NSThread *)thread withObject:(id)arg waitUntilDone:(BOOL)wait;
         - (void)performUnknownSelector:(SEL)aSelector onThread:(NSThread *)thread withObject:(id)arg waitUntilDone:(BOOL)wait modes:(NSArray *)array;
@@ -46,7 +50,11 @@
         @interface NSString (winterface)
 
 
+        @property (nonatomic,readonly) NSObject *asValidJsonObject;
+        @property (nonatomic,readonly) NSString *jsonString;
         @property (nonatomic,readonly) NSString *JSONString;
+        - (NSObject *)asValidJsonObject;
+        - (NSString *)jsonString;
         - (NSString *)JSONString;
         + (NSString *)JSONStringForCString:(const char *)from withLength:(Int)N useTmpDataObject:(NSMutableData *)d;
         + (const unichar *)JSONunicharsStringForCString:(const char *)from withLength:(Int)N useTmpDataObject:(NSMutableData *__strong *)pd retLength:(Int *)retLength;
@@ -93,9 +101,17 @@
     #define _Class_             NSObject__
     @implementation NSObject (winterface)
 
+    - (NSObject *)asValidJsonObject {
+        MSGSTART("NSObject:-(NSObject*)asValidJsonObject")
+        return self.description;
+    }
     - (bool)isWeakSelf {
         MSGSTART("NSObject:-(bool)isWeakSelf")
         return NO;
+    }
+    - (NSString *)jsonString {
+        MSGSTART("NSObject:-(NSString*)jsonString")
+        return self.description;
     }
     - (id)performUnknownSelector:(SEL)aSelector {
         MSGSTART("NSObject:-(id)performUnknownSelector:(SEL)aSelector")
@@ -242,6 +258,14 @@
     #define _Class_             NSString__
     @implementation NSString (winterface)
 
+    - (NSObject *)asValidJsonObject {
+        MSGSTART("NSString:-(NSObject*)asValidJsonObject")
+        return self;
+    }
+    - (NSString *)jsonString {
+        MSGSTART("NSString:-(NSString*)jsonString")
+        return self;
+    }
     - (NSString *)JSONString {
         MSGSTART("NSString:-(NSString*)JSONString")
         return JSONStringForString(self);

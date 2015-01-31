@@ -150,6 +150,7 @@
 @protocol Set;
 @protocol TesterCounter;
 @protocol Ticker;
+@protocol Treeable;
 @protocol URLResource;
 @protocol URLResourceHandler;
 @protocol Waiter;
@@ -196,21 +197,15 @@
 @class IntCarrier;
 @class JsonParser;
 @class MemMonitor;
+@class PartiallyOrderedSet;
 @class TokenHelper;
+@class Treeable;
 @class ULLCarrier;
 @class URLHandlerRegistry;
 @class Util;
 @class WeakSelf;
-@class WIBody;
-@class WIBodySnippet;
-@class WIClass;
-@class WICtxt;
-@class WIFile;
 @class WIParse;
-@class WIType;
-@class WIVar;
 @class WIVarArg;
-@class WIVarContext;
 @class WReaderToken;
 @class DirtyObjectDictionaryDelegate;
 @class DirtyObjectIndexArrayDelegate;
@@ -240,6 +235,14 @@
 @class Trace;
 @class WeakList;
 @class WeakObject;
+@class WIBody;
+@class WIBodySnippet;
+@class WIClass;
+@class WICtxt;
+@class WIFile;
+@class WIType;
+@class WIVar;
+@class WIVarContext;
 @class WReader;
 @class WReaderTokenizer;
 @class ArrayTester;
@@ -1457,6 +1460,31 @@ typedef unsigned short WRD;
 
 
 
+@protocol Treeable 
+@property (nonatomic,readonly) NSDictionary* asD3Tree;
+@property (nonatomic,readonly) NSString* asD3TreeJSON;
+@property (nonatomic,readonly) NSDictionary* asTree;
+@property (nonatomic,readonly) NSDictionary* seenTreeNodeData;
+@property (nonatomic,readonly) NSDictionary* treeNodeData;
+@property (nonatomic,readonly) NSSet* treePropertyNames;
+-(NSDictionary*)asD3Tree;
+-(NSString*)asD3TreeJSON;
+-(NSDictionary*)asTree;
+-(NSDictionary*)asTree:(NSMutableSet*)seen;
+-(NSDictionary*)seenTreeNodeData;
+-(NSDictionary*)treeNodeData;
+-(NSSet*)treePropertyNames;
+
+@end
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2501,11 +2529,13 @@ typedef unsigned short WRD;
     #include "token.mm"
     #include "token.wi.mm"
     #include "util.mm"
+    #include "util.wi.mm"
 #undef INCLUDE_IFACE_D0
 
 #pragma mark -
 #pragma mark Include interfaces:
 #define INCLUDE_IFACE_D1
+    #include "Code.wi.mm"
     #include "collectionDictionary.wi.mm"
     #include "collectionNS.wi.mm"
     #include "collections.wi.mm"

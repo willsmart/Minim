@@ -139,7 +139,15 @@ WIParse
             bool isEmpty=((ret.count==1)&&[[ret[0] ruleName] isEqualToString:@"file"]);
             bool hasError=!(isEmpty||((ret.count==1)&&[[ret[0] ruleName] isEqualToString:@"par"]&&[[[(Token*)ret[0] children][0] ruleName] isEqualToString:@"file"]));
 
-            if (!hasError) ret=[(Token*)ret[0] children];
+            if (!hasError) {
+                if (isEmpty) ret=@[].mutableCopy;
+                else {
+                    Token *t = [(Token *)ret[0] children][1];
+                    NSArray *ch = ([t.ruleName isEqualToString:@"sib"] ? t.children : @[t]);
+                    ret = ch.mutableCopy;
+                }
+            }
+
 
             [__Class__ substituteStrings:ret];
             NSString *htmlfn=[path stringByAppendingString:@".parse.html"];
@@ -148,8 +156,16 @@ WIParse
             if (hasError) {
                 NSLog(@"%@: %@",path,ret.description);
             }
+
+            WIFile *file=[WIFile new];
+            [file process:ret];
             //if (hasError) {
-                NSString *json=[Parse jsonFromTokens:ret program:body];
+                NSDictionary *d=@{
+                    @"prog":body,
+                    @"graph":[Parse graphFromTokens:ret],
+                    @"parsedgraph":file.asD3Tree
+                };
+                NSString *json=[[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:d options:0 error:&err] encoding:NSUTF8StringEncoding];
                 NSString *html=[NSString stringWithContentsOfFile:@$"{WIBASE}/WInterface/Parse/index.html" encoding:NSUTF8StringEncoding error:&err];
                 html=[html stringByReplacingOccurrencesOfString:@"\"JSONDATA\"" withString:json];
                 [html writeToFile:htmlfn atomically:YES encoding:NSUTF8StringEncoding error:&err];

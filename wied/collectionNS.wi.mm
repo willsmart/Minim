@@ -34,6 +34,7 @@
         - (id)initWithObject:(id)ao;
         - (BOOL)isEqual:(id)object;
         + (PointerKey *)keyWithObject:(id)ao;
+        + (NSObject<NSCopying> *)nscopyingWithObject:(NSObject *)o;
         - (id)o;
 
         @end
@@ -150,6 +151,14 @@
         MSGSTART("PointerKey:+(PointerKey*)keyWithObject:(id)ao")
 
         return [[PointerKey alloc] initWithObject:ao];
+    }
+    + (NSObject<NSCopying> *)nscopyingWithObject:(NSObject *)o {
+        MSGSTART("PointerKey:+(NSObject<NSCopying>*)nscopyingWithObject:(NSObject*)o")
+
+        return [o conformsToProtocol:@protocol(NSCopying)] ?
+               (NSObject<NSCopying> *)o :
+               [[PointerKey alloc] initWithObject:o]
+        ;
     }
     - (id)o {
         MSGSTART("PointerKey:-(id)o")

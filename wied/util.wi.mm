@@ -10,6 +10,65 @@
 #pragma mark Interfaces:
 #ifdef INCLUDE_IFACE
 
+    #ifdef INCLUDE_IFACE_D0
+
+
+
+
+
+        @interface PartiallyOrderedSet : NSObject<Object, ClassObject> {
+            LL __owner_context;
+            @private ULL __private_access_thread_mask_in_PartiallyOrderedSet; @protected
+            NSMutableDictionary *v_afters;
+            NSMutableDictionary *v_befores;
+            bool debugAutorelease;
+            bool isZombie;
+            LL objectIDInClass;
+            LL objectIDInTotal;
+            NSMutableSet *v_set;
+            NSMutableDictionary *v_usedKeys;
+        }
+
+        @property (nonatomic,readwrite) LL __owner_context;
+        @property (strong,nonatomic,readonly) NSMutableDictionary *afters;
+        @property (nonatomic,readonly) NSArray *asArray;
+        @property (strong,nonatomic,readonly) NSMutableDictionary *befores;
+        @property (nonatomic,readonly) constchar *cdescription;
+        @property (nonatomic,readonly) constchar *cobjectName;
+        @property (nonatomic,readwrite) bool debugAutorelease;
+        @property (nonatomic,readonly) NSString *description;
+        @property (nonatomic,readonly) bool isZombie;
+        @property (nonatomic,readonly) LL objectIDInClass;
+        @property (nonatomic,readonly) LL objectIDInTotal;
+        @property (nonatomic,readonly) NSMutableString *objectName;
+        @property (strong,nonatomic,readonly) NSMutableSet *set;
+        @property (strong,nonatomic,readonly) NSMutableDictionary *usedKeys;
+        - (void)_startObjectOfClassPartiallyOrderedSet;
+        - (void)add:(NSObject *)v toArray:(NSMutableArray *)array todo:(NSMutableSet *)todo todoa:(NSMutableArray *)todoa;
+        - (void)addObject:(NSObject *)v;
+        - (NSMutableDictionary *)afters;
+        - (void)appendObject:(NSObject *)v;
+        - (NSArray *)asArray;
+        - (NSMutableDictionary *)befores;
+        - (constchar *)cdescription;
+        - (constchar *)cobjectName;
+        - (void)dealloc;
+        - (NSString *)description;
+        - (void)die;
+        - (PartiallyOrderedSet *)init;
+        - (PartiallyOrderedSet *)initWithArray:(NSArray *)array;
+        - (PartiallyOrderedSet *)initWithSet:(NSSet *)set;
+        - (void)mergeWith:(const PartiallyOrderedSet *)other;
+        - (NSMutableString *)objectName;
+        + (PartiallyOrderedSet *)partiallyOrderedSet;
+        + (PartiallyOrderedSet *)partiallyOrderedSetWithArray:(NSArray *)array;
+        + (PartiallyOrderedSet *)partiallyOrderedSetWithSet:(NSSet *)set;
+        - (NSMutableSet *)set;
+        - (NSMutableDictionary *)usedKeys;
+
+        @end
+    #endif // INCLUDE_IFACE_D0
+
     #ifdef INCLUDE_IFACE_D1
 
 
@@ -268,6 +327,322 @@
 
         /*i-999*/ NSMutableString * ret = value;
         /*i999*/ return ret;
+    }
+
+    @end
+    #undef _ClassName_
+    #undef _WIClass_
+    #undef _className_
+    #undef _Class_
+
+
+
+
+
+// !!!: Implementations: p
+
+
+
+
+
+    #ifdef _PrivateAccessMask_
+        #undef _PrivateAccessMask_
+    #endif
+    #define _PrivateAccessMask_ __private_access_thread_mask_in_Globals
+
+    #define _ClassName_         PartiallyOrderedSet
+    #define _WIClass_           PartiallyOrderedSet__
+    #define _className_         partiallyOrderedSet
+    #define _Class_             PartiallyOrderedSet__
+    @implementation PartiallyOrderedSet
+
+    @synthesize __owner_context = __owner_context;
+    @synthesize debugAutorelease = debugAutorelease;
+    @synthesize isZombie = isZombie;
+    @synthesize objectIDInClass = objectIDInClass;
+    @synthesize objectIDInTotal = objectIDInTotal;
+    - (void)_startObjectOfClassPartiallyOrderedSet {
+        MSGSTART("PartiallyOrderedSet:-(void)_startObjectOfClassPartiallyOrderedSet")
+
+        /*i-996*/ debugAutorelease = YES;
+        /*i-995*/ objInitFn(self,objectIDInTotal,objectIDInClass);
+
+        /*i-500*//*ivar*/ v_afters = ([NSMutableDictionary dictionary]);
+        /*ivar*/ v_befores = ([NSMutableDictionary dictionary]);
+        /*ivar*/ v_set = ([NSMutableSet set]);
+        /*ivar*/ v_usedKeys = ([NSMutableDictionary dictionary]);
+
+        /*i0*/}
+    - (void)add:(NSObject *)v toArray:(NSMutableArray *)array todo:(NSMutableSet *)todo todoa:(NSMutableArray *)todoa {
+        MSGSTART("PartiallyOrderedSet:-(void)add:(NSObject*)v toArray:(NSMutableArray*)array todo:(NSMutableSet*)todo todoa:(NSMutableArray*)todoa")
+
+        NSSet * befores = [v_befores objectForKey:v];
+        NSObject *before;
+        if ([befores intersectsSet:todo])
+            for (NSInteger ind = 0; ind < todo.count; ind++) {
+                if ([befores containsObject:before = todoa[ind]]) {
+                    [todoa removeObjectAtIndex:ind];
+                    [todo removeObject:before];
+                    [self add:before toArray:array todo:todo todoa:todoa];
+                }
+            }
+        [array addObject:v];
+    }
+    - (void)addObject:(NSObject *)v {
+        MSGSTART("PartiallyOrderedSet:-(void)addObject:(NSObject*)v")
+
+        if ([v_set containsObject:v]) {
+            NSObject<NSCopying> *key = [PointerKey nscopyingWithObject:v];
+            [v_usedKeys
+             setObject:key
+             forKey:key
+            ];
+            [v_befores
+             setObject:NSMutableSet.set
+             forKey:key
+            ];
+            [v_afters
+             setObject:NSMutableSet.set
+             forKey:key
+            ];
+            [v_set addObject:v];
+        }
+    }
+    - (NSMutableDictionary *)afters {
+        MSGSTART("PartiallyOrderedSet:-(NSMutableDictionary*)afters")
+
+        return v_afters.copy;
+    }
+    - (void)appendObject:(NSObject *)v {
+        MSGSTART("PartiallyOrderedSet:-(void)appendObject:(NSObject*)v")
+
+        if (![v_set containsObject:v]) {
+            NSObject<NSCopying> *key = [PointerKey nscopyingWithObject:v];
+            [v_usedKeys
+             setObject:key
+             forKey:key
+            ];
+            NSMutableSet *befores = NSMutableSet.set;
+            [v_befores
+             setObject:befores
+             forKey:key
+            ];
+            [v_afters
+             setObject:NSMutableSet.set
+             forKey:key
+            ];
+            for (NSObject *v2 in v_set) {
+                if (v2 == v) break;
+                [befores addObject:v2];
+                [v_afters[v2] addObject:v];
+            }
+            [v_set addObject:v];
+        }
+    }
+    - (NSArray *)asArray {
+        MSGSTART("PartiallyOrderedSet:-(NSArray*)asArray")
+
+        NSMutableArray * ret = NSMutableArray.array;
+        NSMutableSet *todo = v_set.mutableCopy;
+        NSMutableArray *todoa = [v_set.allObjects sortedArrayUsingComparator: ^NSComparisonResult (NSObject *obj1,NSObject *obj2) {
+                                     return [obj1 respondsToSelector:@selector(compare:)] && [obj2 respondsToSelector:@selector(compare:)] ?
+                                     [(id)obj1 compare : (id)obj2] :
+                                     ( (__bridge void *)obj1 < (__bridge void *)obj2 ?
+                                       NSOrderedAscending :
+                                       ( (__bridge void *)obj1 == (__bridge void *)obj2 ?
+                            NSOrderedSame :
+                            NSOrderedDescending
+                             )
+                                        )
+                                     ;
+                                 }
+            ].mutableCopy;
+        while (todo.count) {
+            NSObject *v = todoa[0];
+            [todoa removeObjectAtIndex:0];
+            [todo removeObject:v];
+            [self add:v toArray:ret todo:todo todoa:todoa];
+        }
+        return ret;
+    }
+    - (NSMutableDictionary *)befores {
+        MSGSTART("PartiallyOrderedSet:-(NSMutableDictionary*)befores")
+
+        return v_befores.copy;
+    }
+    - (constchar *)cdescription {
+        MSGSTART("PartiallyOrderedSet:-(constchar*)cdescription")
+        return [self.description cStringUsingEncoding:NSASCIIStringEncoding];
+    }
+    - (constchar *)cobjectName {
+        MSGSTART("PartiallyOrderedSet:-(constchar*)cobjectName")
+        return [self.objectName cStringUsingEncoding:NSASCIIStringEncoding];
+    }
+    - (void)dealloc {
+        MSGSTART("PartiallyOrderedSet:-(void)dealloc")
+
+        /*i-151*/[self die];
+/*i0*/ v_afters = nil;
+
+        v_befores = nil;
+
+        v_set = nil;
+
+        v_usedKeys = nil;
+/*i998*/ deallocFn(self,objectIDInTotal,objectIDInClass);
+        isZombie = YES;
+    #if defined (LONGLIVEZOMBIES) || defined (LONGLIVEZOMBIES___WI_CLASS__)
+            if (YES) return;
+    #endif
+
+/*i999*/}
+    - (NSString *)description {
+        MSGSTART("PartiallyOrderedSet:-(NSString*)description")
+
+        /*i-999*/ NSMutableString * ret = self.objectName;
+
+        /*i999*/ return ret;
+    }
+    - (void)die {
+        MSGSTART("PartiallyOrderedSet:-(void)die")
+
+        /*i900*/}
+    - (PartiallyOrderedSet *)init {
+        MSGSTART("PartiallyOrderedSet:-(PartiallyOrderedSet*)init")
+
+        /*i-10001*/ if ( !(self = [super init]) ) return nil;
+
+        /*i11*/ [self _startObjectOfClassPartiallyOrderedSet];
+
+/*i10001*/ return self;
+    }
+    - (PartiallyOrderedSet *)initWithArray:(NSArray *)array {
+        MSGSTART("PartiallyOrderedSet:-(PartiallyOrderedSet*)initWithArray:(NSArray*)array")
+
+        /*i-10001*/ if ( !(self = [super init]) ) return nil;
+
+        /*i11*/ [self _startObjectOfClassPartiallyOrderedSet];
+
+/*i100*/ for (NSObject *v in array) {
+            if ([v_set containsObject:v]) continue;
+            [v_set addObject:v];
+            NSObject<NSCopying> *key = [PointerKey nscopyingWithObject:v];
+            [v_usedKeys
+             setObject:key
+             forKey:key
+            ];
+            NSMutableSet *befores = NSMutableSet.set;
+            [v_befores
+             setObject:befores
+             forKey:key
+            ];
+            [v_afters
+             setObject:NSMutableSet.set
+             forKey:key
+            ];
+            for (NSObject *v2 in array) {
+                if (v2 == v) break;
+                [befores addObject:v2];
+                [v_afters[v2] addObject:v];
+            }
+        }
+
+/*i10001*/ return self;
+    }
+    - (PartiallyOrderedSet *)initWithSet:(NSSet *)set {
+        MSGSTART("PartiallyOrderedSet:-(PartiallyOrderedSet*)initWithSet:(NSSet*)set")
+
+        /*i-10001*/ if ( !(self = [super init]) ) return nil;
+
+        /*i11*/ [self _startObjectOfClassPartiallyOrderedSet];
+
+/*i100*/ [v_set unionSet:set];
+        for (NSObject *v in set) {
+            NSObject<NSCopying> *key = [PointerKey nscopyingWithObject:v];
+            [v_usedKeys
+             setObject:key
+             forKey:key
+            ];
+            [v_befores
+             setObject:NSMutableSet.set
+             forKey:key
+            ];
+            [v_afters
+             setObject:NSMutableSet.set
+             forKey:key
+            ];
+        }
+
+/*i10001*/ return self;
+    }
+    - (void)mergeWith:(const PartiallyOrderedSet *)other {
+        MSGSTART("PartiallyOrderedSet:-(void)mergeWith:(const PartiallyOrderedSet*)other")
+
+        for (NSObject *v in other->v_set) {
+            if ([v_set containsObject:v]) {
+                NSMutableSet *befores = [v_befores objectForKey:v];
+                NSMutableSet *befores2 = [other->v_befores objectForKey:v];
+                NSMutableSet *afters = [v_afters objectForKey:v];
+                NSMutableSet *afters2 = [other->v_afters objectForKey:v];
+
+                [befores unionSet:befores2];
+                [befores minusSet:afters2];
+                [befores minusSet:afters];
+
+                [befores unionSet:afters2];
+                [afters minusSet:befores2];
+                [afters minusSet:befores];
+            }
+            else {
+                NSMutableSet *befores2 = [other->v_befores objectForKey:v];
+                NSMutableSet *afters2 = [other->v_afters objectForKey:v];
+                [v_set addObject:v];
+                NSObject<NSCopying> *key = [PointerKey nscopyingWithObject:v];
+                [v_usedKeys
+                 setObject:key
+                 forKey:key
+                ];
+                [v_befores
+                 setObject:befores2.mutableCopy
+                 forKey:key
+                ];
+                [v_afters
+                 setObject:afters2.mutableCopy
+                 forKey:key
+                ];
+            }
+        }
+    }
+    - (NSMutableString *)objectName {
+        MSGSTART("PartiallyOrderedSet:-(NSMutableString*)objectName")
+
+        /*i-999*/ NSMutableString * ret = nil;
+
+        /*i-100*/ ret = [NSMutableString stringWithFormat:@"[%qu:%p]%s#%qu",objectIDInTotal,self,__Derived_CClass__,objectIDInClass];
+
+        /*i999*/ return ret;
+    }
+    + (PartiallyOrderedSet *)partiallyOrderedSet {
+        MSGSTART("PartiallyOrderedSet:+(PartiallyOrderedSet*)partiallyOrderedSet")
+        return [self new];
+    }
+    + (PartiallyOrderedSet *)partiallyOrderedSetWithArray:(NSArray *)array {
+        MSGSTART("PartiallyOrderedSet:+(PartiallyOrderedSet*)partiallyOrderedSetWithArray:(NSArray*)array")
+        return [self.alloc initWithArray:array];
+    }
+    + (PartiallyOrderedSet *)partiallyOrderedSetWithSet:(NSSet *)set {
+        MSGSTART("PartiallyOrderedSet:+(PartiallyOrderedSet*)partiallyOrderedSetWithSet:(NSSet*)set")
+        return [self.alloc initWithSet:set];
+    }
+    - (NSMutableSet *)set {
+        MSGSTART("PartiallyOrderedSet:-(NSMutableSet*)set")
+
+        return v_set.copy;
+    }
+    - (NSMutableDictionary *)usedKeys {
+        MSGSTART("PartiallyOrderedSet:-(NSMutableDictionary*)usedKeys")
+
+        return v_usedKeys.copy;
     }
 
     @end

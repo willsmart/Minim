@@ -3,6 +3,8 @@
 #rm -f *.mm
 #rm -f *.h
 
+scheme="WI Ruler"
+
 
 me="$1"
 wifile="wi/$1.wi"
@@ -14,6 +16,15 @@ if [ "$arg" = "no" ]; then
 fi
 
 ok=1
+
+/usr/bin/osascript <<-EOF
+tell application "Xcode6.1"
+    activate
+    tell application "System Events" to keystroke "s" using {command down, option down}
+end tell
+
+EOF
+
 
 export WIBASE=$HOME/Documents
 export APPNAME=$me
@@ -49,7 +60,7 @@ echo a
 
 msg=""
 
-dobuild=0
+dobuild=1
 
 if [ "$ok" = "1" ]; then
 
@@ -64,7 +75,18 @@ tell application "Notifications Scripting"
 end tell
 
 EOF
-    xcodebuild
+
+
+/usr/bin/osascript <<-EOF
+tell application "Xcode6.1"
+    activate
+    delay 1
+    tell application "System Events" to keystroke "r" using command down
+end tell
+
+EOF
+    #echo -e "\n\nxcodebuild -scheme \"scheme\" build >> /Users/Will/Documents/wi.out.txt 2>&1\n" >> /Users/Will/Documents/wi.out.txt
+    #xcodebuild -scheme "$scheme" build >> /Users/Will/Documents/wi.out.txt 2>&1
     if [ "$?" = "0" ]; then
         msg="Success!"
     else

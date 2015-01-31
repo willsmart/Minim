@@ -2539,7 +2539,6 @@
 
 
 
-
         __mutableDictionary = nil;
 
         dictionaryDelegate = nil;
@@ -3198,7 +3197,9 @@
         memset( dictionary_objects.keyvals + dictionary_count,0,sizeof(dictionary_objects.keyvals[0]) * (100 - dictionary_count) );
         dictionary_count = __dictionary.count;
 
-        /*i100*/ [self markDirty]; [dictionaryDelegate stateOK];
+
+        /*i100*/ [dictionaryDelegate stateOK];
+        [self markDirty];
     }
     - (id)valueForKey:(NSString *)key {
         MSGSTART("CommitableMutableDictionary:-(id)valueForKey:(NSString*)key")
