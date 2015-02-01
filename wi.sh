@@ -20,11 +20,13 @@ ok=1
 /usr/bin/osascript <<-EOF
 tell application "Xcode6.1"
     activate
+    delay 1
     tell application "System Events" to keystroke "s" using {command down, option down}
 end tell
 
 EOF
 
+sleep 1
 
 export WIBASE=$HOME/Documents
 export APPNAME=$me

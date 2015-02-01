@@ -45,6 +45,8 @@ Singletons
 
 Files
     NSMutableDictionary files=0 (readonly)
+// MARK:WI:  Note: Please think about making property "merge" publicreadonly
+    WIFile merge=[WIFile new] (readonly)
 
     -(init)init
 
@@ -70,6 +72,20 @@ Files
             files[path]:
             ((files[path]=[File newFileWithPath:path inParent:nil]));
 
+    -(void)writeMergeHTML {
+        NSError *err=nil;
+        NSDictionary *d=@{
+            @"prog":@"merge",
+            @"graph":[Parse graphFromTokens:@[]],
+            @"parsedgraph":merge.asD3Tree
+        };
+        NSString *htmlfn=[Singletons._.files pathForPath:@"merge.html"];
+        NSString *json=[[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:d options:0 error:&err] encoding:NSUTF8StringEncoding];
+        NSString *html=[NSString stringWithContentsOfFile:@$"{WIBASE}/WInterface/Parse/index.html" encoding:NSUTF8StringEncoding error:&err];
+        html=[html stringByReplacingOccurrencesOfString:@"\"JSONDATA\"" withString:json];
+        [html writeToFile:htmlfn atomically:YES encoding:NSUTF8StringEncoding error:&err];
+        [Singletons._.htmlParseOutput appendFormat:@"<strong><a href='file:%@'>%@</a></strong><br/>",htmlfn,@"Merge of all the files above"];
+    }
 
 File
 // MARK:WI:  Note: Please think about making property "initialParent" publicreadonly
@@ -104,23 +120,22 @@ File
         if (initialParent) [self addParent:initialParent];
         [self includeChildren];
 
-    NSArray tokens=0
+    WIFile wiFile=0
         {
-            if (path&&!tokens) tokens=[Singletons._.wiParse tokensFromFile:path];
-            return(tokens);
+            if (path&&!wiFile) {
+                wiFile=[Singletons._.wiParse wiFileFromFile:path];
+                [Singletons._.files.merge mergeWith:wiFile];
+            }
+            return(wiFile);
         }
 
     -(void)includeChildren
-        for (Token *token in [self tokens]) [self includeChildren:token];
-
-    -(void)includeChildren:(Token*)token
-        if ([token.ruleName isEqualToString:@"setting"]) {
-            NSString *childPath=[token.children.firstObject contents];
+        NSArray *includes=self.wiFile.includes;
+        for (NSString *childPath in includes) {
             if ([childPath hasSuffix:@".wi"]) {
                 [self childWithPath:childPath];
             }
         }
-        for (Token *child in token.children) [self includeChildren:child];
 
 WIParse
     -(init)init
@@ -130,39 +145,39 @@ WIParse
 
         ((id<ParseClass>)Parse.class).rulesFilename=@$"{WIBASE}/WInterface/Parse/rules_wi.txt";
 
-    -(NSMutableArray*)tokensFromFile:(NSString*)path
+    -(WIFile*)wiFileFromFile:(NSString*)path
         path=[Singletons._.files pathForPath:path];
         NSError *err = nil;
         NSString *body=nil;
-        NSMutableArray *ret=[Parse getTokensForFile:path options:ParseOptions_none retForString:&body].mutableCopy;
-        if (ret) {
-            bool isEmpty=((ret.count==1)&&[[ret[0] ruleName] isEqualToString:@"file"]);
-            bool hasError=!(isEmpty||((ret.count==1)&&[[ret[0] ruleName] isEqualToString:@"par"]&&[[[(Token*)ret[0] children][0] ruleName] isEqualToString:@"file"]));
+        NSMutableArray *tokens=[Parse getTokensForFile:path options:ParseOptions_none retForString:&body].mutableCopy;
+        if (tokens) {
+            bool isEmpty=((tokens.count==1)&&[[tokens[0] ruleName] isEqualToString:@"file"]);
+            bool hasError=!(isEmpty||((tokens.count==1)&&[[tokens[0] ruleName] isEqualToString:@"par"]&&[[[(Token*)tokens[0] children][0] ruleName] isEqualToString:@"file"]));
 
             if (!hasError) {
-                if (isEmpty) ret=@[].mutableCopy;
+                if (isEmpty) tokens=@[].mutableCopy;
                 else {
-                    Token *t = [(Token *)ret[0] children][1];
+                    Token *t = [(Token *)tokens[0] children][1];
                     NSArray *ch = ([t.ruleName isEqualToString:@"sib"] ? t.children : @[t]);
-                    ret = ch.mutableCopy;
+                    tokens = ch.mutableCopy;
                 }
             }
 
 
-            [__Class__ substituteStrings:ret];
+            [__Class__ substituteStrings:tokens];
             NSString *htmlfn=[path stringByAppendingString:@".parse.html"];
             [[NSFileManager defaultManager] removeItemAtPath:htmlfn error:&err];
 
             if (hasError) {
-                NSLog(@"%@: %@",path,ret.description);
+                NSLog(@"%@: %@",path,tokens.description);
             }
 
             WIFile *file=[WIFile new];
-            [file process:ret];
+            [file process:tokens];
             //if (hasError) {
                 NSDictionary *d=@{
                     @"prog":body,
-                    @"graph":[Parse graphFromTokens:ret],
+                    @"graph":[Parse graphFromTokens:tokens],
                     @"parsedgraph":file.asD3Tree
                 };
                 NSString *json=[[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:d options:0 error:&err] encoding:NSUTF8StringEncoding];
@@ -171,8 +186,9 @@ WIParse
                 [html writeToFile:htmlfn atomically:YES encoding:NSUTF8StringEncoding error:&err];
                 [Singletons._.htmlParseOutput appendFormat:@"<a href='file:%@'>%@</a><br/>",htmlfn,path];
             //}
+            return(file);
         }
-        return ret;
+        else return [WIFile new];
 
 
     +(void)substituteStrings:(NSMutableArray*)tokens

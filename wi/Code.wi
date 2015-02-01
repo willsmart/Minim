@@ -116,6 +116,7 @@ TokenHelper
 
 <Treeable>
     NSSet treePropertyNames={@-999 static NSSet *retSet=nil;@-100 if (!retSet) {NSArray *ret=nil;@100 retSet=[NSSet setWithArray:ret?ret:@[]];}@999 return(retSet);}
+    NSSet treeSingleNodePropertyNames={@-999 static NSSet *retSet=nil;@-100 if (!retSet) {NSArray *ret=nil;@100 retSet=[NSSet setWithArray:ret?ret:@[]];}@999 return(retSet);}
     NSDictionary treeNodeData={@-999 NSDictionary *ret=nil;@999 return(ret?ret:@{});}
     NSDictionary seenTreeNodeData={@-999 NSDictionary *ret=nil;@999 return(ret?ret:self.treeNodeData);}
     NSDictionary asTree={return([self asTree:NSMutableSet.set]);}
@@ -149,7 +150,7 @@ TokenHelper
                         for (NSObject<NSCopying> *key in (NSDictionary*)res) {
                             NSObject *ch=((NSDictionary*)res)[key];
                             if ([ch conformsToProtocol:@protocol(Treeable)]) {
-                                [chs setObject:[(id<Treeable>)ch asTree:seen] forKey:[@" no linkname " stringByAppendingString:key.jsonString]];
+                                [chs setObject:[(id<Treeable>)ch asTree:seen] forKey:[@" no linkname " stringByAppendingString:[(id)key jsonString]]];
                             }
                             else {
                                 [chs setObject:ch.jsonString forKey:key.jsonString];
@@ -160,6 +161,40 @@ TokenHelper
                 }
                 else if ([res conformsToProtocol:@protocol(Treeable)]) {
                     [ret setObject:[(id<Treeable>)res asTree:seen] forKey:[@"" stringByAppendingString:name]];
+                }
+            }
+
+            for (NSString *name in self.treeSingleNodePropertyNames) {
+                id res=[self performUnknownSelector:NSSelectorFromString(name)];
+                if ([res isKindOfClass:NSSet.class]||[res isKindOfClass:NSArray.class]) {
+                    if ([(NSSet*)res count]) {
+                        NSMutableArray *chs=NSMutableArray.array;
+                        for (NSObject *ch in (NSSet*)res) if ([ch conformsToProtocol:@protocol(Treeable)]) {
+                            [chs addObject:@{@"nodedata":((id<Treeable>)ch).seenTreeNodeData}];
+                        }
+                        else {
+                            [chs addObject:ch];
+                        }
+                        [ret setObject:chs forKey:name];
+                    }
+                }
+                else if ([res isKindOfClass:NSDictionary.class]) {
+                    if ([(NSDictionary*)res count]) {
+                        NSMutableDictionary *chs=NSMutableDictionary.dictionary;
+                        for (NSObject<NSCopying> *key in (NSDictionary*)res) {
+                            NSObject *ch=((NSDictionary*)res)[key];
+                            if ([ch conformsToProtocol:@protocol(Treeable)]) {
+                                [chs setObject:@{@"nodedata":((id<Treeable>)ch).seenTreeNodeData} forKey:[@" no linkname " stringByAppendingString:key.jsonString]];
+                            }
+                            else {
+                                [chs setObject:ch.jsonString forKey:key.jsonString];
+                            }
+                        }
+                        [ret setObject:chs forKey:name];
+                    }
+                }
+                else if ([res conformsToProtocol:@protocol(Treeable)]) {
+                    [ret setObject:@{@"nodedata":((id<Treeable>)res).seenTreeNodeData} forKey:[@"" stringByAppendingString:name]];
                 }
             }
         }
@@ -203,7 +238,7 @@ Treeable
             }
             else {
                 NSDictionary *data=dict[name];
-                if (data[@"name"]) ret[@"name"]=[data[@"name"] description];
+                if (data[@"name"]) ret[@"name"]=[data[@"name"] jsonString];
                 if (data[@"colour"]) ret[@"colour"]=data[@"colour"];
                 else if (data[@"type"]) {
                     switch ([@[@"File",@"Context",@"Class",@"Type",@"VarContext",@"Var",@"Body",@"Snippet"] indexOfObject:data[@"type"]]) {
@@ -250,23 +285,27 @@ WIFile<Treeable>
 
 WICtxt<Treeable>
     NSSet treePropertyNames={ret=@[@"clazzs",@"protocols"];}
-    NSDictionary treeNodeData={ret=@{@"type":@"Context",@"name":[(id)self.keyInFile description]};}
+    NSDictionary treeNodeData={ret=@{@"type":@"Context",@"name":[(id)self.keyInFile jsonString],@"data":self.keyInFile};}
 
 WIClass<Treeable>
-    NSSet treePropertyNames={ret=@[@"superclasss",@"conformedProtocols",@"superprotocols",@"varCtxts",@"types"];}
+    NSSet treePropertyNames={ret=@[@"varCtxts",@"types"];}
+    NSSet treeSingleNodePropertyNames={ret=@[@"superclasss",@"conformedProtocols",@"superprotocols"];}
     NSDictionary treeNodeData={ret=@{
-        @"type":@"Class",
-        @"name":([(NSDictionary*)self.settings count]?
-            [NSString stringWithFormat:@"%@ %@",self.name,self.settings.jsonString]:
-            [NSString stringWithFormat:@"%@",self.name]
-        )
+        @"type":(self.classInCtxt?@"Class":@"Protocol"),
+        @"name":self.name,
+        @"data":@{
+            @"settings":self.settings,
+            @"path":@[
+                [(id)self.context.keyInFile jsonString],
+                self.classInCtxt?self.name:[NSString stringWithFormat:@"<%@>",self.name]
+            ]
+        }
     };}
-    NSDictionary seenTreeNodeData={ret=@{@"type":@"Class",@"name":self.descriptiveName};}
     NSString descriptiveName={
         return([(NSDictionary*)self.context.keyInFile count]?
             (self.settings.count?
-                [NSString stringWithFormat:@"%@ %@ =>(%@)",self.name,self.settings.jsonString,[(id)self.context.keyInFile description]]:
-                [NSString stringWithFormat:@"%@ =>(%@)",self.name,[(id)self.context.keyInFile description]]
+                [NSString stringWithFormat:@"%@ %@ =>(%@)",self.name,self.settings.jsonString,[(id)self.context.keyInFile jsonString]]:
+                [NSString stringWithFormat:@"%@ =>(%@)",self.name,[(id)self.context.keyInFile jsonString]]
             ):
             ([(NSDictionary*)self.settings count]?
                 [NSString stringWithFormat:@"%@ %@",self.name,self.settings.jsonString]:
@@ -277,32 +316,72 @@ WIClass<Treeable>
 
 WIVarContext<Treeable>
     NSSet treePropertyNames={ret=@[@"vars"];}
-    NSDictionary treeNodeData={ret=@{@"type":@"VarContext",@"name":self.keyInClazz};}// TODO json
-    NSDictionary seenTreeNodeData={ret=@{@"type":@"VarContext",@"name":self.descriptiveName};}
+    NSDictionary treeNodeData={ret=@{
+        @"type":@"VarContext",
+        @"name":[(id)self.keyInClazz jsonString],
+        @"data":@{
+            @"path":@[
+                [(id)self.clazz.context.keyInFile jsonString],
+                self.clazz.classInCtxt?self.clazz.name:[NSString stringWithFormat:@"<%@>",self.clazz.name],
+                [(id)self.keyInClazz jsonString]
+            ]
+        }
+    };}
+    NSDictionary seenTreeNodeData={ret=@{
+        @"type":@"VarContext",
+        @"name":self.descriptiveName,
+        @"data":@{
+            @"path":@[
+                [(id)self.clazz.context.keyInFile jsonString],
+                self.clazz.classInCtxt?self.clazz.name:[NSString stringWithFormat:@"<%@>",self.clazz.name],
+                [(id)self.keyInClazz jsonString]
+            ]
+        }
+    };}
     NSString descriptiveName={
         return([(NSDictionary*)self.clazz.context.keyInFile count]?
             ([(NSDictionary*)self.keyInClazz count]?
-                [NSString stringWithFormat:@"%@ %@ =>(%@)",self.clazz.name,[(id)self.keyInClazz description],[(id)self.clazz.context.keyInFile description]]:
-                [NSString stringWithFormat:@"%@ =>(%@)",self.clazz.name,[(id)self.clazz.context.keyInFile description]]
+                [NSString stringWithFormat:@"%@ %@ =>(%@)",self.clazz.name,[(id)self.keyInClazz jsonString],[(id)self.clazz.context.keyInFile jsonString]]:
+                [NSString stringWithFormat:@"%@ =>(%@)",self.clazz.name,[(id)self.clazz.context.keyInFile jsonString]]
             ):
             ([(NSDictionary*)self.keyInClazz count]?
-                [NSString stringWithFormat:@"%@ %@",self.clazz.name,[(id)self.keyInClazz description]]:
+                [NSString stringWithFormat:@"%@ %@",self.clazz.name,[(id)self.keyInClazz jsonString]]:
                 [NSString stringWithFormat:@"%@",self.clazz.name]
             )
         );
     }
 
 WIType<Treeable>
-    NSDictionary treeNodeData={ret=@{@"type":@"Type",@"name":self.keyInClazz};}// TODO json
-    NSDictionary seenTreeNodeData={ret=@{@"type":@"Type",@"name":self.descriptiveName};}
+    NSDictionary treeNodeData={ret=@{
+        @"type":@"Type",
+        @"name":[(id)self.keyInClazz jsonString],
+        @"data":@{
+            @"path":@[
+                [(id)self.clazz.context.keyInFile jsonString],
+                self.clazz.classInCtxt?self.clazz.name:[NSString stringWithFormat:@"<%@>",self.clazz.name],
+                [(id)self.keyInClazz jsonString]
+            ]
+        }
+    };}// TODO json
+    NSDictionary seenTreeNodeData={ret=@{
+        @"type":@"Type",
+        @"name":self.descriptiveName,
+        @"data":@{
+            @"path":@[
+                [(id)self.clazz.context.keyInFile jsonString],
+                self.clazz.classInCtxt?self.clazz.name:[NSString stringWithFormat:@"<%@>",self.clazz.name],
+                [(id)self.keyInClazz jsonString]
+            ]
+        }
+    };}
     NSString descriptiveName={
         return([(NSDictionary*)self.clazz.context.keyInFile count]?
             ([(NSArray*)self.keyInClazz count]?
-                [NSString stringWithFormat:@"%@ %@ =>(%@)",self.clazz.name,[(id)self.keyInClazz description],[(id)self.clazz.context.keyInFile description]]:
-                [NSString stringWithFormat:@"%@ =>(%@)",self.clazz.name,[(id)self.clazz.context.keyInFile description]]
+                [NSString stringWithFormat:@"%@ %@ =>(%@)",self.clazz.name,[(id)self.keyInClazz jsonString],[(id)self.clazz.context.keyInFile jsonString]]:
+                [NSString stringWithFormat:@"%@ =>(%@)",self.clazz.name,[(id)self.clazz.context.keyInFile jsonString]]
             ):
             ([(NSArray*)self.keyInClazz count]?
-                [NSString stringWithFormat:@"%@ %@",self.clazz.name,[(id)self.keyInClazz description]]:
+                [NSString stringWithFormat:@"%@ %@",self.clazz.name,[(id)self.keyInClazz jsonString]]:
                 [NSString stringWithFormat:@"%@",self.clazz.name]
             )
         );
@@ -364,7 +443,7 @@ WIBodySnippet<Treeable>
     NSDictionary treeNodeData={
         ret=@{
             @"type":@"Snippet",
-            @"name":[NSString stringWithFormat:@"@%@: %@",[(id)self.keyInBody description],self.strings.jsonString]
+            @"name":[NSString stringWithFormat:@"@%@: %@",[(id)self.keyInBody jsonString],self.strings.jsonString]
         };
     }
 
@@ -447,9 +526,9 @@ WICtxt
             if (sup) [clazz addSuperclass:[self classWithName:sup]];
 
             if (t==token) {
-                NSMutableSet *settingMods=clazz.settings[@"mods"];
-                if (![settingMods isKindOfClass:NSMutableSet.class]) clazz.settings[@"mods"]=settingMods=NSMutableSet.set;
-                [settingMods addObjectsFromArray:mods];
+                NSMutableDictionary *settingMods=clazz.settings[@"mods"];
+                if (![settingMods isKindOfClass:NSMutableDictionary.class]) clazz.settings[@"mods"]=settingMods=NSMutableDictionary.dictionary;
+                for (NSString *mod in mods) [settingMods setObject:NSMutableDictionary.dictionary forKey:mod];
             }
             else {
                 for (Token *ch in chs) [clazz process:ch regexes:regexes settings:settings doingInitialSettings:doingInitialSettings outerClass:outerClass outerLinkType:outerLinkType outerLinkVar:outerLinkVar mods:mods];
@@ -462,9 +541,9 @@ WICtxt
             for (Token *pt in t.children) if (++index) [protocol addSuperprotocol:[self protocolWithName:pt.contents]];
 
             if (t==token) {
-                NSMutableSet *settingMods=protocol.settings[@"mods"];
-                if (![settingMods isKindOfClass:NSMutableSet.class]) protocol.settings[@"mods"]=settingMods=NSMutableSet.set;
-                [settingMods addObjectsFromArray:mods];
+                NSMutableDictionary *settingMods=protocol.settings[@"mods"];
+                if (![settingMods isKindOfClass:NSMutableSet.class]) protocol.settings[@"mods"]=settingMods=NSMutableDictionary.dictionary;
+                for (NSString *mod in mods) [settingMods setObject:NSMutableDictionary.dictionary forKey:mod];
             }
             else {
                 for (Token *ch in chs) [protocol process:ch regexes:regexes settings:settings doingInitialSettings:doingInitialSettings outerClass:outerClass outerLinkType:outerLinkType outerLinkVar:outerLinkVar mods:mods];
@@ -483,9 +562,9 @@ WICtxt
             for (Token *pt in protocolt.children) [clazz addConformedProtocol:[self protocolWithName:pt.contents]];
 
             if (t==token) {
-                NSMutableSet *settingMods=clazz.settings[@"mods"];
-                if (![settingMods isKindOfClass:NSMutableSet.class]) clazz.settings[@"mods"]=settingMods=NSMutableSet.set;
-                [settingMods addObjectsFromArray:mods];
+                NSMutableDictionary *settingMods=clazz.settings[@"mods"];
+                if (![settingMods isKindOfClass:NSMutableDictionary.class]) clazz.settings[@"mods"]=settingMods=NSMutableDictionary.dictionary;
+                for (NSString *mod in mods) [settingMods setObject:NSMutableDictionary.dictionary forKey:mod];
             }
             else {
                 for (Token *ch in chs) [clazz process:ch regexes:regexes settings:settings doingInitialSettings:doingInitialSettings outerClass:outerClass outerLinkType:outerLinkType outerLinkVar:outerLinkVar mods:mods];
@@ -660,6 +739,7 @@ WIVarContext
             }
         }
     }
+
 
 
 
