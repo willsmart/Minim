@@ -92,20 +92,41 @@ WIClass
     -(void)mergeWith:(WIClass*)other {
         [self.settings mergeWith:other.settings];
 
-        [self.subclasss minusSet:other.superclasss];
-        [self.superclasss minusSet:other.subclasss];
-        [self.subclasss unionSet:other.subclasss];
-        [self.superclasss unionSet:other.superclasss];
+        for (WIClass *o in other.superclasss) {
+            [self addSuperclass:[self.file equivClassTo:o]];
+        }
+        for (WIClass *o in other.subclasss) {
+            [self addSubclass:[self.file equivClassTo:o]];
+        }
+        {
+            NSMutableSet *s=self.subclasss.copy;
+            [self.subclasss minusSet:self.superclasss];
+            [self.superclasss minusSet:s];
+        }
 
-        [self.conformingClasss minusSet:other.conformedProtocols];
-        [self.conformedProtocols minusSet:other.conformingClasss];
-        [self.conformingClasss unionSet:other.conformingClasss];
-        [self.conformedProtocols unionSet:other.conformedProtocols];
+        for (WIClass *o in other.conformedProtocols) {
+            [self addConformedProtocol:[self.file equivClassTo:o]];
+        }
+        for (WIClass *o in other.conformingClasss) {
+            [self addConformingClass:[self.file equivClassTo:o]];
+        }
+        {
+            NSMutableSet *s=self.conformingClasss.copy;
+            [self.conformingClasss minusSet:self.conformedProtocols];
+            [self.conformedProtocols minusSet:s];
+        }
 
-        [self.subprotocols minusSet:other.superprotocols];
-        [self.superprotocols minusSet:other.subprotocols];
-        [self.subprotocols unionSet:other.subprotocols];
-        [self.superprotocols unionSet:other.superprotocols];
+        for (WIClass *o in other.superprotocols) {
+            [self addSuperprotocol:[self.file equivClassTo:o]];
+        }
+        for (WIClass *o in other.subprotocols) {
+            [self addSubprotocol:[self.file equivClassTo:o]];
+        }
+        {
+            NSMutableSet *s=self.subprotocols.copy;
+            [self.subprotocols minusSet:self.superprotocols];
+            [self.superprotocols minusSet:s];
+        }
 
         for (NSObject<NSCopying> *k in other.varCtxts) {
             WIVarContext *o=[other varCtxtForKey:k];
@@ -155,10 +176,17 @@ WIVar
             }
         }
 
-        [self.atomicVars minusSet:other.fluidVars];
-        [self.fluidVars minusSet:other.atomicVars];
-        [self.atomicVars unionSet:other.atomicVars];
-        [self.fluidVars unionSet:other.fluidVars];
+        for (WIVar *o in other.atomicVars) {
+            [self addAtomicVar:[self.file equivVarTo:o]];
+        }
+        for (WIVar *o in other.fluidVars) {
+            [self addFluidVar:[self.file equivVarTo:o]];
+        }
+        {
+            NSMutableSet *s=self.fluidVars.copy;
+            [self.fluidVars minusSet:self.atomicVars];
+            [self.atomicVars minusSet:s];
+        }
 
     }
 

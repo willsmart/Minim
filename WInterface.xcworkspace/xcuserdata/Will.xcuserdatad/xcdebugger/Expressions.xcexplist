@@ -6,13 +6,13 @@
          contextName = "GLOBAL">
          <PersistentStrings>
             <PersistentString
-               value = "g_typAlloced">
+               value = "g_numAlloc">
             </PersistentString>
             <PersistentString
                value = "g_alloced">
             </PersistentString>
             <PersistentString
-               value = "g_numAlloc">
+               value = "g_typAlloced">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -21,6 +21,14 @@
          <PersistentStrings>
             <PersistentString
                value = "g_alloced">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "+[Treeable asTree:object:]:Code.wi.mm">
+         <PersistentStrings>
+            <PersistentString
+               value = "(WIClass*)me">
             </PersistentString>
          </PersistentStrings>
       </ContextState>

@@ -393,7 +393,8 @@ AA<AA>
         return(nil);
     }
 
-AA "-Object"
+AA
+    "-Object"
     AA a={return(nil);}=nil (ivar)
     Int j=nil (readonly)
     -(void)fn {

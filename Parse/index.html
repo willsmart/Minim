@@ -406,8 +406,8 @@ var callback=function(error, root,source) {
         var offs=[(height-80)*nodeCount/20, 0];
 
 
-  var nodes = layout.nodes(root),
-      links = layout.links(nodes);
+  var nodes = layout.nodes(root);
+  var links = layout.links(nodes);
 // Normalize for fixed-depth.
 
     var minx=0;
@@ -530,6 +530,22 @@ var callback=function(error, root,source) {
 
 
 }
+
+function processChildren(node) {
+    if (node.children) for (var i in node.children) {
+        processChildren(node.children[i]);
+    }
+    if (node.collapsed) {
+        if (node.children) {
+            node._children=node.children;
+            node.children=null;
+        }
+    }
+}
+
+processChildren(jsondata['graph']);
+processChildren(jsondata['parsedgraph']);
+
 
 function update(source) {
     if (jsondata==="JSON"+"DATA") {

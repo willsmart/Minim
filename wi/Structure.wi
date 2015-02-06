@@ -1,0 +1,51 @@
+WIFile
+    PartiallyOrderedSet includesSet=[PartiallyOrderedSet partiallyOrderedSet]
+    NSArray includes={
+        return(self.includesSet.asArray);
+    }
+    MutableDictionary settings=[MutableDictionary dictionary] // any settings not used in a class
+    file ~d< WICtxt ctxt // a context can hold classes etc. The key is the regex dictionary
+
+WICtxt
+    classInCtxt ~d< WIClass clazz // the classes keyed by name
+    protocolInCtxt ~d< WIClass protocol // the protocols keyed by name
+
+WIClass
+    MutableDictionary settings=[MutableDictionary dictionary] // a class may start with settings which are collected here
+    subclass >s< WIClass superclass
+    conformingClass >s< WIClass conformedProtocol
+    subprotocol >s< WIClass superprotocol
+
+    clazz -d< WIVarContext varCtxt // each variable belongs to a context, hanging off a class, that configures things like readonly. The key here is the settings as a set
+    clazz -d< WIType type  // The various modified forms of this class. The key is the modifiers as an array
+
+
+WIVar
+    var >~d- WIVarContext context // each variable belongs to a context, the key is an array : @[name,typeclass,@[typeprotocol],typemods,@[name,arg,typeclass,@[typeprotocol],typemods]]
+    var >~s- WIType type // i.e. return type
+
+    NSString name=0
+    var ~a< WIVarArg arg
+        NSString name=0,arg=0
+        arg >~s- WIType type // i.e. arg type
+
+    getterForVar ~- WIBody getter
+    defaultValueForVar ~- WIBody defaultValue
+    setterForVar ~d< WIBody setter
+
+    MutableDictionary settings=[MutableDictionary dictionary]  // the body of a function may start with settings like 'super' etc..
+
+    WIVar boundTo=0  // linked var
+    NSString bindingType=0 // link type
+
+    fluidVar >s< WIVar atomicVar
+
+
+
+WIBody
+    body ~d< WIBodySnippet snippet
+
+WIBodySnippet
+    MutableSet strings=[MutableSet set]
+
+

@@ -1471,7 +1471,7 @@ typedef unsigned short WRD;
 -(NSDictionary*)asD3Tree;
 -(NSString*)asD3TreeJSON;
 -(NSDictionary*)asTree;
--(NSDictionary*)asTree:(NSMutableSet*)seen;
+-(NSMutableDictionary*)asTree:(NSMutableSet*)seen;
 -(NSDictionary*)seenTreeNodeData;
 -(NSDictionary*)treeNodeData;
 -(NSSet*)treePropertyNames;

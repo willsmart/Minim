@@ -1,11 +1,52 @@
 WIFile
+    -(void)applyRegexes {
+        if (!self.ctxts.count) return;
+        NSDictionary *k=nil;
+        for (NSDictionary *regexes in self.ctxts) {
+            if ((!k)||[regexes isEqual:@{}]) k=regexes;
+            [[self ctxtForKey:regexes] applyRegexes:regexes];
+        }
+        WICtxt *ctxt=self.ctxts[k];
+        for (NSDictionary *regexes in self.ctxts) {
+            WICtxt *ctxt2=self.ctxts[regexes];
+            if (ctxt!=ctxt2) [ctxt mergeWith:ctxt2];
+        }
+        [self removeAllCtxts];
+        [self setCxt:ctxt forKey:@{}];
+    }
+
+WICtxt
+    -(void)applyRegexes:(NSDictionary*)regexes {
+        
+    }
+
+
+
+
+
+
     -(init)init {}
+    PartiallyOrderedSet includesSet=[PartiallyOrderedSet partiallyOrderedSet]
+    NSArray includes={
+        return(self.includesSet.asArray);
+    }
+    MutableDictionary settings=[MutableDictionary dictionary] // any settings not used in a class
+    file ~d< WICtxt ctxt // a context can hold classes etc. The key is the regex dictionary
 
 WICtxt
     -(init)init {}
+    classInCtxt ~d< WIClass clazz // the classes keyed by name
+    protocolInCtxt ~d< WIClass protocol // the protocols keyed by name
 
 WIClass
     -(init)init {}
+    MutableDictionary settings=[MutableDictionary dictionary] // a class may start with settings which are collected here
+    subclass >s< WIClass superclass
+    conformingClass >s< WIClass conformedProtocol
+    subprotocol >s< WIClass superprotocol
+
+    clazz -d< WIVarContext varCtxt // each variable belongs to a context, hanging off a class, that configures things like readonly. The key here is the settings as a set
+    clazz -d< WIType type  // The various modified forms of this class. The key is the modifiers as an array
     WIFile file={return(self.context.file);}
 
 WIVarContext
@@ -15,19 +56,42 @@ WIType
     -(init)init {}
     WIFile file={return(self.clazz.context.file);}
 
+
 WIVar
     -(init)init {}
+    var >~d- WIVarContext context // each variable belongs to a context, the key is an array : @[name,typeclass,@[typeprotocol],typemods,@[name,arg,typeclass,@[typeprotocol],typemods]]
+    var >~s- WIType type // i.e. return type
+
+    NSString name=0
+    var ~a< WIVarArg arg
+        NSString name=0,arg=0
+        arg >~s- WIType type // i.e. arg type
+
+    getterForVar ~- WIBody getter
+    defaultValueForVar ~- WIBody defaultValue
+    setterForVar ~d< WIBody setter
+
+    MutableDictionary settings=[MutableDictionary dictionary]  // the body of a function may start with settings like 'super' etc..
+
+    WIVar boundTo=0  // linked var
+    NSString bindingType=0 // link type
+
+    fluidVar >s< WIVar atomicVar
+
     WIFile file={return(self.context.clazz.context.file);}
 
 WIVarArg
     -(init)init {}
+
     WIFile file={return(self.var.context.clazz.context.file);}
 
 WIBody
     -(init)init {}
+    body ~d< WIBodySnippet snippet
 
 WIBodySnippet
     -(init)init {}
+    MutableSet strings=[MutableSet set]
 
 
 

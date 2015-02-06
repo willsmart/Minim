@@ -74,6 +74,7 @@
         @property (nonatomic,readonly) NSMutableString *objectName;
         - (void)_startObjectOfClassTreeable;
         + (NSMutableDictionary *)asD3Tree:(NSObject *)dictOrArray;
+        + (NSMutableDictionary *)asTree:(NSMutableSet *)seen object:(NSObject<Treeable> *)me;
         - (constchar *)cdescription;
         - (constchar *)cobjectName;
         - (void)dealloc;
@@ -106,6 +107,7 @@
         @property (nonatomic,readonly) constchar *cobjectName;
         @property (nonatomic,readwrite) bool debugAutorelease;
         @property (nonatomic,readonly) NSString *description;
+        @property (nonatomic,readonly) WIFile *file;
         @property (nonatomic,readwrite) NSIndexSet *indexesInVar;
         @property (nonatomic,readwrite) Unsigned indexInVar;
         @property (nonatomic,readonly) bool isZombie;
@@ -124,6 +126,7 @@
         - (void)dealloc;
         - (NSString *)description;
         - (void)die;
+        - (WIFile *)file;
         - (NSIndexSet *)indexesInVar;
         - (Unsigned)indexInVar;
         - (WIVarArg *)init;
@@ -285,16 +288,18 @@
 
         if (!ret) ret = @{}
             .mutableCopy;
-        NSString *setting = [TokenHelper actualToken:token].contents;
+        Token *t = [TokenHelper actualToken:token];
+        NSString *setting = t.contents;
         NSMutableDictionary *chrets = ret[setting];
         if (!chrets) ret[setting] = chrets = @{}
             .mutableCopy;
 
-        NSArray *chs = [TokenHelper childrenForToken:token];
-        for (Token *ch in chs) {
-            [self settingDictionaryForToken:ch addTo:chrets];
+        if (t != token) {
+            NSArray *chs = [TokenHelper childrenForToken:token];
+            for (Token *ch in chs) {
+                [self settingDictionaryForToken:ch addTo:chrets];
+            }
         }
-
         return ret;
     }
 
@@ -356,18 +361,24 @@
             NSArray *names = [dict.allKeys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
             for (NSString *name in names) {
                 if ( !([name isEqualToString:@"nodedata"]) ) {
-                    term = NO;
-                    NSMutableDictionary *ch = [self asD3Tree:dict[name]];
-                    if ( !([name hasPrefix:@" no linkname "] || [ch[@"name"] isEqualToString:name]) ) ch[@"linkname"] = name;
-                    // if (!([name hasPrefix:@" no linkname "]||![ch[@"name"] length])) ch[@"name"]=name;
-                    [chs addObject:ch];
+                    if ([name isEqualToString:@"collapsed"]) {
+                        ret[name] = dict[name];
+                    }
+                    else {
+                        term = NO;
+                        NSMutableDictionary *ch = [self asD3Tree:dict[name]];
+                        if ( !([name hasPrefix:@" no linkname "] || [ch[@"name"] isEqualToString:name]) ) ch[@"linkname"] = name;
+                        // if (!([name hasPrefix:@" no linkname "]||![ch[@"name"] length])) ch[@"name"]=name;
+                        [chs addObject:ch];
+                    }
                 }
                 else {
                     NSDictionary *data = dict[name];
                     if (data[@"name"]) ret[@"name"] = [data[@"name"] jsonString];
+                    if (data[@"collapsed"]) ret[@"collapsed"] = data[@"collapsed"];
                     if (data[@"colour"]) ret[@"colour"] = data[@"colour"];
                     else if (data[@"type"])
-                        switch ([@[@"File",@"Context",@"Class",@"Type",@"VarContext",@"Var",@"Body",@"Snippet"] indexOfObject : data[@"type"]]) {
+                        switch ([@[@"File",@"Context",@"Class",@"Protocol",@"Type",@"VarContext",@"Var",@"Body",@"Snippet"] indexOfObject : data[@"type"]]) {
                             case NSNotFound : ret[@"colour"] = @"black"; break;
 
                             case 0: ret[@"colour"] = @"white"; break;
@@ -376,18 +387,20 @@
 
                             case 2: ret[@"colour"] = @"red"; break;
 
-                            case 3: ret[@"colour"] = @"orange"; break;
+                            case 3: ret[@"colour"] = @"purple"; break;
 
-                            case 4: ret[@"colour"] = @"green"; break;
+                            case 4: ret[@"colour"] = @"orange"; break;
 
-                            case 5: ret[@"colour"] = @"blue"; break;
+                            case 5: ret[@"colour"] = @"green"; break;
 
-                            case 6: ret[@"colour"] = @"darkviolet"; break;
+                            case 6: ret[@"colour"] = @"blue"; break;
 
                             case 7: ret[@"colour"] = @"darkviolet"; break;
+
+                            case 8: ret[@"colour"] = @"darkviolet"; break;
                         }
                     for (NSString *key in data) {
-                        if ( !([key isEqualToString:@"name"] || [key isEqualToString:@"colour"] || [key isEqualToString:@"type"]) ) {
+                        if ( !([key isEqualToString:@"name"] || [key isEqualToString:@"colour"] || [key isEqualToString:@"collapsed"] || [key isEqualToString:@"type"]) ) {
                             NSObject *o = data[key];
                             term = NO;
                             NSMutableDictionary *ch = [self asD3Tree:o];
@@ -410,6 +423,111 @@
             ret[@"linkname"] = @"";
         }
         ret[@"size"] = @(743 *[ret[@"name"] length] / 9);
+        return ret;
+    }
+    + (NSMutableDictionary *)asTree:(NSMutableSet *)seen object:(NSObject<Treeable> *)me {
+        MSGSTART("Treeable:+(NSMutableDictionary*)asTree:(NSMutableSet*)seen object:(NSObject<Treeable>*)me")
+
+        NSMutableDictionary * ret = NSMutableDictionary.dictionary;
+
+        if ([seen containsObject:me]) {
+            NSDictionary *d = me.seenTreeNodeData;
+            NSMutableDictionary *md = @{}
+            .mutableCopy;
+            ret[@"nodedata"] = md;
+            for (id<NSCopying> k in d) {
+                if (![d[k] isKindOfClass:NSNull.class]) md[k] = d[k];
+            }
+            [ret setObject:@YES forKey:@"collapsed"];
+        }
+        else {
+            [seen addObject:me];
+            NSDictionary *d = me.treeNodeData;
+            NSMutableDictionary *md = @{}
+            .mutableCopy;
+            ret[@"nodedata"] = md;
+            for (id<NSCopying> k in d) {
+                if (![d[k] isKindOfClass:NSNull.class]) md[k] = d[k];
+            }
+
+            for (NSString __strong *name in me.treePropertyNames) {
+                bool collapsed = [name hasPrefix:@"__"];
+                if (collapsed) name = [name substringFromIndex:@"__".length];
+                id res = [me performUnknownSelector:NSSelectorFromString(name)];
+                if ([res isKindOfClass:NSNull.class]) continue;
+                if ([res isKindOfClass:NSSet.class] || [res isKindOfClass:NSArray.class]) {
+                    if ([(NSSet *)res count]) {
+                        NSMutableArray *chs = NSMutableArray.array;
+                        for (NSObject *ch in(NSSet *) res) {
+                            if ([ch conformsToProtocol:@protocol(Treeable)])
+                                [chs addObject:[(id < Treeable >) ch asTree : seen]];
+                            else if (![ch isKindOfClass:NSNull.class])
+                                [chs addObject:ch];
+                        }
+                        [ret setObject:chs forKey:name];
+                    }
+                }
+                else if ([res isKindOfClass:NSDictionary.class]) {
+                    if ([(NSDictionary *)res count]) {
+                        NSMutableDictionary *chs = NSMutableDictionary.dictionary;
+                        if (collapsed) chs[@"collapsed"] = @YES;
+                        for (NSObject<NSCopying> *key in(NSDictionary *) res) {
+                            NSObject *ch = ( (NSDictionary *)res )[key];
+                            if ([ch isKindOfClass:NSNull.class]) continue;
+                            if ([ch conformsToProtocol:@protocol(Treeable)])
+                                [chs setObject:[(id < Treeable >) ch asTree : seen] forKey:[@" no linkname " stringByAppendingString :[(id)key jsonString]]];
+                            else
+                                [chs setObject:ch.jsonString forKey:key.jsonString];
+                        }
+                        [ret setObject:chs forKey:name];
+                    }
+                }
+                else if ([res conformsToProtocol:@protocol(Treeable)]) {
+                    NSMutableDictionary *chd = [(id < Treeable >) res asTree : seen];
+                    if (collapsed) chd[@"collapsed"] = @YES;
+                    [ret setObject:chd forKey:[@"" stringByAppendingString : name]];
+                }
+            }
+
+            for (NSString __strong *name in me.treeSingleNodePropertyNames) {
+                bool collapsed = [name hasPrefix:@"__"];
+                if (collapsed) name = [name substringFromIndex:@"__".length];
+                id res = [me performUnknownSelector:NSSelectorFromString(name)];
+                if ([res isKindOfClass:NSNull.class]) continue;
+                if ([res isKindOfClass:NSSet.class] || [res isKindOfClass:NSArray.class]) {
+                    if ([(NSSet *)res count]) {
+                        NSMutableArray *chs = NSMutableArray.array;
+                        for (NSObject *ch in(NSSet *) res) {
+                            if ([ch conformsToProtocol:@protocol(Treeable)])
+                                [chs addObject:@{@"nodedata":( (id<Treeable> )ch ).seenTreeNodeData}
+                                ];
+                            else if (![ch isKindOfClass:NSNull.class])
+                                [chs addObject:ch];
+                        }
+                        [ret setObject:chs forKey:name];
+                    }
+                }
+                else if ([res isKindOfClass:NSDictionary.class]) {
+                    if ([(NSDictionary *)res count]) {
+                        NSMutableDictionary *chs = NSMutableDictionary.dictionary;
+                        for (NSObject<NSCopying> *key in(NSDictionary *) res) {
+                            NSObject *ch = ( (NSDictionary *)res )[key];
+                            if ([ch isKindOfClass:NSNull.class]) continue;
+                            if ([ch conformsToProtocol:@protocol(Treeable)])
+                                [chs setObject:@{@"nodedata":( (id<Treeable> )ch ).seenTreeNodeData}
+                                 forKey:[@" no linkname " stringByAppendingString : key.jsonString]];
+                            else
+                                [chs setObject:ch.jsonString forKey:key.jsonString];
+                        }
+                        [ret setObject:chs forKey:name];
+                    }
+                }
+                else if ([res conformsToProtocol:@protocol(Treeable)]) {
+                    [ret setObject:@{@"nodedata":( (id<Treeable> )res ).seenTreeNodeData}
+                     forKey:[@"" stringByAppendingString : name]];
+                }
+            }
+        }
         return ret;
     }
     - (constchar *)cdescription {
@@ -539,6 +657,10 @@
         self.type = nil;
 
         /*i900*/}
+    - (WIFile *)file {
+        MSGSTART("WIVarArg:-(WIFile*)file")
+        return self.var.context.clazz.context.file;
+    }
     - (NSIndexSet *)indexesInVar {
         MSGSTART("WIVarArg:-(NSIndexSet*)indexesInVar")
 

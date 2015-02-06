@@ -1472,9 +1472,9 @@
     - (void)dealloc {
         MSGSTART("Model:-(void)dealloc")
 
-        /*i-500*/[self stop];
+        /*i-500*/[self stopWaiting];
 
-        [self stopWaiting];
+        [self stop];
 
 /*i-151*/ [self die];
 /*i0*/ v_tim = nil;
