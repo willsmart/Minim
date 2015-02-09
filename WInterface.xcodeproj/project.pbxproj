@@ -12,6 +12,7 @@
 		BE4152E71811B03200E421D7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BE4152E61811B03200E421D7 /* main.m */; };
 		BE4152EB1811B03200E421D7 /* WInterfaceSample.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = BE4152EA1811B03200E421D7 /* WInterfaceSample.1 */; };
 		BE4152FC1811B04200E421D7 /* sample.wi.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE730AD61810A4FB005582C5 /* sample.wi.mm */; };
+		BE73484F1A8601B4000C7D08 /* RegexKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE73484E1A8601B4000C7D08 /* RegexKit.framework */; };
 		BE87AC6319F6455600C5E23A /* ParseRule.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE87AC6219F6455600C5E23A /* ParseRule.mm */; };
 		BE91ACFE1A1A6D0D009751BB /* Files.wi.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE91ACFD1A1A6D0D009751BB /* Files.wi.mm */; };
 		BE91AD021A1A72D8009751BB /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE91AD011A1A72D8009751BB /* AppKit.framework */; };
@@ -88,6 +89,7 @@
 		BE730AD41810A4FB005582C5 /* sample.wi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sample.wi.h; path = Sample/sample.wi.h; sourceTree = "<group>"; };
 		BE730AD51810A4FB005582C5 /* sample.wi.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = sample.wi.html; path = Sample/sample.wi.html; sourceTree = "<group>"; };
 		BE730AD61810A4FB005582C5 /* sample.wi.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = sample.wi.mm; path = Sample/sample.wi.mm; sourceTree = "<group>"; };
+		BE73484E1A8601B4000C7D08 /* RegexKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RegexKit.framework; path = Frameworks/RegexKit.framework; sourceTree = "<group>"; };
 		BE87AC6219F6455600C5E23A /* ParseRule.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = ParseRule.mm; path = ../BasicClassesCPP/Parser/ParseRule.mm; sourceTree = "<group>"; };
 		BE8DD9791A1AD31F00FBCA32 /* wiLibrary */ = {isa = PBXFileReference; lastKnownFileType = folder; name = wiLibrary; path = ../wiLibrary; sourceTree = "<group>"; };
 		BE91ACF91A1A65F1009751BB /* wi */ = {isa = PBXFileReference; lastKnownFileType = folder; path = wi; sourceTree = "<group>"; };
@@ -160,6 +162,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BE73484F1A8601B4000C7D08 /* RegexKit.framework in Frameworks */,
 				BE91AD041A1A7303009751BB /* QuartzCore.framework in Frameworks */,
 				BE91AD021A1A72D8009751BB /* AppKit.framework in Frameworks */,
 				BE99B973161BAE720041B8EA /* Foundation.framework in Frameworks */,
@@ -259,6 +262,7 @@
 		BE99B963161BAE710041B8EA = {
 			isa = PBXGroup;
 			children = (
+				BE73484E1A8601B4000C7D08 /* RegexKit.framework */,
 				BE8DD9791A1AD31F00FBCA32 /* wiLibrary */,
 				BE91ACF91A1A65F1009751BB /* wi */,
 				BEDEBF9B1A19DB9600D0200D /* WILibrary_v1 */,
@@ -601,6 +605,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Developer/Local/Frameworks,
+					"$(PROJECT_DIR)/Frameworks",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "WInterface/WInterface-Prefix.pch";
@@ -617,6 +622,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Developer/Local/Frameworks,
+					"$(PROJECT_DIR)/Frameworks",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "WInterface/WInterface-Prefix.pch";

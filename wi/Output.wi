@@ -1,23 +1,146 @@
+Singletons
+    NSMutableDictionary regexCache={
+        return(!regexCache?regexCache=@{}.mutableCopy:regexCache);
+    }=nil (ivar)
+
+"<RegexKit/RegexKit.h>"
+RegexHelper
+    -(RKRegex*)regexForString:(NSString*)str {
+        RKRegex *ret=Singletons.regexCache[str];
+        if (!ret) {
+            ret=[RKRegex regexWithRegexString:str options:RKCompileNoOptions];
+            Singletons.regexCache[str]=(ret?ret:NSNull.null);
+        }
+        return([ret isKindOfClass:NSNull.class]?nil:ret);
+    }
+
+    
+
+NSMutableString
+    -(NSMutableString*)applyRegexes:(NSObject*)regexesArrayOrDictionary {
+        if ([regexesArrayOrDictionary isKindOfClass:NSArray.class]) {
+            for (NSObject *o in (NSArray*)regexesArrayOrDictionary) {
+                [self applyRegexes:o];
+            }
+        }
+        else if ([regexesArrayOrDictionary isKindOfClass:NSDictionary.class]) {
+            for (NSString *regexStr in (NSDictionary*)regexesArrayOrDictionary) {
+                NSString *replaceStr=((NSDictionary*)regexesArrayOrDictionary)[regexStr];
+                if (!([regexStr isKindOfClass:NSString.class]&&[replaceStr isKindOfClass:NSString.class])) {
+                    continue;
+                }
+                RKRegex *regex=[RegexHelper regexForString:regexStr];
+                if (!regex) continue;
+                [self match:regex replace:1000 withString:replaceStr];
+            }
+        }
+    }
+
+NSString
+    -(NSString*)stringByApplyingRegexes:(NSObject*)regexesArrayOrDictionary {
+        NSMutableString *ms=nil;
+        [self applyRegexes:regexesArrayOrDictionary mutableString:&ms];
+        return(ms?ms:self);
+    }
+    -(void)applyRegexes:(NSObject*)regexesArrayOrDictionary mutableString:(NSString*__strong*)pmutableString {
+        NSString *&mutableString=*pmutableString;
+        if ([regexesArrayOrDictionary isKindOfClass:NSArray.class]) {
+            for (NSObject *o in (NSArray*)regexesArrayOrDictionary) {
+                if (mutableString) [mutableString applyRegexes:o];
+                else [self applyRegexes:o mutableString:pmutableString];
+            }
+        }
+        else if ([regexesArrayOrDictionary isKindOfClass:NSDictionary.class]) {
+            for (NSString *regexStr in (NSDictionary*)regexesArrayOrDictionary) {
+                NSString *replaceStr=((NSDictionary*)regexesArrayOrDictionary)[regexStr];
+                if (!([regexStr isKindOfClass:NSString.class]&&[replaceStr isKindOfClass:NSString.class])) {
+                    continue;
+                }
+                RKRegex *regex=[RegexHelper regexForString:regexStr];
+                if (!regex) continue;
+                if (mutableString) [mutableString match:regex replace:1000 withString:replaceStr];
+                else if ([self isMatchedByRegex:regex]) {
+                    mutableString=self.mutableCopy;
+                    [mutableString match:regex replace:1000 withString:replaceStr];
+                }
+            }
+        }
+    }
+
+
+
+
+
+
 WIFile
     -(void)applyRegexes {
-        if (!self.ctxts.count) return;
-        NSDictionary *k=nil;
-        for (NSDictionary *regexes in self.ctxts) {
-            if ((!k)||[regexes isEqual:@{}]) k=regexes;
-            [[self ctxtForKey:regexes] applyRegexes:regexes];
+        NSMutableArray *remove=NSMutableArray.array;
+        WICtxt *to=[self.file ctxtForKey:@{}];
+        for (NSObject<NSCopying> *regexes in self.ctxts) {
+            if (!([regexes isEqual:@{}]||[regexes isEqual:@[]])) {
+                [remove addObject:regexes];
+                [[self ctxtForKey:regexes] applyRegexes:regexes];
+            }
         }
-        WICtxt *ctxt=self.ctxts[k];
-        for (NSDictionary *regexes in self.ctxts) {
-            WICtxt *ctxt2=self.ctxts[regexes];
-            if (ctxt!=ctxt2) [ctxt mergeWith:ctxt2];
-        }
-        [self removeAllCtxts];
-        [self setCxt:ctxt forKey:@{}];
+        [self.ctxts removeObjectsForKeys:remove];
     }
 
 WICtxt
-    -(void)applyRegexes:(NSDictionary*)regexes {
-        
+    -(void)applyRegexes {
+        for (NSString *name in self.protocols) {
+            [[self protocolForKey:name] applyRegexes];
+        }
+        for (NSString *name in self.clazzs) {
+            [[self clazzForKey:name] applyRegexes];
+        }
+    }
+
+WIClass
+    -(WIClass*)applyRegexes {
+        WICtxt *toctxt=[self.file ctxtForKey:@{}];
+        if (self.context==toctxt) return(self);
+
+        NSObject *regexes=self.context.keyInFile;
+        WIClass *toc=(self.classInCtxt?
+            [toctxt classWithName:[self.name stringByApplyingRegexes:regexes]]:
+            [toctxt protocolWithName:[self.name stringByApplyingRegexes:regexes]]
+        );
+
+
+        NSSet *superclasses=self.superclasss.copy;
+        NSSet *subclasses=self.subclasss.copy;
+        NSSet *superprotocols=self.superprotocols.copy;
+        NSSet *subprotocols=self.subprotocols.copy;
+        NSSet *conformedProtocols=self.conformedProtocols.copy;
+        NSSet *conformingClasss=self.conformingClasss.copy;
+
+        for (NSObject<NSCopying> *key in self.vars) {
+            [[self varForKey:key] applyRegexes:regexes to:toc];
+        }
+        for (NSObject<NSCopying> *key in self.types) {
+            [[self typeForKey:key] applyRegexes:regexes to:toc];
+        }
+
+        [self.superclasss removeAllObjects];
+        [self.subclasss removeAllObjects];
+        [self.superprotocols removeAllObjects];
+        [self.subprotocols removeAllObjects];
+        [self.conformedProtocols removeAllObjects];
+        [self.conformingClasss removeAllObjects];
+
+        for (WIClass *c in superclasses) [c addSuperclass:toc];
+        for (WIClass *c in subclasses) [c addSubclass:toc];
+        for (WIClass *c in superprotocols) [c addSuperprotocol:toc];
+        for (WIClass *c in subprotocols) [c addSubprotocol:toc];
+        for (WIClass *c in conformedProtocols) [c addConformedProtocol:toc];
+        for (WIClass *c in conformingClasss) [c addConformingClass:toc];
+
+        for (WIClass *c in superclasses) [c applyRegexes];
+        for (WIClass *c in subclasses) [c applyRegexes];
+        for (WIClass *c in superprotocols) [c applyRegexes];
+        for (WIClass *c in subprotocols) [c applyRegexes];
+        for (WIClass *c in conformedProtocols) [c applyRegexes];
+        for (WIClass *c in conformingClasss) [c applyRegexes];
     }
 
 
