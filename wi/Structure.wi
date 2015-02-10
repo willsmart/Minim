@@ -4,7 +4,7 @@ WIFile
         return(self.includesSet.asArray);
     }
     MutableDictionary settings=[MutableDictionary dictionary] // any settings not used in a class
-    file ~d< WICtxt ctxt // a context can hold classes etc. The key is the regex dictionary
+    file ~d< WICtxt ctxt // a context can hold classes etc. The key is the regex array
 
 WICtxt
     classInCtxt ~d< WIClass clazz // the classes keyed by name

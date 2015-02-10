@@ -1,0 +1,414 @@
+Singletons
+    NSMutableDictionary regexCache={
+        return(!regexCache?regexCache=@{}.mutableCopy:regexCache);
+    }=nil (ivar)
+
+"<RegexKit/RegexKit.h>"
+RegexHelper
+    -(RKRegex*)regexForString:(NSString*)str {
+        RKRegex *ret=Singletons.regexCache[str];
+        if (!ret) {
+            ret=[RKRegex regexWithRegexString:str options:RKCompileNoOptions];
+            Singletons.regexCache[str]=(ret?ret:NSNull.null);
+        }
+        return([ret isKindOfClass:NSNull.class]?nil:ret);
+    }
+
+    
+
+NSMutableString
+    -(NSMutableString*)applyRegexes:(NSObject*)regexesArrayOrDictionary {
+        if ([regexesArrayOrDictionary isKindOfClass:NSArray.class]) {
+            for (NSObject *o in (NSArray*)regexesArrayOrDictionary) {
+                [self applyRegexes:o];
+            }
+        }
+        else if ([regexesArrayOrDictionary isKindOfClass:NSDictionary.class]) {
+            for (NSString *regexStr in (NSDictionary*)regexesArrayOrDictionary) {
+                NSString *replaceStr=((NSDictionary*)regexesArrayOrDictionary)[regexStr];
+                if (!([regexStr isKindOfClass:NSString.class]&&[replaceStr isKindOfClass:NSString.class])) {
+                    continue;
+                }
+                RKRegex *regex=[RegexHelper regexForString:regexStr];
+                if (!regex) continue;
+                [self match:regex replace:1000 withString:replaceStr];
+            }
+        }
+    }
+
+NSString
+    -(NSString*)stringByApplyingRegexes:(NSObject*)regexesArrayOrDictionary {
+        NSMutableString *ms=nil;
+        [self applyRegexes:regexesArrayOrDictionary mutableString:&ms];
+        return(ms?ms:self);
+    }
+    -(void)applyRegexes:(NSObject*)regexesArrayOrDictionary mutableString:(NSString*__strong*)pmutableString {
+        NSString *&mutableString=*pmutableString;
+        if ([regexesArrayOrDictionary isKindOfClass:NSArray.class]) {
+            for (NSObject *o in (NSArray*)regexesArrayOrDictionary) {
+                if (mutableString) [mutableString applyRegexes:o];
+                else [self applyRegexes:o mutableString:pmutableString];
+            }
+        }
+        else if ([regexesArrayOrDictionary isKindOfClass:NSDictionary.class]) {
+            for (NSString *regexStr in (NSDictionary*)regexesArrayOrDictionary) {
+                NSString *replaceStr=((NSDictionary*)regexesArrayOrDictionary)[regexStr];
+                if (!([regexStr isKindOfClass:NSString.class]&&[replaceStr isKindOfClass:NSString.class])) {
+                    continue;
+                }
+                RKRegex *regex=[RegexHelper regexForString:regexStr];
+                if (!regex) continue;
+                if (mutableString) [mutableString match:regex replace:1000 withString:replaceStr];
+                else if ([self isMatchedByRegex:regex]) {
+                    mutableString=self.mutableCopy;
+                    [mutableString match:regex replace:1000 withString:replaceStr];
+                }
+            }
+        }
+    }
+
+
+NSDictionary
+    -(NSDictionary*)dictionaryByApplyingRegexes:(NSObject*)regexes {
+        NSMutableDictionary *md=nil;
+        for (NSString *key in self) {
+            NSString *v=self[key];
+            NSString *key2=([key isKindOfClass:NSString.class]?[key stringByApplyingRegexes:regexes]:key);
+            NSString *v2=([v isKindOfClass:NSString.class]?[v stringByApplyingRegexes:regexes]:v);
+
+            if ([v isKindOfClass:NSDictionary.class]) {
+                v2=[(NSDictionary*)v dictionaryByApplyingRegexes:regexes];
+            }
+            if ([key isKindOfClass:NSDictionary.class]) {
+                key2=[(NSDictionary*)key2 dictionaryByApplyingRegexes:regexes];
+            }
+
+            if ([v isKindOfClass:NSArray.class]) {
+                v2=[(NSArray*)v arrayByApplyingRegexes:regexes];
+            }
+            if ([key isKindOfClass:NSArray.class]) {
+                key2=[(NSArray*)key2 arrayByApplyingRegexes:regexes];
+            }
+
+            if ([v isKindOfClass:NSSet.class]) {
+                v2=[(NSSet*)v setByApplyingRegexes:regexes];
+            }
+            if ([key isKindOfClass:NSSet.class]) {
+                key2=[(NSSet*)key setByApplyingRegexes:regexes];
+            }
+
+            if ((key!=key2)||(v!=v2)) {
+                if (!md) md=self.mutableCopy;
+                if (key!=key2) {
+                    [md removeObjectForKey:key];
+                    md[key2]=v2;
+                }
+                else [md replaceObjectForKey:key withObject:v2];
+            }
+        }
+        return(md?md:self);
+    }
+
+
+NSArray
+    -(NSArray*)arrayByApplyingRegexes:(NSObject*)regexes {
+        NSMutableArray *ma=nil;
+        NSInteger i=-1;
+        for (NSString *v in self) {i++;
+            NSString *v2=([v isKindOfClass:NSString.class]?[v stringByApplyingRegexes:regexes]:v);
+            if ([v isKindOfClass:NSDictionary.class]) {
+                v2=[(NSDictionary*)v dictionaryByApplyingRegexes:regexes];
+            }
+            if ([v isKindOfClass:NSArray.class]) {
+                v2=[(NSArray*)v arrayByApplyingRegexes:regexes];
+            }
+            if ([v isKindOfClass:NSSet.class]) {
+                v2=[(NSSet*)v setByApplyingRegexes:regexes];
+            }
+
+            if (v!=v2) {
+                if (!ma) ma=self.mutableCopy;
+                else [ma replaceObjectAtIndex:i withObject:v2];
+            }
+        }
+        return(ma?ma:self);
+    }
+
+
+NSSet
+    -(NSSet*)setByApplyingRegexes:(NSObject*)regexes {
+        NSMutableSet *ms=nil;
+        NSInteger i=-1;
+        for (NSString *v in self) {i++;
+            NSString *v2=([v isKindOfClass:NSString.class]?[v stringByApplyingRegexes:regexes]:v);
+            if ([v isKindOfClass:NSDictionary.class]) {
+                v2=[(NSDictionary*)v dictionaryByApplyingRegexes:regexes];
+            }
+            if ([v isKindOfClass:NSArray.class]) {
+                v2=[(NSArray*)v arrayByApplyingRegexes:regexes];
+            }
+            if ([v isKindOfClass:NSSet.class]) {
+                v2=[(NSSet*)v setByApplyingRegexes:regexes];
+            }
+
+            if (v!=v2) {
+                if (!ms) ms=self.mutableCopy;
+                else {
+                    [ms removeObject:v];
+                    [ms addObject:v2];
+                }
+            }
+        }
+        return(ms?ms:self);
+    }
+
+
+
+WIFile
+    -(void)applyRegexes {
+        NSMutableArray *remove=NSMutableArray.array;
+        for (NSArray *regexes in self.ctxts) {
+            if (regexes.count) {
+                [remove addObject:regexes];
+                [[self ctxtForKey:regexes] applyRegexes:regexes];
+            }
+        }
+        [self.ctxts removeObjectsForKeys:remove];
+    }
+
+    -(void)applyConformedProtocolRegexes {
+        for (NSArray *key in self.ctxts) [[self ctxtForKey:key] applyConformedProtocolRegexes];
+    }
+
+
+WICtxt
+    -(void)applyRegexes {
+        for (NSString *name in self.protocols) {
+            [[self protocolForKey:name] applyRegexes];
+        }
+        for (NSString *name in self.clazzs) {
+            [[self clazzForKey:name] applyRegexes];
+        }
+        [self removeAllProtocols];
+        [self removeAllClazzs];
+    }
+
+    -(void)applyConformedProtocolRegexes {
+        for (NSArray *key in self.protocols) [[self protocolForKey:key] applyConformedProtocolRegexes];
+        for (NSArray *key in self.clazzs) [[self clazzForKey:key] applyConformedProtocolRegexes];
+    }
+
+
+WIClass
+    -(void)applyConformedProtocolRegexes {
+        NSArray *regexes=self.context.keyInFile;
+        if (!regexes.count) return;
+
+        NSMutableSet *newConformedProtocols=nil;
+        for (WIClass *conformedProtocol in conformedProtocols) {
+            NSArray *protocolRegexes=self.context.keyInFile;
+            if (regexes.count<protocolRegexes) continue;
+
+            int addAt;
+            bool correctEnding=NO;
+            for (addAt=0;!correctEnding;addAt++) {
+                correctEnding=YES;
+                for (int i=0;correctEnding&&(i+addAt<regexes.count);i++) {
+                    if (![regexes[i] isEqual:protocolRegexes[i+addAt+protocolRegexes.count-regexes.count]]) {
+                        correctEnding=NO;
+                    }
+                }
+            }
+            if (!addAt) continue;
+
+            NSMutableArray *newProtocolRegexes=protocolRegexes.mutableCopy;
+            for (int i=addAt;i<regexes.count;i++) {
+                [newProtocolRegexes addObject:[regexes[i] copy]];
+            }
+
+            WIClass *newConformedProtocol=[[self.file contextWithRegexes:newProtocolRegexes] equivClassTo:conformedProtocol];
+            [newConformedProtocol mergeWith:confirmedProtocol];
+
+            [newConformedProtocol applyConformedProtocolRegexes];
+
+            if (!newConformedProtocols) newConformedProtocols=self.conformedProtocols.mutableCopy;
+            [newConformedProtocols removeObject:conformedProtocol];
+            [newConformedProtocols addObject:newConformedProtocol];
+        }
+
+        if (newConformedProtocols) [self.conformedProtocols setSet:newConformedProtocols];
+    }
+
+
+
+    -(WIClass*)applyRegexes {
+        WICtxt *toctxt=[self.file ctxtForKey:@[]];
+        if (self.context==toctxt) return(self);
+
+        NSArray *regexes=self.context.keyInFile;
+        WIClass *toc=(self.classInCtxt?
+            [toctxt classWithName:[self.name stringByApplyingRegexes:regexes]]:
+            [toctxt protocolWithName:[self.name stringByApplyingRegexes:regexes]]
+        );
+
+        NSSet *superclasses=self.superclasss.copy;
+        NSSet *subclasses=self.subclasss.copy;
+        NSSet *superprotocols=self.superprotocols.copy;
+        NSSet *subprotocols=self.subprotocols.copy;
+        NSSet *conformedProtocols=self.conformedProtocols.copy;
+        NSSet *conformingClasss=self.conformingClasss.copy;
+
+        [self.superclasss removeAllObjects];
+        [self.subclasss removeAllObjects];
+        [self.superprotocols removeAllObjects];
+        [self.subprotocols removeAllObjects];
+        [self.conformedProtocols removeAllObjects];
+        [self.conformingClasss removeAllObjects];
+
+        NSMutableSet *newSuperclasses=NSMutableSet.set;
+        NSMutableSet *newSubclasses=NSMutableSet.set;
+        NSMutableSet *newSuperprotocols=NSMutableSet.set;
+        NSMutableSet *newSubprotocols=NSMutableSet.set;
+        NSMutableSet *newConformedProtocols=NSMutableSet.set;
+        NSMutableSet *newConformingClasses=NSMutableSet.set;
+
+        for (WIClass *c in superclasses) [newSuperclasses addObject:[c applyRegexes]];
+        for (WIClass *c in subclasses) [newSubclasses addObject:[c applyRegexes]];
+        for (WIClass *c in superprotocols) [newSuperprotocols addObject:[c applyRegexes]];
+        for (WIClass *c in subprotocols) [newSubprotocols addObject:[c applyRegexes]];
+        for (WIClass *c in conformedProtocols) [newConformedProtocols addObject:[c applyRegexes]];
+        for (WIClass *c in conformingClasss) [newConformingClasses addObject:[c applyRegexes]];
+
+        for (WIClass *c in newSuperclasses) [toc addSuperclass:c];
+        for (WIClass *c in newSubclasses) [toc addSubclass:c];
+        for (WIClass *c in newSuperprotocols) [toc addSuperprotocol:c];
+        for (WIClass *c in newSubprotocols) [toc addSubprotocol:c];
+        for (WIClass *c in newConformedProtocols) [toc addConformedProtocol:c];
+        for (WIClass *c in newConformingClasss) [toc addConformingClass:c];
+
+
+        [toc.settings mergeWith:[self.settings setByApplyingRegexes:regexes]];
+
+        for (NSObject<NSCopying> *key in self.varCtxts) {
+            [[self varCtxtForKey:key] applyRegexes:regexes to:toc];
+        }
+        [self removeAllVarCtxts];
+        [self removeAllTypes];
+    }
+
+
+WIVarContext
+    -(WIVarContext*)applyRegexes:(NSArray*)regexes {
+        WIClass *toc=[self.clazz applyRegexes];
+        return([self applyRegexes:regexes to:toc]);
+    }
+
+    -(WIVarContext*)applyRegexes:(NSArray*)regexes to:(WIClass*)toc {
+        if (!((NSArray*)self.clazz.context.keyInBody).count) return(self);
+
+        NSSet *newSettings=[(NSSet*)self.keyInClazz setByApplyingRegexes:regexes];
+
+        WIVarContext *tovc=[toc varCtxtWithSettings:newSettings];
+        for (NSObject<NSCopying> *key in self.vars) {
+            [[self varForKey:key] applyRegexes:regexes to:tovc];
+        }
+        [self removeAllVars];
+        return(tovc);
+    }
+
+
+WIType
+    -(WIType*)applyRegexes:(NSArray*)regexes {
+        WIClass *toc=[self.clazz applyRegexes];
+        return([toc typeWithModifiers:self.keyInClazz]);
+    }
+
+
+WIVar
+    -(WIVar*)applyRegexes:(NSArray*)regexes {
+        WIVarContext *tovc=[self.context applyRegexes];
+        return([self applyRegexes:regexes to:tovc]);
+    }
+
+    -(WIVar*)applyRegexes:(NSArray*)regexes to:(WIVarContext*)tovc {
+        if (!((NSArray*)self.context.clazz.context.keyInBody).count) return(self);
+
+        NSString *name=[self.name stringByApplyingRegexes:regexes];
+        NSMutableArray *args=NSMutableArray.array;
+        for (WIVarArg *arg in self.args) {
+            [args addObject:[arg copyByApplyingRegexes:regexes]];
+        }
+        WIType *type=[self.type applyRegexes:regexes];
+
+        NSArray *key=[WIVar keyWithType:type name:name args:args];
+
+        WIVar *tov=[tovc varWithVarKey:key];
+
+
+        NSSet *fluidVars=self.fluidVars.copy;
+        NSSet *atomicVars=self.atomicVars.copy;
+
+        [self.fluidVars removeAllObjects];
+        [self.atomicVars removeAllObjects];
+
+        NSMutableSet *newSuperclasses=NSMutableSet.set;
+        NSMutableSet *newAtomicVars=NSMutableSet.set;
+
+        for (WIClass *c in fluidVars) [newFluidVars addObject:[c applyRegexes]];
+        for (WIClass *c in atomicVars) [newAtomicVars addObject:[c applyRegexes]];
+
+        for (WIClass *c in newFluidVars) [toc addFluidVar:c];
+        for (WIClass *c in newAtomicVars) [toc addAtomicVar:c];
+
+
+        [tov.settings mergeWith:[self.settings setByApplyingRegexes:regexes]];
+
+        [self.getter applyRegexes:regexes to:tov];
+        [self.defaultValue applyRegexes:regexes to:tov];
+        for (NSString *key in self.setters) [[self setterForKey:key] applyRegexes:regexes to:tov];
+
+        self.getter=nil;
+        self.defaultValue=nil;
+        [self removeAllSetters];
+
+        if (self.bindingType) {
+            tov.bindingType=self.bindingType;
+            WIVar *boundTo=self.boundTo;
+            self.boundTo=nil;
+            tov.boundTo=[boundTo applyRegexes];
+        }
+        return(tov);
+    }
+
+
+
+WIBody
+    -(WIBody*)applyRegexes:(NSArray*)regexes to:(WIVar*)tov {
+        WIBody *tob=nil;
+        if (self.getterForVar) {
+            tob=tov.getter;
+            if (!tob) tov.getter=tob=[WIBody new];
+        }
+        else if (self.defaultValueForVar) {
+            tob=tov.defaultValue;
+            if (!tob) tov.defaultValue=tob=[WIBody new];
+        }
+        else if (self.setterForVar) {
+            tob=[tov setterWithSetterVar:self.keyInSetterForVar];
+        }
+        else return(nil);
+
+        for (NSNumber *ordinal in self.snippets) {
+            [[self snippetForKey:ordinal] applyRegexes:regexes to:tob];
+        }
+        return(tob);
+    }
+
+
+WIBodySnippet
+    -(WIBodySnippet*)applyRegexes:(NSArray*)regexes to:(WIBody*)tob {
+        WIBodySnippet *tos=[tob snippetAtOrdinal:((NSNumber*)self.keyInBody).intValue];
+        [tos.strings mergeWith:[self.strings setByApplyingRegexes:regexes]];
+        return(tos);
+    }
+

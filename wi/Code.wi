@@ -459,19 +459,19 @@ WIBodySnippet<Treeable>
 
 
 WIFile
-    -(WICtxt*)contextWithRegexes:(NSDictionary*)regexes {
+    -(WICtxt*)contextWithRegexes:(NSArray*)regexes {
         WICtxt *ret=[self ctxtForKey:regexes];
         if (!ret) [self setCtxt:ret=[WICtxt new] forKey:regexes];
         return(ret);
     }
 
     -(void)process:(NSArray*)tokens {
-        NSMutableDictionary *regexes=NSMutableDictionary.dictionary;
+        NSMutableArray *regexes=NSMutableArray.array;
         NSSet *settings=NSSet.set;
         for (Token *token in tokens) [self process:token regexes:regexes settings:settings];
     }
 
-    -(void)process:(Token*)token regexes:(NSMutableDictionary*)regexes settings:(NSSet*)settings {
+    -(void)process:(Token*)token regexes:(NSMutableArray*)regexes settings:(NSSet*)settings {
         Token *t=[TokenHelper actualToken:token];
         NSArray *chs;
 
@@ -482,7 +482,12 @@ WIFile
             for (Token *ch in chs) [self process:ch regexes:regexes settings:settings];
         }
         else if ([TokenHelper actualToken:t havingRuleIn:@[@"regex"]]) {
-            [regexes setObject:((Token*)t.children[1]).contents forKey:((Token*)t.children[0]).contents];
+            NSDictionary *re=@{
+                ((Token*)t.children[0]).contents:((Token*)t.children[1]).contents
+            };
+            if (![(NSDictionary*)regexes.lastObject isEqual:re]) {
+                [regexes addObject:re];
+            }
         }
         else if ((chs=[TokenHelper childrenForToken:token havingRuleIn:@[@"setting"]])) {
             NSString *setting=((Token*)t.children[0]).contents;
@@ -510,7 +515,7 @@ WICtxt
         return(ret);
     }
 
-    -(void)process:(Token*)token regexes:(NSMutableDictionary*)regexes settings:(NSSet*)settings outerClass:(WIClass*)outerClass outerLinkType:(NSString*)outerLinkType outerLinkVar:(WIVar*)outerLinkVar mods:(NSArray*)mods {
+    -(void)process:(Token*)token regexes:(NSMutableArray*)regexes settings:(NSSet*)settings outerClass:(WIClass*)outerClass outerLinkType:(NSString*)outerLinkType outerLinkVar:(WIVar*)outerLinkVar mods:(NSArray*)mods {
         Token *t=[TokenHelper actualToken:token];
         NSArray *chs;
         bool doingInitialSettings=YES;
@@ -594,7 +599,7 @@ WIClass
     WICtxt context={return(self.classInCtxt?self.classInCtxt:self.protocolInCtxt);}
     NSString name={return(NSString*)(self.classInCtxt?self.keyInClassInCtxt:self.keyInProtocolInCtxt);}
 
-    -(void)process:(Token*)token regexes:(NSMutableDictionary*)regexes settings:(NSSet*)settings doingInitialSettings:(bool&)doingInitialSettings outerClass:(WIClass*)outerClass outerLinkType:(NSString*)outerLinkType outerLinkVar:(WIVar*)outerLinkVar mods:(NSArray*)mods {
+    -(void)process:(Token*)token regexes:(NSMutableArray*)regexes settings:(NSSet*)settings doingInitialSettings:(bool&)doingInitialSettings outerClass:(WIClass*)outerClass outerLinkType:(NSString*)outerLinkType outerLinkVar:(WIVar*)outerLinkVar mods:(NSArray*)mods {
         Token *t=[TokenHelper actualToken:token];
         NSArray *chs;
 
@@ -626,8 +631,10 @@ WIClass
         }
     }
 
+
+
 WIVarContext
-    -(WIType*)typeForFnBlock:(Token*)token mods:(NSMutableArray*)mods regexes:(NSMutableDictionary*)regexes {
+    -(WIType*)typeForFnBlock:(Token*)token mods:(NSMutableArray*)mods regexes:(NSMutableArray*)regexes {
         Token *typet=token.children[0],*classt=typet;
         NSMutableArray *mods2=@[].mutableCopy;
         if ([typet.ruleName isEqualToString:@"mod"]) {
@@ -653,7 +660,37 @@ WIVarContext
         return([clazz typeWithModifiers:mods]);
     }
 
-    -(WIVar*)varForVarToken:(Token*)token type:(WIType*)type regexes:(NSMutableDictionary*)regexes {
+    -(WIVar*)varWithVarKey:(NSArray*)key {
+        WIVar *var=[self varForKey:key];
+        if (!var) {
+            [self setVar:var=[WIVar new] forKey:key];
+
+            var.name=(NSString*)key[0];
+            WICtxt *ctxt=self.clazz.context;
+            WIClass *c=([key[1] isKindOfClass:NSString.class]?
+                [ctxt classWithName:key[1]]:
+                [ctxt protocolWithName:((NSArray*)key[2])[0]]
+            );
+            var.type=[c typeWithModifiers:(NSArray*)key[3]];
+            for (int i=4;i<key.count;i++) {
+                WIVarArg *arg=[WIVarArg new];
+                NSArray *argKey=key[i];
+
+                arg.name=(NSString*)argKey[0];
+                arg.arg=(NSString*)argKey[1];
+                WIClass *c=([argKey[2] isKindOfClass:NSString.class]?
+                    [ctxt classWithName:argKey[2]]:
+                    [ctxt protocolWithName:((NSArray*)argKey[3])[0]]
+                );
+                arg.type=[c typeWithModifiers:(NSArray*)argKey[4]];
+
+                [var addArg:arg];
+            }
+        }
+        return(var);
+    }
+
+    -(WIVar*)varForVarToken:(Token*)token type:(WIType*)type regexes:(NSMutableArray*)regexes {
         NSString *name=((Token*)token.children[0]).contents;
         NSMutableArray *key=@[
             name,
@@ -681,7 +718,7 @@ WIVarContext
         return(var);
     }
 
-    -(void)_addArgsFromToken:(Token*)token key:(NSMutableArray*)key argTypes:(NSMutableArray*)argTypes argArgs:(NSMutableArray*)argArgs argNames:(NSMutableArray*)argNames regexes:(NSMutableDictionary*)regexes {
+    -(void)_addArgsFromToken:(Token*)token key:(NSMutableArray*)key argTypes:(NSMutableArray*)argTypes argArgs:(NSMutableArray*)argArgs argNames:(NSMutableArray*)argNames regexes:(NSMutableArray*)regexes {
         for (Token *t in token.children) {
             if ([t.ruleName isEqualToString:@"argList"]||[t.ruleName isEqualToString:@"selArgList"]) {
                 [self _addArgsFromToken:t key:key argTypes:argTypes argArgs:argArgs argNames:argNames regexes:regexes];
@@ -749,7 +786,36 @@ WIVarContext
 
 
 WIVar
-    -(void)process:(Token*)token regexes:(NSMutableDictionary*)regexes settings:(NSSet*)settings doingInitialSettings:(bool&)doingInitialSettings {
+    +(NSArray*)keyWithType:(WIType*)type name:(NSString*)name args:(NSArray*)args {
+        NSMutableArray *key=@[
+            name,
+            type.clazz.classInCtxt?type.clazz.name:NSNull.null,
+            type.clazz.protocolInCtxt?@[type.clazz.name]:NSNull.null,
+            type.keyInClazz
+        ].mutableCopy;
+        for (WIVarArg *arg in args) {
+            NSString *className=type.clazz.keyInClassInCtxt;
+            NSString *protocolName=type.clazz.keyInProtocolInCtxt;
+            NSArray *mods=type.keyInClazz;
+            [key addObject:@[
+                arg.name?arg.name:NSNull.null,
+                arg.arg?arg.arg:NSNull.null,
+                className?className:NSNull.null,
+                protocolName?@[protocolName]:NSNull.null,// TODO
+                mods
+            ]];
+        }
+        return(key);
+    }
+
+    -(WIBody*)setterWithSetterVar:(NSString*)setterVar {
+        WIBody *body=[self setterForKey:setterVar];
+        if (!body) [self setSetter:body=[WIBody new] forKey:setterVar];
+        return(body);
+    }
+
+
+    -(void)process:(Token*)token regexes:(NSMutableArray*)regexes settings:(NSSet*)settings doingInitialSettings:(bool&)doingInitialSettings {
         Token *t=[TokenHelper actualToken:token];
         NSArray *chs;
 
@@ -780,24 +846,28 @@ WIVar
         }
         else if ((chs=[TokenHelper childrenForToken:token havingRuleIn:@[@"setter"]])) {
             NSString *setterVar=(t.children.count?((Token*)t.children[0]).contents:@"v");
-            WIBody *body=[self setterForKey:setterVar];
-            if (!body) [self setSetter:body=[WIBody new] forKey:setterVar];
+            WIBody *body=[self setterWithSetterVar:setterVar];
             if (chs.count) [body incorporateBody:((Token*)((Token*)chs[0]).children[0]).contents];
         }
         else if ([TokenHelper actualToken:t havingRuleIn:@[@"regex"]]) {
-            [regexes setObject:((Token*)t.children[1]).contents forKey:((Token*)t.children[0]).contents];
+            NSDictionary *re=@{
+                ((Token*)t.children[0]).contents:((Token*)t.children[1]).contents
+            };
+            if (![(NSDictionary*)regexes.lastObject isEqual:re]) {
+                [regexes addObject:re];
+            }
         }
         else if ((chs=[TokenHelper childrenForToken:token havingRuleIn:@[@"link"]])) {
             NSString *linkType=((Token*)t.children[0]).contents;
             WICtxt *ctxt=[self.context.clazz.context.file contextWithRegexes:regexes];
-            NSMutableDictionary *newRegexes=regexes.mutableCopy;
+            NSMutableArray *newRegexes=regexes.mutableCopy;
             for (Token *ch in chs) {
                 [ctxt process:ch regexes:newRegexes settings:settings outerClass:nil outerLinkType:linkType outerLinkVar:self mods:@[]];
             }
         }
         else if ((chs=[TokenHelper childrenForToken:token havingRuleIn:@[@"atomic"]])) {
             WIVarContext *varCtxt=[[[self.context.clazz.context.file contextWithRegexes:regexes] classWithName:self.context.clazz.name] varCtxtWithSettings:settings];
-            NSMutableDictionary *newRegexes=regexes.mutableCopy;
+            NSMutableArray *newRegexes=regexes.mutableCopy;
             for (Token *ch in chs) {
                 [self addAtomicVar:[varCtxt varForVarToken:ch type:self.type regexes:newRegexes]];
             }
