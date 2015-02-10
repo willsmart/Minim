@@ -362,6 +362,7 @@ WIVar
 
 
         [tov.settings mergeWith:[self.settings setByApplyingRegexes:regexes]];
+        [self.settings removeAllObjects];
 
         [self.getter applyRegexes:regexes to:tov];
         [self.defaultValue applyRegexes:regexes to:tov];
@@ -375,6 +376,7 @@ WIVar
             tov.bindingType=self.bindingType;
             WIVar *boundTo=self.boundTo;
             self.boundTo=nil;
+            self.bindingType=nil;
             tov.boundTo=[boundTo applyRegexes];
         }
         return(tov);
@@ -401,6 +403,8 @@ WIBody
         for (NSNumber *ordinal in self.snippets) {
             [[self snippetForKey:ordinal] applyRegexes:regexes to:tob];
         }
+
+        [self removeAllSnippets];
         return(tob);
     }
 
@@ -409,6 +413,7 @@ WIBodySnippet
     -(WIBodySnippet*)applyRegexes:(NSArray*)regexes to:(WIBody*)tob {
         WIBodySnippet *tos=[tob snippetAtOrdinal:((NSNumber*)self.keyInBody).intValue];
         [tos.strings mergeWith:[self.strings setByApplyingRegexes:regexes]];
+        [self.strings removeAllObjects];
         return(tos);
     }
 
