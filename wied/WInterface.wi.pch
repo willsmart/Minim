@@ -198,6 +198,7 @@
 @class JsonParser;
 @class MemMonitor;
 @class PartiallyOrderedSet;
+@class RegexHelper;
 @class TokenHelper;
 @class Treeable;
 @class ULLCarrier;
@@ -2527,6 +2528,7 @@ typedef unsigned short WRD;
     #include "default.mm"
     #include "Files.wi.mm"
     #include "object.mm"
+    #include "Regexes.wi.mm"
     #include "sys.mm"
     #include "token.mm"
     #include "token.wi.mm"

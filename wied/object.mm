@@ -57,6 +57,7 @@
             Log *log;
             ObjectGraph *objectGraph;
             bool online;
+            NSMutableDictionary *regexCache;
             NSString *v_styleName;
             NSTimer *v_tim;
             ClassCount *totalObjectCount;
@@ -79,6 +80,7 @@
         @property (strong,nonatomic,readonly) Log *log;
         @property (strong,nonatomic,readonly) ObjectGraph *objectGraph;
         @property (nonatomic,readwrite) bool online;
+        @property (strong,nonatomic,readonly) NSMutableDictionary *regexCache;
         @property (strong,nonatomic,readwrite) NSString *styleName;
         @property (strong,nonatomic,readwrite) NSTimer *tim;
         @property (strong,nonatomic,readwrite) ClassCount *totalObjectCount;
@@ -97,6 +99,7 @@
         - (Singletons *)init;
         - (Log *)log;
         - (ObjectGraph *)objectGraph;
+        - (NSMutableDictionary *)regexCache;
         - (void)setHomeURLPrefix:(NSString *)v;
         - (void)setStyleName:(NSString *)v;
         - (void)setTim:(NSTimer *)v;
@@ -326,7 +329,7 @@
         g_classCountht = classCountht = NEWCONSb( QuickHashTableOfClassCounts,(ci,nil,2048) );
         g_classCountArray = classCountArray = NEWCONSb( ArrayOfClassCounts,() );
 
-        /*i-500*//*ivar*/ v_homeURLPrefix = (@"http://192.168.2.2/");
+        /*i-500*//*ivar*/ v_homeURLPrefix = (@"http://192.168.1.3/");
         /*ivar*/ v_styleName = (@"Synesthete");
         /*ivar*/ online = (YES);
         /*ivar*/ v_typeCountHistory = ([NSMutableArray array]);
@@ -373,6 +376,8 @@
         REMOVEOWNER(files,self); files = nil;
 
         htmlParseOutput = nil;
+
+        regexCache = nil;
 
         v_typeCountHistory = nil;
 /*i999*/}
@@ -445,6 +450,12 @@
     - (ObjectGraph *)objectGraph {
         MSGSTART("Singletons:-(ObjectGraph*)objectGraph")
         return !objectGraph ? objectGraph = [[ObjectGraph alloc] init] : objectGraph;
+    }
+    - (NSMutableDictionary *)regexCache {
+        MSGSTART("Singletons:-(NSMutableDictionary*)regexCache")
+
+        return !regexCache ? regexCache = @{}
+               .mutableCopy : regexCache;
     }
     - (void)setHomeURLPrefix:(NSString *)v {
         MSGSTART("Singletons:-(void)setHomeURLPrefix:(NSString*)v")

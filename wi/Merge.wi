@@ -2,7 +2,7 @@
 
 WIFile
     -(WICtxt*)equivContextTo:(WICtxt*)other {
-        return([self contextWithRegexes:(NSDictionary*)other.keyInFile]);
+        return([self contextWithRegexes:(NSArray*)other.keyInFile]);
     }
     -(WIClass*)equivClassTo:(WIClass*)other {
         return([[self equivContextTo:other.context] equivClassTo:other]);

@@ -18,7 +18,7 @@ fi
 ok=1
 
 /usr/bin/osascript <<-EOF
-tell application "Xcode6.1"
+tell application "Xcode"
     activate
     delay 1
     tell application "System Events" to keystroke "s" using {command down, option down}
@@ -80,7 +80,7 @@ EOF
 
 
 /usr/bin/osascript <<-EOF
-tell application "Xcode6.1"
+tell application "Xcode"
     activate
     delay 1
     tell application "System Events" to keystroke "r" using command down

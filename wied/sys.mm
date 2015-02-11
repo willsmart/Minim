@@ -51,15 +51,20 @@
 
 
         @property (nonatomic,readonly) NSObject *asValidJsonObject;
-        @property (nonatomic,readonly) NSString *jsonString;
         @property (nonatomic,readonly) NSString *JSONString;
+        @property (nonatomic,readonly) NSString *jsonString;
+        @property (nonatomic,readonly) NSRegularExpression *stringAsRegularExpression;
+        - (void)applyRegexes:(NSObject *)regexesArrayOrDictionary mutableString:(NSMutableString *__strong *)pmutableString;
         - (NSObject *)asValidJsonObject;
-        - (NSString *)jsonString;
+        - (BOOL)isMatchedByRegex:(NSRegularExpression *)regex;
         - (NSString *)JSONString;
+        - (NSString *)jsonString;
         + (NSString *)JSONStringForCString:(const char *)from withLength:(Int)N useTmpDataObject:(NSMutableData *)d;
         + (const unichar *)JSONunicharsStringForCString:(const char *)from withLength:(Int)N useTmpDataObject:(NSMutableData *__strong *)pd retLength:(Int *)retLength;
         - (NSString *)replaceEnvironmentVariables_error:(NSError *__strong *)perror;
         + (StringRequestURLDelegate *)requestStringWithContentsOfURL:(NSURL *)aurl encoding:(NSStringEncoding)encoding timeoutInterval:(float)timeout completion:(StringRequestURLDelegateCompletionBlock)completionBlock;
+        - (NSRegularExpression *)stringAsRegularExpression;
+        - (NSString *)stringByApplyingRegexes:(NSObject *)regexesArrayOrDictionary;
         - (NSString *)stringByDecodingCEscapes;
         - (NSString *)stringByEncodingCEscapes;
         - (NSString *)stringByEncodingHTMLEntities;
@@ -258,17 +263,47 @@
     #define _Class_             NSString__
     @implementation NSString (winterface)
 
+    - (void)applyRegexes:(NSObject *)regexesArrayOrDictionary mutableString:(NSMutableString *__strong *)pmutableString {
+        MSGSTART("NSString:-(void)applyRegexes:(NSObject*)regexesArrayOrDictionary mutableString:(NSMutableString*__strong*)pmutableString")
+
+        NSMutableString * __strong &mutableString = *pmutableString;
+        if ([regexesArrayOrDictionary isKindOfClass:NSArray.class])
+            for (NSObject *o in(NSArray *) regexesArrayOrDictionary) {
+                if (mutableString) [mutableString applyRegexes:o];
+                else [self applyRegexes:o mutableString:pmutableString];
+            }
+        else if ([regexesArrayOrDictionary isKindOfClass:NSDictionary.class])
+            for (NSString *regexStr in(NSDictionary *) regexesArrayOrDictionary) {
+                NSString *replaceStr = ( (NSDictionary *)regexesArrayOrDictionary )[regexStr];
+                if ( !([regexStr isKindOfClass:NSString.class] && [replaceStr isKindOfClass:NSString.class]) )
+                    continue;
+                NSRegularExpression *regex = [RegexHelper regexForString:regexStr];
+                if (!regex) continue;
+                if (mutableString) {
+                    [mutableString match:regex replace:1000 withString:replaceStr];
+                }
+                else if ([self isMatchedByRegex:regex]) {
+                    mutableString = self.mutableCopy;
+                    [mutableString match:regex replace:1000 withString:replaceStr];
+                }
+            }
+    }
     - (NSObject *)asValidJsonObject {
         MSGSTART("NSString:-(NSObject*)asValidJsonObject")
         return self;
     }
-    - (NSString *)jsonString {
-        MSGSTART("NSString:-(NSString*)jsonString")
-        return self;
+    - (BOOL)isMatchedByRegex:(NSRegularExpression *)regex {
+        MSGSTART("NSString:-(BOOL)isMatchedByRegex:(NSRegularExpression*)regex")
+
+        return [regex rangeOfFirstMatchInString:self options:0 range:NSMakeRange(0,self.length)].location != NSNotFound;
     }
     - (NSString *)JSONString {
         MSGSTART("NSString:-(NSString*)JSONString")
         return JSONStringForString(self);
+    }
+    - (NSString *)jsonString {
+        MSGSTART("NSString:-(NSString*)jsonString")
+        return self;
     }
     + (NSString *)JSONStringForCString:(const char *)from withLength:(Int)N useTmpDataObject:(NSMutableData *)d {
         MSGSTART("NSString:+(NSString*)JSONStringForCString:(const char *)from withLength:(Int)N useTmpDataObject:(NSMutableData*)d")
@@ -323,6 +358,20 @@
         StringRequestURLDelegate *del = [[StringRequestURLDelegate alloc] initWithEncoding:encoding completionBlock:completionBlock];
         del.connection = [NSURLConnection connectionWithRequest:req delegate:del];
         return del;
+    }
+    - (NSRegularExpression *)stringAsRegularExpression {
+        MSGSTART("NSString:-(NSRegularExpression*)stringAsRegularExpression")
+
+        // [RKRegex regexWithRegexString:self options:RKCompileNoOptions];
+        NSError * err = nil;
+        return [NSRegularExpression regularExpressionWithPattern:self options:NSRegularExpressionDotMatchesLineSeparators error:&err];
+    }
+    - (NSString *)stringByApplyingRegexes:(NSObject *)regexesArrayOrDictionary {
+        MSGSTART("NSString:-(NSString*)stringByApplyingRegexes:(NSObject*)regexesArrayOrDictionary")
+
+        NSMutableString * ms = nil;
+        [self applyRegexes:regexesArrayOrDictionary mutableString:&ms];
+        return ms ? ms : self;
     }
     - (NSString *)stringByDecodingCEscapes {
         MSGSTART("NSString:-(NSString*)stringByDecodingCEscapes")

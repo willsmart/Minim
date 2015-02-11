@@ -924,6 +924,7 @@
 
 
 
+
         REMOVEOWNER(v_sourceCommitters,self); v_sourceCommitters = nil;
 
         trackerArray = nil;
@@ -2839,7 +2840,6 @@
 /*i-151*/ [self die];
 /*i0*/ if ( modelRetaincount && (totalRetainCount == modelRetaincount) )
             [[Model getDefault].objectsOwnedOnlyByModels removeObject:self];
-
 
 
 

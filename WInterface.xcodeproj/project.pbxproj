@@ -12,7 +12,6 @@
 		BE4152E71811B03200E421D7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BE4152E61811B03200E421D7 /* main.m */; };
 		BE4152EB1811B03200E421D7 /* WInterfaceSample.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = BE4152EA1811B03200E421D7 /* WInterfaceSample.1 */; };
 		BE4152FC1811B04200E421D7 /* sample.wi.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE730AD61810A4FB005582C5 /* sample.wi.mm */; };
-		BE73484F1A8601B4000C7D08 /* RegexKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE73484E1A8601B4000C7D08 /* RegexKit.framework */; };
 		BE87AC6319F6455600C5E23A /* ParseRule.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE87AC6219F6455600C5E23A /* ParseRule.mm */; };
 		BE91ACFE1A1A6D0D009751BB /* Files.wi.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE91ACFD1A1A6D0D009751BB /* Files.wi.mm */; };
 		BE91AD021A1A72D8009751BB /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE91AD011A1A72D8009751BB /* AppKit.framework */; };
@@ -20,6 +19,7 @@
 		BE99B973161BAE720041B8EA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE99B972161BAE720041B8EA /* Foundation.framework */; };
 		BE99B97A161BAE720041B8EA /* WInterface.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = BE99B979161BAE720041B8EA /* WInterface.1 */; };
 		BE9A3BAB1A37A2470038DF8D /* Code.wi.mm in Sources */ = {isa = PBXBuildFile; fileRef = BE9A3BAA1A37A2470038DF8D /* Code.wi.mm */; };
+		BEA3079B1A8B470A00A6614B /* Regexes.wi.mm in Sources */ = {isa = PBXBuildFile; fileRef = BEA3079A1A8B470A00A6614B /* Regexes.wi.mm */; };
 		BEC8A51B18296AA50090BBAD /* inserts.mm in Sources */ = {isa = PBXBuildFile; fileRef = BEC8A51A18296AA50090BBAD /* inserts.mm */; };
 		BEDEBF821A19DA1900D0200D /* base.wi.mm in Sources */ = {isa = PBXBuildFile; fileRef = BEDEBF6A1A19DA1900D0200D /* base.wi.mm */; };
 		BEDEBF831A19DA1900D0200D /* collectionArray.wi.mm in Sources */ = {isa = PBXBuildFile; fileRef = BEDEBF6B1A19DA1900D0200D /* collectionArray.wi.mm */; };
@@ -110,6 +110,7 @@
 		BEA020B01629505100CA480A /* PropA1.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = PropA1.wi; path = Wis/PropA1.wi; sourceTree = "<group>"; };
 		BEA020B41629505100CA480A /* PropS1.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = PropS1.wi; path = Wis/PropS1.wi; sourceTree = "<group>"; };
 		BEA020B8162951B100CA480A /* PropBase.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = PropBase.wi; path = Wis/PropBase.wi; sourceTree = "<group>"; };
+		BEA3079A1A8B470A00A6614B /* Regexes.wi.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = Regexes.wi.mm; path = wied/Regexes.wi.mm; sourceTree = SOURCE_ROOT; };
 		BEB3E1C11A61C93600291844 /* wi.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = wi.sh; path = ../wi.sh; sourceTree = "<group>"; };
 		BEC3EDAE162B2999001BA99B /* ModelNS1.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = ModelNS1.wi; path = Wis/ModelNS1.wi; sourceTree = "<group>"; };
 		BEC3EDAF162B299A001BA99B /* ModelNSA.wi */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; name = ModelNSA.wi; path = Wis/ModelNSA.wi; sourceTree = "<group>"; };
@@ -162,7 +163,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BE73484F1A8601B4000C7D08 /* RegexKit.framework in Frameworks */,
 				BE91AD041A1A7303009751BB /* QuartzCore.framework in Frameworks */,
 				BE91AD021A1A72D8009751BB /* AppKit.framework in Frameworks */,
 				BE99B973161BAE720041B8EA /* Foundation.framework in Frameworks */,
@@ -193,6 +193,7 @@
 		BE5266E3196DC31D00FD10AB /* Sourcefiles */ = {
 			isa = PBXGroup;
 			children = (
+				BEA3079A1A8B470A00A6614B /* Regexes.wi.mm */,
 				BE9A3BAA1A37A2470038DF8D /* Code.wi.mm */,
 				BE91ACFD1A1A6D0D009751BB /* Files.wi.mm */,
 				BEDEBF6A1A19DA1900D0200D /* base.wi.mm */,
@@ -442,6 +443,7 @@
 				BEDEBF841A19DA1900D0200D /* collectionAtomicAndTracker.wi.mm in Sources */,
 				BEDEBF861A19DA1900D0200D /* collectionNS.wi.mm in Sources */,
 				BEDEBF931A19DA1900D0200D /* token.wi.mm in Sources */,
+				BEA3079B1A8B470A00A6614B /* Regexes.wi.mm in Sources */,
 				BEDEBF821A19DA1900D0200D /* base.wi.mm in Sources */,
 				BEDEBF891A19DA1900D0200D /* collectionTester.wi.mm in Sources */,
 				BEDEBF911A19DA1900D0200D /* sys.mm in Sources */,

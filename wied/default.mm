@@ -106,6 +106,18 @@
 
 
 
+        @interface NSMutableString (winterface)
+
+
+        - (NSMutableString *)applyRegexes:(NSObject *)regexesArrayOrDictionary;
+        - (void)match:(NSRegularExpression *)regex replace:(NSUInteger)count withString:(NSString *)replaceStr;
+
+        @end
+
+
+
+
+
         @interface NSNull (winterface)
 
 
@@ -125,6 +137,75 @@
         - (NSObject *)asValidJsonObject;
 
         @end
+
+
+
+
+
+        @interface WIVarArg : NSObject<Object, ClassObject> {
+            LL __owner_context;
+            @private ULL __private_access_thread_mask_in_WIVarArg; @protected
+            NSString *v_arg;
+            bool debugAutorelease;
+            bool isZombie;
+            NSString *v_name;
+            LL objectIDInClass;
+            LL objectIDInTotal;
+            Endpoint1 *v_type_endpoint;
+            Endpoint1 *v_var_endpoint;
+        }
+
+        @property (nonatomic,readwrite) LL __owner_context;
+        @property (strong,nonatomic,readwrite) NSString *arg;
+        @property (nonatomic,readonly) constchar *cdescription;
+        @property (nonatomic,readonly) constchar *cobjectName;
+        @property (nonatomic,readwrite) bool debugAutorelease;
+        @property (nonatomic,readonly) NSString *description;
+        @property (nonatomic,readonly) WIFile *file;
+        @property (nonatomic,readwrite) NSIndexSet *indexesInVar;
+        @property (nonatomic,readwrite) Unsigned indexInVar;
+        @property (nonatomic,readonly) bool isZombie;
+        @property (strong,nonatomic,readwrite) NSString *name;
+        @property (nonatomic,readonly) LL objectIDInClass;
+        @property (nonatomic,readonly) LL objectIDInTotal;
+        @property (nonatomic,readonly) NSMutableString *objectName;
+        @property (nonatomic,readwrite) WIType *type;
+        @property (strong,nonatomic,readwrite  /*(public readonly)*/) Endpoint1 *type_endpoint;
+        @property (nonatomic,readwrite) WIVar *var;
+        @property (strong,nonatomic,readwrite  /*(public readonly)*/) Endpoint1 *var_endpoint;
+        - (void)_startObjectOfClassWIVarArg;
+        - (NSString *)arg;
+        - (constchar *)cdescription;
+        - (constchar *)cobjectName;
+        - (WIVarArg *)copyByApplyingRegexes:(NSArray *)regexes;
+        - (void)dealloc;
+        - (NSString *)description;
+        - (void)die;
+        - (WIFile *)file;
+        - (NSIndexSet *)indexesInVar;
+        - (Unsigned)indexInVar;
+        - (WIVarArg *)init;
+        - (NSNumber *)isAcceptableType:(id)atype;
+        - (NSNumber *)isAcceptableVar:(id)avar;
+        - (NSString *)name;
+        - (NSMutableString *)objectName;
+        - (void)retract;
+        - (void)setArg:(NSString *)v;
+        - (void)setIndexesInVar:(NSIndexSet *)v;
+        - (void)setIndexInVar:(Unsigned)v;
+        - (void)setName:(NSString *)v;
+        - (void)setType:(WIType *)v;
+        - (void)setType_endpoint:(Endpoint1 *)v;
+        - (void)setVar:(WIVar *)v;
+        - (void)setVar_endpoint:(Endpoint1 *)v;
+        - (WIType *)type;
+        - (Endpoint1 *)type_endpoint;
+        - (NSObject<LinkEndpoint> *)typeToEndpoint:(id)atype;
+        - (WIVar *)var;
+        - (Endpoint1 *)var_endpoint;
+        - (NSObject<LinkEndpoint> *)varToEndpoint:(id)avar;
+
+        @end
     #endif // INCLUDE_IFACE_D0
 
     #ifdef INCLUDE_IFACE_D1
@@ -138,6 +219,7 @@
 
         @property (nonatomic,readonly) NSObject *asValidJsonObject;
         @property (nonatomic,readonly) NSString *jsonString;
+        - (NSArray *)arrayByApplyingRegexes:(NSObject *)regexes;
         - (NSArray *)asStrong;
         - (NSObject *)asValidJsonObject;
         - (NSArray *)asWeak;
@@ -168,6 +250,7 @@
         - (NSDictionary *)asWeak;
         - (NSDictionary *)copyWithWeakness:(CollectionWeakness)weakness;
         - (id)derefedObjectForKey:(id)key;
+        - (NSDictionary *)dictionaryByApplyingRegexes:(NSObject *)regexes;
         - (NSString *)jsonString;
         - (NSMutableDictionary *)mutableCopyWithWeakness:(CollectionWeakness)weakness;
         - (NSDictionary *)strongCopy;
@@ -194,6 +277,7 @@
         - (NSSet *)copyWithWeakness:(CollectionWeakness)weakness;
         - (NSString *)jsonString;
         - (NSMutableSet *)mutableCopyWithWeakness:(CollectionWeakness)weakness;
+        - (NSSet *)setByApplyingRegexes:(NSObject *)regexes;
         - (NSSet *)strongCopy;
         - (NSMutableSet *)strongMutableCopy;
         - (NSSet *)weakCopy;
@@ -247,6 +331,7 @@
         @property (nonatomic,readonly) NSSet *treePropertyNames;
         @property (nonatomic,readonly) NSSet *treeSingleNodePropertyNames;
         - (void)_startObjectOfClassWIBody;
+        - (WIBody *)applyRegexes:(NSArray *)regexes to:(WIVar *)tov;
         - (NSDictionary *)asD3Tree;
         - (NSString *)asD3TreeJSON;
         - (NSDictionary *)asTree;
@@ -338,6 +423,7 @@
         @property (nonatomic,readonly) NSSet *treePropertyNames;
         @property (nonatomic,readonly) NSSet *treeSingleNodePropertyNames;
         - (void)_startObjectOfClassWIBodySnippet;
+        - (WIBodySnippet *)applyRegexes:(NSArray *)regexes to:(WIBody *)tob;
         - (NSDictionary *)asD3Tree;
         - (NSString *)asD3TreeJSON;
         - (NSDictionary *)asTree;
@@ -438,6 +524,8 @@
         - (void)addSubprotocol:(WIClass *)v;
         - (void)addSuperclass:(WIClass *)v;
         - (void)addSuperprotocol:(WIClass *)v;
+        - (void)applyConformedProtocolRegexes;
+        - (WIClass *)applyRegexes;
         - (NSDictionary *)asD3Tree;
         - (NSString *)asD3TreeJSON;
         - (NSDictionary *)asTree;
@@ -479,7 +567,7 @@
         - (NSString *)name;
         - (NSMutableString *)objectName;
         #ifndef __SWIFT__
-            - (void)process:(Token *)token regexes:(NSMutableDictionary *)regexes settings:(NSSet *)settings doingInitialSettings:(bool &)doingInitialSettings outerClass:(WIClass *)outerClass outerLinkType:(NSString *)outerLinkType outerLinkVar:(WIVar *)outerLinkVar mods:(NSArray *)mods;
+            - (void)process:(Token *)token regexes:(NSMutableArray *)regexes settings:(NSSet *)settings doingInitialSettings:(bool &)doingInitialSettings outerClass:(WIClass *)outerClass outerLinkType:(NSString *)outerLinkType outerLinkVar:(WIVar *)outerLinkVar mods:(NSArray *)mods;
         #endif // __SWIFT__
         - (WICtxt *)protocolInCtxt;
         - (Endpoint1 *)protocolInCtxt_endpoint;
@@ -583,6 +671,8 @@
         @property (nonatomic,readonly) NSSet *treePropertyNames;
         @property (nonatomic,readonly) NSSet *treeSingleNodePropertyNames;
         - (void)_startObjectOfClassWICtxt;
+        - (void)applyConformedProtocolRegexes;
+        - (void)applyRegexes;
         - (NSDictionary *)asD3Tree;
         - (NSString *)asD3TreeJSON;
         - (NSDictionary *)asTree;
@@ -611,7 +701,7 @@
         - (NSSet *)keysInFile;
         - (void)mergeWith:(WICtxt *)other;
         - (NSMutableString *)objectName;
-        - (void)process:(Token *)token regexes:(NSMutableDictionary *)regexes settings:(NSSet *)settings outerClass:(WIClass *)outerClass outerLinkType:(NSString *)outerLinkType outerLinkVar:(WIVar *)outerLinkVar mods:(NSArray *)mods;
+        - (void)process:(Token *)token regexes:(NSMutableArray *)regexes settings:(NSSet *)settings outerClass:(WIClass *)outerClass outerLinkType:(NSString *)outerLinkType outerLinkVar:(WIVar *)outerLinkVar mods:(NSArray *)mods;
         - (WIClass *)protocolForKey:(id<NSCopying> )key;
         - (EndpointD *)protocols;
         - (NSObject<LinkEndpoint> *)protocolToEndpoint:(id)aprotocol;
@@ -673,13 +763,15 @@
         @property (nonatomic,readonly) NSSet *treePropertyNames;
         @property (nonatomic,readonly) NSSet *treeSingleNodePropertyNames;
         - (void)_startObjectOfClassWIFile;
+        - (void)applyConformedProtocolRegexes;
+        - (void)applyRegexes;
         - (NSDictionary *)asD3Tree;
         - (NSString *)asD3TreeJSON;
         - (NSDictionary *)asTree;
         - (NSMutableDictionary *)asTree:(NSMutableSet *)seen;
         - (constchar *)cdescription;
         - (constchar *)cobjectName;
-        - (WICtxt *)contextWithRegexes:(NSDictionary *)regexes;
+        - (WICtxt *)contextWithRegexes:(NSArray *)regexes;
         - (WICtxt *)ctxtForKey:(id<NSCopying> )key;
         - (EndpointD *)ctxts;
         - (NSObject<LinkEndpoint> *)ctxtToEndpoint:(id)actxt;
@@ -698,7 +790,7 @@
         - (void)mergeWith:(WIFile *)other;
         - (NSMutableString *)objectName;
         - (void)process:(NSArray *)tokens;
-        - (void)process:(Token *)token regexes:(NSMutableDictionary *)regexes settings:(NSSet *)settings;
+        - (void)process:(Token *)token regexes:(NSMutableArray *)regexes settings:(NSSet *)settings;
         - (void)removeAllCtxts;
         - (void)removeCtxtForKey:(id<NSCopying> )key;
         - (void)retract;
@@ -757,6 +849,7 @@
         - (void)_startObjectOfClassWIType;
         - (void)addArg:(WIVarArg *)v;
         - (void)addVar:(WIVar *)v;
+        - (WIType *)applyRegexes:(NSArray *)regexes;
         - (EndpointS *)args;
         - (NSObject<LinkEndpoint> *)argToEndpoint:(id)aarg;
         - (NSDictionary *)asD3Tree;
@@ -867,6 +960,8 @@
         - (void)addArg:(WIVarArg *)v;
         - (void)addAtomicVar:(WIVar *)v;
         - (void)addFluidVar:(WIVar *)v;
+        - (WIVar *)applyRegexes:(NSArray *)regexes;
+        - (WIVar *)applyRegexes:(NSArray *)regexes to:(WIVarContext *)tovc;
         - (WIVarArg *)argAtIndex:(Int)index;
         - (EndpointA *)args;
         - (NSObject<LinkEndpoint> *)argToEndpoint:(id)aarg;
@@ -908,11 +1003,12 @@
         - (NSNumber *)isAcceptableType:(id)atype;
         - (kid)keyInContext;
         - (NSSet *)keysInContext;
+        + (NSArray *)keyWithType:(WIType *)type name:(NSString *)name args:(NSArray *)args;
         - (void)mergeWith:(WIVar *)other;
         - (NSString *)name;
         - (NSMutableString *)objectName;
         #ifndef __SWIFT__
-            - (void)process:(Token *)token regexes:(NSMutableDictionary *)regexes settings:(NSSet *)settings doingInitialSettings:(bool &)doingInitialSettings;
+            - (void)process:(Token *)token regexes:(NSMutableArray *)regexes settings:(NSSet *)settings doingInitialSettings:(bool &)doingInitialSettings;
         #endif // __SWIFT__
         - (void)removeAllArgs;
         - (void)removeAllAtomicVars;
@@ -946,6 +1042,7 @@
         - (WIBody *)setterForKey:(id<NSCopying> )key;
         - (EndpointD *)setters;
         - (NSObject<LinkEndpoint> *)setterToEndpoint:(id)asetter;
+        - (WIBody *)setterWithSetterVar:(NSString *)setterVar;
         - (MutableDictionary *)settings;
         - (void)setType:(WIType *)v;
         - (void)setType_endpoint:(Endpoint1 *)v;
@@ -997,7 +1094,9 @@
         @property (nonatomic,readonly) NSSet *treeSingleNodePropertyNames;
         @property (strong,nonatomic,readwrite  /*(public readonly)*/) EndpointD *vars;
         - (void)_startObjectOfClassWIVarContext;
-        - (void)_addArgsFromToken:(Token *)token key:(NSMutableArray *)key argTypes:(NSMutableArray *)argTypes argArgs:(NSMutableArray *)argArgs argNames:(NSMutableArray *)argNames regexes:(NSMutableDictionary *)regexes;
+        - (void)_addArgsFromToken:(Token *)token key:(NSMutableArray *)key argTypes:(NSMutableArray *)argTypes argArgs:(NSMutableArray *)argArgs argNames:(NSMutableArray *)argNames regexes:(NSMutableArray *)regexes;
+        - (WIVarContext *)applyRegexes:(NSArray *)regexes;
+        - (WIVarContext *)applyRegexes:(NSArray *)regexes to:(WIClass *)toc;
         - (NSDictionary *)asD3Tree;
         - (NSString *)asD3TreeJSON;
         - (NSDictionary *)asTree;
@@ -1033,11 +1132,12 @@
         - (NSDictionary *)treeNodeData;
         - (NSSet *)treePropertyNames;
         - (NSSet *)treeSingleNodePropertyNames;
-        - (WIType *)typeForFnBlock:(Token *)token mods:(NSMutableArray *)mods regexes:(NSMutableDictionary *)regexes;
+        - (WIType *)typeForFnBlock:(Token *)token mods:(NSMutableArray *)mods regexes:(NSMutableArray *)regexes;
         - (WIVar *)varForKey:(id<NSCopying> )key;
-        - (WIVar *)varForVarToken:(Token *)token type:(WIType *)type regexes:(NSMutableDictionary *)regexes;
+        - (WIVar *)varForVarToken:(Token *)token type:(WIType *)type regexes:(NSMutableArray *)regexes;
         - (EndpointD *)vars;
         - (NSObject<LinkEndpoint> *)varToEndpoint:(id)avar;
+        - (WIVar *)varWithVarKey:(NSArray *)key;
 
         @end
     #endif // INCLUDE_IFACE_D1
@@ -1151,6 +1251,28 @@
     #define _Class_             NSArray__
     @implementation NSArray (winterface)
 
+    - (NSArray *)arrayByApplyingRegexes:(NSObject *)regexes {
+        MSGSTART("NSArray:-(NSArray*)arrayByApplyingRegexes:(NSObject*)regexes")
+
+        NSMutableArray * ma = nil;
+        NSInteger i = -1;
+        for (NSObject *v in self) {
+            i++;
+            NSObject *v2 = ([v isKindOfClass:NSString.class] ? [(NSString *)v stringByApplyingRegexes : regexes] : v);
+            if ([v isKindOfClass:NSDictionary.class])
+                v2 = [(NSDictionary *)v dictionaryByApplyingRegexes : regexes];
+            if ([v isKindOfClass:NSArray.class])
+                v2 = [(NSArray *)v arrayByApplyingRegexes : regexes];
+            if ([v isKindOfClass:NSSet.class])
+                v2 = [(NSSet *)v setByApplyingRegexes : regexes];
+
+            if (v != v2) {
+                if (!ma) ma = self.mutableCopy;
+                [ma replaceObjectAtIndex:i withObject:v2];
+            }
+        }
+        return ma ? ma : self;
+    }
     - (NSArray *)asStrong {
         MSGSTART("NSArray:-(NSArray*)asStrong")
         CollectionWeakness weakness = self.weakness;
@@ -1401,6 +1523,43 @@
         MSGSTART("NSDictionary:-(id)derefedObjectForKey:(id)key")
 
         return [WeakObject deref:[self objectForKey:key]];
+    }
+    - (NSDictionary *)dictionaryByApplyingRegexes:(NSObject *)regexes {
+        MSGSTART("NSDictionary:-(NSDictionary*)dictionaryByApplyingRegexes:(NSObject*)regexes")
+
+        NSMutableDictionary * md = nil;
+        for (NSObject<NSCopying> *key in self) {
+            NSObject *v = self[key];
+            NSObject<NSCopying> *key2 = ([key isKindOfClass:NSString.class] ? [(NSString *)key stringByApplyingRegexes : regexes] : key);
+            NSObject *v2 = ([v isKindOfClass:NSString.class] ? [(NSString *)v stringByApplyingRegexes : regexes] : v);
+
+            if ([v isKindOfClass:NSDictionary.class])
+                v2 = [(NSDictionary *)v dictionaryByApplyingRegexes : regexes];
+            if ([key isKindOfClass:NSDictionary.class])
+                key2 = [(NSDictionary *)key2 dictionaryByApplyingRegexes : regexes];
+
+            if ([v isKindOfClass:NSArray.class])
+                v2 = [(NSArray *)v arrayByApplyingRegexes : regexes];
+            if ([key isKindOfClass:NSArray.class])
+                key2 = [(NSArray *)key2 arrayByApplyingRegexes : regexes];
+
+            if ([v isKindOfClass:NSSet.class])
+                v2 = [(NSSet *)v setByApplyingRegexes : regexes];
+            if ([key isKindOfClass:NSSet.class])
+                key2 = [(NSSet *)key setByApplyingRegexes : regexes];
+
+            if ( (key != key2) || (v != v2) ) {
+                if (!md) md = self.mutableCopy;
+                if (key != key2) {
+                    [md removeObjectForKey:key];
+                    md[key2] = v2;
+                }
+                else {
+                    md[key] = v2;
+                }
+            }
+        }
+        return md ? md : self;
     }
     - (NSString *)jsonString {
         MSGSTART("NSDictionary:-(NSString*)jsonString")
@@ -1684,6 +1843,51 @@
     #endif
     #define _PrivateAccessMask_ __private_access_thread_mask_in_Globals
 
+    #define _ClassName_         NSMutableString
+    #define _WIClass_           NSMutableString__
+    #define _className_         nSMutableString
+    #define _Class_             NSMutableString__
+    @implementation NSMutableString (winterface)
+
+    - (NSMutableString *)applyRegexes:(NSObject *)regexesArrayOrDictionary {
+        MSGSTART("NSMutableString:-(NSMutableString*)applyRegexes:(NSObject*)regexesArrayOrDictionary")
+
+        if ([regexesArrayOrDictionary isKindOfClass:NSArray.class])
+            for (NSObject *o in(NSArray *) regexesArrayOrDictionary) {
+                [self applyRegexes:o];
+            }
+        else if ([regexesArrayOrDictionary isKindOfClass:NSDictionary.class])
+            for (NSString *regexStr in(NSDictionary *) regexesArrayOrDictionary) {
+                NSString *replaceStr = ( (NSDictionary *)regexesArrayOrDictionary )[regexStr];
+                if ( !([regexStr isKindOfClass:NSString.class] && [replaceStr isKindOfClass:NSString.class]) )
+                    continue;
+                NSRegularExpression *regex = [RegexHelper regexForString:regexStr];
+                if (!regex) continue;
+                [self match:regex replace:1000 withString:replaceStr];
+            }
+        return self;
+    }
+    - (void)match:(NSRegularExpression *)regex replace:(NSUInteger)count withString:(NSString *)replaceStr {
+        MSGSTART("NSMutableString:-(void)match:(NSRegularExpression*)regex replace:(NSUInteger)count withString:(NSString*)replaceStr")
+
+        [regex replaceMatchesInString : self options : 0 range : NSMakeRange(0,self.length) withTemplate : replaceStr];
+    }
+
+    @end
+    #undef _ClassName_
+    #undef _WIClass_
+    #undef _className_
+    #undef _Class_
+
+
+
+
+
+    #ifdef _PrivateAccessMask_
+        #undef _PrivateAccessMask_
+    #endif
+    #define _PrivateAccessMask_ __private_access_thread_mask_in_Globals
+
     #define _ClassName_         NSNull
     #define _WIClass_           NSNull__
     #define _className_         nSNull
@@ -1806,6 +2010,29 @@
             case CollectionIsStrong: return self.strongMutableCopy;
         }
     }
+    - (NSSet *)setByApplyingRegexes:(NSObject *)regexes {
+        MSGSTART("NSSet:-(NSSet*)setByApplyingRegexes:(NSObject*)regexes")
+
+        NSMutableSet * ms = nil;
+        NSInteger i = -1;
+        for (NSObject *v in self) {
+            i++;
+            NSObject *v2 = ([v isKindOfClass:NSString.class] ? [(NSString *)v stringByApplyingRegexes : regexes] : v);
+            if ([v isKindOfClass:NSDictionary.class])
+                v2 = [(NSDictionary *)v dictionaryByApplyingRegexes : regexes];
+            if ([v isKindOfClass:NSArray.class])
+                v2 = [(NSArray *)v arrayByApplyingRegexes : regexes];
+            if ([v isKindOfClass:NSSet.class])
+                v2 = [(NSSet *)v setByApplyingRegexes : regexes];
+
+            if (v != v2) {
+                if (!ms) ms = self.mutableCopy;
+                [ms removeObject:v];
+                [ms addObject:v2];
+            }
+        }
+        return ms ? ms : self;
+    }
     - (NSSet *)strongCopy {
         MSGSTART("NSSet:-(NSSet*)strongCopy")
         return self.asStrong.copy;
@@ -1891,6 +2118,30 @@
         /*ivar*/ v_getterForVar_endpoint = ([[Endpoint1 alloc] initWithOwner:self retains:NO acceptableSel:@selector(isAcceptableGetterForVar:) otherEndObjectToEndpoint:@selector(getterForVarToEndpoint:)]);  ADDOWNER(v_getterForVar_endpoint,self);
 
         /*i0*/}
+    - (WIBody *)applyRegexes:(NSArray *)regexes to:(WIVar *)tov {
+        MSGSTART("WIBody:-(WIBody*)applyRegexes:(NSArray*)regexes to:(WIVar*)tov")
+
+        WIBody * tob = nil;
+        if (self.getterForVar) {
+            tob = tov.getter;
+            if (!tob) tov.getter = tob = [WIBody new];
+        }
+        else if (self.defaultValueForVar) {
+            tob = tov.defaultValue;
+            if (!tob) tov.defaultValue = tob = [WIBody new];
+        }
+        else if (self.setterForVar) {
+            tob = [tov setterWithSetterVar:(NSString *)self.keyInSetterForVar];
+        }
+        else {
+            return nil;
+        }
+
+        for (NSNumber *ordinal in self.snippets) {
+            [[self snippetForKey:ordinal] applyRegexes:regexes to:tob];
+        }
+        return tob;
+    }
     - (NSDictionary *)asD3Tree {
         MSGSTART("WIBody:-(NSDictionary*)asD3Tree")
         return [Treeable asD3Tree:self.asTree];
@@ -2291,6 +2542,13 @@
         /*ivar*/ v_body_endpoint = ([[Endpoint1 alloc] initWithOwner:self retains:NO acceptableSel:@selector(isAcceptableBody:) otherEndObjectToEndpoint:@selector(bodyToEndpoint:)]);  ADDOWNER(v_body_endpoint,self);
 
         /*i0*/}
+    - (WIBodySnippet *)applyRegexes:(NSArray *)regexes to:(WIBody *)tob {
+        MSGSTART("WIBodySnippet:-(WIBodySnippet*)applyRegexes:(NSArray*)regexes to:(WIBody*)tob")
+
+        WIBodySnippet * tos = [tob snippetAtOrdinal:( (NSNumber *)self.keyInBody ).intValue];
+        [tos.strings mergeWith:[self.strings setByApplyingRegexes:regexes]];
+        return tos;
+    }
     - (NSDictionary *)asD3Tree {
         MSGSTART("WIBodySnippet:-(NSDictionary*)asD3Tree")
         return [Treeable asD3Tree:self.asTree];
@@ -2565,6 +2823,123 @@
     - (void)addSuperprotocol:(WIClass *)v {
         MSGSTART("WIClass:-(void)addSuperprotocol:(WIClass*)v")
         [v_superprotocols addObject : v];
+    }
+    - (void)applyConformedProtocolRegexes {
+        MSGSTART("WIClass:-(void)applyConformedProtocolRegexes")
+
+        NSArray * regexes = (NSArray *)self.context.keyInFile;
+        if (!regexes.count) return;
+
+        NSMutableSet *newConformedProtocols = nil;
+        for (WIClass *conformedProtocol in self.conformedProtocols) {
+            NSArray *protocolRegexes = (NSArray *)self.context.keyInFile;
+            if (regexes.count < protocolRegexes.count) continue;
+
+            int addAt;
+            bool correctEnding = NO;
+            for (addAt = 0; !correctEnding; addAt++) {
+                correctEnding = YES;
+                for (int i = 0; correctEnding && (i + addAt < regexes.count); i++) {
+                    if (![regexes[i] isEqual:protocolRegexes[i + addAt + protocolRegexes.count - regexes.count]])
+                        correctEnding = NO;
+                }
+            }
+            if (!addAt) continue;
+
+            NSMutableArray *newProtocolRegexes = protocolRegexes.mutableCopy;
+            for (int i = addAt; i < regexes.count; i++) {
+                [newProtocolRegexes addObject:[regexes[i] copy]];
+            }
+
+            WIClass *newConformedProtocol = [[self.file contextWithRegexes:newProtocolRegexes] equivClassTo:conformedProtocol];
+            [newConformedProtocol mergeWith:conformedProtocol];
+
+            [newConformedProtocol applyConformedProtocolRegexes];
+
+            if (!newConformedProtocols) newConformedProtocols = self.conformedProtocols.mutableCopy;
+            [newConformedProtocols removeObject:conformedProtocol];
+            [newConformedProtocols addObject:newConformedProtocol];
+        }
+
+        if (newConformedProtocols) [self.conformedProtocols setSet:newConformedProtocols];
+    }
+    - (WIClass *)applyRegexes {
+        MSGSTART("WIClass:-(WIClass*)applyRegexes")
+
+        WICtxt * toctxt = [self.file ctxtForKey:@[]];
+        if (self.context == toctxt) return self;
+
+        NSArray *regexes = (NSArray *)self.context.keyInFile;
+        WIClass *toc = (self.classInCtxt ?
+                        [toctxt classWithName:[self.name stringByApplyingRegexes:regexes]] :
+                        [toctxt protocolWithName:[self.name stringByApplyingRegexes:regexes]]
+            );
+
+        NSSet *superclasses = self.superclasss.copy;
+        NSSet *subclasses = self.subclasss.copy;
+        NSSet *superprotocols = self.superprotocols.copy;
+        NSSet *subprotocols = self.subprotocols.copy;
+        NSSet *conformedProtocols = self.conformedProtocols.copy;
+        NSSet *conformingClasss = self.conformingClasss.copy;
+
+        [self.superclasss removeAllObjects];
+        [self.subclasss removeAllObjects];
+        [self.superprotocols removeAllObjects];
+        [self.subprotocols removeAllObjects];
+        [self.conformedProtocols removeAllObjects];
+        [self.conformingClasss removeAllObjects];
+
+        NSMutableSet *newSuperclasses = NSMutableSet.set;
+        NSMutableSet *newSubclasses = NSMutableSet.set;
+        NSMutableSet *newSuperprotocols = NSMutableSet.set;
+        NSMutableSet *newSubprotocols = NSMutableSet.set;
+        NSMutableSet *newConformedProtocols = NSMutableSet.set;
+        NSMutableSet *newConformingClasses = NSMutableSet.set;
+
+        for (WIClass *c in superclasses) {
+            [newSuperclasses addObject:[c applyRegexes]];
+        }
+        for (WIClass *c in subclasses) {
+            [newSubclasses addObject:[c applyRegexes]];
+        }
+        for (WIClass *c in superprotocols) {
+            [newSuperprotocols addObject:[c applyRegexes]];
+        }
+        for (WIClass *c in subprotocols) {
+            [newSubprotocols addObject:[c applyRegexes]];
+        }
+        for (WIClass *c in conformedProtocols) {
+            [newConformedProtocols addObject:[c applyRegexes]];
+        }
+        for (WIClass *c in conformingClasss) {
+            [newConformingClasses addObject:[c applyRegexes]];
+        }
+
+        for (WIClass *c in newSuperclasses) {
+            [toc addSuperclass:c];
+        }
+        for (WIClass *c in newSubclasses) {
+            [toc addSubclass:c];
+        }
+        for (WIClass *c in newSuperprotocols) {
+            [toc addSuperprotocol:c];
+        }
+        for (WIClass *c in newSubprotocols) {
+            [toc addSubprotocol:c];
+        }
+        for (WIClass *c in newConformedProtocols) {
+            [toc addConformedProtocol:c];
+        }
+        for (WIClass *c in newConformingClasses) {
+            [toc addConformingClass:c];
+        }
+
+        [toc.settings mergeWith:[self.settings dictionaryByApplyingRegexes:regexes]];
+
+        for (NSObject<NSCopying> *key in self.varCtxts) {
+            [[self varCtxtForKey:key] applyRegexes:regexes to:toc];
+        }
+        return toc;
     }
     - (NSDictionary *)asD3Tree {
         MSGSTART("WIClass:-(NSDictionary*)asD3Tree")
@@ -2863,8 +3238,8 @@
         /*i999*/ return ret;
     }
     #ifndef __SWIFT__
-        - (void)process:(Token *)token regexes:(NSMutableDictionary *)regexes settings:(NSSet *)settings doingInitialSettings:(bool &)doingInitialSettings outerClass:(WIClass *)outerClass outerLinkType:(NSString *)outerLinkType outerLinkVar:(WIVar *)outerLinkVar mods:(NSArray *)mods {
-            MSGSTART("WIClass:-(void)process:(Token*)token regexes:(NSMutableDictionary*)regexes settings:(NSSet*)settings doingInitialSettings:(bool&)doingInitialSettings outerClass:(WIClass*)outerClass outerLinkType:(NSString*)outerLinkType outerLinkVar:(WIVar*)outerLinkVar mods:(NSArray*)mods")
+        - (void)process:(Token *)token regexes:(NSMutableArray *)regexes settings:(NSSet *)settings doingInitialSettings:(bool &)doingInitialSettings outerClass:(WIClass *)outerClass outerLinkType:(NSString *)outerLinkType outerLinkVar:(WIVar *)outerLinkVar mods:(NSArray *)mods {
+            MSGSTART("WIClass:-(void)process:(Token*)token regexes:(NSMutableArray*)regexes settings:(NSSet*)settings doingInitialSettings:(bool&)doingInitialSettings outerClass:(WIClass*)outerClass outerLinkType:(NSString*)outerLinkType outerLinkVar:(WIVar*)outerLinkVar mods:(NSArray*)mods")
 
             Token * t = [TokenHelper actualToken:token];
             NSArray *chs;
@@ -2885,14 +3260,18 @@
                 [[self.context.file contextWithRegexes:regexes] process:token regexes:regexes.mutableCopy settings:settings outerClass:self outerLinkType:nil outerLinkVar:nil mods:@[]];
             }
             else if ([TokenHelper actualToken:t havingRuleIn:@[@"regex"]]) {
-                [regexes setObject:( (Token *)t.children[1] ).contents forKey:( (Token *)t.children[0] ).contents];
+                NSDictionary *re = @{
+                    ( (Token *)t.children[0] ).contents:( (Token *)t.children[1] ).contents
+                };
+                if (![(NSDictionary *)regexes.lastObject isEqual : re])
+                    [regexes addObject:re];
             }
             else if ( outerClass && ( (chs = [TokenHelper childrenForToken:token havingRuleIn:@[@"var",@"fn"]]) ) ) {
                 WIVarContext *varCtxt = [outerClass varCtxtWithSettings:settings];
                 WIVar *var = [varCtxt varForVarToken:t type:[self typeWithModifiers:mods] regexes:regexes];
 
                 bool varDoingInitialSettings = YES;
-                NSMutableDictionary *newRegexes = regexes.mutableCopy;
+                NSMutableArray *newRegexes = regexes.mutableCopy;
                 for (Token *ch in chs) {
                     [var process:ch regexes:newRegexes settings:settings doingInitialSettings:varDoingInitialSettings];
                 }
@@ -3287,7 +3666,7 @@
         MSGSTART("WIClass:-(WIType*)typeWithModifiers:(NSArray*)mods")
 
         WIType * ret = [self typeForKey:mods];
-        if (!ret) [self setType:ret = [WIType new] forKey:mods];
+        if (!ret) [self setType:ret = [WIType new] forKey:mods.copy];
         return ret;
     }
     - (WIVarContext *)varCtxtForKey:(id<NSCopying> )key {
@@ -3308,7 +3687,7 @@
         MSGSTART("WIClass:-(WIVarContext*)varCtxtWithSettings:(NSSet*)settings")
 
         WIVarContext * ret = [self varCtxtForKey:settings];
-        if (!ret) [self setVarCtxt:ret = [WIVarContext new] forKey:settings];
+        if (!ret) [self setVarCtxt:ret = [WIVarContext new] forKey:settings.copy];
         return ret;
     }
 
@@ -3351,6 +3730,26 @@
         /*i-500*//*ivar*/ v_file_endpoint = ([[Endpoint1 alloc] initWithOwner:self retains:NO acceptableSel:@selector(isAcceptableFile:) otherEndObjectToEndpoint:@selector(fileToEndpoint:)]);  ADDOWNER(v_file_endpoint,self);
 
         /*i0*/}
+    - (void)applyConformedProtocolRegexes {
+        MSGSTART("WICtxt:-(void)applyConformedProtocolRegexes")
+
+        for (NSArray *key in self.protocols) {
+            [[self protocolForKey:key] applyConformedProtocolRegexes];
+        }
+        for (NSArray *key in self.clazzs) {
+            [[self clazzForKey:key] applyConformedProtocolRegexes];
+        }
+    }
+    - (void)applyRegexes {
+        MSGSTART("WICtxt:-(void)applyRegexes")
+
+        for (NSString *name in self.protocols) {
+            [[self protocolForKey:name] applyRegexes];
+        }
+        for (NSString *name in self.clazzs) {
+            [[self clazzForKey:name] applyRegexes];
+        }
+    }
     - (NSDictionary *)asD3Tree {
         MSGSTART("WICtxt:-(NSDictionary*)asD3Tree")
         return [Treeable asD3Tree:self.asTree];
@@ -3378,7 +3777,7 @@
         MSGSTART("WICtxt:-(WIClass*)classWithName:(NSString*)name")
 
         WIClass * ret = [self clazzForKey:name];
-        if (!ret) [self setClazz:ret = [WIClass new] forKey:name];
+        if (!ret) [self setClazz:ret = [WIClass new] forKey:name.copy];
         return ret;
     }
     - (WIClass *)clazzForKey:(id<NSCopying> )key {
@@ -3525,8 +3924,8 @@
 
         /*i999*/ return ret;
     }
-    - (void)process:(Token *)token regexes:(NSMutableDictionary *)regexes settings:(NSSet *)settings outerClass:(WIClass *)outerClass outerLinkType:(NSString *)outerLinkType outerLinkVar:(WIVar *)outerLinkVar mods:(NSArray *)mods {
-        MSGSTART("WICtxt:-(void)process:(Token*)token regexes:(NSMutableDictionary*)regexes settings:(NSSet*)settings outerClass:(WIClass*)outerClass outerLinkType:(NSString*)outerLinkType outerLinkVar:(WIVar*)outerLinkVar mods:(NSArray*)mods")
+    - (void)process:(Token *)token regexes:(NSMutableArray *)regexes settings:(NSSet *)settings outerClass:(WIClass *)outerClass outerLinkType:(NSString *)outerLinkType outerLinkVar:(WIVar *)outerLinkVar mods:(NSArray *)mods {
+        MSGSTART("WICtxt:-(void)process:(Token*)token regexes:(NSMutableArray*)regexes settings:(NSSet*)settings outerClass:(WIClass*)outerClass outerLinkType:(NSString*)outerLinkType outerLinkVar:(WIVar*)outerLinkVar mods:(NSArray*)mods")
 
         Token * t = [TokenHelper actualToken:token];
         NSArray *chs;
@@ -3629,7 +4028,7 @@
         MSGSTART("WICtxt:-(WIClass*)protocolWithName:(NSString*)name")
 
         WIClass * ret = [self protocolForKey:name];
-        if (!ret) [self setProtocol:ret = [WIClass new] forKey:name];
+        if (!ret) [self setProtocol:ret = [WIClass new] forKey:name.copy];
         return ret;
     }
     - (void)removeAllClazzs {
@@ -3800,6 +4199,25 @@
         /*ivar*/ v_settings = ([MutableDictionary dictionary]);  ADDOWNER(v_settings,self);
 
         /*i0*/}
+    - (void)applyConformedProtocolRegexes {
+        MSGSTART("WIFile:-(void)applyConformedProtocolRegexes")
+
+        for (NSArray *key in self.ctxts) {
+            if (key.count) [[self ctxtForKey:key] applyConformedProtocolRegexes];
+        }
+    }
+    - (void)applyRegexes {
+        MSGSTART("WIFile:-(void)applyRegexes")
+
+        NSMutableArray * remove = NSMutableArray.array;
+        for (NSArray *regexes in self.ctxts) {
+            if (regexes.count) {
+                [remove addObject:regexes];
+                [[self ctxtForKey:regexes] applyRegexes];
+            }
+        }
+        [self.ctxts removeObjectsForKeys:remove];
+    }
     - (NSDictionary *)asD3Tree {
         MSGSTART("WIFile:-(NSDictionary*)asD3Tree")
         return [Treeable asD3Tree:self.asTree];
@@ -3827,11 +4245,11 @@
         MSGSTART("WIFile:-(constchar*)cobjectName")
         return [self.objectName cStringUsingEncoding:NSASCIIStringEncoding];
     }
-    - (WICtxt *)contextWithRegexes:(NSDictionary *)regexes {
-        MSGSTART("WIFile:-(WICtxt*)contextWithRegexes:(NSDictionary*)regexes")
+    - (WICtxt *)contextWithRegexes:(NSArray *)regexes {
+        MSGSTART("WIFile:-(WICtxt*)contextWithRegexes:(NSArray*)regexes")
 
         WICtxt * ret = [self ctxtForKey:regexes];
-        if (!ret) [self setCtxt:ret = [WICtxt new] forKey:regexes];
+        if (!ret) [self setCtxt:ret = [WICtxt new] forKey:regexes.copy];
         return ret;
     }
     - (WICtxt *)ctxtForKey:(id<NSCopying> )key {
@@ -3884,7 +4302,7 @@
     - (WICtxt *)equivContextTo:(WICtxt *)other {
         MSGSTART("WIFile:-(WICtxt*)equivContextTo:(WICtxt*)other")
 
-        return [self contextWithRegexes:(NSDictionary *)other.keyInFile];
+        return [self contextWithRegexes:(NSArray *)other.keyInFile];
     }
     - (WIType *)equivTypeTo:(WIType *)other {
         MSGSTART("WIFile:-(WIType*)equivTypeTo:(WIType*)other")
@@ -3947,21 +4365,20 @@
     - (void)process:(NSArray *)tokens {
         MSGSTART("WIFile:-(void)process:(NSArray*)tokens")
 
-        NSMutableDictionary * regexes = NSMutableDictionary.dictionary;
+        NSMutableArray * regexes = NSMutableArray.array;
         NSSet *settings = NSSet.set;
         for (Token *token in tokens) {
             [self process:token regexes:regexes settings:settings];
         }
     }
-    - (void)process:(Token *)token regexes:(NSMutableDictionary *)regexes settings:(NSSet *)settings {
-        MSGSTART("WIFile:-(void)process:(Token*)token regexes:(NSMutableDictionary*)regexes settings:(NSSet*)settings")
+    - (void)process:(Token *)token regexes:(NSMutableArray *)regexes settings:(NSSet *)settings {
+        MSGSTART("WIFile:-(void)process:(Token*)token regexes:(NSMutableArray*)regexes settings:(NSSet*)settings")
 
         Token * t = [TokenHelper actualToken:token];
         NSArray *chs;
 
         if ([TokenHelper actualToken:t havingRuleIn:@[@"class",@"protocol",@"classwprotocol",@"mod"]]) {
-            [[self contextWithRegexes:@{}
-             ] process:token regexes:regexes.mutableCopy settings:settings outerClass:nil outerLinkType:nil outerLinkVar:nil mods:@[]];
+            [[self contextWithRegexes:regexes] process:token regexes:regexes.mutableCopy settings:settings outerClass:nil outerLinkType:nil outerLinkVar:nil mods:@[]];
         }
         else if ( (chs = [TokenHelper childrenForToken:token havingRuleIn:@[@"file"]]) ) {
             for (Token *ch in chs) {
@@ -3969,7 +4386,11 @@
             }
         }
         else if ([TokenHelper actualToken:t havingRuleIn:@[@"regex"]]) {
-            [regexes setObject:( (Token *)t.children[1] ).contents forKey:( (Token *)t.children[0] ).contents];
+            NSDictionary *re = @{
+                ( (Token *)t.children[0] ).contents : ( (Token *)t.children[1] ).contents
+            };
+            if (![(NSDictionary *)regexes.lastObject isEqual : re])
+                [regexes addObject:re];
         }
         else if ( (chs = [TokenHelper childrenForToken:token havingRuleIn:@[@"setting"]]) ) {
             NSString *setting = ( (Token *)t.children[0] ).contents;
@@ -4120,6 +4541,12 @@
     - (void)addVar:(WIVar *)v {
         MSGSTART("WIType:-(void)addVar:(WIVar*)v")
         [v_vars addObject : v];
+    }
+    - (WIType *)applyRegexes:(NSArray *)regexes {
+        MSGSTART("WIType:-(WIType*)applyRegexes:(NSArray*)regexes")
+
+        WIClass * toc = [self.clazz applyRegexes];
+        return [toc typeWithModifiers:(NSArray *)self.keyInClazz];
     }
     - (EndpointS *)args {
         MSGSTART("WIType:-(EndpointS*)args")
@@ -4460,6 +4887,67 @@
         MSGSTART("WIVar:-(void)addFluidVar:(WIVar*)v")
         [v_fluidVars addObject : v];
     }
+    - (WIVar *)applyRegexes:(NSArray *)regexes {
+        MSGSTART("WIVar:-(WIVar*)applyRegexes:(NSArray*)regexes")
+
+        WIVarContext * tovc = [self.context applyRegexes:regexes];
+        return [self applyRegexes:regexes to:tovc];
+    }
+    - (WIVar *)applyRegexes:(NSArray *)regexes to:(WIVarContext *)tovc {
+        MSGSTART("WIVar:-(WIVar*)applyRegexes:(NSArray*)regexes to:(WIVarContext*)tovc")
+
+        if (!( (NSArray *)self.context.clazz.context.keyInFile ).count) return self;
+
+        NSString *name = [self.name stringByApplyingRegexes:regexes];
+        NSMutableArray *args = NSMutableArray.array;
+        for (WIVarArg *arg in self.args) {
+            [args addObject:[arg copyByApplyingRegexes:regexes]];
+        }
+        WIType *type = [self.type applyRegexes:regexes];
+
+        NSArray *key = [WIVar keyWithType:type name:name args:args];
+
+        WIVar *tov = [tovc varWithVarKey:key];
+
+
+        NSSet *fluidVars = self.fluidVars.copy;
+        NSSet *atomicVars = self.atomicVars.copy;
+
+        [self.fluidVars removeAllObjects];
+        [self.atomicVars removeAllObjects];
+
+        NSMutableSet *newFluidVars = NSMutableSet.set;
+        NSMutableSet *newAtomicVars = NSMutableSet.set;
+
+        for (WIVar *v in fluidVars) {
+            [newFluidVars addObject:[v applyRegexes:regexes]];
+        }
+        for (WIVar *v in atomicVars) {
+            [newAtomicVars addObject:[v applyRegexes:regexes]];
+        }
+
+        for (WIVar *v in newFluidVars) {
+            [tov addFluidVar:v];
+        }
+        for (WIVar *v in newAtomicVars) {
+            [tov addAtomicVar:v];
+        }
+
+
+        [tov.settings mergeWith:[self.settings dictionaryByApplyingRegexes:regexes]];
+
+        [self.getter applyRegexes:regexes to:tov];
+        [self.defaultValue applyRegexes:regexes to:tov];
+        for (NSString *key in self.setters) {
+            [[self setterForKey:key] applyRegexes:regexes to:tov];
+        }
+
+        if (self.bindingType) {
+            tov.bindingType = self.bindingType;
+            tov.boundTo = [self.boundTo applyRegexes:regexes];
+        }
+        return tov;
+    }
     - (WIVarArg *)argAtIndex:(Int)index {
         MSGSTART("WIVar:-(WIVarArg*)argAtIndex:(Int)index")
         return [v_args objectAtIndex:index];
@@ -4697,6 +5185,29 @@
         NSMutableDictionary<DictionaryLinkEndpoint> *context_ep = (NSMutableDictionary<DictionaryLinkEndpoint> *)[self contextToEndpoint : v_context_endpoint.value];
         return (NSSet *)[context_ep.__dictionaryObjectKeys objectForKey:self];
     }
+    + (NSArray *)keyWithType:(WIType *)type name:(NSString *)name args:(NSArray *)args {
+        MSGSTART("WIVar:+(NSArray*)keyWithType:(WIType*)type name:(NSString*)name args:(NSArray*)args")
+
+        NSMutableArray * key = @[
+                name,
+                type.clazz.classInCtxt ? type.clazz.name : NSNull.null,
+                type.clazz.protocolInCtxt ? @[type.clazz.name] : NSNull.null,
+                type.keyInClazz
+            ].mutableCopy;
+        for (WIVarArg *arg in args) {
+            NSString *className = (NSString *)type.clazz.keyInClassInCtxt;
+            NSString *protocolName = (NSString *)type.clazz.keyInProtocolInCtxt;
+            NSArray *mods = (NSArray *)type.keyInClazz;
+            [key addObject:@[
+                 arg.name ? arg.name : NSNull.null,
+                 arg.arg ? arg.arg : NSNull.null,
+                 className ? className : NSNull.null,
+                 protocolName ? @[protocolName] : NSNull.null,   // TODO
+                 mods
+             ]];
+        }
+        return key;
+    }
     - (void)mergeWith:(WIVar *)other {
         MSGSTART("WIVar:-(void)mergeWith:(WIVar*)other")
 
@@ -4750,8 +5261,8 @@
         /*i999*/ return ret;
     }
     #ifndef __SWIFT__
-        - (void)process:(Token *)token regexes:(NSMutableDictionary *)regexes settings:(NSSet *)settings doingInitialSettings:(bool &)doingInitialSettings {
-            MSGSTART("WIVar:-(void)process:(Token*)token regexes:(NSMutableDictionary*)regexes settings:(NSSet*)settings doingInitialSettings:(bool&)doingInitialSettings")
+        - (void)process:(Token *)token regexes:(NSMutableArray *)regexes settings:(NSSet *)settings doingInitialSettings:(bool &)doingInitialSettings {
+            MSGSTART("WIVar:-(void)process:(Token*)token regexes:(NSMutableArray*)regexes settings:(NSSet*)settings doingInitialSettings:(bool&)doingInitialSettings")
 
             Token * t = [TokenHelper actualToken:token];
             NSArray *chs;
@@ -4785,24 +5296,27 @@
             }
             else if ( (chs = [TokenHelper childrenForToken:token havingRuleIn:@[@"setter"]]) ) {
                 NSString *setterVar = (t.children.count ? ( (Token *)t.children[0] ).contents : @"v");
-                WIBody *body = [self setterForKey:setterVar];
-                if (!body) [self setSetter:body = [WIBody new] forKey:setterVar];
+                WIBody *body = [self setterWithSetterVar:setterVar];
                 if (chs.count) [body incorporateBody:( (Token *)( (Token *)chs[0] ).children[0] ).contents];
             }
             else if ([TokenHelper actualToken:t havingRuleIn:@[@"regex"]]) {
-                [regexes setObject:( (Token *)t.children[1] ).contents forKey:( (Token *)t.children[0] ).contents];
+                NSDictionary *re = @{
+                    ( (Token *)t.children[0] ).contents:( (Token *)t.children[1] ).contents
+                };
+                if (![(NSDictionary *)regexes.lastObject isEqual : re])
+                    [regexes addObject:re];
             }
             else if ( (chs = [TokenHelper childrenForToken:token havingRuleIn:@[@"link"]]) ) {
                 NSString *linkType = ( (Token *)t.children[0] ).contents;
                 WICtxt *ctxt = [self.context.clazz.context.file contextWithRegexes:regexes];
-                NSMutableDictionary *newRegexes = regexes.mutableCopy;
+                NSMutableArray *newRegexes = regexes.mutableCopy;
                 for (Token *ch in chs) {
                     [ctxt process:ch regexes:newRegexes settings:settings outerClass:nil outerLinkType:linkType outerLinkVar:self mods:@[]];
                 }
             }
             else if ( (chs = [TokenHelper childrenForToken:token havingRuleIn:@[@"atomic"]]) ) {
                 WIVarContext *varCtxt = [[[self.context.clazz.context.file contextWithRegexes:regexes] classWithName:self.context.clazz.name] varCtxtWithSettings:settings];
-                NSMutableDictionary *newRegexes = regexes.mutableCopy;
+                NSMutableArray *newRegexes = regexes.mutableCopy;
                 for (Token *ch in chs) {
                     [self addAtomicVar:[varCtxt varForVarToken:ch type:self.type regexes:newRegexes]];
                 }
@@ -5056,6 +5570,13 @@
         MSGSTART("WIVar:-(NSObject<LinkEndpoint>*)setterToEndpoint:(id)asetter")
         return [asetter performSelector:@selector(setterForVar_endpoint)];
     }
+    - (WIBody *)setterWithSetterVar:(NSString *)setterVar {
+        MSGSTART("WIVar:-(WIBody*)setterWithSetterVar:(NSString*)setterVar")
+
+        WIBody * body = [self setterForKey:setterVar];
+        if (!body) [self setSetter:body = [WIBody new] forKey:setterVar.copy];
+        return body;
+    }
     - (MutableDictionary *)settings {
         MSGSTART("WIVar:-(MutableDictionary*)settings")
 
@@ -5165,6 +5686,264 @@
     #endif
     #define _PrivateAccessMask_ __private_access_thread_mask_in_Globals
 
+    #define _ClassName_         WIVarArg
+    #define _WIClass_           WIVarArg__
+    #define _className_         wIVarArg
+    #define _Class_             WIVarArg__
+    @implementation WIVarArg
+
+    @synthesize __owner_context = __owner_context;
+    @synthesize debugAutorelease = debugAutorelease;
+    @synthesize isZombie = isZombie;
+    @synthesize objectIDInClass = objectIDInClass;
+    @synthesize objectIDInTotal = objectIDInTotal;
+    - (void)_startObjectOfClassWIVarArg {
+        MSGSTART("WIVarArg:-(void)_startObjectOfClassWIVarArg")
+
+        /*i-996*/ debugAutorelease = YES;
+        /*i-995*/ objInitFn(self,objectIDInTotal,objectIDInClass);
+
+        /*i-500*//*ivar*/ v_var_endpoint = ([[Endpoint1 alloc] initWithOwner:self retains:NO acceptableSel:@selector(isAcceptableVar:) otherEndObjectToEndpoint:@selector(varToEndpoint:)]);  ADDOWNER(v_var_endpoint,self);
+        /*ivar*/ v_type_endpoint = ([[Endpoint1 alloc] initWithOwner:self retains:YES acceptableSel:@selector(isAcceptableType:) otherEndObjectToEndpoint:@selector(typeToEndpoint:)]);  ADDOWNER(v_type_endpoint,self);
+
+        /*i0*/}
+    - (NSString *)arg {
+        MSGSTART("WIVarArg:-(NSString*)arg")
+
+        /*i-999*/ NSString * ret = v_arg;
+        /*i999*/ return ret;
+    }
+    - (constchar *)cdescription {
+        MSGSTART("WIVarArg:-(constchar*)cdescription")
+        return [self.description cStringUsingEncoding:NSASCIIStringEncoding];
+    }
+    - (constchar *)cobjectName {
+        MSGSTART("WIVarArg:-(constchar*)cobjectName")
+        return [self.objectName cStringUsingEncoding:NSASCIIStringEncoding];
+    }
+    - (WIVarArg *)copyByApplyingRegexes:(NSArray *)regexes {
+        MSGSTART("WIVarArg:-(WIVarArg*)copyByApplyingRegexes:(NSArray*)regexes")
+
+        WIVarArg * ret = [WIVarArg new];
+        ret.name = [self.name stringByApplyingRegexes:regexes];
+        ret.arg = [self.arg stringByApplyingRegexes:regexes];
+        ret.type = [self.type applyRegexes:regexes];
+        return ret;
+    }
+    - (void)dealloc {
+        MSGSTART("WIVarArg:-(void)dealloc")
+
+        /*i-151*/[self die];
+/*i0*/ REMOVEOWNER(v_var_endpoint,self); v_var_endpoint = nil;
+
+        v_arg = nil;
+
+        REMOVEOWNER(v_type_endpoint,self); v_type_endpoint = nil;
+
+        v_name = nil;
+/*i998*/ deallocFn(self,objectIDInTotal,objectIDInClass);
+        isZombie = YES;
+    #if defined (LONGLIVEZOMBIES) || defined (LONGLIVEZOMBIES___WI_CLASS__)
+            if (YES) return;
+    #endif
+
+/*i999*/}
+    - (NSString *)description {
+        MSGSTART("WIVarArg:-(NSString*)description")
+
+        /*i-999*/ NSMutableString * ret = self.objectName;
+
+        /*i999*/ return ret;
+    }
+    - (void)die {
+        MSGSTART("WIVarArg:-(void)die")
+        self.var = nil;
+        self.type = nil;
+
+        /*i900*/}
+    - (WIFile *)file {
+        MSGSTART("WIVarArg:-(WIFile*)file")
+        return self.var.context.clazz.context.file;
+    }
+    - (NSIndexSet *)indexesInVar {
+        MSGSTART("WIVarArg:-(NSIndexSet*)indexesInVar")
+
+        if (!v_var_endpoint.value) return [NSIndexSet indexSet];
+
+        NSMutableArray<ArrayLinkEndpoint> *var_ep = (NSMutableArray<ArrayLinkEndpoint> *)[self varToEndpoint : v_var_endpoint.value];
+        return (NSIndexSet *)[var_ep.__arrayObjectIndexes objectForKey:self];
+    }
+    - (Unsigned)indexInVar {
+        MSGSTART("WIVarArg:-(Unsigned)indexInVar")
+
+        return self.indexesInVar.firstIndex;
+    }
+    - (WIVarArg *)init {
+        MSGSTART("WIVarArg:-(WIVarArg*)init")
+
+        /*i-10001*/ if ( !(self = [super init]) ) return nil;
+
+        /*i11*/ [self _startObjectOfClassWIVarArg];
+
+/*i10001*/ return self;
+    }
+    - (NSNumber *)isAcceptableType:(id)atype {
+        MSGSTART("WIVarArg:-(NSNumber*)isAcceptableType:(id)atype")
+        return [atype isKindOfClass:[WIType class]] ? @YES : nil;
+    }
+    - (NSNumber *)isAcceptableVar:(id)avar {
+        MSGSTART("WIVarArg:-(NSNumber*)isAcceptableVar:(id)avar")
+        return [avar isKindOfClass:[WIVar class]] ? @YES : nil;
+    }
+    - (NSString *)name {
+        MSGSTART("WIVarArg:-(NSString*)name")
+
+        /*i-999*/ NSString * ret = v_name;
+        /*i999*/ return ret;
+    }
+    - (NSMutableString *)objectName {
+        MSGSTART("WIVarArg:-(NSMutableString*)objectName")
+
+        /*i-999*/ NSMutableString * ret = nil;
+
+        /*i-100*/ ret = [NSMutableString stringWithFormat:@"[%qu:%p]%s#%qu",objectIDInTotal,self,__Derived_CClass__,objectIDInClass];
+
+        /*i999*/ return ret;
+    }
+    - (void)retract {
+        MSGSTART("WIVarArg:-(void)retract")
+        self.var = nil;
+        self.type = nil;
+    }
+    - (void)setArg:(NSString *)v {
+        MSGSTART("WIVarArg:-(void)setArg:(NSString*)v")
+
+        /*i-905*/ if (v_arg == v) return;
+
+        /*i-900*/ {
+            v_arg = (id)v;
+        }
+    }
+    - (void)setIndexesInVar:(NSIndexSet *)v {
+        MSGSTART("WIVarArg:-(void)setIndexesInVar:(NSIndexSet*)v")
+
+        NSMutableArray<ArrayLinkEndpoint> *var_ep = (NSMutableArray<ArrayLinkEndpoint> *)[self varToEndpoint : v_var_endpoint.value];
+        NSIndexSet *var_indexes_were = self.indexesInVar.copy;
+        v = v.copy;
+        Unsigned var_vi = v.firstIndex,var_wi = var_indexes_were.firstIndex;
+        while ( (var_vi != NSNotFound) && (var_wi != NSNotFound) ) {
+            if (var_vi == var_wi) {
+                var_vi = [v indexGreaterThanIndex:var_vi];
+                var_wi = [var_indexes_were indexGreaterThanIndex:var_wi];
+            }
+            else if (var_vi < var_wi) {
+                [var_ep insertObject:self atIndex:var_vi];
+                var_vi = [v indexGreaterThanIndex:var_vi];
+            }
+            else {
+                [var_ep removeObjectAtIndex:var_wi];
+                var_wi = [var_indexes_were indexGreaterThanIndex:var_wi];
+            }
+        }
+        while (var_vi != NSNotFound) {
+            [var_ep insertObject:self atIndex:var_vi];
+            var_vi = [v indexGreaterThanIndex:var_vi];
+        }
+        while (var_wi != NSNotFound) {
+            [var_ep removeObjectAtIndex:var_wi];
+            var_wi = [var_indexes_were indexGreaterThanIndex:var_wi];
+        }
+    }
+    - (void)setIndexInVar:(Unsigned)v {
+        MSGSTART("WIVarArg:-(void)setIndexInVar:(Unsigned)v")
+
+        self.indexesInVar = (v == NSNotFound ? [NSIndexSet indexSet] : [NSIndexSet indexSetWithIndex:v]);
+    }
+    - (void)setName:(NSString *)v {
+        MSGSTART("WIVarArg:-(void)setName:(NSString*)v")
+
+        /*i-905*/ if (v_name == v) return;
+
+        /*i-900*/ {
+            v_name = (id)v;
+        }
+    }
+    - (void)setType:(WIType *)v {
+        MSGSTART("WIVarArg:-(void)setType:(WIType*)v")
+        [v_type_endpoint setValue : v];
+    }
+    - (void)setType_endpoint:(Endpoint1 *)v {
+        MSGSTART("WIVarArg:-(void)setType_endpoint:(Endpoint1*)v")
+
+        /*i-1999*/ if ( !authorized_thread(__private_access_thread_mask_in_WIVarArg) ) ERR("Attempt to set public-readonly property in unauthorized thread (please try something like privateaccess(type_endpoint=\"blah\") to set the property)");
+
+        /*i-905*/ if (v_type_endpoint == v) return;
+
+        /*i-900*/ {
+            v_type_endpoint = (id)v;
+        }
+/*i-850*/ REMOVEOWNER(v_type_endpoint,self); ADDOWNER(v,self);
+    }
+    - (void)setVar:(WIVar *)v {
+        MSGSTART("WIVarArg:-(void)setVar:(WIVar*)v")
+        [v_var_endpoint setValue : v];
+    }
+    - (void)setVar_endpoint:(Endpoint1 *)v {
+        MSGSTART("WIVarArg:-(void)setVar_endpoint:(Endpoint1*)v")
+
+        /*i-1999*/ if ( !authorized_thread(__private_access_thread_mask_in_WIVarArg) ) ERR("Attempt to set public-readonly property in unauthorized thread (please try something like privateaccess(var_endpoint=\"blah\") to set the property)");
+
+        /*i-905*/ if (v_var_endpoint == v) return;
+
+        /*i-900*/ {
+            v_var_endpoint = (id)v;
+        }
+/*i-850*/ REMOVEOWNER(v_var_endpoint,self); ADDOWNER(v,self);
+    }
+    - (WIType *)type {
+        MSGSTART("WIVarArg:-(WIType*)type")
+        return (WIType *)v_type_endpoint.value;
+    }
+    - (Endpoint1 *)type_endpoint {
+        MSGSTART("WIVarArg:-(Endpoint1*)type_endpoint")
+
+        /*i-999*/ Endpoint1 * ret = v_type_endpoint;
+        /*i999*/ return ret;
+    }
+    - (NSObject<LinkEndpoint> *)typeToEndpoint:(id)atype {
+        MSGSTART("WIVarArg:-(NSObject<LinkEndpoint>*)typeToEndpoint:(id)atype")
+        return [atype performSelector:@selector(args)];
+    }
+    - (WIVar *)var {
+        MSGSTART("WIVarArg:-(WIVar*)var")
+        return (WIVar *)v_var_endpoint.value;
+    }
+    - (Endpoint1 *)var_endpoint {
+        MSGSTART("WIVarArg:-(Endpoint1*)var_endpoint")
+
+        /*i-999*/ Endpoint1 * ret = v_var_endpoint;
+        /*i999*/ return ret;
+    }
+    - (NSObject<LinkEndpoint> *)varToEndpoint:(id)avar {
+        MSGSTART("WIVarArg:-(NSObject<LinkEndpoint>*)varToEndpoint:(id)avar")
+        return [avar performSelector:@selector(args)];
+    }
+
+    @end
+    #undef _ClassName_
+    #undef _WIClass_
+    #undef _className_
+    #undef _Class_
+
+
+
+
+
+    #ifdef _PrivateAccessMask_
+        #undef _PrivateAccessMask_
+    #endif
+    #define _PrivateAccessMask_ __private_access_thread_mask_in_Globals
+
     #define _ClassName_         WIVarContext
     #define _WIClass_           WIVarContext__
     #define _className_         wIVarContext
@@ -5187,8 +5966,8 @@
         /*i-500*//*ivar*/ v_clazz_endpoint = ([[Endpoint1 alloc] initWithOwner:self retains:NO acceptableSel:@selector(isAcceptableClazz:) otherEndObjectToEndpoint:@selector(clazzToEndpoint:)]);  ADDOWNER(v_clazz_endpoint,self);
 
         /*i0*/}
-    - (void)_addArgsFromToken:(Token *)token key:(NSMutableArray *)key argTypes:(NSMutableArray *)argTypes argArgs:(NSMutableArray *)argArgs argNames:(NSMutableArray *)argNames regexes:(NSMutableDictionary *)regexes {
-        MSGSTART("WIVarContext:-(void)_addArgsFromToken:(Token*)token key:(NSMutableArray*)key argTypes:(NSMutableArray*)argTypes argArgs:(NSMutableArray*)argArgs argNames:(NSMutableArray*)argNames regexes:(NSMutableDictionary*)regexes")
+    - (void)_addArgsFromToken:(Token *)token key:(NSMutableArray *)key argTypes:(NSMutableArray *)argTypes argArgs:(NSMutableArray *)argArgs argNames:(NSMutableArray *)argNames regexes:(NSMutableArray *)regexes {
+        MSGSTART("WIVarContext:-(void)_addArgsFromToken:(Token*)token key:(NSMutableArray*)key argTypes:(NSMutableArray*)argTypes argArgs:(NSMutableArray*)argArgs argNames:(NSMutableArray*)argNames regexes:(NSMutableArray*)regexes")
 
         for (Token *t in token.children) {
             if ([t.ruleName isEqualToString:@"argList"] || [t.ruleName isEqualToString:@"selArgList"]) {
@@ -5198,9 +5977,9 @@
                 int nameArg = -1,argArg = -1,typeArg = -1;
                 if ([t.ruleName isEqualToString:@"selArgDef"])
                     switch (t.children.count) {
-                        case 1 : argArg = -1; nameArg = -1; typeArg = 0; break;
+                        case 1: argArg = -1; nameArg = -1; typeArg = 0; break;
 
-                        case 2 : argArg = -1; nameArg = 1; typeArg = 0; break;
+                        case 2: argArg = -1; nameArg = 1; typeArg = 0; break;
 
                         case 3: argArg = 0; nameArg = 2; typeArg = 1; break;
                     }
@@ -5252,6 +6031,25 @@
                 [argArgs addObject:arg ? arg:NSNull.null];
             }
         }
+    }
+    - (WIVarContext *)applyRegexes:(NSArray *)regexes {
+        MSGSTART("WIVarContext:-(WIVarContext*)applyRegexes:(NSArray*)regexes")
+
+        WIClass * toc = [self.clazz applyRegexes];
+        return [self applyRegexes:regexes to:toc];
+    }
+    - (WIVarContext *)applyRegexes:(NSArray *)regexes to:(WIClass *)toc {
+        MSGSTART("WIVarContext:-(WIVarContext*)applyRegexes:(NSArray*)regexes to:(WIClass*)toc")
+
+        if (!( (NSArray *)self.clazz.context.keyInFile ).count) return self;
+
+        NSSet *newSettings = [(NSSet *)self.keyInClazz setByApplyingRegexes : regexes];
+
+        WIVarContext *tovc = [toc varCtxtWithSettings:newSettings];
+        for (NSObject<NSCopying> *key in self.vars) {
+            [[self varForKey:key] applyRegexes:regexes to:tovc];
+        }
+        return tovc;
     }
     - (NSDictionary *)asD3Tree {
         MSGSTART("WIVarContext:-(NSDictionary*)asD3Tree")
@@ -5532,8 +6330,8 @@
         }
         /*i999*/ return retSet;
     }
-    - (WIType *)typeForFnBlock:(Token *)token mods:(NSMutableArray *)mods regexes:(NSMutableDictionary *)regexes {
-        MSGSTART("WIVarContext:-(WIType*)typeForFnBlock:(Token*)token mods:(NSMutableArray*)mods regexes:(NSMutableDictionary*)regexes")
+    - (WIType *)typeForFnBlock:(Token *)token mods:(NSMutableArray *)mods regexes:(NSMutableArray *)regexes {
+        MSGSTART("WIVarContext:-(WIType*)typeForFnBlock:(Token*)token mods:(NSMutableArray*)mods regexes:(NSMutableArray*)regexes")
 
         Token * typet = token.children[0],*classt = typet;
         NSMutableArray *mods2 = @[].mutableCopy;
@@ -5563,8 +6361,8 @@
         MSGSTART("WIVarContext:-(WIVar*)varForKey:(id<NSCopying>)key")
         return [v_vars objectForKey:key];
     }
-    - (WIVar *)varForVarToken:(Token *)token type:(WIType *)type regexes:(NSMutableDictionary *)regexes {
-        MSGSTART("WIVarContext:-(WIVar*)varForVarToken:(Token*)token type:(WIType*)type regexes:(NSMutableDictionary*)regexes")
+    - (WIVar *)varForVarToken:(Token *)token type:(WIType *)type regexes:(NSMutableArray *)regexes {
+        MSGSTART("WIVarContext:-(WIVar*)varForVarToken:(Token*)token type:(WIType*)type regexes:(NSMutableArray*)regexes")
 
         NSString * name = ( (Token *)token.children[0] ).contents;
         NSMutableArray *key = @[
@@ -5601,6 +6399,37 @@
     - (NSObject<LinkEndpoint> *)varToEndpoint:(id)avar {
         MSGSTART("WIVarContext:-(NSObject<LinkEndpoint>*)varToEndpoint:(id)avar")
         return [avar performSelector:@selector(context_endpoint)];
+    }
+    - (WIVar *)varWithVarKey:(NSArray *)key {
+        MSGSTART("WIVarContext:-(WIVar*)varWithVarKey:(NSArray*)key")
+
+        WIVar * var = [self varForKey:key];
+        if (!var) {
+            [self setVar:var = [WIVar new] forKey:key];
+
+            var.name = (NSString *)([key[0] isKindOfClass:NSNull.class] ? nil : key[0]);
+            WICtxt *ctxt = self.clazz.context;
+            WIClass *c = ([key[1] isKindOfClass:NSString.class] ?
+                          [ctxt classWithName:key[1]] :
+                          [ctxt protocolWithName:( (NSArray *)key[2] )[0]]
+                );
+            var.type = [c typeWithModifiers:(NSArray *)([key[3] isKindOfClass:NSNull.class] ? nil : key[3])];
+            for (int i = 4; i < key.count; i++) {
+                WIVarArg *arg = [WIVarArg new];
+                NSArray *argKey = key[i];
+
+                arg.name = (NSString *)([argKey[0] isKindOfClass:NSNull.class] ? nil : argKey[0]);
+                arg.arg = (NSString *)([argKey[1] isKindOfClass:NSNull.class] ? nil : argKey[1]);
+                WIClass *c = ([argKey[2] isKindOfClass:NSString.class] ?
+                              [ctxt classWithName:argKey[2]] :
+                              [ctxt protocolWithName:( (NSArray *)argKey[3] )[0]]
+                    );
+                arg.type = [c typeWithModifiers:(NSArray *)([argKey[4] isKindOfClass:NSNull.class] ? nil : argKey[4])];
+
+                [var addArg:arg];
+            }
+        }
+        return var;
     }
 
     @end

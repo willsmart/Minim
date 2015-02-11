@@ -461,7 +461,7 @@ WIBodySnippet<Treeable>
 WIFile
     -(WICtxt*)contextWithRegexes:(NSArray*)regexes {
         WICtxt *ret=[self ctxtForKey:regexes];
-        if (!ret) [self setCtxt:ret=[WICtxt new] forKey:regexes];
+        if (!ret) [self setCtxt:ret=[WICtxt new] forKey:regexes.copy];
         return(ret);
     }
 
@@ -476,7 +476,7 @@ WIFile
         NSArray *chs;
 
         if ([TokenHelper actualToken:t havingRuleIn:@[@"class",@"protocol",@"classwprotocol",@"mod"]]) {
-            [[self contextWithRegexes:@{}] process:token regexes:regexes.mutableCopy settings:settings outerClass:nil outerLinkType:nil outerLinkVar:nil mods:@[]];
+            [[self contextWithRegexes:regexes] process:token regexes:regexes.mutableCopy settings:settings outerClass:nil outerLinkType:nil outerLinkVar:nil mods:@[]];
         }
         else if ((chs=[TokenHelper childrenForToken:token havingRuleIn:@[@"file"]])) {
             for (Token *ch in chs) [self process:ch regexes:regexes settings:settings];
@@ -506,12 +506,12 @@ WIFile
 WICtxt
     -(WIClass*)classWithName:(NSString*)name {
         WIClass *ret=[self clazzForKey:name];
-        if (!ret) [self setClazz:ret=[WIClass new] forKey:name];
+        if (!ret) [self setClazz:ret=[WIClass new] forKey:name.copy];
         return(ret);
     }
     -(WIClass*)protocolWithName:(NSString*)name {
         WIClass *ret=[self protocolForKey:name];
-        if (!ret) [self setProtocol:ret=[WIClass new] forKey:name];
+        if (!ret) [self setProtocol:ret=[WIClass new] forKey:name.copy];
         return(ret);
     }
 
@@ -587,12 +587,12 @@ WICtxt
 WIClass
     -(WIVarContext*)varCtxtWithSettings:(NSSet*)settings {
         WIVarContext *ret=[self varCtxtForKey:settings];
-        if (!ret) [self setVarCtxt:ret=[WIVarContext new] forKey:settings];
+        if (!ret) [self setVarCtxt:ret=[WIVarContext new] forKey:settings.copy];
         return(ret);
     }
     -(WIType*)typeWithModifiers:(NSArray*)mods {
         WIType *ret=[self typeForKey:mods];
-        if (!ret) [self setType:ret=[WIType new] forKey:mods];
+        if (!ret) [self setType:ret=[WIType new] forKey:mods.copy];
         return(ret);
     }
 
@@ -617,14 +617,19 @@ WIClass
             [[self.context.file contextWithRegexes:regexes] process:token regexes:regexes.mutableCopy settings:settings outerClass:self outerLinkType:nil outerLinkVar:nil mods:@[]];
         }
         else if ([TokenHelper actualToken:t havingRuleIn:@[@"regex"]]) {
-            [regexes setObject:((Token*)t.children[1]).contents forKey:((Token*)t.children[0]).contents];
+            NSDictionary *re=@{
+                ((Token*)t.children[0]).contents:((Token*)t.children[1]).contents
+            };
+            if (![(NSDictionary*)regexes.lastObject isEqual:re]) {
+                [regexes addObject:re];
+            }
         }
         else if (outerClass&&((chs=[TokenHelper childrenForToken:token havingRuleIn:@[@"var",@"fn"]]))) {
             WIVarContext *varCtxt=[outerClass varCtxtWithSettings:settings];
             WIVar *var=[varCtxt varForVarToken:t type:[self typeWithModifiers:mods] regexes:regexes];
 
             bool varDoingInitialSettings=YES;
-            NSMutableDictionary *newRegexes=regexes.mutableCopy;
+            NSMutableArray *newRegexes=regexes.mutableCopy;
             for (Token *ch in chs) {
                 [var process:ch regexes:newRegexes settings:settings doingInitialSettings:varDoingInitialSettings];
             }
@@ -665,24 +670,24 @@ WIVarContext
         if (!var) {
             [self setVar:var=[WIVar new] forKey:key];
 
-            var.name=(NSString*)key[0];
+            var.name=(NSString*)([key[0] isKindOfClass:NSNull.class]?nil:key[0]);
             WICtxt *ctxt=self.clazz.context;
             WIClass *c=([key[1] isKindOfClass:NSString.class]?
                 [ctxt classWithName:key[1]]:
                 [ctxt protocolWithName:((NSArray*)key[2])[0]]
             );
-            var.type=[c typeWithModifiers:(NSArray*)key[3]];
+            var.type=[c typeWithModifiers:(NSArray*)([key[3] isKindOfClass:NSNull.class]?nil:key[3])];
             for (int i=4;i<key.count;i++) {
                 WIVarArg *arg=[WIVarArg new];
                 NSArray *argKey=key[i];
 
-                arg.name=(NSString*)argKey[0];
-                arg.arg=(NSString*)argKey[1];
+                arg.name=(NSString*)([argKey[0] isKindOfClass:NSNull.class]?nil:argKey[0]);
+                arg.arg=(NSString*)([argKey[1] isKindOfClass:NSNull.class]?nil:argKey[1]);
                 WIClass *c=([argKey[2] isKindOfClass:NSString.class]?
                     [ctxt classWithName:argKey[2]]:
                     [ctxt protocolWithName:((NSArray*)argKey[3])[0]]
                 );
-                arg.type=[c typeWithModifiers:(NSArray*)argKey[4]];
+                arg.type=[c typeWithModifiers:(NSArray*)([argKey[4] isKindOfClass:NSNull.class]?nil:argKey[4])];
 
                 [var addArg:arg];
             }
@@ -794,9 +799,9 @@ WIVar
             type.keyInClazz
         ].mutableCopy;
         for (WIVarArg *arg in args) {
-            NSString *className=type.clazz.keyInClassInCtxt;
-            NSString *protocolName=type.clazz.keyInProtocolInCtxt;
-            NSArray *mods=type.keyInClazz;
+            NSString *className=(NSString*)type.clazz.keyInClassInCtxt;
+            NSString *protocolName=(NSString*)type.clazz.keyInProtocolInCtxt;
+            NSArray *mods=(NSArray*)type.keyInClazz;
             [key addObject:@[
                 arg.name?arg.name:NSNull.null,
                 arg.arg?arg.arg:NSNull.null,
@@ -810,7 +815,7 @@ WIVar
 
     -(WIBody*)setterWithSetterVar:(NSString*)setterVar {
         WIBody *body=[self setterForKey:setterVar];
-        if (!body) [self setSetter:body=[WIBody new] forKey:setterVar];
+        if (!body) [self setSetter:body=[WIBody new] forKey:setterVar.copy];
         return(body);
     }
 

@@ -555,6 +555,21 @@
         html = [html stringByReplacingOccurrencesOfString:@"\"JSONDATA\"" withString:json];
         [html writeToFile:htmlfn atomically:YES encoding:NSUTF8StringEncoding error:&err];
         [Singletons._.htmlParseOutput appendFormat:@"<strong><a href='file:%@'>%@</a></strong><br/>",htmlfn,@"Merge of all the files above"];
+
+        [merge applyConformedProtocolRegexes];
+        [merge applyRegexes];
+
+        d = @{
+            @"prog":@"post regex",
+            @"graph":[Parse graphFromTokens:@[]],
+            @"parsedgraph":merge.asD3Tree
+        };
+        htmlfn = [Singletons._.files pathForPath:@"post-regex.html"];
+        json = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:d options:0 error:&err] encoding:NSUTF8StringEncoding];
+        html = [NSString stringWithContentsOfFile:@"/Users/Will/Documents/WInterface/Parse/index.html" encoding:NSUTF8StringEncoding error:&err];
+        html = [html stringByReplacingOccurrencesOfString:@"\"JSONDATA\"" withString:json];
+        [html writeToFile:htmlfn atomically:YES encoding:NSUTF8StringEncoding error:&err];
+        [Singletons._.htmlParseOutput appendFormat:@"<strong><a href='file:%@'>%@</a></strong><br/>",htmlfn,@"Merge after applying regexes"];
     }
 
     @end
