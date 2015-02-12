@@ -16,14 +16,14 @@ Mod=>class,classpar,classvarpar,classparnotfile,varpar,repar,settingpar,par,ln
 Protocol=>protocol,classpar,classvarpar,modpar,classparnotfile,varpar,repar,settingpar,par,ln
 
 Var=>var,blockpar,repar,linkpar,initpar,getterpar,setterpar,settingpar,atomicpar,par,ln
-Regex=>re,ln
+Regex=>re,classpar,classparnotfile,repar,settingpar,par,ln,
 Include=>include,ln
 Link=>link,classpar,classvarpar,classparnotfile,par,ln
 Atomic=>atomic,varpar,par,ln
 Init=>init,blockpar,settingpar,par,ln
 Getter=>getter,blockpar,par,ln
 Setter=>setter,blockpar,par,ln
-Setting=>setting,classpar,classparnotfile,classparnotfile,repar,settingpar,blockpar,par,ln
+Setting=>setting,classpar,classparnotfile,repar,settingpar,blockpar,par,ln
 Block=>block,ln
 File=>file,ln,par,classpar,classdefpar,classvarpar,includepar,repar,settingpar
 

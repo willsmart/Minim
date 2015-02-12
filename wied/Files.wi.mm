@@ -556,7 +556,6 @@
         [html writeToFile:htmlfn atomically:YES encoding:NSUTF8StringEncoding error:&err];
         [Singletons._.htmlParseOutput appendFormat:@"<strong><a href='file:%@'>%@</a></strong><br/>",htmlfn,@"Merge of all the files above"];
 
-        [merge applyConformedProtocolRegexes];
         [merge applyRegexes];
 
         d = @{

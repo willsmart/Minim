@@ -697,8 +697,6 @@
     - (bool)_addReferrer:(NSObject<LinkEndpoint> *)ep {
         MSGSTART("Endpoint1:-(bool)_addReferrer:(NSObject<LinkEndpoint>*)ep")
 
-
-
         id v = ep.owner;
         if (!v) return NO;
 
@@ -714,8 +712,6 @@
     }
     - (void)_removeReferrer:(NSObject<LinkEndpoint> *)ep {
         MSGSTART("Endpoint1:-(void)_removeReferrer:(NSObject<LinkEndpoint>*)ep")
-
-
 
         id v = ep.owner;
         if ( v && (v == v_value) ) {
@@ -1406,9 +1402,9 @@
 
         owner = nil;
 
-        __mutableArray = nil;
-
         __arrayObjectIndexes = nil;
+
+        __mutableArray = nil;
 
         __array = nil;
 
@@ -2156,8 +2152,6 @@
         }
         memset( array_objects.ids + array_count,0,sizeof(array_objects.ids[0]) * (100 - array_count) );
         array_count = __array.count;
-
-
 
         /*i100*/ [arrayDelegate stateOK];
     }
@@ -3052,8 +3046,6 @@
         }
         memset( dictionary_objects.keyvals + dictionary_count,0,sizeof(dictionary_objects.keyvals[0]) * (100 - dictionary_count) );
         dictionary_count = __dictionary.count;
-
-
 
         /*i100*/ [dictionaryDelegate stateOK];
     }

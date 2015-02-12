@@ -182,6 +182,20 @@ NSSet
 
 WIFile
     -(void)applyRegexes {
+        NSMutableDictionary *classesForRegexedProtocols=NSMutableDictionary.dictionary;
+        for (NSArray *regexes in self.ctxts) {
+            [[self ctxtForKey:regexes] addClassesForRegexedProtocolsTo:classesForRegexedProtocols];
+        }
+        NSMutableDictionary *regexedProtocolsForClasses=NSMutableDictionary.dictionary;
+        for (NSArray *a in classesForRegexedProtocols) {
+            NSMutableSet *classNames=classesForRegexedProtocols[a];
+            for (NSString *className in classNames) {
+                NSMutableSet *a2=regexedProtocolsForClasses[className];
+                if (!a2) regexedProtocolsForClasses[className]=a2=NSMutableSet.set;
+                [a2 addObject:a];
+            }
+        }
+
         NSMutableArray *remove=NSMutableArray.array;
         for (NSArray *regexes in self.ctxts) {
             if (regexes.count) {
@@ -189,12 +203,87 @@ WIFile
                 [[self ctxtForKey:regexes] applyRegexes];
             }
         }
+
         [self.ctxts removeObjectsForKeys:remove];
+
+
+        while (classesForRegexedProtocols.count) {
+            NSArray *a=classesForRegexedProtocols.keyEnumerator.nextObject;
+            if (!classesForRegexedProtocols[a]) continue;
+            NSString *name=a[0];
+            NSArray *regexes=a[1];
+            [self copyConformedProtocol:name usingRegexes:regexes classesForRegexedProtocols:classesForRegexedProtocols regexedProtocolsForClasses:regexedProtocolsForClasses];
+        }
     }
 
-    -(void)applyConformedProtocolRegexes {
-        for (NSArray *key in self.ctxts) {
-            if (key.count) [[self ctxtForKey:key] applyConformedProtocolRegexes];
+    -(void)copyConformedProtocol:(NSString*)protocolName usingRegexes:(NSArray*)regexes classesForRegexedProtocols:(NSMutableDictionary*)classesForRegexedProtocols regexedProtocolsForClasses:(NSMutableDictionary*)regexedProtocolsForClasses {
+        NSMutableSet *classNames=classesForRegexedProtocols[@[protocolName,regexes]];
+        [classesForRegexedProtocols removeObjectForKey:@[protocolName,regexes]];
+
+        WICtxt *ctxt=[self ctxtForKey:@[]];
+
+        NSError *err=nil;
+        NSRegularExpression *rx=[NSRegularExpression regularExpressionWithPattern:@"[^\\w]" options:0 error:&err];
+
+        NSString *protocolName2=[NSString stringWithFormat:@"<%@>",protocolName];
+        NSMutableSet *subConformedProtocols=regexedProtocolsForClasses[protocolName2];
+        for (NSArray *a in subConformedProtocols) {
+            if (!classesForRegexedProtocols[a]) continue;
+            NSString *subName=a[0];
+            NSArray *subRegexes=a[1];
+            [self copyConformedProtocol:subName usingRegexes:subRegexes classesForRegexedProtocols:classesForRegexedProtocols regexedProtocolsForClasses:regexedProtocolsForClasses];
+        }
+
+        NSMutableString *mangledName=protocolName.mutableCopy;
+        for (NSDictionary *regex in regexes) {
+            NSString *key=regex.keyEnumerator.nextObject;
+            NSString *v=regex[key];
+
+            key=[rx stringByReplacingMatchesInString:key
+                                   options:0
+                                     range:NSMakeRange(0,key.length)
+                              withTemplate:@""];
+            v=[rx stringByReplacingMatchesInString:v
+                                   options:0
+                                     range:NSMakeRange(0,v.length)
+                              withTemplate:@""];
+            [mangledName appendFormat:@"__%d%@_%d%@",(int)key.length,key,(int)v.length,v];
+        }
+
+        WIClass *protocol=[ctxt protocolWithName:protocolName];
+        WIClass *newProtocol=[[self contextWithRegexes:regexes] protocolWithName:mangledName];
+        [newProtocol mergeWith:protocol];
+        {
+            NSMutableSet *remove=nil;
+            for (WIClass *p in newProtocol.conformedProtocols) {
+                if (((NSArray*)p.context.keyInFile).count) {
+                    if (!remove) remove=NSMutableSet.set;
+                    [remove addObject:p];
+                    NSArray *a=@[p.name,p.context.keyInFile];
+                    NSString *pname=[NSString stringWithFormat:@"<%@>",newProtocol.name];
+
+                    NSMutableSet *classNames=classesForRegexedProtocols[a];
+                    if (!classNames) classesForRegexedProtocols[a]=classNames=NSMutableSet.set;
+                    [classNames addObject:pname];
+
+                    NSMutableSet *regexes=regexedProtocolsForClasses[pname];
+                    if (!regexes) regexedProtocolsForClasses[pname]=regexes=NSMutableSet.set;
+                    [regexes addObject:a];
+                }
+            }
+            if (remove) [newProtocol.conformedProtocols minusSet:remove];
+        }
+        newProtocol=[newProtocol applyRegexes];
+
+        for (NSString *className in classNames) {
+            WIClass *c=nil;
+            if ([className hasPrefix:@"<"]&&[className hasSuffix:@">"]) {
+                c=[ctxt protocolWithName:[className substringWithRange:NSMakeRange(1,className.length-2)]];
+            }
+            else {
+                c=[ctxt classWithName:className];
+            }
+            [c addConformedProtocol:newProtocol];
         }
     }
 
@@ -209,54 +298,41 @@ WICtxt
         }
     }
 
-    -(void)applyConformedProtocolRegexes {
-        for (NSArray *key in self.protocols) [[self protocolForKey:key] applyConformedProtocolRegexes];
-        for (NSArray *key in self.clazzs) [[self clazzForKey:key] applyConformedProtocolRegexes];
+    -(void)addClassesForRegexedProtocolsTo:(NSMutableDictionary*)classesForRegexedProtocols {
+        for (NSString *name in self.protocols) {
+            WIClass *c=[self protocolForKey:name];
+            NSMutableSet *remove=nil;
+            for (WIClass *p in c.conformedProtocols) {
+                if (((NSArray*)p.context.keyInFile).count) {
+                    if (!remove) remove=NSMutableSet.set;
+                    [remove addObject:p];
+                    NSArray *a=@[p.name,p.context.keyInFile];
+                    NSMutableSet *classNames=classesForRegexedProtocols[a];
+                    if (!classNames) classesForRegexedProtocols[a]=classNames=NSMutableSet.set;
+                    [classNames addObject:[NSString stringWithFormat:@"<%@>",c.name]];
+                }
+            }
+            if (remove) [c.conformedProtocols minusSet:remove];
+        }
+        for (NSString *name in self.clazzs) {
+            WIClass *c=[self clazzForKey:name];
+            NSMutableSet *remove=nil;
+            for (WIClass *p in c.conformedProtocols) {
+                if (((NSArray*)p.context.keyInFile).count) {
+                    if (!remove) remove=NSMutableSet.set;
+                    [remove addObject:p];
+                    NSArray *a=@[p.name,p.context.keyInFile];
+                    NSMutableSet *classNames=classesForRegexedProtocols[a];
+                    if (!classNames) classesForRegexedProtocols[a]=classNames=NSMutableSet.set;
+                    [classNames addObject:c.name];
+                }
+            }
+            if (remove) [c.conformedProtocols minusSet:remove];
+        }
     }
 
 
 WIClass
-    -(void)applyConformedProtocolRegexes {
-        NSArray *regexes=(NSArray*)self.context.keyInFile;
-        if (!regexes.count) return;
-
-        NSMutableSet *newConformedProtocols=nil;
-        for (WIClass *conformedProtocol in self.conformedProtocols) {
-            NSArray *protocolRegexes=(NSArray*)self.context.keyInFile;
-            if (regexes.count<protocolRegexes.count) continue;
-
-            int addAt;
-            bool correctEnding=NO;
-            for (addAt=0;!correctEnding;addAt++) {
-                correctEnding=YES;
-                for (int i=0;correctEnding&&(i+addAt<regexes.count);i++) {
-                    if (![regexes[i] isEqual:protocolRegexes[i+addAt+protocolRegexes.count-regexes.count]]) {
-                        correctEnding=NO;
-                    }
-                }
-            }
-            if (!addAt) continue;
-
-            NSMutableArray *newProtocolRegexes=protocolRegexes.mutableCopy;
-            for (int i=addAt;i<regexes.count;i++) {
-                [newProtocolRegexes addObject:[regexes[i] copy]];
-            }
-
-            WIClass *newConformedProtocol=[[self.file contextWithRegexes:newProtocolRegexes] equivClassTo:conformedProtocol];
-            [newConformedProtocol mergeWith:conformedProtocol];
-
-            [newConformedProtocol applyConformedProtocolRegexes];
-
-            if (!newConformedProtocols) newConformedProtocols=self.conformedProtocols.mutableCopy;
-            [newConformedProtocols removeObject:conformedProtocol];
-            [newConformedProtocols addObject:newConformedProtocol];
-        }
-
-        if (newConformedProtocols) [self.conformedProtocols setSet:newConformedProtocols];
-    }
-
-
-
     -(WIClass*)applyRegexes {
         WICtxt *toctxt=[self.file ctxtForKey:@[]];
         if (self.context==toctxt) return(self);

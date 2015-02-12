@@ -756,13 +756,13 @@
     - (void)allObjectsMoved {
         MSGSTART("MutableArrayMirrorTesterImpl:-(void)allObjectsMoved")
 
-
-
         [__arrayObjectIndexes removeAllObjects];
         Unsigned index = 0;
         for (NSObject *object in __array) {
             [self doAddIndex:index++ forObject:object];
         }
+
+
 
         /*i100*/ [arrayDelegate allObjectsMoved];
     }
@@ -1310,20 +1310,18 @@
     - (void)objectsMovedFromRange:(NSRange)fromRange toLocation:(Unsigned)toLocation {
         MSGSTART("MutableArrayMirrorTesterImpl:-(void)objectsMovedFromRange:(NSRange)fromRange toLocation:(Unsigned)toLocation")
 
-
-
         for (Unsigned i = 0; i < fromRange.length; i++) {
             Unsigned j = (toLocation > fromRange.location ? fromRange.length - 1 - i : i);
             NSObject *object = [__array objectAtIndex:toLocation + j];
             [self doChangeIndex:fromRange.location + j toIndex:toLocation + j forObject:object];
         }
 
+
+
         /*i100*/ [arrayDelegate objectsMovedFromRange:fromRange toLocation:toLocation];
     }
     - (void)objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex {
         MSGSTART("MutableArrayMirrorTesterImpl:-(void)objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex")
-
-
 
         NSObject * object1 = [__array objectAtIndex:toIndex];
         NSObject *object2 = [__array objectAtIndex:fromIndex];
@@ -1331,6 +1329,8 @@
             [self doChangeIndex:fromIndex toIndex:toIndex forObject:object1];
             [self doChangeIndex:toIndex toIndex:fromIndex forObject:object2];
         }
+
+
 
         /*i100*/ [arrayDelegate objectsSwappedWithIndex:fromIndex andIndex:toIndex];
     }
@@ -1575,6 +1575,8 @@
 
 
 
+
+
         array_count = 0;
         for (id o in __array) {
             array_objects.ids[array_count++] = (__bridge void *)o;
@@ -1582,8 +1584,6 @@
         }
         memset( array_objects.ids + array_count,0,sizeof(array_objects.ids[0]) * (100 - array_count) );
         array_count = __array.count;
-
-
 
         /*i100*/ [arrayDelegate stateOK];
     }
@@ -2021,13 +2021,13 @@
     - (void)allObjectsMoved {
         MSGSTART("WeakMutableArrayMirrorTesterImpl:-(void)allObjectsMoved")
 
-
-
         [__arrayObjectIndexes removeAllObjects];
         Unsigned index = 0;
         for (NSObject *object in __array) {
             [self doAddIndex:index++ forObject:object];
         }
+
+
 
         /*i100*/ [arrayDelegate allObjectsMoved];
     }
@@ -2171,22 +2171,20 @@
         /*i-950*/ // [self objectsMovedFromRange:NSMakeRange(index,__array.count-1-index) toLocation:index+1];
         [self doAddIndex : index forObject : object];
 
-        /*i100*/ [arrayDelegate didAddObject:object withIndex:index];
-
-        if (!__addingToMirrorArray) [self passFail:NO format:@"!!!ait did add while not adding\n"];
+        /*i100*/ if (!__addingToMirrorArray) [self passFail:NO format:@"!!!ait did add while not adding\n"];
         [self add:-1 toWillAddCountForObject:object];
         __addingToMirrorArray--;
+        [arrayDelegate didAddObject:object withIndex:index];
     }
     - (void)didRemoveObject:(id)object {
         MSGSTART("WeakMutableArrayMirrorTesterImpl:-(void)didRemoveObject:(id)object")
 
 
 
-        /*i100*/[arrayDelegate didRemoveObject : object];
-
-        if (!__removingFromMirrorArray) [self passFail:NO format:@"!!!ait did remove while not removing\n"];
+        /*i100*/ if (!__removingFromMirrorArray) [self passFail:NO format:@"!!!ait did remove while not removing\n"];
         [self add:-1 toWillRemoveCountForObject:object];
         __removingFromMirrorArray--;
+        [arrayDelegate didRemoveObject:object];
     }
     - (void)die {
         MSGSTART("WeakMutableArrayMirrorTesterImpl:-(void)die")
@@ -2577,20 +2575,18 @@
     - (void)objectsMovedFromRange:(NSRange)fromRange toLocation:(Unsigned)toLocation {
         MSGSTART("WeakMutableArrayMirrorTesterImpl:-(void)objectsMovedFromRange:(NSRange)fromRange toLocation:(Unsigned)toLocation")
 
-
-
         for (Unsigned i = 0; i < fromRange.length; i++) {
             Unsigned j = (toLocation > fromRange.location ? fromRange.length - 1 - i : i);
             NSObject *object = [__array objectAtIndex:toLocation + j];
             [self doChangeIndex:fromRange.location + j toIndex:toLocation + j forObject:object];
         }
 
+
+
         /*i100*/ [arrayDelegate objectsMovedFromRange:fromRange toLocation:toLocation];
     }
     - (void)objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex {
         MSGSTART("WeakMutableArrayMirrorTesterImpl:-(void)objectsSwappedWithIndex:(Unsigned)fromIndex andIndex:(Unsigned)toIndex")
-
-
 
         NSObject * object1 = [__array objectAtIndex:toIndex];
         NSObject *object2 = [__array objectAtIndex:fromIndex];
@@ -2598,6 +2594,8 @@
             [self doChangeIndex:fromIndex toIndex:toIndex forObject:object1];
             [self doChangeIndex:toIndex toIndex:fromIndex forObject:object2];
         }
+
+
 
         /*i100*/ [arrayDelegate objectsSwappedWithIndex:fromIndex andIndex:toIndex];
     }
@@ -2836,20 +2834,21 @@
         MSGSTART("WeakMutableArrayMirrorTesterImpl:-(void)stateOK")
 
         /*i-100*/ version++;
-        /*i0*/ array_count = 0;
+        /*i0*/ if (__addingToMirrorArray) [self passFail:NO format:@"!!!ait adding when state ok\n"];
+        if (__removingFromMirrorArray) [self passFail:NO format:@"!!!ait removing when state ok\n"];
+        [self verifyMirrorArray];
+
+
+
+
+
+        array_count = 0;
         for (id o in __array) {
             array_objects.ids[array_count++] = (__bridge void *)o;
             if (array_count == 100) break;
         }
         memset( array_objects.ids + array_count,0,sizeof(array_objects.ids[0]) * (100 - array_count) );
         array_count = __array.count;
-
-
-
-
-        if (__addingToMirrorArray) [self passFail:NO format:@"!!!ait adding when state ok\n"];
-        if (__removingFromMirrorArray) [self passFail:NO format:@"!!!ait removing when state ok\n"];
-        [self verifyMirrorArray];
 
         /*i100*/ [arrayDelegate stateOK];
     }
@@ -2894,10 +2893,9 @@
 
 
 
-        /*i100*/[arrayDelegate willAddObject : object withIndex : index];
-
-        __addingToMirrorArray++;
+        /*i100*/ __addingToMirrorArray++;
         [self add:1 toWillAddCountForObject:object];
+        [arrayDelegate willAddObject:object withIndex:index];
     }
     - (void)willRemoveObject:(id)object fromIndex:(Unsigned)index {
         MSGSTART("WeakMutableArrayMirrorTesterImpl:-(void)willRemoveObject:(id)object fromIndex:(Unsigned)index")
@@ -2905,10 +2903,9 @@
 
 
 
-        /*i100*/[arrayDelegate willRemoveObject : object fromIndex : index];
-
-        [self add:1 toWillRemoveCountForObject:object];
+        /*i100*/[self add : 1 toWillRemoveCountForObject : object];
         __removingFromMirrorArray++;
+        [arrayDelegate willRemoveObject:object fromIndex:index];
 
 /*i950*/ [self doRemoveIndex:index forObject:object];
         // [self objectsMovedFromRange:NSMakeRange(index+1,__array.count-1-index) toLocation:index];

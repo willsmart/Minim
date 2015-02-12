@@ -481,12 +481,21 @@ WIFile
         else if ((chs=[TokenHelper childrenForToken:token havingRuleIn:@[@"file"]])) {
             for (Token *ch in chs) [self process:ch regexes:regexes settings:settings];
         }
-        else if ([TokenHelper actualToken:t havingRuleIn:@[@"regex"]]) {
+        else if ((chs=[TokenHelper childrenForToken:token havingRuleIn:@[@"regex"]])) {
             NSDictionary *re=@{
                 ((Token*)t.children[0]).contents:((Token*)t.children[1]).contents
             };
-            if (![(NSDictionary*)regexes.lastObject isEqual:re]) {
-                [regexes addObject:re];
+            if (t==token) {
+                if (![(NSDictionary*)regexes.lastObject isEqual:re]) {
+                    [regexes addObject:re];
+                }
+            }
+            else {
+                NSMutableArray *newRegexes=regexes.mutableCopy;
+                if (![(NSDictionary*)newRegexes.lastObject isEqual:re]) {
+                    [newRegexes addObject:re];
+                }
+                for (Token *ch in chs) [self process:ch regexes:newRegexes settings:settings];
             }
         }
         else if ((chs=[TokenHelper childrenForToken:token havingRuleIn:@[@"setting"]])) {
@@ -616,12 +625,21 @@ WIClass
         else if ([TokenHelper actualToken:t havingRuleIn:@[@"class",@"protocol",@"classwprotocol",@"mod"]]) {
             [[self.context.file contextWithRegexes:regexes] process:token regexes:regexes.mutableCopy settings:settings outerClass:self outerLinkType:nil outerLinkVar:nil mods:@[]];
         }
-        else if ([TokenHelper actualToken:t havingRuleIn:@[@"regex"]]) {
+        else if ((chs=[TokenHelper childrenForToken:token havingRuleIn:@[@"regex"]])) {
             NSDictionary *re=@{
                 ((Token*)t.children[0]).contents:((Token*)t.children[1]).contents
             };
-            if (![(NSDictionary*)regexes.lastObject isEqual:re]) {
-                [regexes addObject:re];
+            if (t==token) {
+                if (![(NSDictionary*)regexes.lastObject isEqual:re]) {
+                    [regexes addObject:re];
+                }
+            }
+            else {
+                NSMutableArray *newRegexes=regexes.mutableCopy;
+                if (![(NSDictionary*)newRegexes.lastObject isEqual:re]) {
+                    [newRegexes addObject:re];
+                }
+                for (Token *ch in chs) [self process:ch regexes:newRegexes settings:settings doingInitialSettings:doingInitialSettings outerClass:outerClass outerLinkType:outerLinkType outerLinkVar:outerLinkVar mods:mods];
             }
         }
         else if (outerClass&&((chs=[TokenHelper childrenForToken:token havingRuleIn:@[@"var",@"fn"]]))) {
@@ -854,12 +872,21 @@ WIVar
             WIBody *body=[self setterWithSetterVar:setterVar];
             if (chs.count) [body incorporateBody:((Token*)((Token*)chs[0]).children[0]).contents];
         }
-        else if ([TokenHelper actualToken:t havingRuleIn:@[@"regex"]]) {
+        else if ((chs=[TokenHelper childrenForToken:token havingRuleIn:@[@"regex"]])) {
             NSDictionary *re=@{
                 ((Token*)t.children[0]).contents:((Token*)t.children[1]).contents
             };
-            if (![(NSDictionary*)regexes.lastObject isEqual:re]) {
-                [regexes addObject:re];
+            if (t==token) {
+                if (![(NSDictionary*)regexes.lastObject isEqual:re]) {
+                    [regexes addObject:re];
+                }
+            }
+            else {
+                NSMutableArray *newRegexes=regexes.mutableCopy;
+                if (![(NSDictionary*)newRegexes.lastObject isEqual:re]) {
+                    [newRegexes addObject:re];
+                }
+                for (Token *ch in chs) [self process:ch regexes:newRegexes settings:settings doingInitialSettings:doingInitialSettings];
             }
         }
         else if ((chs=[TokenHelper childrenForToken:token havingRuleIn:@[@"link"]])) {

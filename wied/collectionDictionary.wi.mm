@@ -2191,6 +2191,8 @@
 
 
 
+
+
         dictionary_count = 0;
         for (id k in __dictionary) {
             dictionary_objects.keyvals[dictionary_count].key = (__bridge void *)k;
@@ -2199,8 +2201,6 @@
         }
         memset( dictionary_objects.keyvals + dictionary_count,0,sizeof(dictionary_objects.keyvals[0]) * (100 - dictionary_count) );
         dictionary_count = __dictionary.count;
-
-
 
         /*i100*/ [dictionaryDelegate stateOK];
     }
@@ -3310,9 +3310,7 @@
             [keys addObject:key];
         }
 
-        /*i100*/ [dictionaryDelegate didReplaceObject:fromObject withObject:toObject forKey:key];
-
-        if (toObject) {
+        /*i100*/ if (toObject) {
             if (!__addingToMirrorDictionary) [self passFail:NO format:@"!!!dkt did add while not adding\n"];
             [self add:-1 toWillAddCountForObject:toObject];
             __addingToMirrorDictionary--;
@@ -3322,6 +3320,7 @@
             [self add:-1 toWillRemoveCountForObject:fromObject];
             __removingFromMirrorDictionary--;
         }
+        [dictionaryDelegate didReplaceObject:fromObject withObject:toObject forKey:key];
     }
     - (void)die {
         MSGSTART("WeakMutableDictionaryMirrorTesterImpl:-(void)die")
@@ -3725,7 +3724,15 @@
         MSGSTART("WeakMutableDictionaryMirrorTesterImpl:-(void)stateOK")
 
         /*i-100*/ version++;
-        /*i0*/ dictionary_count = 0;
+        /*i0*/ if (__addingToMirrorDictionary) [self passFail:NO format:@"!!!dkt adding when state ok\n"];
+        if (__removingFromMirrorDictionary) [self passFail:NO format:@"!!!dkt removing when state ok\n"];
+        [self verifyMirrorDictionary];
+
+
+
+
+
+        dictionary_count = 0;
         for (id k in __dictionary) {
             dictionary_objects.keyvals[dictionary_count].key = (__bridge void *)k;
             dictionary_objects.keyvals[dictionary_count++].value = (__bridge void *)[__dictionary objectForKey:k];
@@ -3733,13 +3740,6 @@
         }
         memset( dictionary_objects.keyvals + dictionary_count,0,sizeof(dictionary_objects.keyvals[0]) * (100 - dictionary_count) );
         dictionary_count = __dictionary.count;
-
-
-
-
-        if (__addingToMirrorDictionary) [self passFail:NO format:@"!!!dkt adding when state ok\n"];
-        if (__removingFromMirrorDictionary) [self passFail:NO format:@"!!!dkt removing when state ok\n"];
-        [self verifyMirrorDictionary];
 
         /*i100*/ [dictionaryDelegate stateOK];
     }
@@ -3775,9 +3775,7 @@
 
 
 
-        /*i100*/[dictionaryDelegate willReplaceObject : fromObject withObject : toObject forKey : key];
-
-        if (fromObject) {
+        /*i100*/ if (fromObject) {
             [self add:1 toWillRemoveCountForObject:fromObject];
             __removingFromMirrorDictionary++;
         }
@@ -3786,8 +3784,9 @@
             __addingToMirrorDictionary++;
             [self add:1 toWillAddCountForObject:toObject];
         }
+        [dictionaryDelegate willReplaceObject:fromObject withObject:toObject forKey:key];
 
-/*i950*/ if (fromObject) {
+        /*i950*/ if (fromObject) {
             NSMutableSet *keys = [__dictionaryObjectKeys objectForKey:(id < NSCopying >)fromObject];
             if (!keys)
                 [self passFail:NO format:@"!!!dk Object not known\n"];
