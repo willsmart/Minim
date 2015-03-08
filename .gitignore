@@ -1,0 +1,14 @@
+WInterfaceSample/WInterfaceSample-Prefix.pch
+WInterfaceSample/WInterfaceSample.1
+WInterfaceSample/main.m
+inserts.mm
+Sample/model.mm
+Sample/object.mm
+Sample/sample.wi.decl.h
+Sample/sample.wi.h
+Sample/sample.wi.mm
+Sample/sys.mm
+Sample/token.mm
+Sample/util.mm
+*.xcbkptlist
+bin/WInterface
