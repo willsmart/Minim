@@ -1,198 +1,354 @@
-Class=>class,classpar,varpar,kvpar,repar,settingpar,par,ln
-Var=>var,kvpar,repar,relpar,initpar,getterpar,setterpar,settingpar,par,ln
-Keyval=>kv,ln
-Regex=>re,ln
-Include=>include,ln
-Rel=>rel,classpar,varpar,par,ln
-Init=>init,ln
-Getter=>getter,ln
-Setter=>setter,ln
-Setting=>setting,ln
+All=>Value,Prefixfn,Vecfn,Fn
+WS=> ,\t,br
+Wdbreak=>^a-z,A-Z,0-9,_
+Openbrace=>(,{,[
+Closebrace=>),},]
+
+MM=>00000000
+M_M=>99999999
+MB=>00000200
+LL=>00000
+L_L=>99999
+BB=>00
+
+ MM=>000
+ M_M=>999
+ MB=>020
+ LL=>00
+ L_L=>99
+ BB=>0
+
+File=>file,ln
+Value=>value,ln
+Fn=>fn,vecfn,suffix,ln
+Prifn=>prifn,vecfn,suffix,ln
+Priprifn=>priprifn,prifn,vecfn,suffix,ln
+Vecfn=>vecfn,suffix,ln
+Word=>Value,Prifn,vecfn
+
+
+ carriage return
+!cr:x\r|>>??
+
+ builtin tokens
+!linecomment:/|/|>>linecomment
+!blockcommentstart:/|*|>>blockcommentstart
+!blockcommentend:*|/|>>blockcommentend
+
+!include:oWdbreak|oi|on|oc|ol|ou|od|Oe[0]|>>e,_include[1]
+!include:_include[1]|oWdbreak|>>??[2]
+include:?oWdbreak|?Oi|?n|?c|?l|?u|?d|?_include[2]|>>include,_priprifn
+
+include:?oWdbreak|?O\|?\i|?n|?oWdbreak|>>sin,_priprifn
+sin:?oWdbreak|?O\s|?\i|?n|?oWdbreak|>>sin,_priprifn
+asin:?oWdbreak|?Oa|?\s|?\i|?n|?oWdbreak|>>asin,_priprifn
+cos:?oWdbreak|?O\c|?\o|?\s|?oWdbreak|>>cos,_priprifn
+acos:?oWdbreak|?Oa|?\c|?\o|?\s|?oWdbreak|>>acos,_priprifn
+tan:?oWdbreak|?Ot|?a|?n|?oWdbreak|>>tan,_priprifn
+atan:?oWdbreak|?Oa|?t|?a|?n|?oWdbreak|>>atan,_priprifn
+sqrt:?oWdbreak|?O\s|?\q|?r|?t|?oWdbreak|>>sqrt,_priprifn
+sqr:?oWdbreak|?O\s|?\q|?r|?oWdbreak|>>sqr,_priprifn
+floor:?oWdbreak|?O\f|?\l|?\o|?\o|?r|?oWdbreak|>>floor,_priprifn
+frac:?oWdbreak|?O\f|?r|?a|?\c|?oWdbreak|>>frac,_priprifn
+abs:?oWdbreak|?Oa|?b|?\s|?oWdbreak|>>abs,_priprifn
+min:?oWdbreak|?O\m|?\i|?n|?oWdbreak|>>min,_priprifn
+max:?oWdbreak|?O\m|?a|?\x|?oWdbreak|>>max,_priprifn
+ln:?oWdbreak|?O\l|?n|?oWdbreak|>>ln,_priprifn
+log:?oWdbreak|?O\l|?\o|?\g|?oWdbreak|>>log,_priprifn
+
+inch:?oWdbreak|?O\i|?n|?\c|?\h|?oWdbreak|>>inches,_knownsuffix,_priprifn
+inches:?oWdbreak|?O\i|?n|?\c|?\h|?\e|?\s|?oWdbreak|>>inches,_knownsuffix,_priprifn
+mm:?oWdbreak|?O\m|?\m|?oWdbreak|>>mm,_knownsuffix,_priprifn
+cm:?oWdbreak|?Oc|?m|?oWdbreak|>>cm,_knownsuffix,_priprifn
+m:?oWdbreak|?O\m|?oWdbreak|>>metres,_knownsuffix,_priprifn
+thou:?oWdbreak|?Ot|?\h|?\o|?\u|?oWdbreak|>>thou,_knownsuffix,_priprifn
+deg:?oWdbreak|?O\d|?\e|?\g|?oWdbreak|>>deg,_knownsuffix,_priprifn
+rad:?oWdbreak|?Or|?a|?\d|?oWdbreak|>>rad,_knownsuffix,_priprifn
+grad:?oWdbreak|?O\g|?r|?a|?\d|?oWdbreak|>>grad,_knownsuffix,_priprifn
+cycle:?oWdbreak|?O\c|?\y|?\c|?\l|?\e|?oWdbreak|>>cycles,_knownsuffix,_priprifn
+cycles:?oWdbreak|?O\c|?\y|?\c|?\l|?\e|?\s|?oWdbreak|>>cycles,_knownsuffix,_priprifn
+
+!setscale:oWdbreak|o\s|o\e|ot|o\s|o\c|oa|O\l[0]|>>_setscale,l[1]
+!setscale:_setscale[1]|\e|oWdbreak|>>[2]
+setscale:?oWdbreak|?O\s|?\e|?t|?\s|?\c|?a|?_setscale[2]|>>_setscale[3]
+!setscale:_setscale[3]|e|>>??[4]
+rand:?oWdbreak|?Or|?a|?n|?\d|?oWdbreak|>>rand,Value
+
+plus:?\+|>>_binaryfn,_binaryfnDsign,_fn
+minus:?\-|>>_binaryfn,_binaryfnDsign,_fn
+times:?\*|>>_binaryfn,_binaryfnC,_fn
+div:?\/|>>_binaryfn,_binaryfnC,_fn
+pow:?\^|>>_binaryfn,_binaryfnB,_fn
+lessthan:?\<|>>lessthan,_binaryfn,_binaryfnE,_fn
+greaterthan:?\>|>>greaterthan,_binaryfn,_binaryfnE,_fn
+or:?\||>>_binaryfn,_binaryfnF,_fn
+and:?\&|>>_binaryfn,_binaryfnF,_fn
+comma:?\,|>>_comma,_binaryfn
+equate:?\:|?\=|>>_binaryfn,_binaryrtlfnH
+equals:?\=|>>_binaryfn,_binaryrtlfnF,_fn
+
+scale:?oWdbreak|?Os|?\c|?a|?\l|?\e|?oWdbreak|>>scale,_vecfn
+
+rot:?oWdbreak|?Or|?\o|?t|\x,y,z|?oWdbreak|>>rot,_vecfn
+
+
+===
+
+!zero:^END[1..]|>>??[0]
+
+===
+
 
  end
 !end:oEND|^blah|>>??
-!end:\n|E|N|D|>>END
+!end:\n|E|N|D|\n|>>END
+!end:END[0]|>>END,ln[10]
 
-!start:<^file[0]|>>file,par,classpar,kvpar,repar[1]
+!start:\n|S|T|A|R|T|\n|>>START
+!start:OSTART[0]|>>??[2LL0]
 
  strings
-+string:_string[0..]|^",END|>>_string[0..]
-+string:_string[0..]|?"|>>string[0..]
-!string:x"|O^",END|>>_string[0]
-string:x"|O"|>>string[0]
+&string:_string|x\\|?x\\,"|>>_string
+&string:_string|x^",END|>>_string
+string:_string|?x"|>>string,plainString
+!string:x"[4]|O\\|\\,"|>>_string
+!string:x"[4]|O^",END|>>_string
+string:?x"[4]|?O"|>>string,plainString
 
- clear for block
-!clearblock:o{[1000..]|O^END[0]|>>??[@0:1001..]
-!clearblock:o}[1002..]|O^END[0]|>>??[@0:1001..]
-!clearblock:o^END,},{[1001..]|O^END[0]|>>??[@0:1001..]
-!clearblock:o^END[0]|O{[0]|>>??[1000]
-!clearblock:<{[0]|>>??[1000]
+&charstring:_charstring|x\\|?x\\,'|>>_charstring
+&charstring:_charstring|x^',END|>>_charstring
+charstring:_charstring|?x'|>>string,plainString
+!charstring:x'[4]|O\\|\\,'|>>_charstring
+!charstring:x'[4]|O^',END|>>_charstring
+charstring:?x'[4]|?O'|>>string,plainString
 
- lines
-lineStart:?\n[0]|>>lineStart,br[2]
-!lineStart:lineStart[2..]| |>>lineStart,br[3..]
-!lineStart:lineStart[2..]|\t|>>lineStart,br[6..]
-!lineStart:x |OlineStart[2..]|>>lineStart,br[2..]
-!lineStart:xlineStart|olineStart|>>??
+!string:",'[0]|>>??[4]
 
- blocks
-!findbrace:^lineStart[0]|o^END[1000..]|>>??[1000]
-!block:O{[2..998]|O^END[1000..]|>>??[@0:3..999]
-!block:x}[4..999]|O^END[1000..]|>>??[@0:3..998]
-!block:x}[3..999]|>>??
-lineStart:?{[3..999]|>>lineStart,lineStart[4..999]
-!findbrace:o^END[2..999]|O^END[1000..]|>>??[@0:2..999]
-!findbrace:o^END[2..]|O^END[0]|>>??[@0:2..]
 
  comments
-!lineComment:o/|o/|^lineStart|>>??
-!lineComment:x/|/|>>??
-!commentEnd:rtl:*|/|>>commentEnd
-!comment:rtl:x/|*|commentEnd|>>??
-!comment:rtl:o/|o*|^commentEnd|>>??
+!lineComment:olinecomment|^END,\n,linestart,br|>>??
+!lineComment:xlinecomment|>>??
+!commentEnd:rtl:blockcommentend|>>commentEnd
+!comment:rtl:xblockcommentstart|commentEnd|>>??
+!comment:rtl:oblockcommentstart|^END,commentEnd|>>??
+
+===
 
  words and numbers
-+word:rtl:a-z,A-Z,_|word|>>_word,_wordGroup
-+int:0-9|int|>>int,number
-+word:rtl:a-z,A-Z,_|>>_word,_wordGroup
-+int:rtl:O0-9|>>int,number
-+number:int|.|int|>>number
-+wordGroup:_wordGroup|number,_wordGroup|>>_wordGroup
-!word:_word|>>word,wordGroup
-!wordGroup:_wordGroup|>>wordGroup
+&int:0-9|x_int|>>_int,number
+&int:rtl:O0-9|>>_int,number
+
+inch:?o_wordgroup,_int|?O\i|?n|?\c|?\h|?oWdbreak|>>inches,_knownsuffix,_priprifn
+inches:?o_wordgroup,_int|?O\i|?n|?\c|?\h|?\e|?\s|?oWdbreak|>>inches,_knownsuffix,_priprifn
+mm:?o_wordgroup,_int|?O\m|?\m|?oWdbreak|>>mm,_knownsuffix,_priprifn
+cm:?o_wordgroup,_int|?Oc|?m|?oWdbreak|>>cm,_knownsuffix,_priprifn
+m:?o_wordgroup,_int|?O\m|?oWdbreak|>>metres,_knownsuffix,_priprifn
+thou:?o_wordgroup,_int|?Ot|?\h|?\o|?\u|?oWdbreak|>>thou,_knownsuffix,_priprifn
+deg:?o_wordgroup,_int|?O\d|?\e|?\g|?oWdbreak|>>deg,_knownsuffix,_priprifn
+rad:?o_wordgroup,_int|?Or|?a|?\d|?oWdbreak|>>rad,_knownsuffix,_priprifn
+grad:?o_wordgroup,_int|?O\g|?r|?a|?\d|?oWdbreak|>>grad,_knownsuffix,_priprifn
+cycle:?o_wordgroup,_int|?O\c|?\y|?\c|?\l|?\e|?oWdbreak|>>cycles,_knownsuffix,_priprifn
+cycles:?o_wordgroup,_int|?O\c|?\y|?\c|?\l|?\e|?\s|?oWdbreak|>>cycles,_knownsuffix,_priprifn
+
+&word:rtl:a-z,A-Z,_|x_word|>>_word,_wordgroup
+&word:rtl:a-z,A-Z,_|>>_word,_wordgroup
+
+&wordgroup:_wordgroup|xnumber,_wordgroup|>>_wordgroup
+
+number:_int|x.|x_int|>>number
+int:_int|>>int,number
+hashword:?\#|_word|>>hashword,hashwordgroup,word,wordgroup
+word:_word|>>word,wordgroup,_prifn
+hashwordgroup:?\#|_wordgroup|>>hashwordgroup,wordgroup
+wordgroup:_wordgroup|>>wordgroup,_prifn
 
  clear spaces
-!ws:x ,\t|>>??
+!ws:o^ ,\t,\n,linestart,br|x ,\t|>>??
 
  ws
  !ws:o ,\t,\,,\<,:,=,\>| ,\t|>>??
  !ws:x ,\t|o\,,\>,\<,:,=|>>??
 
- eat lineStarts
-!line:xlineStart[0..]|oEND,lineStart|>>??
-!line:xlineStart[0..]|O^END|>>??[@0:0..]
+!linestart:\n[0]|>>linestart,br
+!spaceindent:linestart,START[0..]| |>>linestart,br[@0:2BB0..]
+!tabindent:linestart,START[0..]|\t|>>linestart,br[@0:5BB0..]
+    eat spaces at end of line
+!eolspace:x |olinestart|>>??
+    eat empty lines
+!emptyline:xlinestart|olinestart|>>??
 
+!charinc:o^Openbrace,END[1LL0..]|O^Closebrace,linestart,br,_linestart[0..L_L0]|>>??[@0:1LL0..]
+!charincoverln:o^Openbrace,END[1LL0..]|olinestart|O^Closebrace,linestart,br,_linestart[0..L_L0]|>>??[@0:1LL0..]
+!openinc:oOpenbrace[1LL0..]|O^Closebrace,linestart,br,_linestart[0..L_L0]|>>??[@0:2LL0..]
+!openincoverln:oOpenbrace[1LL0..]|olinestart|O^Closebrace,linestart,br,_linestart[0..L_L0]|>>??[@0:2LL0..]
+!closeinc:o^Openbrace,END[2LL0..]|OClosebrace[0]|>>??[@0:1LL0..]
+!closeincoverln:o^Openbrace,END[2LL0..]|olinestart|OClosebrace[0]|>>??[@0:1LL0..]
+!opencloseinc:oOpenbrace[1LL0..]|OClosebrace[0]|>>??[@0:1LL0..]
+!opencloseincoverln:oOpenbrace[1LL0..]|olinestart|OClosebrace[0]|>>??[@0:1LL0..]
 
+!start2:OSTART[2LL0]|>>??[1MM0]
+
+!storelinestart:o^END[1MM0..]|Olinestart,br[0..L_L0]|>>#_linestart[@1:0..]
+!addtolinestart:o^END[1MM0..]|O_linestart|o^END[0..]|>>linestart,br[@1+2:1MM0..]
+!addlinestart:o^END[1MM0..]|O^linestart,br,_linestart[0..M_M0]|>>#++??[@#+1:1MM0..]
 
 ===
 
 
-par:rtl:par|>0ln|<=0?oln,END|>>??
-(sib)sib:rtl:?opar|>=2Oln|>=0ln|>>??
+ eat linestarts and things
+!eatthings:x\n, ,\t|>>??
+!openvec:\[|>>_openvec,_open
+!closevec:]|>>_closevec,_close
+!openbrace:\{|>>_openbrace,_open
+!closebrace:}|>>_closebrace,_close
+!openparan:\(|>>_openparan,_open
+!closeparan:)|>>_closeparan,_close
 
- protocols
-(protList)protList:?\<|_protList|>>protList,protocol,Class,ln
-protocol:?\<|word,wordGroup|?:|_protList|>>protocol,Class,ln
-(protList)protList:word,wordGroup|?\,|_protList|>>_protList
-protList:word,wordGroup|?\>|>>_protList
-
- classes
-(classList)classList:?oclasspar|>0?oword,wordGroup,protList|?o:|Oword,wordGroup,classList|?\,|word,wordGroup|>>classList
-  w:w<p>, w:w<p,p>
-class:?oclasspar|>0OwordGroup,word,protList|?:|classList,word,wordGroup|protList|>>Class,ln
-class:?oclasspar|>=2?oln|>0OwordGroup,word,protList|?:|classList,word,wordGroup|protList|>>Class,ln
-
-  w:w, w:<p>, w:cl, w:c1,c2, <p>:w, <p>:<p>
-class:?oclasspar|>0OwordGroup,word,protList|?:|classList,word,wordGroup|?oln|>>Class,ln
-class:?oclasspar|>=2?oln|>0OwordGroup,word,protList|?:|classList,word,wordGroup|?oln|>>Class,ln
-
-  w<p>
-(class)classDecl:?oclasspar|>0OwordGroup|protList|>>classDecl,Class,ln
-(class)classDecl:?oclasspar|>=2?oln|>0OwordGroup|protList|>>classDecl,Class,ln
-
-
- type
-type:word,wordGroup,type|*,&|>>type
-    (int), (int&), (int*), (int**)
-(type)cast:?(|word,wordGroup,type|?)|>>type,castType
-
- arg lists
-argDef:?ovarpar|>0?owordGroup|?o(|Otype,word,wordGroup|?:|word,wordGroup|>>argDef
-argDef:?ovarpar|>=2?oln|>0?owordGroup|?o(|Otype,word,wordGroup|?:|word,wordGroup|>>argDef
-
-argDef:?oargDef,_argList|?\,|Otype,word,wordGroup|?:|word,wordGroup|>>argDef
-(argList)argList:argDef,_argList|argDef|>>_argList
- (in class) (int:w), (int:w, int:w), (int*:w)
-(argList)argList:?O(|argDef,_argList|?)|>>argList
-
- selector arg lists
-selArgDef:?ovarpar|>0?owordGroup|?O:|castType|word,wordGroup|>>selArgDef
-selArgDef:?oselArgDef,selArgList|Oword,wordGroup|?:|castType|word,wordGroup|>>selArgDef
- (in class .. wd) :(int)w, :(int*)w, :(int)w arg:(int)w
-(selArgList)selArgList:OselArgDef,selArgList|selArgDef|>>selArgList
-
- (in class) w:(int)w, w(int:w)
-fn:wordGroup|selArgList,argList|>>Var,ln
- (in class) w()
-fn:?ovarpar|>0OwordGroup|(|)|>>Var,ln
- (in class)
- var:?ovarpar|>0OwordGroup|?obr|>>Var,ln
+===
 
 
 
+ mark values
 
- key:val
- (in class) w:w, w:1, w:"s", "s":w, "s":1, "s":"s"
-keyval:?^END|>0Ostring,wordGroup|?:|string,number,wordGroup|>>Keyval,ln
-keyval:?okvpar|>=2?oln|>0Ostring,wordGroup|?:|string,number,wordGroup|>>Keyval,ln
-
- regex
- (in class) w=>w, w=>1, w=>"s", "s"=>w, "s"=>1, "s"=>"s"
-keyval:?orepar|>0Ostring,wordGroup|?=|?\>|string,number,wordGroup|>>Regex,ln
-keyval:?orepar|>=2?oln|>0Ostring,wordGroup|?=|?\>|string,number,wordGroup|>>Regex,ln
-
-END
+!eatlinestart:ln|linestart|>>??
 
 
- initializers
-init:?ovar|>0?O=|>>Init,br
-(initBlock)initBlock:init[2..]|>0^END|>>[@0:2..]init,br
+!braces:oln|__openbrace|ovalue|_closebrace|>>??
+!paran:oln|O__openparan|ovalue|O_closeparan|>>__parans,__openclose
+!vecs:oln|O__openvec|ovalue|O_closevec|>>__vecs,__openclose
 
 
 
+ binary fns
+!markbinaryfnq:oln|>0-1BB0O\?|>>question,binaryfn,ln
+!markbinaryfnA:oln|>0O_binaryfnA|>>binaryfnA,binaryfn,fn,ln
+!markbinaryfnB:oln|>0O_binaryfnB|>>binaryfnB,binaryfn,fn,ln
+!markbinaryfnC:oln|>0O_binaryfnC|>>binaryfnC,binaryfn,fn,ln
+!markbinaryfnD:oln|>0O_binaryfnDsign|>>binaryfnDsign,binaryfn,fn,ln
+!markbinaryfnE:oln|>0O_binaryfnE|>>binaryfnE,binaryfn,fn,ln
+!markbinaryfnF:oln|>0O_binaryfnF|>>binaryfnF,binaryfn,fn,ln
+!markbinaryfnG:oln|>0O_binaryfnG|>>binaryfnG,binaryfn,fn,ln
+!markbinaryfnH:oln|>0O_binaryfnH|>>binaryfnH,binaryfn,ln
 
-!type:word,wordGroup|>>type
+!markbinaryrtlfnA:oln|>0O_binaryrtlfnA|>>binaryrtlfnA,binaryfn,fn,ln
+!markbinaryrtlfnB:oln|>0O_binaryrtlfnB|>>binaryrtlfnB,binaryfn,fn,ln
+!markbinaryrtlfnC:oln|>0O_binaryrtlfnC|>>binaryrtlfnC,binaryfn,fn,ln
+!markbinaryrtlfnD:oln|>0O_binaryrtlfnD|>>binaryrtlfnD,binaryfn,fn,ln
+!markbinaryrtlfnE:oln|>0O_binaryrtlfnE|>>binaryrtlfnE,binaryfn,fn,ln
+!markbinaryrtlfnF:oln|>0O_binaryrtlfnF|>>binaryrtlfnF,binaryfn,fn,ln
+!markbinaryrtlfnG:oln|>0O_binaryrtlfnG|>>binaryrtlfnG,binaryfn,fn,ln
+!markbinaryrtlfnH:oln|>0O_binaryrtlfnH|>>binaryrtlfnH,binaryfn,ln
 
-(argList)argList:argDef|?\,|_argList|>>_argList
-argList:argDef|?)|>>_argList
+!markcomma:oln|>0-1BB0O_comma|>>comma,binaryfn,fn,ln
 
- selectors
-(selArgList)selArgList:?(|_selArgList|>>selArgList
-(selArgList)selArgList:argDef|?\,|_selArgList|>>_selArgList
-selArgList:argDef|?)|>>_selArgList
+ binary fn second args
+!markbinaryargW:oln|>0obinaryfn|>0-1BB0Onumber,hashwordgroup|>>Value
+!markbinaryargW:oln|>0obinaryfn|>0-1BB0Owordgroup,string|>>Word
+!markbinaryargVF:oln|>0obinaryfn|>0-1BB0O_valuefn|>>Value,Fn
+!markbinaryargVecF:oln|>0obinaryfn|>0-1BB0O_vecfn|>>Vecfn
+!markbinaryargF:oln|>0obinaryfn|>0-1BB0O_fn|>>Fn
+!markbinaryargPPF:oln|>0obinaryfn|>0-1BB0O_priprifn|>>Priprifn
+!markbinaryargPF:oln|>0obinaryfn|>0-1BB0O_prifn|>>Prifn
 
- vars
-var:word,wordGroup|argList|>>var
+ prefix fn
+!markfnV:ofn,prifn|>0Onumber,hashwordgroup|>>Value
+!markfnW:ofn,prifn|>0Owordgroup,string|>>Word
+!markfnVF:ofn,prifn|>0O_valuefn|>>Value,Fn
+!markfnVecF:ofn,prifn|>0O_vecfn|>>Vecfn
+!markfnF:ofn|>0O_fn|>>Fn
+!markfnPPF:oprifn|>0O_priprifn|>>Priprifn
+!markfnPF:oprifn|>0O_prifn|>>Prifn
 
- args
-argDef:type,|?:|word,wordGroup|>>argDef
-selArgDef:?:|?(|type|?)|word,wordGroup|>>selArgDef
+ suffix
+!marksuffix:oln|>0O_knownsuffix|>>knownsuffix,prifn,ln
+
+ blank comma
+!markV:oln|>0-1BB0Onumber,hashwordgroup|>>Value
+!markW:oln|>0-1BB0Owordgroup,string|>>Word
+!markVF:oln|>0-1BB0O_valuefn|>>Value,Fn
+!markfnVecF:oln|>0-1BB0O_vecfn|>>Vecfn
+!markfnF:oln|>0-1BB0O_fn|>>Fn
+!markfnPPF:oln|>0-1BB0O_priprifn|>>Priprifn
+!markfnPF:oln|>0-1BB0O_prifn|>>Prifn
 
 
- selArgs
 
 
- key val
-keyval:string,word|?:|string,word|>>keyval
 
- regex
-regex:string,word|?=|?\>|string,word|>>regex
+(comma)suffix:value|>0knownsuffix|>>Value
 
- line
-!splitLine:?oline[0..]|x ,\t|>>??
-!splitLine:?oline[0..]|O^line,_line,lineStart,parent,siblings,END|>>_line[1000..]
-!breaks:?xlineStart[0..]|Oclass,protList|>>line[0..]
-!breaks:o_line[0..]|Oclass,protList|>>line[0..]
-(line)line:?xlineStart[0..]|O^lineStart,_line,line,parent,siblings,END|>>_line[0..]
-(line)line:<^lineStart,_line,line,parent,siblings,END|>>_line[0]
-(line)line:_line[0..]|^lineStart,_line,line,parent,siblings,END|>>_line[0..]
-(line)line:_line[0..]|>>line[0..]
-!mtline:x^line,parent,siblings,END|>>??
+(comma)vecfn:vecfn|>0?__vecs|value|?__vecs|>>Fn
+(comma)vecfn:vecfn|>0?_openvec|?_closevec|>>Fn
 
- line structure
-(siblings)parent:rtl:line|>0line|<=0?oline|>>line,parent
-(siblings)parent:rtl:line|>0line|?oEND|>>line,parent
-(siblings)siblings:rtl:?oline|>0Oline|>0line|>>line,siblings
+(comma)prefix:prifn|>0?__parans|value|?__parans|>>Fn,Value
+(comma)prefix:priprifn|>0value|>>Fn,Value
 
-!end:xEND|>>??
+
+
+!killopenbrace:x__openclose[0..]|Ovalue|x__openclose|>>??[@0:0..]
+
+
+
+
+binfn:value|>0binaryfnA|>0-1BB0value|>>Value
+binfn:rtl:value|>0binaryrtlfnA|>0-1BB0value|>>Value
+
+binfn:value|>0binaryfnB|>0-1BB0value|>>Value
+binfn:rtl:value|>0binaryrtlfnB|>0-1BB0value|>>Value
+
+binfn:value|>0binaryfnC|>0-1BB0value|>>Value
+binfn:rtl:value|>0binaryrtlfnC|>0-1BB0value|>>Value
+
+binfn:value|>0binaryfnDsign|>0-1BB0value|>>Value
+binfn:rtl:value|>0binaryrtlfnD|>0-1BB0value|>>Value
+
+(comma)prefix:binaryfnDsign|>0value|>>Fn,Value
+
+binfn:value|>0binaryfnE|>0-1BB0value|>>Value
+binfn:rtl:value|>0binaryrtlfnE|>0-1BB0value|>>Value
+
+!markTernary:rtl:ovalue|>0oquestion|>0-1BB0ovalue|>0O:|>>colon,binaryfn,ln
+ternary:rtl:value|>0?question|>0-1BB0value|>0?colon|>0-1BB0value|>>Value
+
+binfn:value|>0binaryfnF|>0-1BB0value|>>Value
+binfn:rtl:value|>0binaryrtlfnF|>0-1BB0value|>>Value
+
+(comma)comma:value|>0-1BB0?comma|>0-1BB0value|>>Value
+
+binfn:value|>0binaryfnG|>0-1BB0value|>>Value
+binfn:rtl:value|>0binaryrtlfnG|>0-1BB0value|>>Value
+
+
+(comma)prefix:rtl:fn,prifn|>0value|>>Fn,Value
+(comma)suffix:rtl:value|>0suffix|>>Fn,Value
+
+binfn:value|>0binaryfnH|>0-1BB0value|>>Value
+binfn:rtl:value|>0binaryrtlfnH|>0-1BB0value|>>Value
+
+
+(comma)comma:value|>0-1BB0value|>>Value
+
+
+
+
+
+
+
+!killchildindent:x_childindent|>>??
+
+ (1)mark all the groupings
+!markopen:O_openvec,_openparan,_openbrace[0..2MM0]|owordgroup,number,string,_fn,_prifn,_priprifn,ln|>>??[2MM1..]
+!markchildindent:o^START|>0+1BB0Olinestart[0..2MM0]|>>??[2MM1..]
+
+ (3)process scanned grouping
+!markopenvec:O_openvec[4MM1..]|>>ln,__openvec[0..]
+!markopenparan:O_openparan[4MM1..]|>>ln,__openparan[0..]
+!markopenbrace:O_openbrace[4MM1..]|>>ln,__openbrace[0..]
+!markchildindent:linestart[4MM1..]|>>_childindent,ln[0..]
+
+ (2)scan groupings from the right
+!scanindent:rtl:^END[2MM1..4MM0]|>>??[4MM1..]
+
+file:?START|>>File[1LL0]
+!final:?xfile|ovalue|?END|>>??
 

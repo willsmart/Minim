@@ -1,0 +1,10 @@
+$"{WIBASE}/wiLibrary_v1/wi.wi"
+"<pthread.h>"
+
+"wi/Main.wi"
+"wi/Files.wi"
+"wi/Code.wi"
+"wi/Structure.wi"
+"wi/Regexes.wi"
+//"wi/Output.wi"
+"wi/Merge.wi"

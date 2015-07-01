@@ -27,7 +27,13 @@ Setting=>setting,classpar,classparnotfile,repar,settingpar,blockpar,par,ln
 Block=>block,ln
 File=>file,ln,par,classpar,classdefpar,classvarpar,includepar,repar,settingpar
 
+ carriage return
+!cr:x\r|>>??
+
  builtin tokens
+!linecomment:/|/|>>linecomment
+!blockcommentstart:/|*|>>blockcommentstart
+!blockcommentend:*|/|>>blockcommentend
     __unsafe_unretained
     __autoreleasing
     __strong
@@ -52,12 +58,10 @@ weak:?_|?_|?w|?e|?a|?k|?oWS,*,&,)|>>weak,modprefix,mod
 
 const:?c|?\o|?n|?s|?t|?oWS,*,&,)|>>const,modprefix,mod
 
-&sys:?o^a-z,A-Z,0-9|Os|y|s|?o^a-z,A-Z,0-9|>>word,wordgroup,modprefix
-&type:?o^a-z,A-Z,0-9|Ot|y|p|e|?o^a-z,A-Z,0-9|>>word,wordgroup,modprefix
+&sys:?o^a-z,A-Z,0-9|Os|xy|xs|?o^a-z,A-Z,0-9|>>word,wordgroup,modprefix
+&type:?o^a-z,A-Z,0-9|Ot|xy|xp|xe|?o^a-z,A-Z,0-9|>>word,wordgroup,modprefix
 
 ===
-
- end
 !end:oEND|^blah|>>??
 !end:\n|E|N|D|\n|>>END
 !end:END[0]|>>END,ln[10]
@@ -68,16 +72,16 @@ const:?c|?\o|?n|?s|?t|?oWS,*,&,)|>>const,modprefix,mod
  strings
 substituteString:?x$|OplainString|>>string,substituteString
 
-&string:_string|\\|\\,"|>>_string
-&string:_string|^",END|>>_string
-&string:_string|?"|>>string,plainString
+&string:_string|x\\|?x\\,"|>>_string
+&string:_string|x^",END|>>_string
+string:_string|?x"|>>string,plainString
 !string:x"[4]|O\\|\\,"|>>_string
 !string:x"[4]|O^",END|>>_string
 string:?x"[4]|?O"|>>string,plainString
 
-&charstring:_charstring|\\|\\,'|>>_charstring
-&charstring:_charstring|^',END|>>_charstring
-&charstring:_charstring|?'|>>string,plainString
+&charstring:_charstring|x\\|?x\\,'|>>_charstring
+&charstring:_charstring|x^',END|>>_charstring
+charstring:_charstring|?x'|>>string,plainString
 !charstring:x'[4]|O\\|\\,'|>>_charstring
 !charstring:x'[4]|O^',END|>>_charstring
 charstring:?x'[4]|?O'|>>string,plainString
@@ -86,37 +90,46 @@ charstring:?x'[4]|?O'|>>string,plainString
 
 
  comments
-!lineComment:o/|o/|^END,\n,linestart,br|>>??
-!lineComment:x/|/|>>??
-!commentEnd:rtl:*|/|>>commentEnd
-!comment:rtl:x/|*|commentEnd|>>??
-!comment:rtl:o/|o*|^END,commentEnd|>>??
+!lineComment:olinecomment|^END,\n,linestart,br|>>??
+!lineComment:xlinecomment|>>??
+!commentEnd:rtl:blockcommentend|>>commentEnd
+!comment:rtl:xblockcommentstart|commentEnd|>>??
+!comment:rtl:oblockcommentstart|^END,commentEnd|>>??
+
+
 
  links (all must be surrounded by whitespace)
  ~-, -~, --, >-, >~, -<, ~<, >< (also ~~)
-&linkType:?oWS|O-,\~,>|-,\~,<|?oWS|>>linkType
+&linkType:?oWS|O-,\~,>|x-,\~,<|?oWS|>>linkType
  >~-<, >--<, >-~<, (also >~~<)
-&linkType:?oWS|O\>|-,\~|-,\~|\<|?oWS|>>linkType
+&linkType:?oWS|O\>|x-,\~|x-,\~|x\<|?oWS|>>linkType
  ~d<, -d<, ~s<, -s<, ~a<, -a<
-&linkType:?oWS|O\~,-|d,s,a|\<|?oWS|>>linkType
+&linkType:?oWS|O\~,-|xd,s,a|x\<|?oWS|>>linkType
  >d~, >d-, >s~, >s-, >a~, >a-
-&linkType:?oWS|O\>|d,s,a|\~,-|?oWS|>>linkType
+&linkType:?oWS|O\>|xd,s,a|x\~,-|?oWS|>>linkType
  >~d-, >~s-, >~a-
-&linkType:?oWS|O\>|\~|d,s,a|-|?oWS|>>linkType
+&linkType:?oWS|O\>|x\~|xd,s,a|x-|?oWS|>>linkType
  -d~<, -s~<, -a~<
-&linkType:?oWS|O-|d,s,a|\~|\<|?oWS|>>linkType
+&linkType:?oWS|O-|xd,s,a|x\~|x\<|?oWS|>>linkType
 
 ===
 
  words and numbers
-&word:rtl:a-z,A-Z,_|word|>>_word,_wordgroup
-&int:0-9|int|>>int,number
+&int:0-9|x_int|>>_int,number
+&int:rtl:O0-9|>>_int,number
+
+
+&word:rtl:a-z,A-Z,_|x_word|>>_word,_wordgroup
 &word:rtl:a-z,A-Z,_|>>_word,_wordgroup
-&int:rtl:O0-9|>>int,number
-&number:int|.|int|>>number
-&wordgroup:_wordgroup|number,_wordgroup|>>_wordgroup
-!word:_word|>>word,wordgroup,classwordgroup
-!wordgroup:_wordgroup|>>wordgroup,classwordgroup
+
+&wordgroup:_wordgroup|xnumber,_wordgroup|>>_wordgroup
+
+number:_int|x.|x_int|>>number
+int:_int|>>int,number
+hashword:?\#|_word|>>hashword,hashwordgroup,word,wordgroup
+word:_word|>>word,wordgroup,_prifn
+hashwordgroup:?\#|_wordgroup|>>hashwordgroup,wordgroup
+wordgroup:_wordgroup|>>wordgroup,_prifn
 
  clear spaces
 !ws:o^ ,\t,\n,linestart,br|x ,\t|>>??
@@ -161,8 +174,8 @@ charstring:?x'[4]|?O'|>>string,plainString
 
  !paranBody:lparan[10]|^OEND[10..]|o)|>>??[0]
  !paranFollow:oln,_ln[1..]|Olparan[10]|^oEND[0]|o)|>>??[@0:2..]
- &block:block|^\,,END[0]|>>??
- &block:?oblock|>0Oblock|^END[0]|>>??
+ &block:block|x^\,,END[0]|>>??
+ &block:?oblock|>0Oblock|x^END[0]|>>??
  !follow:oln,_ln[1..]|O^\,,ln[0]|>>??[@0:2..]
 
 setting:?osettingpar|>0Owordgroup,string|?:|?owordgroup,string|?o:|>>Setting
@@ -291,9 +304,9 @@ getter:?osetterpar|>0?O\<|=1+1?-|>>Getter
  (type)cast:?(|word,wordgroup,type|?)|>>type,castType
 
     indented grabs any indented chars
-&block:?oblockpar|>=0+1BB0O_block|>=0+1BB0^All,Noblock,END|>>??
+&block:?oblockpar|>=0+1BB0O_block|>=0+1BB0x^All,Noblock,END|>>??
     block grabs any chars at same or greater indent (other than special case for ,)
-&block:?oblockpar|O_block|>=1^\,,All,Noblock,END|>>??
+&block:?oblockpar|O_block|>=1x^\,,All,Noblock,END|>>??
 
 
  (in atomic etc) var
@@ -395,4 +408,4 @@ error:file|^END,ln|>>error
 
 !ends:xSTART,END|>>??
 
-END
+ END

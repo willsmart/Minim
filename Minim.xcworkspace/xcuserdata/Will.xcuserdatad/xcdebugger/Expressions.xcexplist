@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "GLOBAL">
+         <PersistentStrings>
+            <PersistentString
+               value = "g_numAlloc">
+            </PersistentString>
+            <PersistentString
+               value = "g_alloced">
+            </PersistentString>
+            <PersistentString
+               value = "g_typAlloced">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "breakPoint():Basic.h">
+         <PersistentStrings>
+            <PersistentString
+               value = "g_alloced">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "+[Treeable asTree:object:]:Code.wi.mm">
+         <PersistentStrings>
+            <PersistentString
+               value = "(WIClass*)me">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>

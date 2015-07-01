@@ -81,7 +81,7 @@ Files
         };
         NSString *htmlfn=[Singletons._.files pathForPath:@"merge.html"];
         NSString *json=[[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:d options:0 error:&err] encoding:NSUTF8StringEncoding];
-        NSString *html=[NSString stringWithContentsOfFile:@$"{WIBASE}/WInterface/Parse/index.html" encoding:NSUTF8StringEncoding error:&err];
+        NSString *html=[NSString stringWithContentsOfFile:@$"{WIBASE}/Minim/Parse/index.html" encoding:NSUTF8StringEncoding error:&err];
         html=[html stringByReplacingOccurrencesOfString:@"\"JSONDATA\"" withString:json];
         [html writeToFile:htmlfn atomically:YES encoding:NSUTF8StringEncoding error:&err];
         [Singletons._.htmlParseOutput appendFormat:@"<strong><a href='file:%@'>%@</a></strong><br/>",htmlfn,@"Merge of all the files above"];
@@ -95,7 +95,7 @@ Files
         };
         htmlfn=[Singletons._.files pathForPath:@"post-regex.html"];
         json=[[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:d options:0 error:&err] encoding:NSUTF8StringEncoding];
-        html=[NSString stringWithContentsOfFile:@$"{WIBASE}/WInterface/Parse/index.html" encoding:NSUTF8StringEncoding error:&err];
+        html=[NSString stringWithContentsOfFile:@$"{WIBASE}/Minim/Parse/index.html" encoding:NSUTF8StringEncoding error:&err];
         html=[html stringByReplacingOccurrencesOfString:@"\"JSONDATA\"" withString:json];
         [html writeToFile:htmlfn atomically:YES encoding:NSUTF8StringEncoding error:&err];
         [Singletons._.htmlParseOutput appendFormat:@"<strong><a href='file:%@'>%@</a></strong><br/>",htmlfn,@"Merge after applying regexes"];
@@ -157,13 +157,13 @@ WIParse
     -(init)
         [Singletons._ files];
 
-        ((id<ParseClass>)Parse.class).rulesFilename=@$"{WIBASE}/WInterface/Parse/rules_wi.txt";
+        ((id<ParseClass>)Parse.class).rulesFilename=@$"{WIBASE}/Minim/Parse/rules_wi.txt";
 
     -(WIFile*)wiFileFromFile:(NSString*)path
         path=[Singletons._.files pathForPath:path];
         NSError *err = nil;
         NSString *body=nil;
-        NSMutableArray *tokens=[Parse getTokensForFile:path options:ParseOptions_none retForString:&body].mutableCopy;
+        NSMutableArray *tokens=[Parse getTokensForFile:path options:ParseOptions_evenUnchanged retForString:&body].mutableCopy;
         if (tokens) {
             bool isEmpty=((tokens.count==1)&&[[tokens[0] ruleName] isEqualToString:@"file"]);
             bool hasError=!(isEmpty||((tokens.count==1)&&[[tokens[0] ruleName] isEqualToString:@"par"]&&[[[(Token*)tokens[0] children][0] ruleName] isEqualToString:@"file"]));
@@ -195,7 +195,7 @@ WIParse
                     @"parsedgraph":file.asD3Tree
                 };
                 NSString *json=[[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:d options:0 error:&err] encoding:NSUTF8StringEncoding];
-                NSString *html=[NSString stringWithContentsOfFile:@$"{WIBASE}/WInterface/Parse/index.html" encoding:NSUTF8StringEncoding error:&err];
+                NSString *html=[NSString stringWithContentsOfFile:@$"{WIBASE}/Minim/Parse/index.html" encoding:NSUTF8StringEncoding error:&err];
                 html=[html stringByReplacingOccurrencesOfString:@"\"JSONDATA\"" withString:json];
                 [html writeToFile:htmlfn atomically:YES encoding:NSUTF8StringEncoding error:&err];
                 [Singletons._.htmlParseOutput appendFormat:@"<a href='file:%@'>%@</a><br/>",htmlfn,path];

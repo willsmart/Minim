@@ -10,7 +10,7 @@ Singletons
     NSString styleName=@"Synesthete"
     bool online=YES
     
-"wierrors.wi" // look here for errors from winterface
+"wierrors.wi" // look here for errors from minim
 
 Globals
     -interfaces

@@ -28,7 +28,7 @@ EOF
 
 sleep 1
 
-export WIBASE=$HOME/Documents
+export WIBASE=$HOME/mycode
 export APPNAME=$me
 export MYIP="`ipconfig getifaddr en0`"
 if [ "$MYIP" = "" ]; then
@@ -42,17 +42,17 @@ if [ "$MYIP" = "" ]; then
         fi
     fi
 fi
-echo "WIBASE : $WIBASE" >> /Users/Will/Documents/wi.out.txt
-echo "APPNAME : $APPNAME" >> /Users/Will/Documents/wi.out.txt
-echo "MYIP : $MYIP" >> /Users/Will/Documents/wi.out.txt
+echo "WIBASE : $WIBASE" >> /Users/Will/mycode/wi.out.txt
+echo "APPNAME : $APPNAME" >> /Users/Will/mycode/wi.out.txt
+echo "MYIP : $MYIP" >> /Users/Will/mycode/wi.out.txt
 
 sound="Glass"
 
 if [ "$ok" = "1" ]; then
     pwd
-    echo "$wifile" >> /Users/Will/Documents/wi.out.txt
+    echo "$wifile" >> /Users/Will/mycode/wi.out.txt
 
-    /Users/Will/WInterface "$wifile" >> /Users/Will/Documents/wi.out.txt 2>&1
+    /Users/Will/Minim "$wifile" >> /Users/Will/mycode/wi.out.txt 2>&1
     if [ "$?" = "1" ]; then
         sound="Basso"
         ok=0
@@ -71,7 +71,7 @@ if [ "$dobuild" = "1" ]; then
 /usr/bin/osascript <<-EOF
 
 tell application "Notifications Scripting"
-	set event handlers script path to "Macintosh HD:Users:Will:Documents:Notifications:Example.scpt"
+	set event handlers script path to "Macintosh HD:Users:Will:mycode:Notifications:Example.scpt"
 	set dict to {theName:"Notifications Scripting", theVersion:"1.0", theScript:event handlers script path}
 	display notification "$me" subtitle "" message "Building..." sound name "Pop" user info dict
 end tell
@@ -87,8 +87,8 @@ tell application "Xcode"
 end tell
 
 EOF
-    #echo -e "\n\nxcodebuild -scheme \"scheme\" build >> /Users/Will/Documents/wi.out.txt 2>&1\n" >> /Users/Will/Documents/wi.out.txt
-    #xcodebuild -scheme "$scheme" build >> /Users/Will/Documents/wi.out.txt 2>&1
+    #echo -e "\n\nxcodebuild -scheme \"scheme\" build >> /Users/Will/mycode/wi.out.txt 2>&1\n" >> /Users/Will/mycode/wi.out.txt
+    #xcodebuild -scheme "$scheme" build >> /Users/Will/mycode/wi.out.txt 2>&1
     if [ "$?" = "0" ]; then
         msg="Success!"
     else
@@ -96,11 +96,11 @@ EOF
     fi
 
 else
-    msg="WInterface succeeded"
+    msg="Minim succeeded"
 fi
 
 else
-    msg="WInterface reported errors"
+    msg="Minim reported errors"
 fi
 
 /usr/bin/osascript <<-EOF
@@ -114,4 +114,4 @@ end tell
 EOF
 
 
-echo "done." >> /Users/Will/Documents/wi.out.txt
+echo "done." >> /Users/Will/mycode/wi.out.txt
